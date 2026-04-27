@@ -519,15 +519,22 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);font-s
 </div><!-- /app -->
 
 <script>
-// ── SUPABASE ──
-const SUPA_URL = 'https://qxnakhrzfijtewwmaofi.supabase.co';
-const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF4bmFraHJ6ZmlqdGV3d21hb2ZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcyMzIxOTYsImV4cCI6MjA5MjgwODE5Nn0.lGZoxKiGfhMl-dGDoLmgL71LegoyrlS64buXoWKpo1U';
-let supa = null;
+// ── FIREBASE ──
+const firebaseConfig = {
+  apiKey: "AIzaSyB1UByEJiMuQow9HCb-znmN0y8kjgbsfCA",
+  authDomain: "cave-a-vin-4d110.firebaseapp.com",
+  projectId: "cave-a-vin-4d110",
+  storageBucket: "cave-a-vin-4d110.firebasestorage.app",
+  messagingSenderId: "677976631452",
+  appId: "1:677976631452:web:e3c7ef1a2f194981762559"
+};
+
+let db = null;
+let auth = null;
 let currentUser = null;
-let _authReady = false;
 
 // ── HELPERS UI ──
-function _showScreen(screen){ // 'loading' | 'auth' | 'app'
+function _showScreen(screen){
   document.getElementById('loading-screen').style.display = screen==='loading' ? 'flex' : 'none';
   document.getElementById('auth-screen').style.display   = screen==='auth'    ? 'flex' : 'none';
   document.querySelector('.app').style.display           = screen==='app'     ? ''     : 'none';
@@ -548,64 +555,67 @@ function switchAuthTab(tab){
 
 async function doLogin(){
   const errEl = document.getElementById('auth-err');
-  if(!supa){ errEl.textContent='Serveur en cours de chargement, réessayez...'; return; }
+  if(!auth){ errEl.textContent='Firebase en cours de chargement...'; return; }
   const email = document.getElementById('login-email').value.trim();
   const pass  = document.getElementById('login-pass').value;
   if(!email||!pass){ errEl.textContent='Email et mot de passe requis'; return; }
   errEl.textContent='Connexion...';
-  const {error} = await supa.auth.signInWithPassword({email, password:pass});
-  if(error){ errEl.textContent = error.message; }
-  // Si succès → onAuthStateChange prend le relai
+  try{
+    await firebase.auth().signInWithEmailAndPassword(email, pass);
+  }catch(e){
+    errEl.textContent = e.message;
+  }
 }
 
 async function doSignup(){
   const errEl = document.getElementById('auth-err');
   const msgEl = document.getElementById('auth-msg');
-  if(!supa){ errEl.textContent='Serveur en cours de chargement, réessayez...'; return; }
+  if(!auth){ errEl.textContent='Firebase en cours de chargement...'; return; }
   const email = document.getElementById('signup-email').value.trim();
   const pass  = document.getElementById('signup-pass').value;
   if(!email||!pass){ errEl.textContent='Email et mot de passe requis'; return; }
   if(pass.length<6){ errEl.textContent='Mot de passe minimum 6 caractères'; return; }
   errEl.textContent='Création du compte...';
-  const {error} = await supa.auth.signUp({email, password:pass});
-  if(error){ errEl.textContent=error.message; return; }
-  errEl.textContent='';
-  msgEl.textContent='Compte créé ! Vérifiez votre email puis connectez-vous.';
+  try{
+    await firebase.auth().createUserWithEmailAndPassword(email, pass);
+    errEl.textContent='';
+    msgEl.textContent='Compte créé ! Vous êtes connecté.';
+  }catch(e){
+    errEl.textContent = e.message;
+  }
 }
 
 async function doLogout(){
-  // Vider immédiatement l'UI
   currentUser = null;
   wines = []; wishes = [];
   _showScreen('auth');
   renderWines(); updateStats(); renderWishes();
-  // Déconnecter Supabase en arrière-plan
-  if(supa){ try{ await supa.auth.signOut(); }catch(e){ console.error('signOut:',e); } }
+  try{ await firebase.auth().signOut(); }catch(e){ console.error('signOut:', e); }
 }
 
-// ── INIT SDK (chargement dynamique) ──
-(function initSupabase(){
-  const s = document.createElement('script');
-  s.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js';
+// ── INIT FIREBASE ──
+(function initFirebase(){
+  const scripts = [
+    'https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js',
+    'https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js',
+    'https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js'
+  ];
 
-  s.onload = function(){
+  let loaded = 0;
+
+  function onAllLoaded(){
     try{
-      supa = supabase.createClient(SUPA_URL, SUPA_KEY, {
-        auth: { persistSession:true, autoRefreshToken:true, detectSessionInUrl:false }
-      });
+      firebase.initializeApp(firebaseConfig);
+      auth = firebase.auth();
+      db   = firebase.firestore();
 
-      supa.auth.onAuthStateChange(async(event, session)=>{
-        console.log('AUTH EVENT:', event, session?.user?.email);
-        if(event==='TOKEN_REFRESHED') return; // silencieux
-
-        if(session?.user){
-          const isNewLogin = !currentUser;
-          currentUser = session.user;
-          document.getElementById('user-email-display').textContent = currentUser.email;
+      auth.onAuthStateChanged(async(user)=>{
+        document.getElementById('loading-screen').style.display='none';
+        if(user){
+          currentUser = user;
+          document.getElementById('user-email-display').textContent = user.email;
           _showScreen('app');
-          if(isNewLogin || event==='SIGNED_IN'){
-            await loadFromSupabase();
-          }
+          await loadFromFirebase();
         } else {
           currentUser = null;
           wines=[]; wishes=[];
@@ -613,131 +623,108 @@ async function doLogout(){
         }
       });
 
-      // Vérifier la session existante au démarrage
-      supa.auth.getSession().then(({data:{session}})=>{
-        if(!session){
-          _showScreen('auth');
-        }
-        // Si session existe → onAuthStateChange INITIAL_SESSION se déclenche
-      });
-
     }catch(e){
-      console.error('Supabase init error:', e);
+      console.error('Firebase init error:', e);
       _showScreen('auth');
     }
-  };
+  }
 
-  s.onerror = function(){
-    console.error('Impossible de charger le SDK Supabase');
-    _showScreen('auth');
-  };
+  function loadScript(url){
+    return new Promise((resolve, reject)=>{
+      const s = document.createElement('script');
+      s.src = url;
+      s.onload = resolve;
+      s.onerror = reject;
+      document.head.appendChild(s);
+    });
+  }
 
-  // Timeout de sécurité
-  setTimeout(()=>{ if(!supa) _showScreen('auth'); }, 6000);
+  // Charger les 3 scripts en séquence
+  loadScript(scripts[0])
+    .then(()=>loadScript(scripts[1]))
+    .then(()=>loadScript(scripts[2]))
+    .then(onAllLoaded)
+    .catch(e=>{
+      console.error('Impossible de charger Firebase:', e);
+      _showScreen('auth');
+    });
 
-  document.head.appendChild(s);
+  setTimeout(()=>{ if(!auth) _showScreen('auth'); }, 8000);
 })();
 
 // ── CHARGEMENT DONNÉES ──
-async function loadFromSupabase(){
-  if(!supa||!currentUser) return;
+async function loadFromFirebase(){
+  if(!db||!currentUser) return;
   try{
-    const [wRes, whRes] = await Promise.all([
-      supa.from('wines').select('*').order('created_at', {ascending:true}),
-      supa.from('wishes').select('*').order('created_at', {ascending:true})
+    const [wSnap, whSnap] = await Promise.all([
+      db.collection('users').doc(currentUser.uid).collection('wines').orderBy('createdAt','asc').get(),
+      db.collection('users').doc(currentUser.uid).collection('wishes').orderBy('createdAt','asc').get()
     ]);
-    if(wRes.error)  console.error('load wines error:',  wRes.error);
-    if(whRes.error) console.error('load wishes error:', whRes.error);
-    wines  = (wRes.data  ||[]).map(dbToWine);
-    wishes = (whRes.data ||[]).map(r=>({id:r.id,name:r.name,note:r.note,done:r.done}));
+    wines  = wSnap.docs.map(d=>({id:d.id, ...d.data()}));
+    wishes = whSnap.docs.map(d=>({id:d.id, ...d.data()}));
     renderWines(); updateStats(); renderWishes();
-  }catch(e){ console.error('loadFromSupabase:', e); }
-}
-
-// ── CONVERSIONS DB ↔ APP ──
-function dbToWine(r){
-  return {
-    id:r.id, name:r.name, app:r.appellation, type:r.type, reg:r.region,
-    year:r.year, qty:r.qty||1, buy:parseFloat(r.buy)||0, cur:parseFloat(r.cur)||0,
-    ap:r.ap, cont:r.cont, notes:r.notes, certs:r.certs||[],
-    parker:r.parker, suckling:r.suckling, decanter:r.decanter,
-    vinous:r.vinous, bettane:r.bettane, jancis:r.jancis, ws:r.ws, bh:r.bh,
-    img_url:r.img_url||null
-  };
-}
-
-function wineToDb(w){
-  if(!currentUser) throw new Error('Pas de currentUser');
-  return {
-    user_id:currentUser.id, name:w.name, appellation:w.app, type:w.type,
-    region:w.reg, year:w.year||null, qty:w.qty||1, buy:w.buy||0, cur:w.cur||0,
-    ap:w.ap||null, cont:w.cont||null, notes:w.notes||null, certs:w.certs||[],
-    parker:w.parker||null, suckling:w.suckling||null, decanter:w.decanter||null,
-    vinous:w.vinous||null, bettane:w.bettane||null, jancis:w.jancis||null,
-    ws:w.ws||null, bh:w.bh||null, img_url:w.img_url||null
-  };
+  }catch(e){ console.error('loadFromFirebase:', e); }
 }
 
 // ── CRUD ──
-function isUUID(id){ return typeof id==='string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(id); }
-
 async function saveWineToDb(w){
-  if(!supa){ console.error('saveWineToDb: supa null'); return; }
-  if(!currentUser){ console.error('saveWineToDb: currentUser null'); return; }
+  if(!db||!currentUser) return;
   try{
-    const db = wineToDb(w);
-    console.log('saveWineToDb → user:', currentUser.id, '| isUUID:', isUUID(w.id), '| data:', db);
-    if(isUUID(w.id)){
-      const {data,error} = await supa.from('wines').update(db).eq('id',w.id).eq('user_id',currentUser.id).select();
-      console.log('update result:', {data,error});
-      if(error) console.error('update wine error:', error);
+    const ref = db.collection('users').doc(currentUser.uid).collection('wines');
+    const data = {
+      name:w.name||'', app:w.app||'', type:w.type||'Rouge', reg:w.reg||'',
+      year:w.year||null, qty:w.qty||1, buy:w.buy||0, cur:w.cur||0,
+      ap:w.ap||'', cont:w.cont||'', notes:w.notes||'', certs:w.certs||[],
+      parker:w.parker||null, suckling:w.suckling||null, decanter:w.decanter||null,
+      vinous:w.vinous||null, bettane:w.bettane||null, jancis:w.jancis||null,
+      ws:w.ws||null, bh:w.bh||null, img_url:w.img_url||null
+    };
+    if(w.id && !w.id.startsWith('tmp-')){
+      await ref.doc(w.id).set(data, {merge:true});
     } else {
-      const {data,error} = await supa.from('wines').insert(db).select('id').single();
-      console.log('insert result:', {data,error});
-      if(error){ console.error('insert wine error:', error); return; }
-      if(data){ w.id = data.id; console.log('✅ vin inséré, nouveau ID:', w.id); }
+      const docRef = await ref.add({...data, createdAt:firebase.firestore.FieldValue.serverTimestamp()});
+      w.id = docRef.id;
     }
-  }catch(e){ console.error('saveWineToDb exception:', e); }
+  }catch(e){ console.error('saveWineToDb:', e); }
 }
 
 async function deleteWineFromDb(id){
-  if(!supa||!currentUser||!isUUID(id)) return;
+  if(!db||!currentUser||!id||id.startsWith('tmp-')) return;
   try{
-    const {error} = await supa.from('wines').delete().eq('id',id).eq('user_id',currentUser.id);
-    if(error) console.error('delete wine:', error);
+    await db.collection('users').doc(currentUser.uid).collection('wines').doc(id).delete();
   }catch(e){ console.error('deleteWineFromDb:', e); }
 }
 
 async function saveWishToDb(wish){
-  if(!supa||!currentUser) return;
+  if(!db||!currentUser) return;
   try{
-    if(isUUID(wish.id)){
-      const {error} = await supa.from('wishes').update({name:wish.name,note:wish.note,done:wish.done}).eq('id',wish.id).eq('user_id',currentUser.id);
-      if(error) console.error('update wish:', error);
+    const ref = db.collection('users').doc(currentUser.uid).collection('wishes');
+    const data = {name:wish.name||'', note:wish.note||'', done:wish.done||false};
+    if(wish.id && !wish.id.startsWith('tmp-')){
+      await ref.doc(wish.id).set(data, {merge:true});
     } else {
-      const {data,error} = await supa.from('wishes').insert({user_id:currentUser.id,name:wish.name,note:wish.note||null,done:wish.done}).select('id').single();
-      if(error){ console.error('insert wish:', error); return; }
-      if(data) wish.id = data.id;
+      const docRef = await ref.add({...data, createdAt:firebase.firestore.FieldValue.serverTimestamp()});
+      wish.id = docRef.id;
     }
   }catch(e){ console.error('saveWishToDb:', e); }
 }
 
 async function deleteWishFromDb(id){
-  if(!supa||!currentUser||!isUUID(id)) return;
+  if(!db||!currentUser||!id||id.startsWith('tmp-')) return;
   try{
-    const {error} = await supa.from('wishes').delete().eq('id',id).eq('user_id',currentUser.id);
-    if(error) console.error('delete wish:', error);
+    await db.collection('users').doc(currentUser.uid).collection('wishes').doc(id).delete();
   }catch(e){ console.error('deleteWishFromDb:', e); }
 }
 
 async function uploadPhoto(wineId, dataUrl){
-  if(!supa||!currentUser||!isUUID(wineId)) return dataUrl;
+  if(!db||!currentUser||!wineId||wineId.startsWith('tmp-')) return dataUrl;
   try{
-    const {error} = await supa.from('wines').update({img_url:dataUrl}).eq('id',wineId).eq('user_id',currentUser.id);
-    if(error) console.error('uploadPhoto:', error);
+    await db.collection('users').doc(currentUser.uid).collection('wines').doc(wineId).update({img_url:dataUrl});
     return dataUrl;
   }catch(e){ console.error('uploadPhoto:', e); return dataUrl; }
 }
+
+function save(){ /* données gérées par Firebase */ }
 
 
 const TC={
@@ -1025,7 +1012,7 @@ function saveEdit(id){
   const photoData=formPhotoData;formPhotoData=null;
   clearForm();closePanel('add-form');
   renderWines();updateStats();
-  if(supa){saveWineToDb(wines[idx]).then(()=>{
+  if(db){saveWineToDb(wines[idx]).then(()=>{
     if(photoData){
       uploadPhoto(wines[idx].id,photoData).then(url=>{
         if(url){wines[idx].img_url=url;renderWines();}
@@ -1056,7 +1043,7 @@ function addWine(){
   const photoData=formPhotoData;
   wines.push(w);
   clearForm();closePanel('add-form');renderWines();updateStats();
-  if(supa && currentUser){
+  if(db && currentUser){
     saveWineToDb(w).then(()=>{
       // w.id contient maintenant le vrai UUID Supabase
       if(photoData){
@@ -1075,12 +1062,12 @@ function addWish(){
   wishes.push(wish);
   document.getElementById('wf-n').value='';document.getElementById('wf-r').value='';
   closePanel('wish-form');renderWishes();
-  if(supa)saveWishToDb(wish);
+  if(db)saveWishToDb(wish);
 }
-function chgQty(id,d){const w=wines.find(x=>x.id===id);if(w){w.qty=Math.max(0,w.qty+d);renderWines();updateStats();if(supa)saveWineToDb(w);}}
-function delWine(id){wines=wines.filter(x=>x.id!==id);renderWines();updateStats();if(supa)deleteWineFromDb(id);}
-function delWish(id){wishes=wishes.filter(x=>x.id!==id);renderWishes();if(supa)deleteWishFromDb(id);}
-function togWish(id){const w=wishes.find(x=>x.id===id);if(w){w.done=!w.done;renderWishes();if(supa)saveWishToDb(w);}}
+function chgQty(id,d){const w=wines.find(x=>x.id===id);if(w){w.qty=Math.max(0,w.qty+d);renderWines();updateStats();if(db)saveWineToDb(w);}}
+function delWine(id){wines=wines.filter(x=>x.id!==id);renderWines();updateStats();if(db)deleteWineFromDb(id);}
+function delWish(id){wishes=wishes.filter(x=>x.id!==id);renderWishes();if(db)deleteWishFromDb(id);}
+function togWish(id){const w=wishes.find(x=>x.id===id);if(w){w.done=!w.done;renderWishes();if(db)saveWishToDb(w);}}
 function trigImg(id){document.getElementById('ii-'+id).click()}
 let formPhotoData=null;
 function handleFormPhoto(inp){
