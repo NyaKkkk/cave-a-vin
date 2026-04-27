@@ -739,7 +739,6 @@ async function uploadPhoto(wineId, dataUrl){
   }catch(e){ console.error('uploadPhoto:', e); return dataUrl; }
 }
 
-async function save(){ /* sauvegardes au cas par cas */ }
 
 const TC={
   'Rouge':{bar:'#8b1a2a',pill:'#fdf0f1',pt:'#6a1020'},
@@ -762,21 +761,9 @@ const VALID_TYPES=Object.keys(TC);
 let activeType='',statFilter='all';
 let chartM=null,chartR=null,waiResult=null,wishPhotoB64=null,aiResult=null,currentPhotoB64=null;
 
-// Migration automatique : si ancienne version sans certs, on migre
 let wines=[];
-// Si migration ou pas de données, on injecte les démos
-if(!wines){wines=[
-  {id:1,name:"Château Cos d'Estournel",app:'Saint-Estèphe AOC',type:'Rouge',reg:'Bordeaux',year:2016,qty:6,buy:95,cur:145,ap:'2026–2045',certs:[],parker:97,suckling:98,decanter:null,vinous:96,bettane:null,jancis:null,ws:95,bh:null,notes:'Tanins puissants, grand potentiel de garde'},
-  {id:2,name:'Château Rayas',app:'Châteauneuf-du-Pape AOC',type:'Rouge',reg:'Rhône',year:2018,qty:2,buy:220,cur:410,ap:'2028–2050',certs:['bio','biody'],parker:100,suckling:98,decanter:20,vinous:99,bettane:19,jancis:19,ws:97,bh:null,notes:'Grenache pur, légendaire'},
-  {id:3,name:'Bollinger Special Cuvée',app:'Champagne AOC',type:'Pétillant',reg:'Champagne',year:2019,qty:4,buy:55,cur:62,ap:'2024–2032',certs:[],parker:null,suckling:96,decanter:18,vinous:null,bettane:null,jancis:18,ws:93,bh:null,notes:'Classique élégant'},
-  {id:4,name:'Pouilly-Fumé La Doucette',app:'Pouilly-Fumé AOC',type:'Blanc',reg:'Loire',year:2021,qty:8,buy:22,cur:24,ap:'2023–2027',certs:['hve'],parker:null,suckling:91,decanter:null,vinous:null,bettane:14,jancis:null,ws:null,bh:null,notes:'Minéral et frais'},
-]}
-// S'assurer que tous les vins ont certs (sécurité)
-wines=wines.map(w=>({...w,certs:Array.isArray(w.certs)?w.certs:[]}));
 let wishes=[];
 let imgs={};
-
-function save(){ /* données gérées par Supabase */ }
 
 function saveApiKey(){
   const k=document.getElementById('api-key-input').value.trim();
