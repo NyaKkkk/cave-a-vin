@@ -264,9 +264,46 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);font-s
 .auth-btn:hover{background:var(--ruby2)}
 .auth-err{font-size:12px;color:var(--ruby);margin-top:10px;text-align:center;min-height:18px}
 .auth-msg{font-size:12px;color:#2a7a2a;margin-top:10px;text-align:center;min-height:18px}
-.user-info{display:flex;align-items:center;gap:8px;color:rgba(255,255,255,.7);font-size:11px}
-.logout-btn{background:none;border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.7);padding:4px 10px;border-radius:4px;font-size:11px;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s}
-.logout-btn:hover{background:rgba(255,255,255,.1);color:#fff}
+/* USER MENU */
+.user-menu-wrap{position:relative}
+.user-avatar-btn{width:36px;height:36px;border-radius:50%;border:2px solid rgba(201,168,76,.4);background:rgba(201,168,76,.15);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;overflow:hidden}
+.user-avatar-btn:hover{border-color:var(--gold2);background:rgba(201,168,76,.25)}
+.user-avatar-btn img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.user-avatar-initials{font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:600;color:var(--gold2)}
+.user-dropdown{position:absolute;top:calc(100% + 10px);right:0;background:var(--surface);border:1px solid var(--ink5);border-radius:var(--r2);box-shadow:0 8px 32px rgba(0,0,0,.15);width:220px;z-index:200;display:none;overflow:hidden}
+.user-dropdown.open{display:block}
+.user-dropdown-header{padding:14px 16px;border-bottom:1px solid var(--ink5);background:var(--ink6)}
+.user-dropdown-name{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:600;color:var(--ink)}
+.user-dropdown-email{font-size:11px;color:var(--ink4);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.user-dropdown-cave{font-size:11px;color:var(--gold);margin-top:2px;font-style:italic}
+.user-dropdown-item{display:flex;align-items:center;gap:10px;padding:10px 16px;font-size:13px;color:var(--ink3);cursor:pointer;transition:background .15s;border:none;background:none;width:100%;text-align:left;font-family:'Inter',sans-serif}
+.user-dropdown-item:hover{background:var(--ink6);color:var(--ink)}
+.user-dropdown-item svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;flex-shrink:0}
+.user-dropdown-sep{height:1px;background:var(--ink5);margin:4px 0}
+.user-dropdown-item.danger{color:var(--ruby)}
+.user-dropdown-item.danger:hover{background:#fff5f5}
+
+/* MODAL PROFIL */
+.modal-overlay{position:fixed;inset:0;background:rgba(28,10,13,.5);z-index:500;display:none;align-items:center;justify-content:center;backdrop-filter:blur(2px)}
+.modal-overlay.open{display:flex}
+.modal-box{background:var(--surface);border-radius:var(--r2);padding:32px;width:100%;max-width:480px;box-shadow:0 16px 48px rgba(0,0,0,.2);position:relative;max-height:90vh;overflow-y:auto}
+.modal-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--ink);margin-bottom:24px}
+.modal-close{position:absolute;top:16px;right:16px;width:28px;height:28px;border-radius:50%;border:1px solid var(--ink5);background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--ink4);font-size:16px;transition:all .2s}
+.modal-close:hover{background:var(--ink6);color:var(--ink)}
+.modal-avatar{display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:24px}
+.modal-avatar-preview{width:80px;height:80px;border-radius:50%;border:3px solid var(--ink5);overflow:hidden;display:flex;align-items:center;justify-content:center;background:var(--ink6);cursor:pointer;transition:all .2s}
+.modal-avatar-preview:hover{border-color:var(--gold2)}
+.modal-avatar-preview img{width:100%;height:100%;object-fit:cover}
+.modal-avatar-initials-big{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:600;color:var(--ink4)}
+.modal-avatar-hint{font-size:11px;color:var(--ink4);cursor:pointer}
+.profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.profile-fg{display:flex;flex-direction:column;gap:5px}
+.profile-fg.full{grid-column:1/-1}
+.profile-fg label{font-size:10px;font-weight:600;color:var(--ink4);text-transform:uppercase;letter-spacing:.5px}
+.profile-fg input,.profile-fg select{height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-family:'Inter',sans-serif;font-size:13px;color:var(--ink);outline:none;transition:border .2s;background:var(--surface)}
+.profile-fg input:focus,.profile-fg select:focus{border-color:var(--ruby)}
+.profile-save-btn{width:100%;height:40px;background:var(--ruby);color:#fff;border:none;border-radius:var(--r);font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;margin-top:20px;transition:background .2s}
+.profile-save-btn:hover{background:#6d1420}
 .loading-screen{position:fixed;inset:0;background:var(--ink);display:flex;align-items:center;justify-content:center;z-index:999;flex-direction:column;gap:16px}
 .loading-spinner{width:32px;height:32px;border:2px solid rgba(201,168,76,.3);border-top-color:var(--gold2);border-radius:50%;animation:spin .7s linear infinite}
 .loading-text{font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--gold3);letter-spacing:2px}
@@ -297,8 +334,13 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);font-s
       <button onclick="doLogin()" style="width:100%;height:42px;background:#8b1a2a;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:Inter,sans-serif">Se connecter</button>
     </div>
     <div id="auth-signup" style="display:none">
-      <div style="margin-bottom:14px"><label style="display:block;font-size:10px;font-weight:600;color:#b89098;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px">Email</label><input type="email" id="signup-email" placeholder="votre@email.com" style="width:100%;height:40px;padding:0 12px;border:1.5px solid #e8d8dc;border-radius:8px;font-size:13px;outline:none;font-family:Inter,sans-serif"></div>
-      <div style="margin-bottom:14px"><label style="display:block;font-size:10px;font-weight:600;color:#b89098;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px">Mot de passe</label><input type="password" id="signup-pass" placeholder="Min. 6 caractères" style="width:100%;height:40px;padding:0 12px;border:1.5px solid #e8d8dc;border-radius:8px;font-size:13px;outline:none;font-family:Inter,sans-serif" onkeydown="if(event.key==='Enter')doSignup()"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+        <div><label style="display:block;font-size:10px;font-weight:600;color:#b89098;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px">Prénom</label><input type="text" id="signup-firstname" placeholder="Thomas" style="width:100%;height:38px;padding:0 10px;border:1.5px solid #e8d8dc;border-radius:8px;font-size:13px;outline:none;font-family:Inter,sans-serif"></div>
+        <div><label style="display:block;font-size:10px;font-weight:600;color:#b89098;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px">Nom</label><input type="text" id="signup-lastname" placeholder="Dupont" style="width:100%;height:38px;padding:0 10px;border:1.5px solid #e8d8dc;border-radius:8px;font-size:13px;outline:none;font-family:Inter,sans-serif"></div>
+      </div>
+      <div style="margin-bottom:10px"><label style="display:block;font-size:10px;font-weight:600;color:#b89098;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px">Nom de la cave</label><input type="text" id="signup-cave" placeholder="Cave de Thomas" style="width:100%;height:38px;padding:0 12px;border:1.5px solid #e8d8dc;border-radius:8px;font-size:13px;outline:none;font-family:Inter,sans-serif"></div>
+      <div style="margin-bottom:10px"><label style="display:block;font-size:10px;font-weight:600;color:#b89098;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px">Email</label><input type="email" id="signup-email" placeholder="votre@email.com" style="width:100%;height:38px;padding:0 12px;border:1.5px solid #e8d8dc;border-radius:8px;font-size:13px;outline:none;font-family:Inter,sans-serif"></div>
+      <div style="margin-bottom:14px"><label style="display:block;font-size:10px;font-weight:600;color:#b89098;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px">Mot de passe</label><input type="password" id="signup-pass" placeholder="Min. 6 caractères" style="width:100%;height:38px;padding:0 12px;border:1.5px solid #e8d8dc;border-radius:8px;font-size:13px;outline:none;font-family:Inter,sans-serif" onkeydown="if(event.key==='Enter')doSignup()"></div>
       <button onclick="doSignup()" style="width:100%;height:42px;background:#8b1a2a;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:Inter,sans-serif">Créer mon compte</button>
     </div>
     <div id="auth-err" style="font-size:12px;color:#8b1a2a;margin-top:10px;text-align:center;min-height:18px"></div>
@@ -313,9 +355,66 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);font-s
     <div class="header-monogram"><span>C</span><span>AV</span></div>
     <div><div class="header-title">Cave à Vin</div><div class="header-sub">Sommelier numérique</div></div>
   </div>
-  <div class="user-info" id="user-info" style="display:none">
-    <span id="user-email-display"></span>
-    <button class="logout-btn" onclick="doLogout()">Déconnexion</button>
+  <div class="user-menu-wrap" id="user-info" style="display:none">
+    <button class="user-avatar-btn" id="user-avatar-btn" onclick="toggleUserMenu()">
+      <span class="user-avatar-initials" id="user-avatar-initials">?</span>
+    </button>
+    <div class="user-dropdown" id="user-dropdown">
+      <div class="user-dropdown-header">
+        <div class="user-dropdown-name" id="dd-name">—</div>
+        <div class="user-dropdown-email" id="dd-email">—</div>
+        <div class="user-dropdown-cave" id="dd-cave"></div>
+      </div>
+      <button class="user-dropdown-item" onclick="openProfile()">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+        Mon profil
+      </button>
+      <div class="user-dropdown-sep"></div>
+      <button class="user-dropdown-item danger" onclick="doLogout()">
+        <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16,17 21,12 16,7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Déconnexion
+      </button>
+    </div>
+  </div>
+
+  <!-- MODAL PROFIL -->
+  <div class="modal-overlay" id="profile-modal" onclick="if(event.target===this)closeProfile()">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeProfile()">✕</button>
+      <div class="modal-title">Mon profil</div>
+      <div class="modal-avatar">
+        <div class="modal-avatar-preview" id="profile-avatar-preview" onclick="document.getElementById('profile-photo-input').click()">
+          <span class="modal-avatar-initials-big" id="profile-avatar-big">?</span>
+        </div>
+        <input type="file" id="profile-photo-input" accept="image/*" style="display:none" onchange="handleProfilePhoto(this)">
+        <span class="modal-avatar-hint" onclick="document.getElementById('profile-photo-input').click()">Changer la photo</span>
+      </div>
+      <div class="profile-grid">
+        <div class="profile-fg"><label>Prénom</label><input type="text" id="pf-firstname" placeholder="Thomas"></div>
+        <div class="profile-fg"><label>Nom</label><input type="text" id="pf-lastname" placeholder="Dupont"></div>
+        <div class="profile-fg full"><label>Nom de la cave</label><input type="text" id="pf-cave" placeholder="Cave de Thomas"></div>
+        <div class="profile-fg full"><label>Email</label><input type="email" id="pf-email" disabled style="opacity:.6"></div>
+        <div class="profile-fg"><label>Devise</label>
+          <select id="pf-currency">
+            <option value="€">€ Euro</option>
+            <option value="$">$ Dollar</option>
+            <option value="£">£ Livre</option>
+            <option value="CHF">CHF Franc suisse</option>
+          </select>
+        </div>
+        <div class="profile-fg"><label>Capacité cave (bouteilles)</label><input type="number" id="pf-capacity" placeholder="200" min="0"></div>
+        <div class="profile-fg full"><label>Objectif principal</label>
+          <select id="pf-objective">
+            <option value="plaisir">Plaisir personnel</option>
+            <option value="collection">Collection</option>
+            <option value="investissement">Investissement</option>
+            <option value="mixte">Mixte</option>
+          </select>
+        </div>
+        <div class="profile-fg full"><label>Région préférée</label><input type="text" id="pf-region" placeholder="Bordeaux, Bourgogne..."></div>
+      </div>
+      <button class="profile-save-btn" onclick="saveProfile()">Enregistrer le profil</button>
+    </div>
   </div>
   <div class="header-stats">
     <div class="hstat"><div class="hstat-val" id="hs-bot">0</div><div class="hstat-label">Bouteilles</div></div>
@@ -571,15 +670,24 @@ async function doSignup(){
   const errEl = document.getElementById('auth-err');
   const msgEl = document.getElementById('auth-msg');
   if(!auth){ errEl.textContent='Firebase en cours de chargement...'; return; }
-  const email = document.getElementById('signup-email').value.trim();
-  const pass  = document.getElementById('signup-pass').value;
+  const firstname = document.getElementById('signup-firstname').value.trim();
+  const lastname  = document.getElementById('signup-lastname').value.trim();
+  const cave      = document.getElementById('signup-cave').value.trim();
+  const email     = document.getElementById('signup-email').value.trim();
+  const pass      = document.getElementById('signup-pass').value;
   if(!email||!pass){ errEl.textContent='Email et mot de passe requis'; return; }
   if(pass.length<6){ errEl.textContent='Mot de passe minimum 6 caractères'; return; }
   errEl.textContent='Création du compte...';
   try{
-    await firebase.auth().createUserWithEmailAndPassword(email, pass);
+    const cred = await firebase.auth().createUserWithEmailAndPassword(email, pass);
+    // Sauvegarder le profil dans Firestore
+    await db.collection('users').doc(cred.user.uid).set({
+      firstname, lastname, cave: cave||`Cave de ${firstname}`,
+      email, currency:'€', capacity:null, objective:'plaisir', region:'',
+      photoUrl:null, createdAt:firebase.firestore.FieldValue.serverTimestamp()
+    });
     errEl.textContent='';
-    msgEl.textContent='Compte créé ! Vous êtes connecté.';
+    msgEl.textContent='Compte créé ! Bienvenue 🍷';
   }catch(e){
     errEl.textContent = e.message;
   }
@@ -613,9 +721,8 @@ async function doLogout(){
         document.getElementById('loading-screen').style.display='none';
         if(user){
           currentUser = user;
-          document.getElementById('user-email-display').textContent = user.email;
           _showScreen('app');
-          await loadFromFirebase();
+          await Promise.all([loadFromFirebase(), loadUserProfile(user.uid)]);
         } else {
           currentUser = null;
           wines=[]; wishes=[];
@@ -725,6 +832,121 @@ async function uploadPhoto(wineId, dataUrl){
 }
 
 function save(){ /* données gérées par Firebase */ }
+
+// ── PROFIL UTILISATEUR ──
+let userProfile = {};
+
+async function loadUserProfile(uid){
+  try{
+    const doc = await db.collection('users').doc(uid).get();
+    if(doc.exists){
+      userProfile = doc.data();
+      updateUserMenu();
+    }
+  }catch(e){ console.error('loadUserProfile:', e); }
+}
+
+function updateUserMenu(){
+  const p = userProfile;
+  const firstname = p.firstname||'';
+  const lastname  = p.lastname||'';
+  const initials  = ((firstname[0]||'')+(lastname[0]||'')).toUpperCase()||'?';
+  const fullname  = [firstname,lastname].filter(Boolean).join(' ')||p.email||'Utilisateur';
+
+  // Avatar dans le header
+  const btn = document.getElementById('user-avatar-btn');
+  const ini = document.getElementById('user-avatar-initials');
+  if(p.photoUrl){
+    btn.innerHTML = `<img src="${p.photoUrl}" alt="avatar">`;
+  } else {
+    ini.textContent = initials;
+  }
+
+  // Dropdown
+  document.getElementById('dd-name').textContent  = fullname;
+  document.getElementById('dd-email').textContent = p.email||currentUser?.email||'';
+  const ddCave = document.getElementById('dd-cave');
+  ddCave.textContent = p.cave ? `🍷 ${p.cave}` : '';
+}
+
+function toggleUserMenu(){
+  const dd = document.getElementById('user-dropdown');
+  dd.classList.toggle('open');
+  // Fermer au clic ailleurs
+  setTimeout(()=>{
+    document.addEventListener('click', function closeDD(e){
+      if(!document.getElementById('user-dropdown').contains(e.target) &&
+         !document.getElementById('user-avatar-btn').contains(e.target)){
+        document.getElementById('user-dropdown').classList.remove('open');
+        document.removeEventListener('click', closeDD);
+      }
+    });
+  }, 10);
+}
+
+function openProfile(){
+  document.getElementById('user-dropdown').classList.remove('open');
+  const p = userProfile;
+  document.getElementById('pf-firstname').value  = p.firstname||'';
+  document.getElementById('pf-lastname').value   = p.lastname||'';
+  document.getElementById('pf-cave').value        = p.cave||'';
+  document.getElementById('pf-email').value       = p.email||currentUser?.email||'';
+  document.getElementById('pf-currency').value   = p.currency||'€';
+  document.getElementById('pf-capacity').value   = p.capacity||'';
+  document.getElementById('pf-objective').value  = p.objective||'plaisir';
+  document.getElementById('pf-region').value     = p.region||'';
+
+  // Avatar preview
+  const preview = document.getElementById('profile-avatar-preview');
+  const big     = document.getElementById('profile-avatar-big');
+  const initials = ((p.firstname||'')[0]+(p.lastname||'')[0]).toUpperCase()||'?';
+  if(p.photoUrl){
+    preview.innerHTML = `<img src="${p.photoUrl}" alt="avatar" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+  } else {
+    big.textContent = initials;
+  }
+
+  document.getElementById('profile-modal').classList.add('open');
+}
+
+function closeProfile(){
+  document.getElementById('profile-modal').classList.remove('open');
+}
+
+let profilePhotoData = null;
+function handleProfilePhoto(inp){
+  const f = inp.files[0]; if(!f) return;
+  const r = new FileReader();
+  r.onload = e => {
+    profilePhotoData = e.target.result;
+    document.getElementById('profile-avatar-preview').innerHTML =
+      `<img src="${profilePhotoData}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+    document.getElementById('profile-avatar-big').style.display='none';
+  };
+  r.readAsDataURL(f);
+}
+
+async function saveProfile(){
+  if(!db||!currentUser) return;
+  const data = {
+    firstname  : document.getElementById('pf-firstname').value.trim(),
+    lastname   : document.getElementById('pf-lastname').value.trim(),
+    cave       : document.getElementById('pf-cave').value.trim(),
+    currency   : document.getElementById('pf-currency').value,
+    capacity   : parseInt(document.getElementById('pf-capacity').value)||null,
+    objective  : document.getElementById('pf-objective').value,
+    region     : document.getElementById('pf-region').value.trim(),
+    email      : currentUser.email,
+  };
+  if(profilePhotoData) data.photoUrl = profilePhotoData;
+  try{
+    await db.collection('users').doc(currentUser.uid).set(data, {merge:true});
+    userProfile = {...userProfile, ...data};
+    updateUserMenu();
+    profilePhotoData = null;
+    closeProfile();
+  }catch(e){ console.error('saveProfile:', e); alert('Erreur lors de la sauvegarde'); }
+}
 
 
 const TC={
