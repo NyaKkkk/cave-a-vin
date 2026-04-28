@@ -1094,6 +1094,9 @@ function renderDegustations(){
         <div class="deg-card-meta">${d.wineApp}${d.wineApp&&d.wineType?' · ':''}${d.wineType} · ${occLabels[d.occasion]||d.occasion||''}</div>
         ${d.comment?`<div class="deg-card-comment">"${d.comment}"</div>`:''}
         <div style="font-size:10px;color:var(--ink5);margin-top:8px">${dateStr} · ${d.qty} bouteille${d.qty>1?'s':''}</div>
+        <div style="margin-top:10px">
+          <button type="button" onclick="deleteDegustation('${d.id}')" style="display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 8px;border:1px solid var(--ink5);border-radius:6px;background:none;cursor:pointer;color:var(--ink4);font-family:Inter,sans-serif;font-size:11px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg> Supprimer</button>
+        </div>
       </div>
     </div>`;
     }).join('');
@@ -1144,6 +1147,14 @@ async function undoVente(id){
   }
 }
 
+async function deleteDegustation(id){
+  degustations = degustations.filter(d=>d.id!==id);
+  renderDegustations();
+  if(db&&currentUser&&id&&!id.startsWith('tmp-')){
+    await db.collection('users').doc(currentUser.uid).collection('degustations').doc(id).delete();
+  }
+}
+
 async function deleteVente(id){
   ventes = ventes.filter(v=>v.id!==id);
   renderVentes();
@@ -1186,11 +1197,10 @@ function renderVentes(){
         <div class="vente-card-meta">${v.wineApp} · ${dateStr} · ${v.qty} bouteille${v.qty>1?'s':''}</div>
         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:4px">
           <div class="vente-card-platform">${v.platform}</div>
-          <div class="vente-status vente-status-${v.status||'a_vendre'}">${statusLabel(v.status)}</div>
         </div>
         ${v.notes?`<div style="font-size:11px;color:var(--ink4);margin-top:6px;font-style:italic">${v.notes}</div>`:''}
         <div style="display:flex;align-items:center;gap:6px;margin-top:8px;flex-wrap:wrap">
-          <div class="vente-status vente-status-${v.status||'a_vendre'}" onclick="updateVenteStatus('${v.id}')" style="cursor:pointer" title="Cliquer pour changer le statut">${statusLabel(v.status)} ›</div>
+          <div class="vente-status vente-status-${v.status||'a_vendre'}" onclick="updateVenteStatus('${v.id}')" style="cursor:pointer" title="Cliquer pour changer le statut">${statusLabel(v.status)}</div>
           <button type="button" onclick="undoVente('${v.id}')" title="Remettre en cave" style="height:24px;padding:0 8px;border:1px solid var(--ink5);border-radius:6px;background:none;cursor:pointer;color:var(--ink4);font-family:Inter,sans-serif;font-size:11px" >↩ Cave</button>
           <button type="button" onclick="deleteVente('${v.id}')" title="Supprimer de l'historique" style="height:24px;padding:0 8px;border:1px solid var(--ink5);border-radius:6px;background:none;cursor:pointer;color:var(--ink4);font-family:Inter,sans-serif;font-size:11px">🗑</button>
         </div>
