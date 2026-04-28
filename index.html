@@ -372,7 +372,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);font-s
 .wine-sell:hover{border-color:#b8860b;background:#fffdf0}
 
 /* ── CARTES DÉGUSTATION ── */
-.deg-card{background:var(--surface);border:1px solid var(--ink5);border-radius:var(--r2);padding:20px 22px;display:flex;gap:18px;align-items:flex-start;margin-bottom:4px}
+.deg-card{background:var(--surface);border:1px solid var(--ink5);border-radius:var(--r2);padding:16px 28px;display:flex;gap:18px;align-items:flex-start;margin-bottom:4px}
 .deg-card-body{flex:1}
 .deg-card-name{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:600;color:var(--ink);margin-bottom:3px}
 .deg-card-meta{font-size:11px;color:var(--ink4);margin-bottom:8px}
@@ -388,7 +388,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);font-s
 .deg-star:hover{transform:scale(1.2)}
 
 /* ── CARTES VENTES ── */
-.vente-card{background:var(--surface);border:1px solid var(--ink5);border-radius:var(--r2);padding:20px 22px;display:grid;grid-template-columns:auto auto 1fr;gap:12px;align-items:center;margin-bottom:4px}
+.vente-card{background:var(--surface);border:1px solid var(--ink5);border-radius:var(--r2);padding:16px 28px;display:grid;grid-template-columns:auto auto 1fr;gap:12px;align-items:center;margin-bottom:4px}
 .vente-card-name{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:600;color:var(--ink)}
 .vente-card-meta{font-size:11px;color:var(--ink4);margin-top:3px}
 .vente-card-platform{display:inline-block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;background:var(--ink6);color:var(--ink3);padding:2px 8px;border-radius:10px;margin-top:6px}
@@ -1090,13 +1090,18 @@ function renderDegustations(){
       <div style="flex-shrink:0;text-align:center;min-width:52px;border-left:1px solid var(--ink5);border-right:1px solid var(--ink5);padding:0 12px;margin:0 4px">
         ${d.note>0?`<div style="font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:700;color:var(--ruby);line-height:1">${d.note}</div><div style="font-size:10px;color:var(--ink4);margin-top:2px">/100</div><div style="color:var(--gold);font-size:11px;margin-top:4px">${starsHtml}</div>`:`<div style="font-size:20px;color:var(--ink5)">—</div>`}
       </div>
-      <div class="deg-card-body">
-        <div class="deg-card-name">${d.wineName}${d.wineYear?' '+d.wineYear:''}</div>
-        <div class="deg-card-meta">${d.wineApp}${d.wineApp&&d.wineType?' · ':''}${d.wineType} · ${occLabels[d.occasion]||d.occasion||''}</div>
-        <div style="font-size:13px;color:${d.comment?'var(--ink3)':'var(--ink5)'};font-style:italic;line-height:1.5;cursor:pointer;margin-top:6px" onclick="editDegComment('${d.id}',this)" title="Cliquer pour modifier">${d.comment||'+ Commentaire…'}</div>
-        <div style="font-size:10px;color:var(--ink5);margin-top:8px">${dateStr} · ${d.qty} bouteille${d.qty>1?'s':''}</div>
-        <div style="margin-top:10px">
-          <button type="button" onclick="deleteDegustation('${d.id}')" style="display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 8px;border:1px solid var(--ink5);border-radius:6px;background:none;cursor:pointer;color:var(--ink4);font-family:Inter,sans-serif;font-size:11px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg> Supprimer</button>
+      <div style="display:flex;gap:0;align-items:stretch;flex:1;min-width:0">
+        <div class="deg-card-body" style="flex:none">
+          <div class="deg-card-name">${d.wineName}${d.wineYear?' '+d.wineYear:''}</div>
+          <div class="deg-card-meta">${d.wineApp}${d.wineApp&&d.wineType?' · ':''}${d.wineType} · ${occLabels[d.occasion]||d.occasion||''}</div>
+          <div style="font-size:10px;color:var(--ink5);margin-top:8px">${dateStr} · ${d.qty} bouteille${d.qty>1?'s':''}</div>
+          <div style="margin-top:10px">
+            <button type="button" onclick="deleteDegustation('${d.id}')" style="display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 8px;border:1px solid var(--ink5);border-radius:6px;background:none;cursor:pointer;color:var(--ink4);font-family:Inter,sans-serif;font-size:11px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg> Supprimer</button>
+          </div>
+        </div>
+        <div style="width:1px;background:var(--ink5);margin:0 14px;flex-shrink:0"></div>
+        <div style="width:200px;flex-shrink:0;cursor:pointer;display:flex;align-items:center" onclick="editDegComment('${d.id}',this)" title="Cliquer pour modifier">
+          <span style="font-size:13px;color:${d.comment?'var(--ink3)':'var(--ink5)'};font-style:italic;line-height:1.5">${d.comment||'+ Commentaire…'}</span>
         </div>
       </div>
     </div>`;
