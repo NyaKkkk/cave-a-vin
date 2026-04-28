@@ -1085,10 +1085,7 @@ function renderDegustations(){
     const wineRef = wines.find(w=>w.id===d.wineId);
     const wineImg = wineRef?.img_url || d.img_url || null;
     return `<div class="deg-card">
-      ${wineImg?`<div style="width:56px;flex-shrink:0;display:flex;align-items:center;justify-content:center"><img src="${wineImg}" style="max-width:56px;max-height:90px;width:auto;height:auto;object-fit:contain;border-radius:4px"></div>`:''}
-      <div style="min-width:48px;text-align:center;flex-shrink:0;${wineImg?'display:none':''}">
-        ${d.note>0?`<div style="font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:700;color:var(--ruby);line-height:1">${d.note}</div><div style="font-size:10px;color:var(--ink4)">/100</div>`:'<div style="font-size:24px">🍷</div>'}
-      </div>
+      ${wineImg?`<div style="width:52px;flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-right:2px"><img src="${wineImg}" style="max-width:52px;max-height:88px;width:auto;height:auto;object-fit:contain;border-radius:4px"></div>`:`<div style="min-width:48px;text-align:center;flex-shrink:0">${d.note>0?`<div style="font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:700;color:var(--ruby);line-height:1">${d.note}</div><div style="font-size:10px;color:var(--ink4)">/100</div>`:`<div style="font-size:24px">🍷</div>`}</div>`}
       <div class="deg-card-body">
         <div class="deg-card-name">${d.wineName}${d.wineYear?' '+d.wineYear:''}</div>
         <div class="deg-card-meta">${d.wineApp}${d.wineApp&&d.wineType?' · ':''}${d.wineType} · ${occLabels[d.occasion]||d.occasion||''}</div>
@@ -1097,7 +1094,7 @@ function renderDegustations(){
         <div style="font-size:10px;color:var(--ink5);margin-top:8px">${dateStr} · ${d.qty} bouteille${d.qty>1?'s':''}</div>
       </div>
     </div>`;
-  }).join('');
+    }).join('');
 }
 
 // ── HELPERS VENTES ──
@@ -1151,8 +1148,8 @@ function renderVentes(){
     const wRefV = wines.find(w=>w.id===v.wineId);
     const wImgV = wRefV?.img_url || v.img_url || null;
     return `<div class="vente-card">
-      ${wImgV?`<div style="width:50px;flex-shrink:0;display:flex;align-items:center;justify-content:center"><img src="${wImgV}" style="max-width:50px;max-height:80px;width:auto;height:auto;object-fit:contain;border-radius:4px"></div>`:``}
-      <div style="flex:1">
+      ${wImgV?`<div style="width:50px;flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-right:2px"><img src="${wImgV}" style="max-width:50px;max-height:82px;width:auto;height:auto;object-fit:contain;border-radius:4px"></div>`:``}
+      <div>
         <div class="vente-card-name">${v.wineName}${v.wineYear?' '+v.wineYear:''}</div>
         <div class="vente-card-meta">${v.wineApp} · ${dateStr} · ${v.qty} bouteille${v.qty>1?'s':''}</div>
         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:4px">
@@ -1175,7 +1172,7 @@ function renderVentes(){
         <div style="font-size:10px;color:var(--ink5);margin-top:2px">vs ${v.buyPrice}€ achat</div>
       </div>
     </div>`;
-  }).join('');
+    }).join('');
 }
 
 // ── PROFIL UTILISATEUR ──
