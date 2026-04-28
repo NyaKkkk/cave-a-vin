@@ -2409,28 +2409,45 @@ const ISO_NUM_TO_3 = {
 };
 
 function mercator(lon, lat, w, h){
+  // Clamp latitude pour éviter infinité
+  lat = Math.max(-85, Math.min(85, lat));
   const x = (lon+180)/360*w;
   const latRad = lat*Math.PI/180;
   const mercN = Math.log(Math.tan(Math.PI/4+latRad/2));
-  const y = h/2 - (mercN/(Math.PI)*(h/2));
+  const maxMerc = Math.log(Math.tan(Math.PI/4+85*Math.PI/360));
+  const y = h/2 - (mercN/maxMerc)*(h/2)*0.95;
   return [x,y];
 }
 
 function ringsToSVGPath(rings, w, h){
   return rings.map(pts=>{
-    if(!pts.length) return '';
-    const projected = pts.map(([lon,lat])=>mercator(lon,lat,w,h));
-    return 'M'+projected.map(([x,y])=>x.toFixed(1)+','+y.toFixed(1)).join('L')+'Z';
+    if(pts.length<3) return '';
+    // Détecter les ruptures de méridien (saut > 180°) pour éviter les lignes grises
+    const segs=[];let seg=[];
+    for(let i=0;i<pts.length;i++){
+      if(i>0&&Math.abs(pts[i][0]-pts[i-1][0])>180){
+        if(seg.length>1) segs.push(seg);
+        seg=[];
+      }
+      seg.push(pts[i]);
+    }
+    if(seg.length>1) segs.push(seg);
+    return segs.map(s=>{
+      const proj=s.map(([lon,lat])=>mercator(lon,lat,w,h));
+      return 'M'+proj.map(([x,y])=>x.toFixed(1)+','+y.toFixed(1)).join('L')+'Z';
+    }).join(' ');
   }).join(' ');
 }
+
+// ID Antarctique (iso num 010) à exclure
+const ANTARCTIC_IDS = new Set(['10','010']);
 
 function drawWorldMap(byCountry, maxQty){
   const svg = document.getElementById('world-map-svg');
   if(!svg||!_worldGeoData) return;
-  const W=1000,H=500;
+  const W=1000,H=480;
   svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
   
-  // Inverser le mapping pays FR → ISO-3 → ISO-num
   const iso3ToFR={};
   Object.entries(COUNTRY_ISO).forEach(([fr,iso3])=>iso3ToFR[iso3]=fr);
   const isoNumToFR={};
@@ -2438,35 +2455,47 @@ function drawWorldMap(byCountry, maxQty){
   
   let paths='';
   _worldGeoData.forEach(({id,rings})=>{
-    const isoNum=String(id).padStart(3,'0');
-    const country=isoNumToFR[isoNum];
+    const isoNum=String(id);
+    // Exclure Antarctique
+    if(ANTARCTIC_IDS.has(isoNum)||isoNum==='10') return;
+    // Exclure pays très au sud (lat < -60)
+    const country=isoNumToFR[String(id).padStart(3,'0')];
     const qty=country?byCountry[country]||0:0;
-    const d=ringsToSVGPath(rings,W,H);
+    
+    // Filtrer les rings avec des points trop au sud (Antarctique partiel)
+    const filteredRings = rings.filter(ring=>{
+      const avgLat = ring.reduce((s,[,lat])=>s+lat,0)/(ring.length||1);
+      return avgLat > -60;
+    });
+    if(!filteredRings.length) return;
+    
+    const d=ringsToSVGPath(filteredRings,W,H);
     if(!d.trim()) return;
     
-    let fill='#e8e8e8',stroke='#b0b0b0';
+    let fill='#e0e0e0',stroke='#c0c0c0',strokeW='0.3';
     if(qty>0){
       const ratio=qty/maxQty;
-      const r=Math.round(139+(255-139)*(1-ratio));
-      const g=Math.round(26+(255-26)*(1-ratio)*0.6);
-      const b=Math.round(42+(255-42)*(1-ratio)*0.6);
-      fill=`rgb(${r},${g},${b})`;
-      stroke='#c0a0a0';
+      // Dégradé monochrome rouge : clair → foncé
+      const lightness=Math.round(85-ratio*55); // 85% (clair) → 30% (foncé)
+      fill=`hsl(350,70%,${lightness}%)`;
+      stroke='hsl(350,50%,45%)';
+      strokeW='0.5';
     }
-    const cls=country?'world-country':'';
-    const onclick=qty>0&&REGION_COORDS[country]?`worldDrillDown('${country}')`:'';
-    const cursor=onclick?'cursor:pointer':'';
-    paths+=`<path d="${d}" fill="${fill}" stroke="${stroke}" stroke-width="0.4" class="${cls}" data-country="${country||''}" data-qty="${qty}" style="${cursor}" ${onclick?`onclick="${onclick}"`:''}
-      onmouseover="worldTooltip(event,'${country||''}',${qty})"
+    const hasDrill=qty>0&&!!REGION_COORDS[country];
+    const cursor=hasDrill?'cursor:pointer':'';
+    const onclick=hasDrill?`onclick="worldDrillDown('${country}')"`:
+                  qty>0?`onclick="worldTooltip(event,'${country}',${qty})"`:'' ;
+    paths+=`<path d="${d}" fill="${fill}" stroke="${stroke}" stroke-width="${strokeW}" style="${cursor}"
+      ${onclick}
+      onmouseover="${qty>0?`worldTooltip(event,'${country}',${qty})`:''}"
       onmouseout="hideMapTooltip()"/>`;
   });
   
-  // Bulles pour les pays avec vins (visibilité)
-  let bubbles='';
-  const BUBBLE_POS={'FRA':[2.35,46.8],'ITA':[12.5,42.8],'ESP':[-3.7,40.4],'PRT':[-8,39.5],
+  // Labels sur les pays avec vins
+  const LABEL_POS={'FRA':[2.35,46.8],'ITA':[12.5,42.8],'ESP':[-3.7,40.4],'PRT':[-8,39.5],
     'DEU':[10.4,51.2],'AUT':[14.5,47.5],'HUN':[19,47],'GRC':[21.8,39.1],
     'BGR':[25,42.7],'ROU':[25,45.9],'HRV':[16.5,45.1],'CHE':[8.2,46.8],
-    'GBR':[-3,54],'USA':[-98,39.5],'CAN':[-96,60],'MEX':[-102,24],
+    'GBR':[-3,54],'USA':[-98,39.5],'CAN':[-96,56],'MEX':[-102,24],
     'ARG':[-64,34],'CHL':[-71,30],'URY':[-56,33],'BRA':[-51,14],
     'AUS':[133,-27],'NZL':[172,-42],'ZAF':[25,-29],'MAR':[-7,32],
     'TUN':[9,34],'LBN':[35.5,33.9],'ISR':[34.9,31.5],'GEO':[43.4,42.3],
@@ -2474,21 +2503,26 @@ function drawWorldMap(byCountry, maxQty){
     'IND':[78,20],'MDA':[28.4,47.4],'DZA':[3,28]
   };
   
+  let labels='';
   Object.entries(byCountry).forEach(([frName,qty])=>{
     const iso3=COUNTRY_ISO[frName];
     if(!iso3||!qty) return;
-    const pos=BUBBLE_POS[iso3];
+    const pos=LABEL_POS[iso3];
     if(!pos) return;
     const [cx,cy]=mercator(pos[0],pos[1],W,H);
-    const ratio=qty/maxQty;
-    const r=Math.max(6,5+ratio*18);
     const hasDrill=!!REGION_COORDS[frName];
-    bubbles+=`<circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="${r}" fill="rgba(139,26,42,0.85)" stroke="#fff" stroke-width="1.2" style="cursor:${hasDrill?'pointer':'default'}" ${hasDrill?`onclick="worldDrillDown('${frName}')"`:''}
-      onmouseover="worldTooltip(event,'${frName}',${qty})" onmouseout="hideMapTooltip()"/>
-    <text x="${cx.toFixed(1)}" y="${(cy+3.5).toFixed(1)}" text-anchor="middle" fill="#fff" font-size="${r>9?'9':'7'}" font-weight="700" style="pointer-events:none">${qty}</text>`;
+    labels+=`<text x="${cx.toFixed(1)}" y="${cy.toFixed(1)}" text-anchor="middle" dominant-baseline="middle"
+      fill="white" font-size="10" font-weight="700" font-family="Inter,sans-serif"
+      style="pointer-events:none;text-shadow:0 0 3px rgba(0,0,0,0.5)">${qty}</text>`;
+    if(hasDrill){
+      // Petit indicateur drill-down
+      labels+=`<text x="${cx.toFixed(1)}" y="${(cy+12).toFixed(1)}" text-anchor="middle"
+        fill="rgba(255,255,255,0.8)" font-size="7" font-family="Inter,sans-serif"
+        style="pointer-events:none">cliquer →</text>`;
+    }
   });
   
-  svg.innerHTML=`<rect width="${W}" height="${H}" fill="#fff"/>${paths}${bubbles}`;
+  svg.innerHTML=`<rect width="${W}" height="${H}" fill="#f8f9fa"/>${paths}${labels}`;
 }
 
 function worldDrillDown(country){
@@ -2549,30 +2583,50 @@ function worldDrillDown(country){
   // Fond pays
   let pathStr='';
   if(countryGeo){
-    pathStr=countryGeo.rings.map(pts=>{
-      const proj=pts.map(([lon,lat])=>project(lon,lat));
+    const filteredRings=countryGeo.rings.filter(r=>{
+      const avg=r.reduce((s,[,lat])=>s+lat,0)/(r.length||1);
+      return avg>-60;
+    });
+    pathStr=filteredRings.map(pts=>{
+      const proj=pts.map(([lon,lat])=>{
+        const x=(lon-minLon)/(maxLon-minLon)*W;
+        lat=Math.max(-85,Math.min(85,lat));
+        const latRad=lat*Math.PI/180;
+        const minLatR=Math.max(-85,minLat)*Math.PI/180,maxLatR=Math.min(85,maxLat)*Math.PI/180;
+        const mercN=Math.log(Math.tan(Math.PI/4+latRad/2));
+        const mercMin=Math.log(Math.tan(Math.PI/4+minLatR/2));
+        const mercMax=Math.log(Math.tan(Math.PI/4+maxLatR/2));
+        const y=(mercMax-mercN)/(mercMax-mercMin)*H;
+        return [x,y];
+      });
       return 'M'+proj.map(([x,y])=>x.toFixed(1)+','+y.toFixed(1)).join('L')+'Z';
     }).join(' ');
   }
   
-  // Bulles régions
-  let bubbles='';
+  // Points régions avec couleur selon quantité
+  let regionPaths='',regionLabels='';
   Object.entries(byRegion).forEach(([reg,qty])=>{
-    const coords=regData[reg]||Object.values(regData)[0];
+    const coords=regData[reg];
     if(!coords) return;
     const [cx,cy]=project(coords[0],coords[1]);
     const ratio=qty/maxQty;
-    const r=Math.max(10,8+ratio*30);
-    bubbles+=`<circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="${r}" fill="rgba(139,26,42,0.85)" stroke="#fff" stroke-width="1.5" style="cursor:default"
-      onmouseover="worldTooltip(event,'${reg}',${qty})" onmouseout="hideMapTooltip()"/>
-    <text x="${cx.toFixed(1)}" y="${(cy-4).toFixed(1)}" text-anchor="middle" fill="#fff" font-size="${Math.min(11,r)}" font-weight="700" style="pointer-events:none">${reg}</text>
-    <text x="${cx.toFixed(1)}" y="${(cy+8).toFixed(1)}" text-anchor="middle" fill="rgba(255,255,255,0.9)" font-size="9" style="pointer-events:none">${qty} btl</text>`;
+    const lightness=Math.round(85-ratio*55);
+    const fill=`hsl(350,70%,${lightness}%)`;
+    const r=Math.max(18,14+ratio*24);
+    regionPaths+=`<circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="${r}" fill="${fill}" stroke="white" stroke-width="1.5"
+      style="cursor:default" onmouseover="worldTooltip(event,'${reg}',${qty})" onmouseout="hideMapTooltip()"/>`;
+    regionLabels+=`<text x="${cx.toFixed(1)}" y="${(cy-3).toFixed(1)}" text-anchor="middle" fill="white" font-size="10" font-weight="700" font-family="Inter,sans-serif" style="pointer-events:none">${reg}</text>
+    <text x="${cx.toFixed(1)}" y="${(cy+9).toFixed(1)}" text-anchor="middle" fill="rgba(255,255,255,0.9)" font-size="9" font-family="Inter,sans-serif" style="pointer-events:none">${qty} btl</text>`;
   });
   
+  // Si aucune région connue, message
+  const noRegionMsg=Object.keys(byRegion).filter(r=>regData[r]).length===0?
+    `<text x="${W/2}" y="${H/2}" text-anchor="middle" fill="#a0a0a0" font-size="13" font-family="Inter,sans-serif">Aucune région renseignée pour ${country}</text>`:'';
+  
   svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
-  svg.innerHTML=`<rect width="${W}" height="${H}" fill="#fff"/>
-    ${pathStr?`<path d="${pathStr}" fill="#f0ece8" stroke="#c0a090" stroke-width="0.6"/>`:''}
-    ${bubbles}`;
+  svg.innerHTML=`<rect width="${W}" height="${H}" fill="#f8f9fa"/>
+    ${pathStr?`<path d="${pathStr}" fill="#e8e4e0" stroke="#c0b0a8" stroke-width="0.5"/>`:''}
+    ${regionPaths}${regionLabels}${noRegionMsg}`;
 }
 
 function worldMapBack(){
