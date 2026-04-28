@@ -1118,6 +1118,34 @@ async function updateVenteStatus(id){
   }
 }
 
+async function editVentePlatform(id){
+  const v = ventes.find(x=>x.id===id);
+  if(!v) return;
+  const platforms = ['iDealwine','Drouot','Millésima','Caviste','Particulier','eBay','Autre'];
+  // Créer un petit popover inline
+  const badge = event.target.closest('.vente-card-platform');
+  if(!badge) return;
+  const sel = document.createElement('select');
+  sel.style.cssText = 'height:24px;padding:0 6px;border:1px solid var(--ink5);border-radius:6px;font-size:11px;font-family:Inter,sans-serif;outline:none;cursor:pointer';
+  platforms.forEach(p=>{
+    const opt = document.createElement('option');
+    opt.value=p; opt.textContent=p;
+    if(p===v.platform) opt.selected=true;
+    sel.appendChild(opt);
+  });
+  badge.replaceWith(sel);
+  sel.focus();
+  const save = async()=>{
+    v.platform = sel.value;
+    renderVentes();
+    if(db&&currentUser&&id&&!id.startsWith('tmp-')){
+      await db.collection('users').doc(currentUser.uid).collection('ventes').doc(id).update({platform:v.platform});
+    }
+  };
+  sel.onchange = save;
+  sel.onblur = save;
+}
+
 async function undoVente(id){
   const v = ventes.find(x=>x.id===id);
   if(!v) return;
@@ -1195,14 +1223,14 @@ function renderVentes(){
       <div>
         <div class="vente-card-name">${v.wineName}${v.wineYear?' '+v.wineYear:''}</div>
         <div class="vente-card-meta">${v.wineApp} · ${dateStr} · ${v.qty} bouteille${v.qty>1?'s':''}</div>
-        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:4px">
-          <div class="vente-card-platform">${v.platform}</div>
+        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:6px">
+          <div class="vente-status vente-status-${v.status||'a_vendre'}" onclick="updateVenteStatus('${v.id}')" style="cursor:pointer;user-select:none" title="Cliquer pour changer">${statusLabel(v.status)}</div>
+          <span onclick="editVentePlatform('${v.id}')" class="vente-card-platform" style="cursor:pointer" title="Cliquer pour modifier">${v.platform} ✎</span>
         </div>
         ${v.notes?`<div style="font-size:11px;color:var(--ink4);margin-top:6px;font-style:italic">${v.notes}</div>`:''}
         <div style="display:flex;align-items:center;gap:6px;margin-top:8px;flex-wrap:wrap">
-          <div class="vente-status vente-status-${v.status||'a_vendre'}" onclick="updateVenteStatus('${v.id}')" style="cursor:pointer" title="Cliquer pour changer le statut">${statusLabel(v.status)}</div>
-          <button type="button" onclick="undoVente('${v.id}')" title="Remettre en cave" style="height:24px;padding:0 8px;border:1px solid var(--ink5);border-radius:6px;background:none;cursor:pointer;color:var(--ink4);font-family:Inter,sans-serif;font-size:11px" >↩ Cave</button>
-          <button type="button" onclick="deleteVente('${v.id}')" title="Supprimer de l'historique" style="height:24px;padding:0 8px;border:1px solid var(--ink5);border-radius:6px;background:none;cursor:pointer;color:var(--ink4);font-family:Inter,sans-serif;font-size:11px">🗑</button>
+          <button type="button" onclick="undoVente('${v.id}')" title="Remettre en cave" style="display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border:1px solid var(--ink5);border-radius:6px;background:none;cursor:pointer;color:var(--ink4);font-family:Inter,sans-serif;font-size:11px">↩ Cave</button>
+          <button type="button" onclick="deleteVente('${v.id}')" title="Supprimer de l'historique" style="display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border:1px solid var(--ink5);border-radius:6px;background:none;cursor:pointer;color:var(--ink4);font-family:Inter,sans-serif;font-size:11px"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg> Supprimer</button>
         </div>
       </div>
       <div class="vente-card-pnl">
