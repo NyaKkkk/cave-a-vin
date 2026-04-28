@@ -169,11 +169,20 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);font-s
 .wtags{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
 .apbadge{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:600;color:#2a6a2a;background:#edf7ed;border-radius:4px;padding:2px 7px}
 /* CERTIFICATIONS VITICULTURE */
-.cert-row{position:absolute;right:4px;bottom:0;width:28px;display:flex;flex-direction:column-reverse;gap:4px;align-items:center;z-index:10}
+.cert-row{position:absolute;right:-14px;bottom:0;width:28px;display:flex;flex-direction:column-reverse;gap:4px;align-items:center;z-index:10}
 .cert-badge{display:block;width:28px;height:28px;background:rgba(255,255,255,0.92);border-radius:4px;padding:1px;cursor:default}
 .cert-badge:hover{transform:scale(1.06)}
 .cert-badge img{width:100%;height:100%;object-fit:contain;display:block}
 .cb-raisonné,.cb-lutte{background:none;border:none;font-size:10px;font-weight:700;color:var(--ink3);width:88px;height:auto;padding:0;font-family:'Inter',sans-serif;text-align:center;line-height:1.2}
+.critic-tag{display:inline-flex;align-items:center;justify-content:center;height:26px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r3);font-size:11px;font-weight:600;color:var(--ink3);cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif;background:var(--surface)}
+.critic-tag:hover{border-color:var(--ruby);color:var(--ruby)}
+.critic-tag-custom{border-style:dashed;color:var(--ink4)}
+.critic-tag-custom:hover{border-color:var(--gold);color:var(--gold)}
+.critic-active-chip{display:inline-flex;align-items:center;gap:6px;background:var(--ink6);border:1.5px solid var(--ink5);border-radius:var(--r);padding:4px 8px}
+.critic-active-chip label{font-size:10px;font-weight:600;color:var(--ink3);white-space:nowrap}
+.critic-active-chip input{width:60px;height:24px;border:1px solid var(--ink5);border-radius:4px;font-size:12px;text-align:center;font-family:'Inter',sans-serif;color:var(--ink);background:var(--surface);outline:none}
+.critic-active-chip .critic-remove{width:16px;height:16px;border-radius:50%;border:none;background:var(--ink5);color:var(--ink4);font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;padding:0;transition:all .2s}
+.critic-active-chip .critic-remove:hover{background:var(--ruby);color:#fff}
 
 .scores-row{position:absolute;top:6px;left:-48px;display:flex;flex-direction:column;gap:3px;z-index:10}
 .schip{display:flex;align-items:center;gap:2px;font-size:9px;font-weight:500;background:rgba(255,255,255,0.88);border:none;border-radius:3px;padding:1px 4px;line-height:1.4}
@@ -204,7 +213,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);font-s
 
 /* STATS */
 .stats-toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
-.stats-chip{height:30px;padding:0 12px;border:1.5px solid var(--ink5);border-radius:var(--r3);background:var(--surface);font-family:'Inter',sans-serif;font-size:11px;font-weight:500;color:var(--ink3);cursor:pointer;transition:all .2s;white-space:nowrap}
+.stats-chip{height:30px;padding:0 12px;border:1.5px solid var(--ink5);border-radius:var(--r3);background:var(--surface);font-family:'Inter',sans-serif;font-size:11px;font-weight:500;color:var(--ink3);cursor:pointer;transition:all .2s;white-space:nowrap;display:inline-flex;align-items:center;justify-content:center}
 .stats-chip:hover{border-color:var(--ink4)}.stats-chip.active{background:var(--ink);border-color:var(--ink);color:#fff}
 .sgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
 .scard{background:var(--surface);border:1px solid var(--ink5);border-radius:var(--r2);padding:clamp(14px,3vw,20px)}
@@ -483,14 +492,33 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);font-s
     </div>
     <div class="fsec"><div class="fsec-label">Identité</div>
       <div class="fr fr2"><div class="fg" id="fg-name"><label>Nom *</label><input type="text" id="f-name" placeholder="Château Margaux"></div><div class="fg" id="fg-app"><label>Appellation</label><input type="text" id="f-app" placeholder="Margaux AOC"></div></div>
-      <div class="fr fr3"><div class="fg" id="fg-type"><label>Type *</label><select id="f-type"><option>Rouge</option><option>Blanc</option><option>Rosé</option><option>Pétillant</option><option>Orange</option><option>Vin muté / Fortifié</option><option>Vin doux naturel</option><option>Vin jaune / Oxydatif</option><option>Vin de paille / Passerillé</option><option>Vin naturel / Nature</option><option>Vin biodynamique</option><option>Cidre / Poiré</option><option>Autre</option></select></div><div class="fg" id="fg-reg"><label>Région</label><input type="text" id="f-reg" placeholder="Bordeaux"></div><div class="fg" id="fg-year"><label>Millésime</label><input type="number" id="f-year" placeholder="2019" min="1900" max="2030"></div></div>
+      <div class="fr fr4"><div class="fg" id="fg-type"><label>Type *</label><select id="f-type"><option>Rouge</option><option>Blanc</option><option>Rosé</option><option>Pétillant</option><option>Orange</option><option>Vin muté / Fortifié</option><option>Vin doux naturel</option><option>Vin jaune / Oxydatif</option><option>Vin de paille / Passerillé</option><option>Vin naturel / Nature</option><option>Vin biodynamique</option><option>Cidre / Poiré</option><option>Autre</option></select></div><div class="fg" id="fg-reg"><label>Région</label><input type="text" id="f-reg" placeholder="Bordeaux"></div><div class="fg"><label>Pays</label><select id="f-country"><option value="France">France</option><option value="Italie">Italie</option><option value="Espagne">Espagne</option><option value="Portugal">Portugal</option><option value="Allemagne">Allemagne</option><option value="Autriche">Autriche</option><option value="USA">USA</option><option value="Argentine">Argentine</option><option value="Chili">Chili</option><option value="Australie">Australie</option><option value="Afrique du Sud">Afrique du Sud</option><option value="Nouvelle-Zélande">Nouvelle-Zélande</option><option value="Autre">Autre</option></select></div><div class="fg" id="fg-year"><label>Millésime</label><input type="number" id="f-year" placeholder="2019" min="1900" max="2030"></div></div>
     </div>
     <div class="fsec"><div class="fsec-label">Stock & prix</div>
       <div class="fr fr4"><div class="fg"><label>Quantité</label><input type="number" id="f-qty" value="1" min="0"></div><div class="fg"><label>Contenance</label><select id="f-cont"><option value="">—</option><option value="18.7cl">18.7 cl (Piccolo)</option><option value="37.5cl">37.5 cl (Demi)</option><option value="50cl">50 cl</option><option value="75cl" selected>75 cl (Standard)</option><option value="1L">1 L</option><option value="1.5L">1.5 L (Magnum)</option><option value="3L">3 L (Double Magnum)</option><option value="4.5L">4.5 L (Jéroboam)</option><option value="6L">6 L (Impériale)</option><option value="9L">9 L (Salmanazar)</option><option value="12L">12 L (Balthazar)</option><option value="15L">15 L (Nabuchodonosor)</option></select></div><div class="fg"><label>Prix achat (€)</label><input type="number" id="f-buy" placeholder="0" min="0" step="0.5"></div><div class="fg"><label>Prix actuel (€)</label><input type="number" id="f-cur" placeholder="0" min="0" step="0.5"></div><div class="fg" id="fg-ap"><label>Apogée</label><input type="text" id="f-ap" placeholder="2026 – 2038"></div></div>
     </div>
-    <div class="fsec"><div class="fsec-label">Notes critiques</div>
-      <div class="fr fr4"><div class="fg"><label>Parker /100</label><input type="number" id="f-parker" placeholder="—" min="50" max="100"></div><div class="fg"><label>Suckling /100</label><input type="number" id="f-suckling" placeholder="—" min="50" max="100"></div><div class="fg"><label>Decanter /20</label><input type="number" id="f-decanter" placeholder="—" min="1" max="20" step="0.5"></div><div class="fg"><label>Vinous /100</label><input type="number" id="f-vinous" placeholder="—" min="50" max="100"></div></div>
-      <div class="fr fr4"><div class="fg"><label>Bettane /20</label><input type="number" id="f-bettane" placeholder="—" min="1" max="20" step="0.5"></div><div class="fg"><label>Jancis /20</label><input type="number" id="f-jancis" placeholder="—" min="1" max="20" step="0.5"></div><div class="fg"><label>Wine Sp. /100</label><input type="number" id="f-ws" placeholder="—" min="50" max="100"></div><div class="fg"><label>Burghound /100</label><input type="number" id="f-bh" placeholder="—" min="50" max="100"></div></div>
+    <div class="fsec"><div class="fsec-label">Notes critiques <span style="font-size:10px;color:var(--ink4);font-weight:400">(ajoutez les critiques que vous souhaitez)</span></div>
+      <!-- Critiques prédéfinis -->
+      <div id="critics-predefined" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px">
+        <span class="critic-tag" onclick="addCritic('parker','RP',100)" title="Robert Parker">RP</span>
+        <span class="critic-tag" onclick="addCritic('suckling','JS',100)" title="James Suckling">JS</span>
+        <span class="critic-tag" onclick="addCritic('decanter','D',20)" title="Decanter">D</span>
+        <span class="critic-tag" onclick="addCritic('vinous','V',100)" title="Vinous">V</span>
+        <span class="critic-tag" onclick="addCritic('bettane','B',20)" title="Bettane & Desseauve">B</span>
+        <span class="critic-tag" onclick="addCritic('jancis','JR',20)" title="Jancis Robinson">JR</span>
+        <span class="critic-tag" onclick="addCritic('ws','WS',100)" title="Wine Spectator">WS</span>
+        <span class="critic-tag" onclick="addCritic('bh','BH',100)" title="Burghound">BH</span>
+        <span class="critic-tag" onclick="addCritic('rvf','RVF',20)" title="Revue du Vin de France">RVF</span>
+        <span class="critic-tag" onclick="addCritic('anson','JA',100)" title="Jane Anson">JA</span>
+        <span class="critic-tag" onclick="addCritic('gilbert','G',20)" title="Gilbert & Gaillard">G&G</span>
+        <span class="critic-tag critic-tag-custom" onclick="addCustomCritic()">+ Autre</span>
+      </div>
+      <!-- Champs critiques actifs -->
+      <div id="critics-active" style="display:flex;flex-wrap:wrap;gap:8px"></div>
+      <!-- Champs cachés pour compatibilité -->
+      <input type="hidden" id="f-parker"><input type="hidden" id="f-suckling"><input type="hidden" id="f-decanter">
+      <input type="hidden" id="f-vinous"><input type="hidden" id="f-bettane"><input type="hidden" id="f-jancis">
+      <input type="hidden" id="f-ws"><input type="hidden" id="f-bh">
     </div>
     <div class="fsec"><div class="fsec-label">Viticulture & certifications</div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:6px 0" id="cert-checkboxes">
@@ -925,7 +953,76 @@ const TC={
   'Autre':{bar:'#6068a0',pill:'#eeeef8',pt:'#303068'},
 };
 function tc(t,k){return(TC[t]||TC['Autre'])[k]}
-const CRITICS=[{k:'parker',l:'RP'},{k:'suckling',l:'JS'},{k:'decanter',l:'D'},{k:'vinous',l:'V'},{k:'bettane',l:'B'},{k:'jancis',l:'JR'},{k:'ws',l:'WS'},{k:'bh',l:'BH'}];
+const CRITICS=[{k:'parker',l:'RP'},{k:'suckling',l:'JS'},{k:'decanter',l:'D'},{k:'vinous',l:'V'},{k:'bettane',l:'B'},{k:'jancis',l:'JR'},{k:'ws',l:'WS'},{k:'bh',l:'BH'},{k:'rvf',l:'RVF'},{k:'anson',l:'JA'},{k:'gilbert',l:'G&G'}];
+
+// ── CRITIQUES DYNAMIQUES ──
+let activeCritics = {}; // {key: {label, max, value}}
+
+function addCritic(key, label, max){
+  if(activeCritics[key]) return; // déjà ajouté
+  activeCritics[key] = {label, max, value:null};
+  renderActiveCritics();
+}
+
+function addCustomCritic(){
+  const name = prompt('Nom du critique (ex: RVF, Tim Atkin...) :');
+  if(!name) return;
+  const maxStr = prompt('Note sur combien ? (ex: 100 ou 20) :', '100');
+  const max = parseInt(maxStr)||100;
+  const key = 'custom_'+name.toLowerCase().replace(/[^a-z0-9]/g,'_');
+  activeCritics[key] = {label:name, max, value:null, custom:true};
+  renderActiveCritics();
+}
+
+function removeCritic(key){
+  delete activeCritics[key];
+  renderActiveCritics();
+}
+
+function renderActiveCritics(){
+  const container = document.getElementById('critics-active');
+  if(!container) return;
+  container.innerHTML = Object.entries(activeCritics).map(([key,c])=>`
+    <div class="critic-active-chip">
+      <label>${c.label} /${c.max}</label>
+      <input type="number" id="fc-${key}" placeholder="—" min="${c.max===20?1:50}" max="${c.max}" step="${c.max===20?0.5:1}" value="${c.value||''}">
+      <button type="button" class="critic-remove" onclick="removeCritic('${key}')">✕</button>
+    </div>
+  `).join('');
+  // Sync champs cachés standards
+  CRITICS.forEach(c=>{
+    const el = document.getElementById('f-'+c.k);
+    const ac = document.getElementById('fc-'+c.k);
+    if(el && ac) el.value = ac.value;
+  });
+}
+
+function getCriticValues(){
+  const vals = {};
+  Object.keys(activeCritics).forEach(key=>{
+    const el = document.getElementById('fc-'+key);
+    vals[key] = el && el.value ? parseFloat(el.value) : null;
+  });
+  return vals;
+}
+
+function loadCriticsFromWine(w){
+  activeCritics = {};
+  CRITICS.forEach(c=>{ if(w[c.k]!=null){ activeCritics[c.k]={label:c.l,max:['decanter','bettane','jancis','rvf','gilbert'].includes(c.k)?20:100,value:w[c.k]}; }});
+  // Critiques custom
+  if(w.customCritics){
+    Object.entries(w.customCritics).forEach(([k,v])=>{
+      activeCritics[k]={label:v.label,max:v.max,value:v.value,custom:true};
+    });
+  }
+  renderActiveCritics();
+}
+
+function clearCritics(){
+  activeCritics={};
+  const container=document.getElementById('critics-active');
+  if(container)container.innerHTML='';
+}
 const VALID_TYPES=Object.keys(TC);
 let activeType='',statFilter='all';
 let chartM=null,chartR=null,waiResult=null,wishPhotoB64=null,aiResult=null,currentPhotoB64=null;
@@ -1158,11 +1255,12 @@ function editWine(id){
   sv(document.getElementById('f-qty'),w.qty);
   sv(document.getElementById('f-buy'),w.buy);
   sv(document.getElementById('f-cur'),w.cur);
-  sv(document.getElementById('f-ap'),w.ap);const fc=document.getElementById('f-cont');if(fc)fc.value=w.cont||'';
+  sv(document.getElementById('f-ap'),w.ap);const fc=document.getElementById('f-cont');if(fc)fc.value=w.cont||'';const fct=document.getElementById('f-country');if(fct)fct.value=w.country||'France';
   sv(document.getElementById('f-notes'),w.notes);
   const cm={parker:'f-parker',suckling:'f-suckling',decanter:'f-decanter',vinous:'f-vinous',bettane:'f-bettane',jancis:'f-jancis',ws:'f-ws',bh:'f-bh'};
   Object.entries(cm).forEach(([k,fid])=>{const el=document.getElementById(fid);if(el)el.value=w[k]!=null?w[k]:'';});
   if(w.certs){formCerts=[...w.certs];document.querySelectorAll('#cert-checkboxes input[type=checkbox]').forEach(cb=>{cb.checked=w.certs.includes(cb.value);});}
+  loadCriticsFromWine(w);
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('visible'));
   document.getElementById('add-form').classList.add('visible');
   // Stocker l'id en édition sur le formulaire
@@ -1185,12 +1283,15 @@ function saveEdit(id){
     qty:parseInt(document.getElementById('f-qty').value)||1,
     buy:parseFloat(document.getElementById('f-buy').value)||0,
     cur:parseFloat(document.getElementById('f-cur').value)||0,
-    ap:document.getElementById('f-ap').value.trim(),cont:document.getElementById('f-cont').value,
+    ap:document.getElementById('f-ap').value.trim(),cont:document.getElementById('f-cont').value,country:document.getElementById('f-country').value,
     certs:[...formCerts],
     notes:document.getElementById('f-notes').value.trim()
   };
-  const cm={parker:'f-parker',suckling:'f-suckling',decanter:'f-decanter',vinous:'f-vinous',bettane:'f-bettane',jancis:'f-jancis',ws:'f-ws',bh:'f-bh'};
-  Object.entries(cm).forEach(([k,fid])=>{const v=document.getElementById(fid).value;wines[idx][k]=v?parseFloat(v):null;});
+  const criticVals2=getCriticValues();
+  CRITICS.forEach(c=>{wines[idx][c.k]=criticVals2[c.k]||null;});
+  const customCritics2={};
+  Object.entries(activeCritics).filter(([k,v])=>v.custom).forEach(([k,v])=>{customCritics2[k]={label:v.label,max:v.max,value:criticVals2[k]};});
+  if(Object.keys(customCritics2).length) wines[idx].customCritics=customCritics2;
   const photoData=formPhotoData;formPhotoData=null;
   clearForm();closePanel('add-form');
   renderWines();updateStats();
@@ -1204,7 +1305,7 @@ function saveEdit(id){
 }
 function clearForm(){
   ['f-name','f-app','f-reg','f-year','f-buy','f-cur','f-ap','f-notes','f-parker','f-suckling','f-decanter','f-vinous','f-bettane','f-jancis','f-ws','f-bh'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
-  document.getElementById('f-qty').value='1';document.getElementById('f-type').value='Rouge';const fco=document.getElementById('f-cont');if(fco)fco.value='75cl';
+  document.getElementById('f-qty').value='1';document.getElementById('f-type').value='Rouge';const fco=document.getElementById('f-cont');if(fco)fco.value='75cl';clearCritics();
   formPhotoData=null;
   const inner=document.getElementById('form-photo-inner');
   if(inner)inner.innerHTML='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#b89098" stroke-width="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span style="font-size:12px;color:var(--ink4)">Cliquez pour ajouter une photo</span>';
@@ -1220,8 +1321,14 @@ function clearForm(){
 }
 function addWine(){
   const n=document.getElementById('f-name').value.trim();if(!n)return;
-  const w={id:'tmp-'+Date.now(),name:n,app:document.getElementById('f-app').value.trim(),type:document.getElementById('f-type').value,reg:document.getElementById('f-reg').value.trim(),year:parseInt(document.getElementById('f-year').value)||null,qty:parseInt(document.getElementById('f-qty').value)||1,cont:document.getElementById('f-cont').value,buy:parseFloat(document.getElementById('f-buy').value)||0,cur:parseFloat(document.getElementById('f-cur').value)||0,ap:document.getElementById('f-ap').value.trim(),certs:[...formCerts],notes:document.getElementById('f-notes').value.trim()};
-  CRITICS.forEach(c=>{const v=document.getElementById('f-'+c.k).value;w[c.k]=v?parseFloat(v):null});
+  const w={id:'tmp-'+Date.now(),name:n,app:document.getElementById('f-app').value.trim(),type:document.getElementById('f-type').value,reg:document.getElementById('f-reg').value.trim(),year:parseInt(document.getElementById('f-year').value)||null,qty:parseInt(document.getElementById('f-qty').value)||1,cont:document.getElementById('f-cont').value,buy:parseFloat(document.getElementById('f-buy').value)||0,cur:parseFloat(document.getElementById('f-cur').value)||0,ap:document.getElementById('f-ap').value.trim(),certs:[...formCerts],notes:document.getElementById('f-notes').value.trim(),country:document.getElementById('f-country').value};
+  // Récupérer toutes les notes (standards + customs)
+const criticVals = getCriticValues();
+CRITICS.forEach(c=>{ w[c.k]=criticVals[c.k]||null; });
+// Stocker les critiques custom
+const customCritics={};
+Object.entries(activeCritics).filter(([k,v])=>v.custom).forEach(([k,v])=>{customCritics[k]={label:v.label,max:v.max,value:criticVals[k]};});
+if(Object.keys(customCritics).length) w.customCritics=customCritics;
   const photoData=formPhotoData;
   wines.push(w);
   clearForm();closePanel('add-form');renderWines();updateStats();
@@ -1264,7 +1371,11 @@ function handleFormPhoto(inp){
 }
 function handleImg(id,inp){const f=inp.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{imgs[id]=e.target.result;save();renderWines();};r.readAsDataURL(f);}
 function remImg(id){delete imgs[id];save();renderWines()}
-function buildScores(w){return CRITICS.filter(c=>w[c.k]!=null).map(c=>`<span class="schip"><span class="schip-cr">${c.l}</span><span class="schip-pt">${w[c.k]}</span></span>`).join('')}
+function buildScores(w){
+  let scores = CRITICS.filter(c=>w[c.k]!=null).map(c=>`<span class="schip"><span class="schip-cr">${c.l}</span><span class="schip-pt">${w[c.k]}</span></span>`);
+  if(w.customCritics) Object.entries(w.customCritics).forEach(([k,v])=>{if(v.value!=null)scores.push(`<span class="schip"><span class="schip-cr">${v.label}</span><span class="schip-pt">${v.value}</span></span>`);});
+  return scores.join('');
+}
 
 function renderWines(){
   const s=document.getElementById('sinp').value.toLowerCase();
