@@ -1145,16 +1145,15 @@ async function initGemini(){
   try{
     // SDK modulaire v11 via CDN ESM
     const { initializeApp, getApp } = await import('https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js');
-    const { getAI, getGenerativeModel } = await import('https://www.gstatic.com/firebasejs/11.8.1/firebase-ai.js');
+    const { getAI, getGenerativeModel, GoogleAIBackend } = await import('https://www.gstatic.com/firebasejs/11.8.1/firebase-ai.js');
     
-    // Réutiliser l'app Firebase existante ou la créer
     let app;
     try{ app = getApp(); }
     catch(e){ app = initializeApp(firebaseConfig); }
     
-    const ai = getAI(app);
+    const ai = getAI(app, { backend: new GoogleAIBackend() });
     _geminiModel = getGenerativeModel(ai, {
-      model: 'gemini-2.0-flash-001',
+      model: 'gemini-2.0-flash',
       systemInstruction: AI_PROMPT
     });
     console.log('Gemini initialisé ✓');
