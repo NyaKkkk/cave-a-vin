@@ -1153,15 +1153,14 @@ function handlePhotoSelect(inp,prefix){
   };r.readAsDataURL(f);
 }
 
-const AI_PROMPT=`Tu es un expert sommelier encyclopédiste. À partir du vin fourni, retourne UNIQUEMENT un objet JSON valide (sans markdown, sans explication) avec cette structure exacte :
-{"name":"...","appellation":"...","type":"Rouge|Blanc|Rosé|Pétillant|Orange|...","region":"...","country":"...","year":2015,"apogee":"2025-2035","notes_degustation":"5-8 mots-clés maximum ex: minéral, tannins soyeux, fruits noirs","critics":{"parker":{"score":96,"max":100},"suckling":{"score":97,"max":100},"rvf":{"score":17,"max":20}}}
+const AI_PROMPT=`Tu es un expert sommelier encyclopédiste. À partir du vin fourni, retourne UNIQUEMENT un objet JSON valide (sans markdown, sans explication) :
+{"name":"...","appellation":"...","type":"Rouge|Blanc|Rosé|Pétillant|Orange|Vin muté / Fortifié|Vin doux naturel|Vin jaune / Oxydatif|Vin naturel / Nature|Vin biodynamique","region":"...","country":"...","year":2015,"apogee":"2025-2035","notes_degustation":"5-8 mots-clés ex: minéral, fruits noirs, tannins soyeux","certs":["bio"],"critics":{"parker":{"score":96,"max":100}}}
 
 RÈGLES STRICTES :
-- Ne jamais inventer de notes de critiques. Si tu n'es pas CERTAIN à 100%, omets le critique.
-- Le champ "critics" ne contient QUE les notes que tu connais avec certitude.
-- Les critiques possibles : parker(100), suckling(100), decanter(20), vinous(100), bettane(20), jancis(20), ws(100), bh(100), rvf(20), anson(100), gilbert(20), tim_atkin(100), falstaff(100).
-- Si aucune note certaine : "critics":{}
-- Pour les champs inconnus, utilise null.`;
+- Ne JAMAIS inventer de notes critiques. Omets si pas certain à 100%. Si aucune certitude : "critics":{}
+- Critiques : parker(100), suckling(100), decanter(20), vinous(100), bettane(20), jancis(20), ws(100), bh(100), rvf(20), anson(100), gilbert(20), tim_atkin(100), falstaff(100)
+- certs : certifications du domaine parmi : "bio"(AB EU), "demeter", "biody"(Biodyvin), "hve"(HVE), "nature"(Méthode Nature), "vegan", "terra"(Terra Vitis). [] si inconnu.
+- Champs inconnus : null`;
 
 // ── FIREBASE AI LOGIC — Gemini 3.0 Flash ──
 let _geminiModel = null;
@@ -1323,11 +1322,23 @@ function parseAIResult(text){
     if(json.notes_degustation){
       h+=`<div class="ai-field-item ai-field-full"><label>Dégustation</label><span>${json.notes_degustation}</span></div>`;
     }
+    // Certifications avec logos
+    const certs=Array.isArray(json.certs)?json.certs:[];
+    if(certs.length){
+      const certNames={'bio':'Agriculture Bio','demeter':'Demeter','biody':'Biodyvin','hve':'HVE','nature':'Méthode Nature','vegan':'Vegan','terra':'Terra Vitis'};
+      const certHtml=certs.map(c=>{
+        const logo=CERT_LOGOS[c];
+        const name=certNames[c]||c;
+        if(logo) return '<div style="display:flex;flex-direction:column;align-items:center;gap:3px"><img src="'+logo+'" alt="'+name+'" style="width:36px;height:36px;object-fit:contain;mix-blend-mode:multiply"><span style="font-size:9px;color:#2a7a2a;font-weight:600;text-align:center">'+name+'</span></div>';
+        return '<span style="background:#2a7a2a;color:#fff;border-radius:4px;padding:2px 8px;font-size:11px;font-weight:600">'+name+'</span>';
+      }).join('');
+      h+='<div class="ai-field-item ai-field-full" style="background:#f0f8f0;border:1px solid #c8e8c8"><label style="color:#2a7a2a">Certifications trouvées</label><div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:8px;align-items:center">'+certHtml+'</div></div>';
+    }
     // Notes critiques
     const critics=json.critics||{};
     const criticKeys=Object.keys(critics).filter(k=>critics[k]?.score!=null);
     if(criticKeys.length){
-      h+=`<div class="ai-field-item ai-field-full" style="background:var(--gold4);border:1px solid var(--gold2)"><label style="color:var(--gold)">Notes critiques trouvées</label><span style="display:flex;flex-wrap:wrap;gap:6px;margin-top:4px">${criticKeys.map(k=>`<span style="background:#fff;border-radius:4px;padding:2px 8px;font-size:11px;font-weight:600;color:var(--ink)">${CRITIC_LABELS[k]||k} : ${critics[k].score}</span>`).join('')}</span></div>`;
+      h+=`<div class="ai-field-item ai-field-full" style="background:var(--gold4);border:1px solid var(--gold2)"><label style="color:var(--gold)">Notes critiques trouvées</label><span style="display:flex;flex-wrap:wrap;gap:6px;margin-top:4px">${criticKeys.map(k=>`<span style="background:#fff;border-radius:4px;padding:2px 8px;font-size:11px;font-weight:600;color:var(--ink)">${(CRITIC_LABELS[k]||k).split(' /')[0]} : ${critics[k].score}</span>`).join('')}</span></div>`;
     } else {
       h+=`<div class="ai-field-item ai-field-full" style="background:#f8f8f0"><label>Notes critiques</label><span class="empty">Aucune note certaine trouvée</span></div>`;
     }
@@ -1336,6 +1347,34 @@ function parseAIResult(text){
   }catch(e){
     showAIError('Analyse impossible. Essayez avec plus de détails.');
   }
+}
+
+function confirmAIResult(){
+  if(!aiResult)return;
+  const r=aiResult;
+  // Créer l'objet vin directement
+  const w={
+    id:'tmp-'+Date.now(),
+    name:r.name||'', app:r.appellation||'', type:r.type||'Rouge',
+    reg:r.region||'', country:r.country||'France',
+    year:r.year||null, qty:1, buy:0, cur:0,
+    ap:r.apogee||'', cont:'75cl', notes:r.notes_degustation||'',
+    certs:Array.isArray(r.certs)?r.certs:[], customCritics:{},
+    parker:null,suckling:null,decanter:null,vinous:null,
+    bettane:null,jancis:null,ws:null,bh:null
+  };
+  // Appliquer les notes critiques
+  const critics=r.critics||{};
+  Object.entries(critics).forEach(([k,v])=>{
+    if(v?.score==null) return;
+    if(CRITICS.some(c=>c.k===k)) w[k]=v.score;
+    else w.customCritics[k]={label:(CRITIC_LABELS[k]||k).split(' /')[0],max:CRITIC_MAX[k]||100,value:v.score};
+  });
+  wines.push(w);
+  closeAIModal();
+  renderWines(); updateStats();
+  if(db&&currentUser) saveWineToDb(w).then(()=>renderWines());
+  aiResult=null;
 }
 
 function applyAIResult(){
@@ -1357,7 +1396,14 @@ function applyAIResult(){
   // Notes dégustation : mots-clés seulement
   if(r.notes_degustation) sv('f-notes',r.notes_degustation);
 
-  // 3. Highlights champs pré-remplis
+  // 3. Certifications
+  if(Array.isArray(r.certs)&&r.certs.length){
+    formCerts=[...r.certs];
+    document.querySelectorAll('#cert-checkboxes input[type=checkbox]').forEach(cb=>{
+      cb.checked=r.certs.includes(cb.value);
+    });
+  }
+  // 4. Highlights champs pré-remplis
   ['fg-name','fg-app','fg-type','fg-reg','fg-year','fg-ap'].forEach(id=>{
     const m={'fg-name':r.name,'fg-app':r.appellation,'fg-type':r.type,'fg-reg':r.region,'fg-year':r.year,'fg-ap':r.apogee};
     const el=document.getElementById(id);if(el)el.classList.toggle('aif',!!m[id]);
@@ -1797,8 +1843,9 @@ window.onerror = function(){
       <div class="ai-result-title">Résultat — vérifiez avant d'importer</div>
       <div class="ai-fields-grid" id="ai-fields-grid"></div>
       <div class="ai-result-actions">
-        <button type="button" class="ai-import-btn" onclick="applyAIResult()">Confirmer et remplir ✓</button>
-        <button type="button" class="ai-retry-btn" onclick="resetAIModal()">Recommencer</button>
+        <button type="button" class="ai-import-btn" onclick="confirmAIResult()">✓ Ajouter ce vin</button>
+        <button type="button" class="ai-retry-btn" onclick="applyAIResult()">✏️ Modifier</button>
+        <button type="button" class="ai-retry-btn" onclick="closeAIModal()">✕ Annuler</button>
       </div>
     </div>
   </div>
