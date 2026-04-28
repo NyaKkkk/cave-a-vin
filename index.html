@@ -364,9 +364,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);font-s
 .ai-retry-btn:hover{border-color:var(--ink3);color:var(--ink)}
 .ai-err-msg{color:var(--ruby);font-size:12px;padding:8px;text-align:center;display:none}
 .ai-err-msg.visible{display:block}
-.ai-photo-candidate{width:80px;height:110px;object-fit:cover;border-radius:8px;cursor:pointer;border:2px solid transparent;transition:all .2s;flex-shrink:0}
-.ai-photo-candidate:hover{border-color:var(--ruby);transform:scale(1.05)}
-.ai-photo-candidate.selected{border-color:var(--ruby);box-shadow:0 0 0 2px var(--ruby)}
+
 </style>
 </head>
 <body>
@@ -1347,8 +1345,7 @@ function parseAIResult(text){
     }
     grid.innerHTML=h;
     document.getElementById('ai-result-box').classList.add('visible');
-    // Lancer la recherche photo en arrière-plan
-    if(json.name) searchWinePhoto(json.name + (json.year?' '+json.year:''));
+
   }catch(e){
     showAIError('Analyse impossible. Essayez avec plus de détails.');
   }
@@ -1385,64 +1382,6 @@ function confirmAIResult(){
   aiResult=null;
 }
 
-// ── RECHERCHE PHOTO VIN ──
-let selectedPhotoUrl = null;
-
-async function searchWinePhoto(wineName){
-  if(!wineName) return;
-  selectedPhotoUrl = null;
-  const section = document.getElementById('ai-photo-section');
-  const container = document.getElementById('ai-photo-candidates');
-  if(!section||!container) return;
-
-  container.innerHTML = '<div style="font-size:12px;color:var(--ink4);padding:8px">Recherche en cours…</div>';
-  section.style.display = 'block';
-
-  try{
-    // Utiliser l'API Gemini pour trouver des URLs d'images via recherche web
-    // On passe par notre callAI pour demander des URLs d'images de bouteilles
-    const prompt = `Pour le vin "${wineName}", donne-moi 3 URLs d'images de bouteille disponibles sur internet (wine-searcher.com, vivino.com, millesima.fr, etc). Retourne UNIQUEMENT un JSON : {"urls":["url1","url2","url3"]}. Si tu ne trouves pas, retourne {"urls":[]}.`;
-    const r = await callAI(prompt);
-    if(!r){ section.style.display='none'; return; }
-
-    let urls = [];
-    try{
-      const json = JSON.parse(r.replace(/```json|```/g,'').trim());
-      urls = json.urls||[];
-    }catch(e){}
-
-    if(!urls.length){
-      container.innerHTML = '<div style="font-size:12px;color:var(--ink4);padding:8px">Aucune photo trouvée automatiquement.</div>';
-      // Proposer une recherche manuelle
-      const wineQuery = encodeURIComponent(wineName + ' bouteille vin');
-      container.innerHTML += `<a href="https://www.wine-searcher.com/find/${wineQuery}" target="_blank" style="font-size:11px;color:var(--ruby);text-decoration:none;padding:4px 8px;border:1px solid var(--ruby);border-radius:4px;display:inline-block;margin-top:4px">Chercher sur Wine-Searcher →</a>`;
-      return;
-    }
-
-    // Afficher les photos candidates
-    container.innerHTML = '';
-    urls.forEach(url=>{
-      const img = document.createElement('img');
-      img.src = url;
-      img.className = 'ai-photo-candidate';
-      img.alt = wineName;
-      img.onerror = ()=>img.style.display='none';
-      img.onclick = ()=>{
-        container.querySelectorAll('.ai-photo-candidate').forEach(i=>i.classList.remove('selected'));
-        img.classList.add('selected');
-        // Charger en base64
-        fetch(url).then(r=>r.blob()).then(blob=>{
-          const reader = new FileReader();
-          reader.onload = e=>{ selectedPhotoUrl = e.target.result; };
-          reader.readAsDataURL(blob);
-        }).catch(()=>{ selectedPhotoUrl = url; });
-      };
-      container.appendChild(img);
-    });
-  }catch(e){
-    section.style.display='none';
-  }
-}
 
 function applyAIResult(){
   if(!aiResult)return;
@@ -1491,13 +1430,7 @@ function applyAIResult(){
   });
   renderActiveCritics();
 
-  // 5. Photo sélectionnée
-  if(selectedPhotoUrl){
-    formPhotoData = selectedPhotoUrl;
-    const prev = document.getElementById('f-photo-preview');
-    if(prev){ prev.src=selectedPhotoUrl; prev.style.display='block'; }
-  }
-  // 6. Badge IA + fermer modal + ouvrir formulaire
+  // 5. Badge IA + fermer modal + ouvrir formulaire
   document.getElementById('ai-badge-form').style.display='inline-flex';
   closeAIModal();
   document.getElementById('add-form').classList.add('visible');
@@ -1918,26 +1851,18 @@ window.onerror = function(){
     <div class="ai-result-box" id="ai-result-box">
       <div class="ai-result-title">Résultat — vérifiez avant d'importer</div>
       <div class="ai-fields-grid" id="ai-fields-grid"></div>
-      <!-- Section photo -->
-      <div id="ai-photo-section" style="display:none;margin:10px 0">
-        <div style="font-size:10px;font-weight:600;color:var(--ink4);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Photo du vin</div>
-        <div id="ai-photo-candidates" style="display:flex;gap:8px;overflow-x:auto;padding-bottom:4px"></div>
-        <div style="font-size:10px;color:var(--ink4);margin-top:6px">Cliquez sur une photo pour la sélectionner · <span style="color:var(--ruby);cursor:pointer" onclick="document.getElementById('ai-photo-section').style.display='none'">Ignorer</span></div>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:12px 0">
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0">
         <div style="display:flex;flex-direction:column;gap:4px">
           <label style="font-size:10px;font-weight:600;color:var(--ink4);text-transform:uppercase;letter-spacing:.5px">Bouteilles</label>
           <input type="number" id="ai-qty" value="1" min="1" max="999" style="height:36px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:8px;font-size:13px;font-family:Inter,sans-serif;outline:none;text-align:center">
         </div>
         <div style="display:flex;flex-direction:column;gap:4px">
-          <label style="font-size:10px;font-weight:600;color:var(--ink4);text-transform:uppercase;letter-spacing:.5px">Prix d'achat</label>
+          <label style="font-size:10px;font-weight:600;color:var(--ink4);text-transform:uppercase;letter-spacing:.5px">Prix d'achat (€)</label>
           <input type="number" id="ai-buy" placeholder="0" min="0" step="0.5" style="height:36px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:8px;font-size:13px;font-family:Inter,sans-serif;outline:none;text-align:center">
         </div>
-        <div style="display:flex;flex-direction:column;gap:4px">
-          <label style="font-size:10px;font-weight:600;color:var(--ink4);text-transform:uppercase;letter-spacing:.5px">Valeur actuelle</label>
-          <input type="number" id="ai-cur" placeholder="0" min="0" step="0.5" style="height:36px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:8px;font-size:13px;font-family:Inter,sans-serif;outline:none;text-align:center">
-        </div>
       </div>
+      <input type="hidden" id="ai-cur" value="0">
       <div class="ai-result-actions">
         <button type="button" class="ai-import-btn" onclick="confirmAIResult()">✓ Ajouter ce vin</button>
         <button type="button" class="ai-retry-btn" onclick="applyAIResult()">✏️ Modifier</button>
