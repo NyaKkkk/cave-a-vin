@@ -977,6 +977,7 @@ async function saveDrink(){
   const deg = {
     wineId:w.id, wineName:w.name, wineYear:w.year||null,
     wineApp:w.app||'', wineType:w.type||'',
+    img_url:w.img_url||null,
     qty, note, date, occasion:occ, comment:comm,
     buyPrice:w.buy||0,
     createdAt: new Date().toISOString()
@@ -1037,6 +1038,7 @@ async function saveSell(){
   const vente = {
     wineId:w.id, wineName:w.name, wineYear:w.year||null,
     wineApp:w.app||'', wineType:w.type||'',
+    img_url:w.img_url||null,
     qty, price, buyPrice, pnl, date, platform, notes,
     status:document.getElementById('sell-status').value,
     createdAt: new Date().toISOString()
@@ -1080,14 +1082,15 @@ function renderDegustations(){
     const stars = d.note ? Math.round(d.note/100*5) : 0;
     const starsHtml = '★'.repeat(stars)+'☆'.repeat(5-stars);
     const dateStr = d.date ? new Date(d.date+'T12:00:00').toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'}) : '';
+    const wineRef = wines.find(w=>w.id===d.wineId);
+    const wineImg = wineRef?.img_url || d.img_url || null;
     return `<div class="deg-card">
-      <div style="min-width:48px;text-align:center">
-        ${d.note>0?`<div style="font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:700;color:var(--ruby);line-height:1">${d.note}</div><div style="font-size:10px;color:var(--ink4)">/100</div>`:'<div style="font-size:24px">🍷</div>'}
-      </div>
+      ${wineImg?`<img src="${wineImg}" style="width:48px;height:68px;object-fit:cover;border-radius:6px;flex-shrink:0">`:
+        `<div style="min-width:48px;text-align:center;padding-top:4px">${d.note>0?`<div style="font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:700;color:var(--ruby);line-height:1">${d.note}</div><div style="font-size:10px;color:var(--ink4)">/100</div>`:'<div style="font-size:24px">🍷</div>'}</div>`}
       <div class="deg-card-body">
         <div class="deg-card-name">${d.wineName}${d.wineYear?' '+d.wineYear:''}</div>
         <div class="deg-card-meta">${d.wineApp}${d.wineApp&&d.wineType?' · ':''}${d.wineType} · ${occLabels[d.occasion]||d.occasion||''}</div>
-        ${d.note>0?`<div style="color:var(--gold);font-size:14px;margin-bottom:6px">${starsHtml}</div>`:''}
+        ${d.note>0?`<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><span style="color:var(--gold);font-size:13px">${starsHtml}</span><span style="font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:700;color:var(--ruby)">${d.note}<span style="font-size:11px;color:var(--ink4)">/100</span></span></div>`:''}
         ${d.comment?`<div class="deg-card-comment">"${d.comment}"</div>`:''}
         <div style="font-size:10px;color:var(--ink5);margin-top:8px">${dateStr} · ${d.qty} bouteille${d.qty>1?'s':''}</div>
       </div>
@@ -1100,14 +1103,13 @@ function statusLabel(s){
   return {a_vendre:'À vendre',en_cours:'En cours',vendu:'Vendu ✓'}[s||'a_vendre']||'À vendre';
 }
 
-async function cycleVenteStatus(id){
+async function updateVenteStatus(id, status){
   const v = ventes.find(x=>x.id===id);
   if(!v) return;
-  const next = {a_vendre:'en_cours',en_cours:'vendu',vendu:'vendu'};
-  v.status = next[v.status||'a_vendre'];
+  v.status = status;
   renderVentes();
-  if(db&&currentUser&&v.id&&!v.id.startsWith('tmp-')){
-    await db.collection('users').doc(currentUser.uid).collection('ventes').doc(v.id).update({status:v.status});
+  if(db&&currentUser&&id&&!id.startsWith('tmp-')){
+    await db.collection('users').doc(currentUser.uid).collection('ventes').doc(id).update({status});
   }
 }
 
@@ -1144,8 +1146,11 @@ function renderVentes(){
   list.innerHTML = ventes.map(v=>{
     const pnl = v.pnl||0;
     const dateStr = v.date ? new Date(v.date+'T12:00:00').toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'}) : '';
+    const wRefV = wines.find(w=>w.id===v.wineId);
+    const wImgV = wRefV?.img_url || v.img_url || null;
     return `<div class="vente-card">
-      <div>
+      ${wImgV?`<img src="${wImgV}" style="width:44px;height:62px;object-fit:cover;border-radius:6px;flex-shrink:0;align-self:center">`:``}
+      <div style="flex:1">
         <div class="vente-card-name">${v.wineName}${v.wineYear?' '+v.wineYear:''}</div>
         <div class="vente-card-meta">${v.wineApp} · ${dateStr} · ${v.qty} bouteille${v.qty>1?'s':''}</div>
         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:4px">
@@ -1153,9 +1158,13 @@ function renderVentes(){
           <div class="vente-status vente-status-${v.status||'a_vendre'}">${statusLabel(v.status)}</div>
         </div>
         ${v.notes?`<div style="font-size:11px;color:var(--ink4);margin-top:6px;font-style:italic">${v.notes}</div>`:''}
-        <div style="display:flex;gap:6px;margin-top:8px">
-          ${(v.status||'a_vendre')!=='vendu'?`<button type="button" onclick="cycleVenteStatus('${v.id}')" style="font-size:10px;padding:3px 8px;border:1px solid var(--ink5);border-radius:6px;background:none;cursor:pointer;color:var(--ink3);font-family:Inter,sans-serif">Mettre à jour →</button>`:''}
-          <button type="button" onclick="deleteVente('${v.id}')" style="font-size:10px;padding:3px 8px;border:1px solid var(--ink5);border-radius:6px;background:none;cursor:pointer;color:var(--ink4);font-family:Inter,sans-serif">Supprimer</button>
+        <div style="display:flex;align-items:center;gap:8px;margin-top:8px">
+          <select onchange="updateVenteStatus('${v.id}',this.value)" style="height:26px;padding:0 6px;border:1px solid var(--ink5);border-radius:6px;font-size:11px;font-family:Inter,sans-serif;outline:none;cursor:pointer;background:var(--surface);color:var(--ink3)">
+            <option value="a_vendre" ${(v.status||'a_vendre')==='a_vendre'?'selected':''}>À vendre</option>
+            <option value="en_cours" ${v.status==='en_cours'?'selected':''}>En cours</option>
+            <option value="vendu" ${v.status==='vendu'?'selected':''}>Vendu ✓</option>
+          </select>
+          <button type="button" onclick="deleteVente('${v.id}')" style="font-size:10px;padding:3px 8px;border:1px solid var(--ink5);border-radius:6px;background:none;cursor:pointer;color:var(--ink4);font-family:Inter,sans-serif">✕</button>
         </div>
       </div>
       <div class="vente-card-pnl">
@@ -1355,19 +1364,18 @@ function removeCritic(key){
 function renderActiveCritics(){
   const container = document.getElementById('critics-active');
   if(!container) return;
+  // Sauvegarder les valeurs saisies AVANT de re-rendre
+  Object.keys(activeCritics).forEach(key=>{
+    const el = document.getElementById('fc-'+key);
+    if(el && el.value) activeCritics[key].value = parseFloat(el.value)||null;
+  });
   container.innerHTML = Object.entries(activeCritics).map(([key,c])=>`
     <div class="critic-active-chip">
       <label>${c.label} /${c.max}</label>
-      <input type="number" id="fc-${key}" placeholder="—" min="${c.max===20?1:50}" max="${c.max}" step="${c.max===20?0.5:1}" value="${c.value||''}">
+      <input type="number" id="fc-${key}" placeholder="—" min="0" max="${c.max}" step="${c.max===20?0.5:1}" value="${c.value!=null?c.value:''}">
       <button type="button" class="critic-remove" onclick="removeCritic('${key}')">✕</button>
     </div>
   `).join('');
-  // Sync champs cachés standards
-  CRITICS.forEach(c=>{
-    const el = document.getElementById('f-'+c.k);
-    const ac = document.getElementById('fc-'+c.k);
-    if(el && ac) el.value = ac.value;
-  });
 }
 
 function getCriticValues(){
