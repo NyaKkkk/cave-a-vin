@@ -160,6 +160,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);font-s
 .wbody{padding:10px 12px;display:flex;flex-direction:column;justify-content:center;gap:3px;border-left:1px solid var(--ink5);min-width:0;overflow:hidden}
 .wname{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .wmeta{display:flex;gap:4px;flex-wrap:wrap;align-items:center}
+.wmeta-country{font-size:10px;font-weight:600;color:var(--ink4);background:var(--ink6);padding:1px 5px;border-radius:3px}
 .wmeta-reg{font-size:11px;font-weight:600;color:var(--ruby)}
 .wmeta-dot{width:3px;height:3px;border-radius:50%;background:var(--ink5);flex-shrink:0}
 .wmeta-txt{font-size:11px;color:var(--ink4)}
@@ -967,12 +968,39 @@ function addCritic(key, label, max){
 }
 
 function addCustomCritic(){
-  const name = prompt('Nom du critique (ex: RVF, Tim Atkin...) :');
+  // Afficher le mini-formulaire inline
+  const container = document.getElementById('custom-critic-form');
+  if(container){ container.style.display = container.style.display==='none'?'flex':'none'; return; }
+  const form = document.createElement('div');
+  form.id = 'custom-critic-form';
+  form.style.cssText = 'display:flex;align-items:center;gap:8px;background:var(--ink6);border:1.5px solid var(--ink5);border-radius:var(--r);padding:8px 10px;margin-top:8px;flex-wrap:wrap';
+  form.innerHTML = `
+    <div style="display:flex;flex-direction:column;gap:3px">
+      <label style="font-size:10px;font-weight:600;color:var(--ink4);text-transform:uppercase;letter-spacing:.5px">Critique</label>
+      <input id="custom-critic-name" type="text" placeholder="RVF, Tim Atkin..." style="width:130px;height:30px;padding:0 8px;border:1.5px solid var(--ink5);border-radius:6px;font-size:12px;font-family:Inter,sans-serif;outline:none">
+    </div>
+    <div style="display:flex;flex-direction:column;gap:3px">
+      <label style="font-size:10px;font-weight:600;color:var(--ink4);text-transform:uppercase;letter-spacing:.5px">Noté sur</label>
+      <select id="custom-critic-max" style="width:80px;height:30px;padding:0 6px;border:1.5px solid var(--ink5);border-radius:6px;font-size:12px;font-family:Inter,sans-serif;outline:none">
+        <option value="100">100</option>
+        <option value="20">20</option>
+        <option value="10">10</option>
+        <option value="5">5</option>
+      </select>
+    </div>
+    <button type="button" onclick="confirmCustomCritic()" style="height:30px;padding:0 12px;background:var(--ruby);color:#fff;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:Inter,sans-serif;margin-top:14px">Ajouter</button>
+    <button type="button" onclick="document.getElementById('custom-critic-form').remove()" style="height:30px;padding:0 10px;background:none;border:1.5px solid var(--ink5);border-radius:6px;font-size:12px;color:var(--ink4);cursor:pointer;font-family:Inter,sans-serif;margin-top:14px">Annuler</button>
+  `;
+  document.getElementById('critics-active').after(form);
+}
+
+function confirmCustomCritic(){
+  const name = document.getElementById('custom-critic-name').value.trim();
   if(!name) return;
-  const maxStr = prompt('Note sur combien ? (ex: 100 ou 20) :', '100');
-  const max = parseInt(maxStr)||100;
-  const key = 'custom_'+name.toLowerCase().replace(/[^a-z0-9]/g,'_');
+  const max = parseInt(document.getElementById('custom-critic-max').value)||100;
+  const key = 'custom_'+name.toLowerCase().replace(/[^a-z0-9]/g,'_')+'_'+Date.now();
   activeCritics[key] = {label:name, max, value:null, custom:true};
+  document.getElementById('custom-critic-form').remove();
   renderActiveCritics();
 }
 
@@ -1421,7 +1449,7 @@ function renderWines(){
         <div class="wbody">
           <div class="wname">${w.name}</div>
           ${w.year?`<div class="wyear">${w.year}</div>`:''}
-          <div class="wmeta">${w.reg?`<span class="wmeta-reg">${w.reg}</span>`:''}${w.reg&&w.app?`<span class="wmeta-dot"></span>`:''}${w.app?`<span class="wmeta-txt">${w.app}</span>`:''}${w.cont?`<span class="wmeta-dot"></span><span class="wmeta-txt">${w.cont}</span>`:''}</div>
+          <div class="wmeta">${w.country?`<span class="wmeta-country">${w.country}</span><span class="wmeta-dot"></span>':''} ${w.reg?`<span class="wmeta-reg">${w.reg}</span>`:''}${w.reg&&w.app?`<span class="wmeta-dot"></span>`:''}${w.app?`<span class="wmeta-txt">${w.app}</span>`:''}${w.cont?`<span class="wmeta-dot"></span><span class="wmeta-txt">${w.cont}</span>`:''}</div>
           <div class="wtags"><span class="tpill" style="background:${pb};color:${pt}">${shortType}</span>${w.ap?`<div class="apbadge">⏳ ${w.ap}</div>`:''}</div>
           ${pH}
           ${w.notes?`<div class="wnotes">${w.notes}</div>`:''}
