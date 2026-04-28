@@ -1154,7 +1154,7 @@ function handlePhotoSelect(inp,prefix){
 }
 
 const AI_PROMPT=`Tu es un expert sommelier encyclopédiste. À partir du vin fourni, retourne UNIQUEMENT un objet JSON valide (sans markdown, sans explication) avec cette structure exacte :
-{"name":"...","appellation":"...","type":"Rouge|Blanc|Rosé|Pétillant|Orange|...","region":"...","country":"...","year":2015,"apogee":"2025-2035","notes_degustation":"...","critics":{"parker":{"score":96,"max":100},"suckling":{"score":97,"max":100},"rvf":{"score":17,"max":20}}}
+{"name":"...","appellation":"...","type":"Rouge|Blanc|Rosé|Pétillant|Orange|...","region":"...","country":"...","year":2015,"apogee":"2025-2035","notes_degustation":"5-8 mots-clés maximum ex: minéral, tannins soyeux, fruits noirs","critics":{"parker":{"score":96,"max":100},"suckling":{"score":97,"max":100},"rvf":{"score":17,"max":20}}}
 
 RÈGLES STRICTES :
 - Ne jamais inventer de notes de critiques. Si tu n'es pas CERTAIN à 100%, omets le critique.
@@ -1341,44 +1341,51 @@ function parseAIResult(text){
 function applyAIResult(){
   if(!aiResult)return;
   const r=aiResult;
+
+  // 1. Vider le formulaire d'abord
+  clearForm();
+
+  // 2. Remplir avec les données IA
   const sv=(id,v)=>{const el=document.getElementById(id);if(el&&v!=null&&v!=='')el.value=v;};
-  sv('f-name',r.name);sv('f-app',r.appellation);
+  sv('f-name',r.name);
+  sv('f-app',r.appellation);
   if(r.type&&VALID_TYPES.includes(r.type))document.getElementById('f-type').value=r.type;
-  sv('f-reg',r.region);sv('f-year',r.year);sv('f-ap',r.apogee);sv('f-notes',r.notes_degustation);
+  sv('f-reg',r.region);
+  sv('f-year',r.year);
+  sv('f-ap',r.apogee);
   sv('f-country',r.country);
-  // Highlights champs pré-remplis
+  // Notes dégustation : mots-clés seulement
+  if(r.notes_degustation) sv('f-notes',r.notes_degustation);
+
+  // 3. Highlights champs pré-remplis
   ['fg-name','fg-app','fg-type','fg-reg','fg-year','fg-ap'].forEach(id=>{
     const m={'fg-name':r.name,'fg-app':r.appellation,'fg-type':r.type,'fg-reg':r.region,'fg-year':r.year,'fg-ap':r.apogee};
     const el=document.getElementById(id);if(el)el.classList.toggle('aif',!!m[id]);
   });
-  // Charger les notes critiques dans les chips
+
+  // 4. Charger les notes critiques dans les chips
   activeCritics={};
   const critics=r.critics||{};
   Object.entries(critics).forEach(([k,v])=>{
     if(v?.score==null) return;
     const max=CRITIC_MAX[k]||100;
-    const label=CRITIC_LABELS[k]?.split(' /')[0]||k;
+    const label=(CRITIC_LABELS[k]||k).split(' /')[0];
     const isStandard=CRITICS.some(c=>c.k===k);
     activeCritics[k]={label,max,value:v.score,custom:!isStandard};
   });
   renderActiveCritics();
+
+  // 5. Badge IA + fermer modal + ouvrir formulaire
   document.getElementById('ai-badge-form').style.display='inline-flex';
   closeAIModal();
-  // Ouvrir le formulaire
-  clearFormKeepCritics();
   document.getElementById('add-form').classList.add('visible');
   document.getElementById('add-form').dataset.editId='';
   const bsub=document.getElementById('add-form').querySelector('.bsub');
   if(bsub){bsub.textContent='Ajouter à la cave';bsub.onclick=function(e){e.preventDefault();addWine();};}
   aiResult=null;
-}
 
-function clearFormKeepCritics(){
-  // Vide le formulaire mais garde les critiques IA
-  const savedCritics={...activeCritics};
-  clearForm();
-  activeCritics=savedCritics;
-  renderActiveCritics();
+  // Scroll vers le formulaire
+  setTimeout(()=>document.getElementById('add-form').scrollIntoView({behavior:'smooth',block:'start'}),100);
 }
 
 // Compatibilité ancien code
@@ -1790,7 +1797,7 @@ window.onerror = function(){
       <div class="ai-result-title">Résultat — vérifiez avant d'importer</div>
       <div class="ai-fields-grid" id="ai-fields-grid"></div>
       <div class="ai-result-actions">
-        <button type="button" class="ai-import-btn" onclick="applyAIResult()">Importer dans le formulaire →</button>
+        <button type="button" class="ai-import-btn" onclick="applyAIResult()">Confirmer et remplir ✓</button>
         <button type="button" class="ai-retry-btn" onclick="resetAIModal()">Recommencer</button>
       </div>
     </div>
