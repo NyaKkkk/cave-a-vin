@@ -372,7 +372,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);font-s
 .wine-sell:hover{border-color:#b8860b;background:#fffdf0}
 
 /* ── CARTES DÉGUSTATION ── */
-.deg-card{background:var(--surface);border:1px solid var(--ink5);border-radius:var(--r2);padding:16px 28px;display:flex;gap:18px;align-items:flex-start;margin-bottom:4px}
+.deg-card{background:var(--surface);border:1px solid var(--ink5);border-radius:var(--r2);padding:16px 28px;display:flex;gap:18px;align-items:center;margin-bottom:4px}
 .deg-card-body{flex:1}
 .deg-card-name{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:600;color:var(--ink);margin-bottom:3px}
 .deg-card-meta{font-size:11px;color:var(--ink4);margin-bottom:8px}
@@ -1100,8 +1100,9 @@ function renderDegustations(){
         <div style="width:200px;flex-shrink:0;cursor:pointer;display:flex;align-items:center" onclick="editDegComment('${d.id}',this)" title="Cliquer pour modifier">
           <span style="font-size:13px;color:${d.comment?'var(--ink3)':'var(--ink5)'};font-style:italic;line-height:1.5">${d.comment||'+ Commentaire…'}</span>
         </div>
+        <div style="flex:1"></div>
         <div style="width:1px;background:var(--ink5);margin:0 14px;flex-shrink:0"></div>
-        <div style="flex-shrink:0;display:flex;align-items:center;justify-content:center">
+        <div style="flex-shrink:0;display:flex;align-items:center">
           <button type="button" onclick="deleteDegustation('${d.id}')" title="Supprimer" style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border:1px solid var(--ink5);border-radius:6px;background:none;cursor:pointer;color:var(--ink4);transition:all .2s" onmouseover="this.style.borderColor='var(--ruby)';this.style.color='var(--ruby)'" onmouseout="this.style.borderColor='var(--ink5)';this.style.color='var(--ink4)'"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg></button>
         </div>
       </div>
