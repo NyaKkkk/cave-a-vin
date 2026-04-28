@@ -614,7 +614,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);font-s
   <div class="pnl-summary" id="pnl-summary"></div>
   <div class="sgrid">
     <div class="scard"><h4>Plus-value par région</h4><div id="st-reg-pnl"></div></div>
-    <div class="scard"><h4>Répartition par type</h4><div id="st-type"></div></div>
+    <div class="scard"><h4>Répartition par type</h4><div style="position:relative;height:200px;display:flex;align-items:center;justify-content:center;gap:20px"><canvas id="chart-type" width="180" height="180" style="flex-shrink:0"></canvas><div id="st-type-legend" style="display:flex;flex-direction:column;gap:6px"></div></div></div>
     <div class="scard" style="grid-column:1/-1"><h4>Plus-value par millésime</h4><div class="chart-wrap"><canvas id="chart-millesime"></canvas></div></div>
     <div class="scard"><h4>Valeur achat vs actuelle par région</h4><div class="chart-wrap"><canvas id="chart-region"></canvas></div></div>
     <div class="scard"><h4>Top bouteilles par plus-value</h4><div id="st-top"></div></div>
@@ -627,7 +627,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);font-s
     <h2 class="tab-title">Mes dégustations</h2>
     <div id="deg-count" style="font-size:12px;color:var(--ink4)"></div>
   </div>
-  <div id="deg-list" style="display:flex;flex-direction:column;gap:10px"></div>
+  <div id="deg-list" style="display:flex;flex-direction:column;gap:14px"></div>
   <div id="deg-empty" style="text-align:center;padding:60px 20px;color:var(--ink4)">
     <div style="font-size:40px;margin-bottom:12px">🍷</div>
     <div style="font-size:15px;font-weight:600;color:var(--ink3);margin-bottom:6px">Aucune dégustation</div>
@@ -640,12 +640,24 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);font-s
     <h2 class="tab-title">Mes ventes</h2>
     <div id="ventes-stats" style="display:flex;gap:16px;margin-top:8px"></div>
   </div>
-  <div id="ventes-list" style="display:flex;flex-direction:column;gap:10px"></div>
+  <div id="ventes-list" style="display:flex;flex-direction:column;gap:14px"></div>
   <div id="ventes-empty" style="text-align:center;padding:60px 20px;color:var(--ink4)">
     <div style="font-size:40px;margin-bottom:12px">💰</div>
     <div style="font-size:15px;font-weight:600;color:var(--ink3);margin-bottom:6px">Aucune vente</div>
     <div style="font-size:13px">Cliquez sur 💰 sur une carte de vin pour enregistrer une vente</div>
+    <div class="scard" style="grid-column:1/-1">
+    <h4>Carte du monde — bouteilles par pays</h4>
+    <div id="world-map-container" style="width:100%;min-height:320px;position:relative;background:var(--ink6);border-radius:8px;overflow:hidden">
+      <svg id="world-map-svg" viewBox="0 0 1000 500" style="width:100%;height:100%;display:block"></svg>
+      <div id="world-map-tooltip" style="display:none;position:absolute;background:rgba(28,10,13,.85);color:#fff;font-size:11px;padding:6px 10px;border-radius:6px;pointer-events:none;white-space:nowrap;z-index:10"></div>
+    </div>
+    <div id="world-map-legend" style="display:flex;align-items:center;gap:8px;margin-top:10px;font-size:11px;color:var(--ink4)">
+      <span>0</span>
+      <div style="flex:1;height:8px;border-radius:4px;background:linear-gradient(to right,#f5e6ea,#8b1a2a)"></div>
+      <span id="world-map-max">max</span>
+    </div>
   </div>
+</div>
 </div>
 
 <div id="tab-wish" style="display:none">
@@ -2216,6 +2228,84 @@ function updateStats(){
   pe.className='hstat-val '+(pnl>0?'pnl-pos':pnl<0?'pnl-neg':'pnl-neu');
 }
 
+// ── CARTE DU MONDE ──
+const COUNTRY_COORDS = {
+  'France':{x:480,y:185},'Italie':{x:505,y:205},'Espagne':{x:455,y:205},
+  'Portugal':{x:440,y:205},'Allemagne':{x:495,y:175},'Autriche':{x:510,y:180},
+  'Hongrie':{x:520,y:180},'Grèce':{x:525,y:215},'Bulgarie':{x:530,y:195},
+  'Roumanie':{x:535,y:185},'Croatie':{x:515,y:190},'Slovénie':{x:510,y:185},
+  'USA':{x:200,y:185},'Canada':{x:210,y:155},'Mexique':{x:210,y:220},
+  'Argentine':{x:270,y:340},'Chili':{x:255,y:330},'Uruguay':{x:280,y:330},
+  'Brésil':{x:295,y:300},'Australie':{x:760,y:360},'Nouvelle-Zélande':{x:870,y:400},
+  'Afrique du Sud':{x:535,y:370},'Maroc':{x:460,y:220},'Tunisie':{x:490,y:215},
+  'Liban':{x:560,y:210},'Israël':{x:555,y:215},'Géorgie':{x:575,y:195},
+  'Arménie':{x:575,y:195},'Turquie':{x:550,y:200},'Chine':{x:750,y:200},
+  'Japon':{x:820,y:190},'Inde':{x:680,y:240}
+};
+
+function renderWorldMap(wines){
+  const svg = document.getElementById('world-map-svg');
+  if(!svg) return;
+  // Compter les bouteilles par pays
+  const byCountry={};
+  wines.forEach(w=>{
+    const c=w.country||'France';
+    byCountry[c]=(byCountry[c]||0)+w.qty;
+  });
+  const maxQty=Math.max(...Object.values(byCountry),1);
+  document.getElementById('world-map-max').textContent=maxQty+' btl';
+  // Fond carte simple (paths simplifiés des continents)
+  const bgPath=`
+    M160,120 C180,100 220,95 260,100 C300,105 340,110 370,120 C400,130 430,140 450,155
+    C470,170 480,185 480,185 C480,185 500,170 530,165 C560,160 590,165 615,175
+    C640,185 660,195 665,210 C670,225 660,235 645,235 C630,235 610,230 595,230
+    C580,230 570,235 560,245 C550,255 545,265 540,275 C535,285 530,290 520,295
+    C510,300 495,295 485,285 C475,275 470,265 460,260 C450,255 435,255 420,260
+    C405,265 390,275 375,285 C360,295 345,300 330,295 C315,290 305,280 300,265
+    C295,250 295,235 290,225 C285,215 275,210 265,210 C255,210 240,215 225,215
+    C210,215 195,210 182,200 C169,190 160,175 155,165 C150,155 148,145 150,135 Z
+    M240,260 C260,255 280,260 295,270 C310,280 315,295 310,310 C305,325 290,340 270,345
+    C250,350 230,345 215,330 C200,315 198,295 205,280 C212,265 220,265 240,260 Z
+    M490,280 C510,275 530,280 545,295 C560,310 565,330 555,350 C545,370 525,385 500,385
+    C475,385 455,370 448,350 C441,330 450,310 465,298 C480,286 490,280 490,280 Z
+    M720,320 C750,310 780,315 800,330 C820,345 825,370 815,390 C805,410 780,425 750,425
+    C720,425 695,410 685,390 C675,370 682,345 700,335 Z
+    M520,330 C535,320 555,325 565,340 C575,355 570,375 555,382 C540,389 520,382 513,367
+    C506,352 505,340 520,330 Z
+  `;
+  // Construire les cercles de bulles par pays
+  let bubblesHTML='';
+  const tooltip=document.getElementById('world-map-tooltip');
+  Object.entries(byCountry).forEach(([country,qty])=>{
+    const coords=COUNTRY_COORDS[country];
+    if(!coords) return;
+    const ratio=qty/maxQty;
+    const r=6+ratio*24;
+    const opacity=0.3+ratio*0.7;
+    const color=`rgba(139,26,42,${opacity})`;
+    bubblesHTML+=`<circle cx="${coords.x}" cy="${coords.y}" r="${r}" fill="${color}" stroke="rgba(139,26,42,0.6)" stroke-width="1.5" style="cursor:pointer" data-country="${country}" data-qty="${qty}" onmouseover="showMapTooltip(event,'${country}',${qty})" onmouseout="hideMapTooltip()"/>`;
+    bubblesHTML+=`<text x="${coords.x}" y="${coords.y+3}" text-anchor="middle" style="font-size:9px;fill:#fff;font-weight:700;pointer-events:none">${qty}</text>`;
+  });
+  svg.innerHTML=`
+    <rect width="1000" height="500" fill="#e8f0f8" rx="8"/>
+    <path d="${bgPath}" fill="#c8d8c0" stroke="#b0c0a8" stroke-width="0.5" opacity="0.6"/>
+    ${bubblesHTML}
+  `;
+}
+
+function showMapTooltip(e,country,qty){
+  const t=document.getElementById('world-map-tooltip');
+  t.textContent=country+' : '+qty+' bouteille'+(qty>1?'s':'');
+  t.style.display='block';
+  const rect=document.getElementById('world-map-svg').getBoundingClientRect();
+  const containerRect=document.getElementById('world-map-container').getBoundingClientRect();
+  t.style.left=(e.clientX-containerRect.left+10)+'px';
+  t.style.top=(e.clientY-containerRect.top-30)+'px';
+}
+function hideMapTooltip(){
+  document.getElementById('world-map-tooltip').style.display='none';
+}
+
 function filteredWines(){return statFilter==='all'?wines:wines.filter(w=>w.type===statFilter)}
 
 function renderStats(){
@@ -2231,9 +2321,36 @@ function renderStats(){
   const rE=Object.entries(byR).map(([r,d])=>({r,pnl:Math.round(d.cur-d.buy),pct:d.buy>0?Math.round((d.cur-d.buy)/d.buy*100):0})).sort((a,b)=>b.pnl-a.pnl);
   const maxP=Math.max(...rE.map(x=>Math.abs(x.pnl)),1);
   document.getElementById('st-reg-pnl').innerHTML=rE.map(({r,pnl,pct})=>`<div class="rbar"><span class="rname">${r}</span><div class="btrack"><div class="bfill" style="width:${Math.round(Math.abs(pnl)/maxP*100)}%;background:${pnl>=0?'#2a7a2a':'#8b1a2a'}"></div></div><span class="bcnt" style="color:${pnl>=0?'#2a7a2a':'#8b1a2a'}">${pnl>=0?'+':''}${pnl}€</span></div>`).join('')||'<span style="font-size:12px;color:var(--ink4)">—</span>';
+  // Camembert répartition par type
   const byT={};fw.forEach(w=>{byT[w.type]=(byT[w.type]||0)+w.qty;});
   const totT=Math.max(Object.values(byT).reduce((a,b)=>a+b,0),1);
-  document.getElementById('st-type').innerHTML=Object.entries(byT).sort((a,b)=>b[1]-a[1]).map(([t,c])=>`<div class="tdrow"><div class="tdot" style="background:${tc(t,'bar')}"></div><span style="font-size:12px;color:var(--ink3);flex:1;font-weight:500">${t}</span><span style="font-size:11px;color:var(--ink4)">${c} · ${Math.round(c/totT*100)}%</span></div>`).join('')||'—';
+  const typeEntries=Object.entries(byT).sort((a,b)=>b[1]-a[1]);
+  // Dessiner le camembert
+  const pieCanvas=document.getElementById('chart-type');
+  if(pieCanvas){
+    const ctx=pieCanvas.getContext('2d');
+    ctx.clearRect(0,0,180,180);
+    const cx=90,cy=90,r=80;
+    let startAngle=-Math.PI/2;
+    typeEntries.forEach(([t,c])=>{
+      const slice=(c/totT)*2*Math.PI;
+      ctx.beginPath();ctx.moveTo(cx,cy);
+      ctx.arc(cx,cy,r,startAngle,startAngle+slice);
+      ctx.closePath();ctx.fillStyle=tc(t,'bar');ctx.fill();
+      ctx.strokeStyle='#fff';ctx.lineWidth=2;ctx.stroke();
+      startAngle+=slice;
+    });
+    // Trou central
+    ctx.beginPath();ctx.arc(cx,cy,40,0,2*Math.PI);ctx.fillStyle='var(--surface)';ctx.fill();
+    ctx.fillStyle='var(--ink3)';ctx.font='bold 14px Inter,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(totT,cx,cy-6);ctx.font='10px Inter,sans-serif';ctx.fillStyle='var(--ink4)';ctx.fillText('btl',cx,cy+8);
+  }
+  // Légende
+  document.getElementById('st-type-legend').innerHTML=typeEntries.map(([t,c])=>
+    `<div style="display:flex;align-items:center;gap:6px"><div style="width:10px;height:10px;border-radius:50%;background:${tc(t,'bar')};flex-shrink:0"></div><span style="font-size:11px;color:var(--ink3)">${t} <span style="color:var(--ink4)">${c} (${Math.round(c/totT*100)}%)</span></span></div>`
+  ).join('');
+  // Carte monde
+  renderWorldMap(fw);
   const top5=[...fw].map(w=>({...w,pnl:(w.cur-w.buy)*w.qty})).sort((a,b)=>b.pnl-a.pnl).slice(0,5);
   document.getElementById('st-top').innerHTML=top5.map(w=>`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="font-size:12px;color:var(--ink3);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:60%">${w.name}</span><span style="font-size:12px;font-weight:600;color:${w.pnl>=0?'#2a7a2a':'var(--ruby)'}">${w.pnl>=0?'+':''}${Math.round(w.pnl)} €</span></div>`).join('')||'—';
   const byY={};fw.filter(w=>w.year).forEach(w=>{if(!byY[w.year])byY[w.year]={buy:0,cur:0};byY[w.year].buy+=w.qty*w.buy;byY[w.year].cur+=w.qty*(w.cur||w.buy);});
