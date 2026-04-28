@@ -1136,22 +1136,25 @@ const AI_PROMPT=`Tu es un expert sommelier encyclopédiste. À partir du vin fou
 {"name":"Nom complet","appellation":"AOC/AOP exacte","type":"Rouge|Blanc|Rosé|Pétillant|Orange|Vin muté / Fortifié|Vin doux naturel|Vin jaune / Oxydatif|Vin de paille / Passerillé|Vin naturel / Nature|Vin biodynamique|Cidre / Poiré|Autre","region":"Région","year":2019,"apogee":"2024–2035 ou null","notes_degustation":"Description courte ou null","parker":null,"suckling":null,"decanter":null,"vinous":null,"bettane":null,"jancis":null,"ws":null,"bh":null}
 RÈGLE : notes critiques uniquement si CERTAIN. Parker/Suckling/Vinous/WS/BH sur 100. Decanter/Bettane/Jancis sur 20.`;
 
-// ── GEMINI VIA FIREBASE AI ──
-let geminiModel = null;
+// ── FIREBASE AI LOGIC (Gemini 2.0 Flash) ──
+// SDK modulaire v11 — pas de clé visible, auth via Firebase
+let _geminiModel = null;
 
 async function initGemini(){
-  if(geminiModel) return geminiModel;
+  if(_geminiModel) return _geminiModel;
   try{
-    // Firebase AI Logic (Gemini)
-    const {getAI, getGenerativeModel, GoogleAIBackend} = await import('https://www.gstatic.com/firebasejs/11.8.1/firebase-ai.js');
-    const ai = getAI(firebase.app(), {backend: new GoogleAIBackend()});
-    geminiModel = getGenerativeModel(ai, {
+    const { initializeApp } = await import('https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js');
+    const { getAI, getGenerativeModel, GoogleAIBackend } = await import('https://www.gstatic.com/firebasejs/11.8.1/firebase-ai.js');
+    const app = firebase.app(); // réutilise l'app compat déjà initialisée
+    const ai = getAI(app, { backend: new GoogleAIBackend() });
+    _geminiModel = getGenerativeModel(ai, {
       model: 'gemini-2.0-flash',
       systemInstruction: AI_PROMPT
     });
-    return geminiModel;
+    console.log('Gemini initialisé ✓');
+    return _geminiModel;
   }catch(e){
-    console.error('Gemini init error:', e);
+    console.error('initGemini error:', e);
     return null;
   }
 }
@@ -1160,20 +1163,17 @@ async function callAI(content){
   try{
     const model = await initGemini();
     if(!model){ console.error('Gemini non disponible'); return null; }
-    
+
     let parts = [];
     if(typeof content === 'string'){
       parts = [content];
     } else if(Array.isArray(content)){
-      // Contenu avec image
       content.forEach(c=>{
         if(c.type==='text') parts.push(c.text);
-        else if(c.type==='image'){
-          parts.push({inlineData:{mimeType:c.source.media_type, data:c.source.data}});
-        }
+        else if(c.type==='image') parts.push({inlineData:{mimeType:c.source.media_type,data:c.source.data}});
       });
     }
-    
+
     const result = await model.generateContent(parts);
     return result.response.text();
   }catch(e){
