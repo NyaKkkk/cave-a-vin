@@ -619,14 +619,18 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);font-s
     <div class="scard"><h4>Valeur achat vs actuelle par région</h4><div class="chart-wrap"><canvas id="chart-region"></canvas></div></div>
     <div class="scard"><h4>Top bouteilles par plus-value</h4><div id="st-top"></div></div>
     <div class="scard" style="grid-column:1/-1">
-      <h4>Carte du monde — bouteilles par pays</h4>
-      <div id="world-map-container" style="width:100%;height:340px;position:relative;background:#dce8f2;border-radius:8px;overflow:hidden">
-        <svg id="world-map-svg" viewBox="0 0 1000 500" style="width:100%;height:100%;display:block"></svg>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+        <h4 style="margin:0" id="world-map-title">Carte du monde — bouteilles par pays</h4>
+        <button id="world-map-back" onclick="worldMapBack()" style="display:none;font-size:11px;padding:4px 10px;border:1px solid var(--ink5);border-radius:6px;background:none;cursor:pointer;color:var(--ink4);font-family:Inter,sans-serif">← Retour monde</button>
+      </div>
+      <div id="world-map-container" style="width:100%;height:400px;position:relative;background:#fff;border-radius:8px;overflow:hidden;border:1px solid var(--ink5)">
+        <svg id="world-map-svg" style="width:100%;height:100%;display:block;cursor:pointer"></svg>
         <div id="world-map-tooltip" style="display:none;position:absolute;background:rgba(28,10,13,.88);color:#fff;font-size:11px;font-family:Inter,sans-serif;padding:6px 10px;border-radius:6px;pointer-events:none;white-space:nowrap;z-index:10"></div>
+        <div id="world-map-loading" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--ink4);font-family:Inter,sans-serif">Chargement de la carte…</div>
       </div>
       <div style="display:flex;align-items:center;gap:8px;margin-top:8px;font-size:11px;color:var(--ink4)">
-        <span>0</span>
-        <div style="flex:1;height:6px;border-radius:3px;background:linear-gradient(to right,#f0d8dc,#8b1a2a)"></div>
+        <span>0 btl</span>
+        <div style="flex:1;height:6px;border-radius:3px;background:linear-gradient(to right,#fce8ea,#8b1a2a)"></div>
         <span id="world-map-max">max</span>
       </div>
     </div>
@@ -2284,87 +2288,310 @@ function pieHover(e){
 }
 function pieUnhover(){drawPie(null);const t=document.getElementById('pie-tooltip');if(t)t.style.display='none';}
 
-// ── CARTE DU MONDE ──
-// Coordonnées pixel dans une projection Mercator simplifiée (viewBox 1000x500)
-const COUNTRY_COORDS = {
-  'France':[484,183],'Italie':[504,195],'Espagne':[458,198],'Portugal':[443,202],
-  'Allemagne':[496,170],'Autriche':[511,175],'Hongrie':[519,174],'Grèce':[523,206],
-  'Bulgarie':[530,188],'Roumanie':[533,180],'Croatie':[512,185],'Slovénie':[508,180],
-  'USA':[200,190],'Canada':[215,155],'Mexique':[213,225],
-  'Argentine':[268,348],'Chili':[254,338],'Uruguay':[278,335],
-  'Brésil':[292,305],'Australie':[758,368],'Nouvelle-Zélande':[868,405],
-  'Afrique du Sud':[536,375],'Maroc':[462,218],'Tunisie':[492,212],
-  'Liban':[558,208],'Israël':[553,212],'Géorgie':[576,193],
-  'Arménie':[574,192],'Turquie':[548,198],'Chine':[748,202],
-  'Japon':[818,192],'Inde':[676,242],'Angleterre':[476,167]
+// ── CARTE DU MONDE GEOJSON ──
+// Mapping noms FR → ISO-3 (pour le GeoJSON)
+const COUNTRY_ISO = {
+  'France':'FRA','Italie':'ITA','Espagne':'ESP','Portugal':'PRT','Allemagne':'DEU',
+  'Autriche':'AUT','Hongrie':'HUN','Grèce':'GRC','Bulgarie':'BGR','Roumanie':'ROU',
+  'Croatie':'HRV','Slovénie':'SVN','Serbie':'SRB','Suisse':'CHE','Belgique':'BEL',
+  'Pays-Bas':'NLD','Angleterre':'GBR','Angleterre / UK':'GBR',
+  'USA':'USA','Canada':'CAN','Mexique':'MEX',
+  'Argentine':'ARG','Chili':'CHL','Uruguay':'URY','Brésil':'BRA',
+  'Australie':'AUS','Nouvelle-Zélande':'NZL',
+  'Afrique du Sud':'ZAF','Maroc':'MAR','Tunisie':'TUN','Algérie':'DZA',
+  'Liban':'LBN','Israël':'ISR','Géorgie':'GEO','Arménie':'ARM',
+  'Turquie':'TUR','Chine':'CHN','Japon':'JPN','Inde':'IND',
+  'Moldavie':'MDA','Macédoine':'MKD','Albanie':'ALB','Luxembourg':'LUX'
 };
 
-// Fond de carte SVG simplifié des continents (coordonnées calibrées)
-const WORLD_BG = `
-<rect width="1000" height="500" fill="#dce8f2" rx="6"/>
-<g fill="#c5d9b5" stroke="#a8c090" stroke-width="0.8">
-<!-- Europe -->
-<path d="M442,145 L458,138 L472,135 L488,132 L502,130 L515,128 L528,125 L542,128 L550,135 L558,140 L562,148 L558,155 L552,162 L544,168 L536,172 L528,178 L522,185 L516,190 L510,196 L506,202 L508,210 L512,216 L516,220 L514,226 L508,230 L500,228 L492,224 L486,218 L480,212 L474,206 L468,200 L462,195 L456,190 L450,185 L444,178 L440,170 L438,162 L440,154 Z"/>
-<!-- Scandinavie -->
-<path d="M468,108 L478,102 L490,98 L502,96 L512,100 L518,108 L514,116 L508,122 L500,126 L492,130 L484,132 L476,130 L470,122 L466,114 Z"/>
-<!-- Afrique -->
-<path d="M448,222 L462,218 L476,215 L490,214 L504,215 L518,218 L530,224 L542,232 L550,242 L556,255 L558,268 L556,282 L550,296 L542,310 L532,322 L520,332 L508,340 L496,344 L482,344 L468,340 L456,332 L446,322 L438,310 L432,296 L428,282 L428,268 L430,255 L436,242 L442,232 Z"/>
-<!-- Asie -->
-<path d="M558,98 L580,92 L605,88 L632,86 L658,88 L682,92 L705,98 L726,106 L744,116 L758,128 L768,140 L772,152 L768,164 L760,174 L750,182 L738,188 L724,192 L710,194 L696,192 L682,188 L668,184 L655,180 L642,178 L628,178 L614,180 L600,182 L586,182 L572,180 L560,176 L550,170 L544,162 L542,152 L544,142 L550,132 L556,122 L558,112 Z"/>
-<!-- Moyen-Orient -->
-<path d="M542,196 L556,192 L570,190 L582,192 L592,198 L598,208 L596,218 L588,226 L576,230 L562,230 L550,226 L542,218 L540,208 Z"/>
-<!-- Inde -->
-<path d="M638,200 L654,196 L668,198 L678,206 L682,218 L680,230 L674,240 L664,248 L652,252 L640,250 L630,244 L624,234 L622,222 L626,212 L632,206 Z"/>
-<!-- Asie du Sud-Est -->
-<path d="M740,210 L756,206 L770,208 L780,216 L782,226 L776,234 L764,238 L752,236 L742,228 L738,218 Z"/>
-<!-- Amérique du Nord -->
-<path d="M105,108 L130,100 L158,96 L186,96 L212,100 L234,108 L252,120 L264,134 L270,150 L268,166 L258,180 L244,192 L228,200 L210,205 L192,206 L174,204 L156,198 L140,190 L126,180 L114,168 L106,154 L102,140 L102,126 Z"/>
-<!-- Mexique/Am Centrale -->
-<path d="M172,210 L188,206 L204,208 L218,214 L228,224 L232,236 L228,246 L218,252 L206,254 L194,250 L184,242 L178,230 L174,218 Z"/>
-<!-- Amérique du Sud -->
-<path d="M220,264 L240,256 L262,254 L282,256 L300,264 L314,276 L322,292 L324,310 L318,328 L306,344 L290,356 L272,364 L254,366 L236,362 L220,352 L208,338 L200,320 L196,302 L198,284 L206,270 Z"/>
-<!-- Australie -->
-<path d="M706,318 L730,310 L756,308 L780,312 L802,322 L818,336 L826,352 L824,368 L814,382 L798,392 L778,396 L756,394 L736,386 L720,374 L710,358 L706,342 Z"/>
-<!-- Nouvelle-Zélande -->
-<path d="M856,380 L866,374 L874,376 L878,384 L876,394 L868,400 L860,400 L854,394 L852,386 Z"/>
-<!-- Japon -->
-<path d="M810,168 L820,162 L828,164 L832,172 L828,180 L818,184 L810,182 L806,174 Z"/>
-</g>`;
-
-function renderWorldMap(wines){
-  const svg=document.getElementById('world-map-svg');
-  if(!svg) return;
-  const byCountry={};
-  wines.forEach(w=>{
-    const c=w.country||'France';
-    byCountry[c]=(byCountry[c]||0)+w.qty;
-  });
-  if(Object.keys(byCountry).length===0){
-    svg.innerHTML=WORLD_BG+'<text x="500" y="260" text-anchor="middle" fill="#a0b0c0" style="font-size:14px">Aucun vin avec un pays renseigné</text>';
-    return;
+// Régions FR → coordonnées [lon,lat] pour la vue drill-down
+const REGION_COORDS = {
+  'France':{
+    'Bordeaux':[-0.57,44.84],'Bourgogne':[4.83,47.05],'Champagne':[4.02,49.05],
+    'Rhône':[4.83,45.0],'Loire':[-1.0,47.5],'Alsace':[7.5,48.3],
+    'Languedoc':[3.5,43.5],'Roussillon':[2.8,42.7],'Provence':[5.8,43.5],
+    'Jura':[5.55,46.8],'Savoie':[6.2,45.6],'Sud-Ouest':[0.5,44.0],
+    'Corse':[9.0,42.2],'Beaujolais':[4.65,46.1]
+  },
+  'Italie':{
+    'Toscane':[11.25,43.5],'Piémont':[8.0,44.8],'Vénétie':[11.9,45.4],
+    'Sicile':[14.0,37.6],'Sardaigne':[9.1,40.1],'Campanie':[14.8,40.9],
+    'Pouilles':[16.5,40.7],'Ombrie':[12.4,42.9],'Lombardie':[9.9,45.5],
+    'Frioul':[13.2,46.0],'Calabre':[16.1,38.9]
+  },
+  'Espagne':{
+    'Rioja':[-2.5,42.5],'Ribera del Duero':[-3.7,41.7],'Priorat':[0.8,41.2],
+    'Galice':[-8.0,42.7],'Catalogne':[2.0,41.7],'Castille':[-4.5,40.5],
+    'Andalousie':[-4.5,37.5],'Aragon':[-1.0,41.5],'Valence':[-0.4,39.5]
   }
+};
+
+let _worldGeoData = null;
+let _worldCurrentCountry = null;
+let _worldWines = [];
+
+async function renderWorldMap(wines){
+  _worldWines = wines;
+  _worldCurrentCountry = null;
+  document.getElementById('world-map-back').style.display='none';
+  document.getElementById('world-map-title').textContent='Carte du monde — bouteilles par pays';
+  
+  if(!_worldGeoData){
+    try{
+      const r = await fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json');
+      const topo = await r.json();
+      // Convertir TopoJSON → GeoJSON simplifié
+      _worldGeoData = topoToGeo(topo);
+    }catch(e){
+      console.error('Erreur chargement carte:', e);
+      document.getElementById('world-map-loading').textContent = 'Carte non disponible';
+      return;
+    }
+  }
+  document.getElementById('world-map-loading').style.display='none';
+  
+  const byCountry={};
+  wines.forEach(w=>{const c=w.country||'France';byCountry[c]=(byCountry[c]||0)+w.qty;});
   const maxQty=Math.max(...Object.values(byCountry),1);
   const maxEl=document.getElementById('world-map-max');
   if(maxEl) maxEl.textContent=maxQty+' btl';
-  let bubblesHTML='';
-  Object.entries(byCountry).forEach(([country,qty])=>{
-    const coords=COUNTRY_COORDS[country];
-    if(!coords) return;
-    const [cx,cy]=coords;
-    const ratio=qty/maxQty;
-    const r=Math.max(8,6+ratio*22);
-    const lightness=Math.round(25+ratio*15);
-    const fill=`hsl(350,68%,${lightness}%)`;
-    bubblesHTML+=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="${fill}" fill-opacity="0.85" stroke="#fff" stroke-width="1.5" style="cursor:pointer" onmouseover="showMapTooltip(event,'${country}',${qty})" onmouseout="hideMapTooltip()"/>`;
-    if(r>=12) bubblesHTML+=`<text x="${cx}" y="${cy+4}" text-anchor="middle" fill="#fff" font-size="10" font-weight="700" style="pointer-events:none">${qty}</text>`;
-  });
-  svg.innerHTML=WORLD_BG+bubblesHTML;
+  
+  drawWorldMap(byCountry, maxQty);
 }
 
-function showMapTooltip(e,country,qty){
+// Conversion TopoJSON → paths SVG via projection Mercator
+function topoToGeo(topo){
+  // Décoder les arcs TopoJSON
+  const arcs = topo.arcs;
+  const scale = topo.transform.scale;
+  const translate = topo.transform.translate;
+  
+  function decodeArc(arcIdx){
+    const reversed = arcIdx < 0;
+    const arc = arcs[reversed ? ~arcIdx : arcIdx];
+    let x=0,y=0;
+    const pts=arc.map(([dx,dy])=>{x+=dx;y+=dy;return[x*scale[0]+translate[0],y*scale[1]+translate[1]]});
+    return reversed ? pts.reverse() : pts;
+  }
+  
+  function geomToPath(geom){
+    const rings=[];
+    const arcsArr = geom.type==='Polygon'?[geom.arcs]:geom.arcs;
+    arcsArr.forEach(poly=>{
+      poly.forEach(ring=>{
+        let pts=[];
+        ring.forEach(ai=>{pts=[...pts,...decodeArc(ai)];});
+        rings.push(pts);
+      });
+    });
+    return rings;
+  }
+  
+  const countries=[];
+  topo.objects.countries.geometries.forEach(geom=>{
+    if(!geom.arcs) return;
+    const rings=geomToPath(geom);
+    countries.push({id:geom.id, rings});
+  });
+  return countries;
+}
+
+// ISO numeric → ISO-3 mapping (principaux pays viticoles)
+const ISO_NUM_TO_3 = {
+  '250':'FRA','380':'ITA','724':'ESP','620':'PRT','276':'DEU','040':'AUT',
+  '348':'HUN','300':'GRC','100':'BGR','642':'ROU','191':'HRV','705':'SVN',
+  '688':'SRB','756':'CHE','056':'BEL','528':'NLD','826':'GBR','036':'AUS',
+  '554':'NZL','710':'ZAF','504':'MAR','788':'TUN','012':'DZA','422':'LBN',
+  '376':'ISR','268':'GEO','051':'ARM','792':'TUR','156':'CHN','392':'JPN',
+  '356':'IND','840':'USA','124':'CAN','484':'MEX','032':'ARG','152':'CHL',
+  '858':'URY','076':'BRA','498':'MDA','807':'MKD','008':'ALB','442':'LUX',
+  '724':'ESP','620':'PRT'
+};
+
+function mercator(lon, lat, w, h){
+  const x = (lon+180)/360*w;
+  const latRad = lat*Math.PI/180;
+  const mercN = Math.log(Math.tan(Math.PI/4+latRad/2));
+  const y = h/2 - (mercN/(Math.PI)*(h/2));
+  return [x,y];
+}
+
+function ringsToSVGPath(rings, w, h){
+  return rings.map(pts=>{
+    if(!pts.length) return '';
+    const projected = pts.map(([lon,lat])=>mercator(lon,lat,w,h));
+    return 'M'+projected.map(([x,y])=>x.toFixed(1)+','+y.toFixed(1)).join('L')+'Z';
+  }).join(' ');
+}
+
+function drawWorldMap(byCountry, maxQty){
+  const svg = document.getElementById('world-map-svg');
+  if(!svg||!_worldGeoData) return;
+  const W=1000,H=500;
+  svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
+  
+  // Inverser le mapping pays FR → ISO-3 → ISO-num
+  const iso3ToFR={};
+  Object.entries(COUNTRY_ISO).forEach(([fr,iso3])=>iso3ToFR[iso3]=fr);
+  const isoNumToFR={};
+  Object.entries(ISO_NUM_TO_3).forEach(([num,iso3])=>{if(iso3ToFR[iso3])isoNumToFR[num]=iso3ToFR[iso3];});
+  
+  let paths='';
+  _worldGeoData.forEach(({id,rings})=>{
+    const isoNum=String(id).padStart(3,'0');
+    const country=isoNumToFR[isoNum];
+    const qty=country?byCountry[country]||0:0;
+    const d=ringsToSVGPath(rings,W,H);
+    if(!d.trim()) return;
+    
+    let fill='#e8e8e8',stroke='#b0b0b0';
+    if(qty>0){
+      const ratio=qty/maxQty;
+      const r=Math.round(139+(255-139)*(1-ratio));
+      const g=Math.round(26+(255-26)*(1-ratio)*0.6);
+      const b=Math.round(42+(255-42)*(1-ratio)*0.6);
+      fill=`rgb(${r},${g},${b})`;
+      stroke='#c0a0a0';
+    }
+    const cls=country?'world-country':'';
+    const onclick=qty>0&&REGION_COORDS[country]?`worldDrillDown('${country}')`:'';
+    const cursor=onclick?'cursor:pointer':'';
+    paths+=`<path d="${d}" fill="${fill}" stroke="${stroke}" stroke-width="0.4" class="${cls}" data-country="${country||''}" data-qty="${qty}" style="${cursor}" ${onclick?`onclick="${onclick}"`:''}
+      onmouseover="worldTooltip(event,'${country||''}',${qty})"
+      onmouseout="hideMapTooltip()"/>`;
+  });
+  
+  // Bulles pour les pays avec vins (visibilité)
+  let bubbles='';
+  const BUBBLE_POS={'FRA':[2.35,46.8],'ITA':[12.5,42.8],'ESP':[-3.7,40.4],'PRT':[-8,39.5],
+    'DEU':[10.4,51.2],'AUT':[14.5,47.5],'HUN':[19,47],'GRC':[21.8,39.1],
+    'BGR':[25,42.7],'ROU':[25,45.9],'HRV':[16.5,45.1],'CHE':[8.2,46.8],
+    'GBR':[-3,54],'USA':[-98,39.5],'CAN':[-96,60],'MEX':[-102,24],
+    'ARG':[-64,34],'CHL':[-71,30],'URY':[-56,33],'BRA':[-51,14],
+    'AUS':[133,-27],'NZL':[172,-42],'ZAF':[25,-29],'MAR':[-7,32],
+    'TUN':[9,34],'LBN':[35.5,33.9],'ISR':[34.9,31.5],'GEO':[43.4,42.3],
+    'ARM':[45,40.1],'TUR':[35.2,39],'CHN':[104,35],'JPN':[138,37],
+    'IND':[78,20],'MDA':[28.4,47.4],'DZA':[3,28]
+  };
+  
+  Object.entries(byCountry).forEach(([frName,qty])=>{
+    const iso3=COUNTRY_ISO[frName];
+    if(!iso3||!qty) return;
+    const pos=BUBBLE_POS[iso3];
+    if(!pos) return;
+    const [cx,cy]=mercator(pos[0],pos[1],W,H);
+    const ratio=qty/maxQty;
+    const r=Math.max(6,5+ratio*18);
+    const hasDrill=!!REGION_COORDS[frName];
+    bubbles+=`<circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="${r}" fill="rgba(139,26,42,0.85)" stroke="#fff" stroke-width="1.2" style="cursor:${hasDrill?'pointer':'default'}" ${hasDrill?`onclick="worldDrillDown('${frName}')"`:''}
+      onmouseover="worldTooltip(event,'${frName}',${qty})" onmouseout="hideMapTooltip()"/>
+    <text x="${cx.toFixed(1)}" y="${(cy+3.5).toFixed(1)}" text-anchor="middle" fill="#fff" font-size="${r>9?'9':'7'}" font-weight="700" style="pointer-events:none">${qty}</text>`;
+  });
+  
+  svg.innerHTML=`<rect width="${W}" height="${H}" fill="#fff"/>${paths}${bubbles}`;
+}
+
+function worldDrillDown(country){
+  const regData=REGION_COORDS[country];
+  if(!regData) return;
+  _worldCurrentCountry=country;
+  document.getElementById('world-map-back').style.display='inline-block';
+  document.getElementById('world-map-title').textContent=`${country} — bouteilles par région`;
+  
+  const byRegion={};
+  _worldWines.filter(w=>w.country===country).forEach(w=>{
+    const r=w.reg||'Inconnue';
+    byRegion[r]=(byRegion[r]||0)+w.qty;
+  });
+  
+  const maxQty=Math.max(...Object.values(byRegion),1);
+  const maxEl=document.getElementById('world-map-max');
+  if(maxEl) maxEl.textContent=maxQty+' btl';
+  
+  const svg=document.getElementById('world-map-svg');
+  if(!svg) return;
+  
+  // Trouver les bounds du pays dans les données GeoJSON
+  const iso3=COUNTRY_ISO[country];
+  const isoNum=Object.entries(ISO_NUM_TO_3).find(([n,c])=>c===iso3)?.[0];
+  const countryGeo=_worldGeoData.find(d=>String(d.id).padStart(3,'0')===isoNum);
+  
+  // Calculer bounds
+  let minLon=180,maxLon=-180,minLat=90,maxLat=-90;
+  if(countryGeo){
+    countryGeo.rings.forEach(ring=>ring.forEach(([lon,lat])=>{
+      minLon=Math.min(minLon,lon);maxLon=Math.max(maxLon,lon);
+      minLat=Math.min(minLat,lat);maxLat=Math.max(maxLat,lat);
+    }));
+  } else {
+    // Fallback
+    Object.values(regData).forEach(([lon,lat])=>{
+      minLon=Math.min(minLon,lon-3);maxLon=Math.max(maxLon,lon+3);
+      minLat=Math.min(minLat,lat-2);maxLat=Math.max(maxLat,lat+2);
+    });
+  }
+  // Marge
+  const padLon=(maxLon-minLon)*0.1, padLat=(maxLat-minLat)*0.1;
+  minLon-=padLon;maxLon+=padLon;minLat-=padLat;maxLat+=padLat;
+  
+  const W=1000,H=500;
+  function project(lon,lat){
+    const x=(lon-minLon)/(maxLon-minLon)*W;
+    const latRad=lat*Math.PI/180;
+    const minLatR=minLat*Math.PI/180,maxLatR=maxLat*Math.PI/180;
+    const mercN=Math.log(Math.tan(Math.PI/4+latRad/2));
+    const mercMin=Math.log(Math.tan(Math.PI/4+minLatR/2));
+    const mercMax=Math.log(Math.tan(Math.PI/4+maxLatR/2));
+    const y=H-(mercN-mercMin)/(mercMax-mercMin)*H;
+    return [x,y];
+  }
+  
+  // Fond pays
+  let pathStr='';
+  if(countryGeo){
+    pathStr=countryGeo.rings.map(pts=>{
+      const proj=pts.map(([lon,lat])=>project(lon,lat));
+      return 'M'+proj.map(([x,y])=>x.toFixed(1)+','+y.toFixed(1)).join('L')+'Z';
+    }).join(' ');
+  }
+  
+  // Bulles régions
+  let bubbles='';
+  Object.entries(byRegion).forEach(([reg,qty])=>{
+    const coords=regData[reg]||Object.values(regData)[0];
+    if(!coords) return;
+    const [cx,cy]=project(coords[0],coords[1]);
+    const ratio=qty/maxQty;
+    const r=Math.max(10,8+ratio*30);
+    bubbles+=`<circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="${r}" fill="rgba(139,26,42,0.85)" stroke="#fff" stroke-width="1.5" style="cursor:default"
+      onmouseover="worldTooltip(event,'${reg}',${qty})" onmouseout="hideMapTooltip()"/>
+    <text x="${cx.toFixed(1)}" y="${(cy-4).toFixed(1)}" text-anchor="middle" fill="#fff" font-size="${Math.min(11,r)}" font-weight="700" style="pointer-events:none">${reg}</text>
+    <text x="${cx.toFixed(1)}" y="${(cy+8).toFixed(1)}" text-anchor="middle" fill="rgba(255,255,255,0.9)" font-size="9" style="pointer-events:none">${qty} btl</text>`;
+  });
+  
+  svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
+  svg.innerHTML=`<rect width="${W}" height="${H}" fill="#fff"/>
+    ${pathStr?`<path d="${pathStr}" fill="#f0ece8" stroke="#c0a090" stroke-width="0.6"/>`:''}
+    ${bubbles}`;
+}
+
+function worldMapBack(){
+  _worldCurrentCountry=null;
+  document.getElementById('world-map-back').style.display='none';
+  document.getElementById('world-map-title').textContent='Carte du monde — bouteilles par pays';
+  const byCountry={};
+  _worldWines.forEach(w=>{const c=w.country||'France';byCountry[c]=(byCountry[c]||0)+w.qty;});
+  const maxQty=Math.max(...Object.values(byCountry),1);
+  const maxEl=document.getElementById('world-map-max');
+  if(maxEl) maxEl.textContent=maxQty+' btl';
+  drawWorldMap(byCountry,maxQty);
+}
+
+function worldTooltip(e,country,qty){
+  if(!country||!qty) return;
   const t=document.getElementById('world-map-tooltip');
   if(!t) return;
-  t.textContent=country+' : '+qty+' bouteille'+(qty>1?'s':'');
+  t.textContent=country+(qty?' : '+qty+' bouteille'+(qty>1?'s':''):'');
   t.style.display='block';
   const cont=document.getElementById('world-map-container');
   const rect=cont.getBoundingClientRect();
@@ -2375,6 +2602,7 @@ function hideMapTooltip(){
   const t=document.getElementById('world-map-tooltip');
   if(t) t.style.display='none';
 }
+
 
 function filteredWines(){return statFilter==='all'?wines:wines.filter(w=>w.type===statFilter)}
 
