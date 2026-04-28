@@ -388,7 +388,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);font-s
 .deg-star:hover{transform:scale(1.2)}
 
 /* ── CARTES VENTES ── */
-.vente-card{background:var(--surface);border:1px solid var(--ink5);border-radius:var(--r2);padding:16px 18px;display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center}
+.vente-card{background:var(--surface);border:1px solid var(--ink5);border-radius:var(--r2);padding:16px 18px;display:grid;grid-template-columns:auto 1fr auto auto;gap:12px;align-items:center}
 .vente-card-name{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:600;color:var(--ink)}
 .vente-card-meta{font-size:11px;color:var(--ink4);margin-top:3px}
 .vente-card-platform{display:inline-block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;background:var(--ink6);color:var(--ink3);padding:2px 8px;border-radius:10px;margin-top:6px}
@@ -1121,11 +1121,14 @@ async function updateVenteStatus(id){
 async function editVenteNotes(id, el){
   const v = ventes.find(x=>x.id===id);
   if(!v) return;
+  // Trouver le span à l'intérieur si on a cliqué sur le div conteneur
+  const target = el.tagName==='DIV' ? el : el.closest('div');
   const ta = document.createElement('textarea');
   ta.value = v.notes||'';
   ta.placeholder = 'Ajouter une note…';
-  ta.style.cssText = 'width:100%;padding:5px 8px;border:1.5px solid var(--ruby);border-radius:6px;font-size:11px;font-family:Inter,sans-serif;outline:none;resize:vertical;min-height:48px;box-sizing:border-box;font-style:italic;color:var(--ink3)';
-  el.replaceWith(ta);
+  ta.style.cssText = 'width:100%;padding:5px 8px;border:1.5px solid var(--ruby);border-radius:6px;font-size:11px;font-family:Inter,sans-serif;outline:none;resize:vertical;min-height:60px;box-sizing:border-box;font-style:italic;color:var(--ink3);background:var(--surface)';
+  target.innerHTML = '';
+  target.appendChild(ta);
   ta.focus();
   const save = async()=>{
     v.notes = ta.value.trim();
@@ -1246,11 +1249,14 @@ function renderVentes(){
           <div class="vente-status vente-status-${v.status||'a_vendre'}" onclick="updateVenteStatus('${v.id}')" style="cursor:pointer;user-select:none" title="Cliquer pour changer">${statusLabel(v.status)}</div>
           <span onclick="editVentePlatform('${v.id}')" class="vente-card-platform" style="cursor:pointer" title="Cliquer pour modifier">${v.platform} ✎</span>
         </div>
-        <div style="font-size:11px;color:${v.notes?'var(--ink4)':'var(--ink5)'};margin-top:6px;font-style:italic;cursor:pointer" onclick="editVenteNotes('${v.id}',this)" title="Cliquer pour modifier">${v.notes||'+ Ajouter une note…'}</div>
+        <div style="font-size:11px;color:${v.notes?'var(--ink4)':'var(--ink5)'};margin-top:6px;font-style:italic;cursor:pointer;display:none" onclick="editVenteNotes('${v.id}',this)" title="Cliquer pour modifier">${v.notes||'+ Ajouter une note…'}</div>
         <div style="display:flex;align-items:center;gap:6px;margin-top:8px;flex-wrap:wrap">
           <button type="button" onclick="undoVente('${v.id}')" title="Remettre en cave" style="display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border:1px solid var(--ink5);border-radius:6px;background:none;cursor:pointer;color:var(--ink4);font-family:Inter,sans-serif;font-size:11px">↩ Cave</button>
           <button type="button" onclick="deleteVente('${v.id}')" title="Supprimer de l'historique" style="display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border:1px solid var(--ink5);border-radius:6px;background:none;cursor:pointer;color:var(--ink4);font-family:Inter,sans-serif;font-size:11px"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg> Supprimer</button>
         </div>
+      </div>
+      <div style="border-left:1px solid var(--ink5);padding-left:12px;min-width:120px;max-width:160px;cursor:pointer;align-self:stretch;display:flex;align-items:center" onclick="editVenteNotes('${v.id}',this)" title="Cliquer pour modifier">
+        <span style="font-size:11px;color:${v.notes?'var(--ink3)':'var(--ink5)'};font-style:italic;line-height:1.4">${v.notes||'+ Note…'}</span>
       </div>
       <div class="vente-card-pnl">
         <div class="vente-card-price">${v.price}€<span style="font-size:13px;color:var(--ink4)">/btl</span></div>
