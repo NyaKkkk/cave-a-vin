@@ -845,6 +845,7 @@ async function loadFromFirebase(){
     ]);
     wines  = wSnap.docs.map(d=>({id:d.id, ...d.data()}));
     wishes = whSnap.docs.map(d=>({id:d.id, ...d.data()}));
+    activeType = ''; // reset filtre
     renderWines(); updateStats(); renderWishes();
   }catch(e){ console.error('loadFromFirebase:', e); }
 }
@@ -1521,6 +1522,7 @@ function showTab(t){
   if(t==='wish')renderWishes();
   if(t==='degustation')renderDegustations();
   if(t==='ventes')renderVentes();
+  if(t==='cave'){ activeType=''; renderWines(); }
 }
 function togglePanel(id){
   const p=document.getElementById(id);
