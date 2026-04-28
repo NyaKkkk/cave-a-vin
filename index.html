@@ -365,6 +365,47 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);font-s
 .ai-err-msg{color:var(--ruby);font-size:12px;padding:8px;text-align:center;display:none}
 .ai-err-msg.visible{display:block}
 
+/* ── BOUTONS BOIRE/VENDRE ── */
+.winebtn{height:28px;padding:0 8px;border-radius:6px;border:1.5px solid var(--ink5);background:var(--surface);cursor:pointer;font-size:13px;transition:all .2s;display:inline-flex;align-items:center;justify-content:center}
+.winebtn:hover{transform:scale(1.1)}
+.wine-drink:hover{border-color:#8b1a2a;background:#fff5f5}
+.wine-sell:hover{border-color:#b8860b;background:#fffdf0}
+
+/* ── CARTES DÉGUSTATION ── */
+.deg-card{background:var(--surface);border:1px solid var(--ink5);border-radius:var(--r2);padding:16px 18px;display:flex;gap:14px;align-items:flex-start}
+.deg-card-body{flex:1}
+.deg-card-name{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:600;color:var(--ink);margin-bottom:3px}
+.deg-card-meta{font-size:11px;color:var(--ink4);margin-bottom:8px}
+.deg-card-note{display:inline-flex;align-items:center;gap:6px;background:var(--ink6);border-radius:6px;padding:4px 10px;margin-bottom:8px}
+.deg-card-note-val{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:700;color:var(--ruby)}
+.deg-card-note-max{font-size:11px;color:var(--ink4)}
+.deg-card-comment{font-size:12px;color:var(--ink3);line-height:1.5;font-style:italic}
+.deg-card-tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
+.deg-tag{font-size:10px;font-weight:600;background:var(--ink6);color:var(--ink4);padding:2px 7px;border-radius:10px}
+.deg-card-date{font-size:10px;color:var(--ink5);white-space:nowrap}
+.deg-stars{display:flex;gap:2px}
+.deg-star{font-size:16px;cursor:pointer;transition:transform .1s}
+.deg-star:hover{transform:scale(1.2)}
+
+/* ── CARTES VENTES ── */
+.vente-card{background:var(--surface);border:1px solid var(--ink5);border-radius:var(--r2);padding:16px 18px;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center}
+.vente-card-name{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:600;color:var(--ink)}
+.vente-card-meta{font-size:11px;color:var(--ink4);margin-top:3px}
+.vente-card-platform{display:inline-block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;background:var(--ink6);color:var(--ink3);padding:2px 8px;border-radius:10px;margin-top:6px}
+.vente-card-pnl{text-align:right}
+.vente-card-price{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;color:var(--ink)}
+.vente-card-pnl-val{font-size:12px;font-weight:600;margin-top:2px}
+.vente-pnl-pos{color:#2a7a2a}
+.vente-pnl-neg{color:var(--ruby)}
+.vente-status{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:3px 9px;border-radius:10px;margin-top:6px}
+.vente-status-a_vendre{background:#fff8e6;color:#b8860b;border:1px solid #f0d080}
+.vente-status-en_cours{background:#e8f0ff;color:#1a5ab8;border:1px solid #a0c0f0}
+.vente-status-vendu{background:#e8f8e8;color:#2a7a2a;border:1px solid #90d090}
+
+/* ── TAB HEADER ── */
+.tab-header{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px}
+.tab-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--ink);margin:0}
+
 </style>
 </head>
 <body>
@@ -448,7 +489,9 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);font-s
 <div class="nav">
   <div class="ntab active" onclick="showTab('cave')">Cave</div>
   <div class="ntab" onclick="showTab('stats')">Statistiques</div>
-  <div class="ntab" onclick="showTab('wish')">Liste de souhaits</div>
+  <div class="ntab" onclick="showTab('degustation')">Dégustations</div>
+  <div class="ntab" onclick="showTab('ventes')">Ventes</div>
+  <div class="ntab" onclick="showTab('wish')">Souhaits</div>
 </div>
 
 <div class="content">
@@ -579,6 +622,32 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);font-s
 </div>
 
 <!-- WISH -->
+<div id="tab-degustation" style="display:none">
+  <div class="tab-header">
+    <h2 class="tab-title">Mes dégustations</h2>
+    <div id="deg-count" style="font-size:12px;color:var(--ink4)"></div>
+  </div>
+  <div id="deg-list" style="display:flex;flex-direction:column;gap:10px"></div>
+  <div id="deg-empty" style="text-align:center;padding:60px 20px;color:var(--ink4)">
+    <div style="font-size:40px;margin-bottom:12px">🍷</div>
+    <div style="font-size:15px;font-weight:600;color:var(--ink3);margin-bottom:6px">Aucune dégustation</div>
+    <div style="font-size:13px">Cliquez sur 🍷 sur une carte de vin pour enregistrer une dégustation</div>
+  </div>
+</div>
+
+<div id="tab-ventes" style="display:none">
+  <div class="tab-header">
+    <h2 class="tab-title">Mes ventes</h2>
+    <div id="ventes-stats" style="display:flex;gap:16px;margin-top:8px"></div>
+  </div>
+  <div id="ventes-list" style="display:flex;flex-direction:column;gap:10px"></div>
+  <div id="ventes-empty" style="text-align:center;padding:60px 20px;color:var(--ink4)">
+    <div style="font-size:40px;margin-bottom:12px">💰</div>
+    <div style="font-size:15px;font-weight:600;color:var(--ink3);margin-bottom:6px">Aucune vente</div>
+    <div style="font-size:13px">Cliquez sur 💰 sur une carte de vin pour enregistrer une vente</div>
+  </div>
+</div>
+
 <div id="tab-wish" style="display:none">
   <div class="wish-shdr">
     <span class="wish-label" id="wcnt">0 vin souhaité</span>
@@ -729,7 +798,7 @@ async function doLogout(){
         if(user){
           currentUser = user;
           _showScreen('app');
-          await Promise.all([loadFromFirebase(), loadUserProfile(user.uid)]);
+          await Promise.all([loadFromFirebase(), loadUserProfile(user.uid), loadDegVentes()]);
         } else {
           currentUser = null;
           wines=[]; wishes=[];
@@ -841,6 +910,262 @@ async function uploadPhoto(wineId, dataUrl){
 }
 
 function save(){ /* données gérées par Firebase */ }
+
+// ── DONNÉES DÉGUSTATIONS & VENTES ──
+let degustations = [];
+let ventes = [];
+
+async function loadDegVentes(){
+  if(!db||!currentUser) return;
+  try{
+    const [dSnap,vSnap] = await Promise.all([
+      db.collection('users').doc(currentUser.uid).collection('degustations').orderBy('date','desc').get(),
+      db.collection('users').doc(currentUser.uid).collection('ventes').orderBy('date','desc').get()
+    ]);
+    degustations = dSnap.docs.map(d=>({id:d.id,...d.data()}));
+    ventes       = vSnap.docs.map(d=>({id:d.id,...d.data()}));
+  }catch(e){ console.error('loadDegVentes:',e); }
+}
+
+// ── CONFIRMATION SUPPRESSION ──
+let _pendingDeleteId = null;
+function confirmDelete(id){
+  _pendingDeleteId = id;
+  const w = wines.find(w=>w.id===id);
+  document.getElementById('confirm-del-name').textContent = w ? w.name : '';
+  document.getElementById('confirm-del-modal').classList.add('open');
+}
+function closeConfirmDel(){
+  _pendingDeleteId = null;
+  document.getElementById('confirm-del-modal').classList.remove('open');
+}
+function execDelete(){
+  if(!_pendingDeleteId) return;
+  delWine(_pendingDeleteId);
+  closeConfirmDel();
+}
+
+// ── MODAL BOIRE ──
+let _drinkWineId = null;
+function openDrinkModal(id){
+  _drinkWineId = id;
+  const w = wines.find(w=>w.id===id);
+  if(!w) return;
+  document.getElementById('drink-wine-name').textContent = w.name + (w.year?' '+w.year:'');
+  document.getElementById('drink-qty').value = 1;
+  document.getElementById('drink-qty').max = w.qty;
+  document.getElementById('drink-date').value = new Date().toISOString().split('T')[0];
+  document.getElementById('drink-note-range').value = 0;
+  document.getElementById('drink-note-val').textContent = '0';
+  document.getElementById('drink-comment').value = '';
+  document.getElementById('drink-modal').classList.add('open');
+}
+function closeDrinkModal(){
+  document.getElementById('drink-modal').classList.remove('open');
+  _drinkWineId = null;
+}
+async function saveDrink(){
+  if(!_drinkWineId) return;
+  const w = wines.find(w=>w.id===_drinkWineId);
+  if(!w) return;
+  const qty   = parseInt(document.getElementById('drink-qty').value)||1;
+  const note  = parseFloat(document.getElementById('drink-note-range').value)||0;
+  const date  = document.getElementById('drink-date').value;
+  const occ   = document.getElementById('drink-occasion').value;
+  const comm  = document.getElementById('drink-comment').value.trim();
+
+  const deg = {
+    wineId:w.id, wineName:w.name, wineYear:w.year||null,
+    wineApp:w.app||'', wineType:w.type||'',
+    qty, note, date, occasion:occ, comment:comm,
+    buyPrice:w.buy||0,
+    createdAt: new Date().toISOString()
+  };
+
+  // Décrémenter la quantité
+  w.qty -= qty;
+  if(w.qty <= 0){
+    wines = wines.filter(x=>x.id!==w.id);
+    deleteWineFromDb(w.id);
+  } else {
+    saveWineToDb(w);
+  }
+
+  // Sauvegarder la dégustation
+  degustations.unshift({id:'tmp-'+Date.now(),...deg});
+  renderWines(); updateStats();
+  closeDrinkModal();
+
+  if(db&&currentUser){
+    const ref = await db.collection('users').doc(currentUser.uid).collection('degustations').add({
+      ...deg, createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    degustations[0].id = ref.id;
+  }
+}
+
+// ── MODAL VENDRE ──
+let _sellWineId = null;
+function openSellModal(id){
+  _sellWineId = id;
+  const w = wines.find(w=>w.id===id);
+  if(!w) return;
+  document.getElementById('sell-wine-name').textContent = w.name + (w.year?' '+w.year:'');
+  document.getElementById('sell-qty').value = 1;
+  document.getElementById('sell-qty').max = w.qty;
+  document.getElementById('sell-price').value = w.cur||w.buy||'';
+  document.getElementById('sell-date').value = new Date().toISOString().split('T')[0];
+  document.getElementById('sell-notes').value = '';
+  document.getElementById('sell-modal').classList.add('open');
+}
+function closeSellModal(){
+  document.getElementById('sell-modal').classList.remove('open');
+  _sellWineId = null;
+}
+async function saveSell(){
+  if(!_sellWineId) return;
+  const w = wines.find(w=>w.id===_sellWineId);
+  if(!w) return;
+  const qty      = parseInt(document.getElementById('sell-qty').value)||1;
+  const price    = parseFloat(document.getElementById('sell-price').value)||0;
+  const date     = document.getElementById('sell-date').value;
+  const platform = document.getElementById('sell-platform').value;
+  const notes    = document.getElementById('sell-notes').value.trim();
+  const buyPrice = w.buy||0;
+  const pnl      = (price - buyPrice) * qty;
+
+  const vente = {
+    wineId:w.id, wineName:w.name, wineYear:w.year||null,
+    wineApp:w.app||'', wineType:w.type||'',
+    qty, price, buyPrice, pnl, date, platform, notes,
+    status:document.getElementById('sell-status').value,
+    createdAt: new Date().toISOString()
+  };
+
+  // Décrémenter la quantité
+  w.qty -= qty;
+  if(w.qty <= 0){
+    wines = wines.filter(x=>x.id!==w.id);
+    deleteWineFromDb(w.id);
+  } else {
+    saveWineToDb(w);
+  }
+
+  ventes.unshift({id:'tmp-'+Date.now(),...vente});
+  renderWines(); updateStats();
+  closeSellModal();
+
+  if(db&&currentUser){
+    const ref = await db.collection('users').doc(currentUser.uid).collection('ventes').add({
+      ...vente, createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    ventes[0].id = ref.id;
+  }
+}
+
+// ── RENDU DÉGUSTATIONS ──
+function renderDegustations(){
+  const list  = document.getElementById('deg-list');
+  const empty = document.getElementById('deg-empty');
+  const count = document.getElementById('deg-count');
+  if(!list) return;
+  if(!degustations.length){
+    list.innerHTML=''; empty.style.display=''; count.textContent='';
+    return;
+  }
+  empty.style.display='none';
+  count.textContent = degustations.length+' dégustation'+(degustations.length>1?'s':'');
+  const occLabels={perso:'Personnel',repas:'Repas en famille',amis:'Entre amis',resto:'Restaurant',degustation:'Dégustation',evenement:'Événement'};
+  list.innerHTML = degustations.map(d=>{
+    const stars = d.note ? Math.round(d.note/100*5) : 0;
+    const starsHtml = '★'.repeat(stars)+'☆'.repeat(5-stars);
+    const dateStr = d.date ? new Date(d.date+'T12:00:00').toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'}) : '';
+    return `<div class="deg-card">
+      <div style="min-width:48px;text-align:center">
+        ${d.note>0?`<div style="font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:700;color:var(--ruby);line-height:1">${d.note}</div><div style="font-size:10px;color:var(--ink4)">/100</div>`:'<div style="font-size:24px">🍷</div>'}
+      </div>
+      <div class="deg-card-body">
+        <div class="deg-card-name">${d.wineName}${d.wineYear?' '+d.wineYear:''}</div>
+        <div class="deg-card-meta">${d.wineApp}${d.wineApp&&d.wineType?' · ':''}${d.wineType} · ${occLabels[d.occasion]||d.occasion||''}</div>
+        ${d.note>0?`<div style="color:var(--gold);font-size:14px;margin-bottom:6px">${starsHtml}</div>`:''}
+        ${d.comment?`<div class="deg-card-comment">"${d.comment}"</div>`:''}
+        <div style="font-size:10px;color:var(--ink5);margin-top:8px">${dateStr} · ${d.qty} bouteille${d.qty>1?'s':''}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── HELPERS VENTES ──
+function statusLabel(s){
+  return {a_vendre:'À vendre',en_cours:'En cours',vendu:'Vendu ✓'}[s||'a_vendre']||'À vendre';
+}
+
+async function cycleVenteStatus(id){
+  const v = ventes.find(x=>x.id===id);
+  if(!v) return;
+  const next = {a_vendre:'en_cours',en_cours:'vendu',vendu:'vendu'};
+  v.status = next[v.status||'a_vendre'];
+  renderVentes();
+  if(db&&currentUser&&v.id&&!v.id.startsWith('tmp-')){
+    await db.collection('users').doc(currentUser.uid).collection('ventes').doc(v.id).update({status:v.status});
+  }
+}
+
+async function deleteVente(id){
+  ventes = ventes.filter(v=>v.id!==id);
+  renderVentes();
+  if(db&&currentUser&&id&&!id.startsWith('tmp-')){
+    await db.collection('users').doc(currentUser.uid).collection('ventes').doc(id).delete();
+  }
+}
+
+// ── RENDU VENTES ──
+function renderVentes(){
+  const list  = document.getElementById('ventes-list');
+  const empty = document.getElementById('ventes-empty');
+  const stats = document.getElementById('ventes-stats');
+  if(!list) return;
+  if(!ventes.length){
+    list.innerHTML=''; empty.style.display=''; stats.innerHTML='';
+    return;
+  }
+  empty.style.display='none';
+
+  // KPIs
+  const totalRev = ventes.reduce((a,v)=>a+v.price*v.qty,0);
+  const totalPnl = ventes.reduce((a,v)=>a+v.pnl,0);
+  const totalBtl = ventes.reduce((a,v)=>a+v.qty,0);
+  stats.innerHTML = [
+    ['Bouteilles vendues', totalBtl],
+    ['Revenus totaux', Math.round(totalRev)+'€'],
+    ['Plus-value', (totalPnl>=0?'+':'')+Math.round(totalPnl)+'€', totalPnl>=0?'#2a7a2a':'var(--ruby)']
+  ].map(([l,v,c])=>`<div style="background:var(--surface);border:1px solid var(--ink5);border-radius:8px;padding:10px 16px;text-align:center"><div style="font-size:10px;color:var(--ink4);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">${l}</div><div style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:700;color:${c||'var(--ink)'}">${v}</div></div>`).join('');
+
+  list.innerHTML = ventes.map(v=>{
+    const pnl = v.pnl||0;
+    const dateStr = v.date ? new Date(v.date+'T12:00:00').toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'}) : '';
+    return `<div class="vente-card">
+      <div>
+        <div class="vente-card-name">${v.wineName}${v.wineYear?' '+v.wineYear:''}</div>
+        <div class="vente-card-meta">${v.wineApp} · ${dateStr} · ${v.qty} bouteille${v.qty>1?'s':''}</div>
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:4px">
+          <div class="vente-card-platform">${v.platform}</div>
+          <div class="vente-status vente-status-${v.status||'a_vendre'}">${statusLabel(v.status)}</div>
+        </div>
+        ${v.notes?`<div style="font-size:11px;color:var(--ink4);margin-top:6px;font-style:italic">${v.notes}</div>`:''}
+        <div style="display:flex;gap:6px;margin-top:8px">
+          ${(v.status||'a_vendre')!=='vendu'?`<button type="button" onclick="cycleVenteStatus('${v.id}')" style="font-size:10px;padding:3px 8px;border:1px solid var(--ink5);border-radius:6px;background:none;cursor:pointer;color:var(--ink3);font-family:Inter,sans-serif">Mettre à jour →</button>`:''}
+          <button type="button" onclick="deleteVente('${v.id}')" style="font-size:10px;padding:3px 8px;border:1px solid var(--ink5);border-radius:6px;background:none;cursor:pointer;color:var(--ink4);font-family:Inter,sans-serif">Supprimer</button>
+        </div>
+      </div>
+      <div class="vente-card-pnl">
+        <div class="vente-card-price">${v.price}€<span style="font-size:13px;color:var(--ink4)">/btl</span></div>
+        <div class="vente-card-pnl-val ${pnl>=0?'vente-pnl-pos':'vente-pnl-neg'}">${pnl>=0?'+':''}${Math.round(pnl)}€</div>
+        <div style="font-size:10px;color:var(--ink5);margin-top:2px">vs ${v.buyPrice}€ achat</div>
+      </div>
+    </div>`;
+  }).join('');
+}
 
 // ── PROFIL UTILISATEUR ──
 let userProfile = {};
@@ -1088,12 +1413,15 @@ window.addEventListener('load',()=>{
 });
 
 function showTab(t){
-  ['cave','stats','wish'].forEach((n,i)=>{
+  const tabs=['cave','stats','degustation','ventes','wish'];
+  tabs.forEach((n,i)=>{
     document.querySelectorAll('.ntab')[i].classList.toggle('active',n===t);
     document.getElementById('tab-'+n).style.display=n===t?'':'none';
   });
   if(t==='stats')renderStats();
   if(t==='wish')renderWishes();
+  if(t==='degustation')renderDegustations();
+  if(t==='ventes')renderVentes();
 }
 function togglePanel(id){
   const p=document.getElementById(id);
@@ -1707,7 +2035,9 @@ function renderWines(){
         </div>
         <div class="footer-actions">
           <button class="editbtn" onclick="editWine('${w.id}')"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Modifier</button>
-          <button class="delbtn" onclick="delWine('${w.id}')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg></button>
+          <button class="winebtn wine-drink" onclick="openDrinkModal('${w.id}')" title="Boire">🍷</button>
+          <button class="winebtn wine-sell" onclick="openSellModal('${w.id}')" title="Vendre">💰</button>
+          <button class="delbtn" onclick="confirmDelete('${w.id}')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg></button>
         </div>
       </div>
     </div>`;
@@ -1869,6 +2199,113 @@ window.onerror = function(){
         <button type="button" class="ai-retry-btn" onclick="closeAIModal()">✕ Annuler</button>
       </div>
     </div>
+  </div>
+</div>
+
+
+<!-- MODAL CONFIRMATION SUPPRESSION -->
+<div class="modal-overlay" id="confirm-del-modal" onclick="if(event.target===this)closeConfirmDel()">
+  <div class="modal-box" style="max-width:340px;text-align:center">
+    <div style="font-size:32px;margin-bottom:12px">🗑️</div>
+    <div class="modal-title" style="text-align:center">Supprimer ce vin ?</div>
+    <div style="font-size:13px;color:var(--ink4);margin-bottom:24px" id="confirm-del-name"></div>
+    <div style="display:flex;gap:10px">
+      <button type="button" onclick="closeConfirmDel()" style="flex:1;height:40px;border:1.5px solid var(--ink5);background:none;border-radius:8px;font-size:13px;cursor:pointer;font-family:Inter,sans-serif;color:var(--ink3)">Annuler</button>
+      <button type="button" onclick="execDelete()" style="flex:1;height:40px;background:var(--ruby);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:Inter,sans-serif">Supprimer</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL BOIRE -->
+<div class="modal-overlay" id="drink-modal" onclick="if(event.target===this)closeDrinkModal()">
+  <div class="modal-box" style="max-width:440px">
+    <button class="modal-close" onclick="closeDrinkModal()">✕</button>
+    <div class="modal-title">🍷 Enregistrer une dégustation</div>
+    <div style="font-size:14px;font-weight:600;color:var(--ink3);margin-bottom:16px" id="drink-wine-name"></div>
+
+    <div class="profile-grid">
+      <div class="profile-fg">
+        <label>Nombre de bouteilles bues</label>
+        <input type="number" id="drink-qty" value="1" min="1" style="height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:Inter,sans-serif;outline:none">
+      </div>
+      <div class="profile-fg">
+        <label>Date</label>
+        <input type="date" id="drink-date" style="height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:Inter,sans-serif;outline:none">
+      </div>
+      <div class="profile-fg full">
+        <label>Ma note /100</label>
+        <div style="display:flex;align-items:center;gap:12px">
+          <input type="range" id="drink-note-range" min="0" max="100" step="1" value="0" oninput="document.getElementById('drink-note-val').textContent=this.value" style="flex:1">
+          <span id="drink-note-val" style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;color:var(--ruby);min-width:36px;text-align:center">0</span>
+          <span style="font-size:12px;color:var(--ink4)">/100</span>
+        </div>
+      </div>
+      <div class="profile-fg full">
+        <label>Occasion</label>
+        <select id="drink-occasion" style="height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:Inter,sans-serif;outline:none">
+          <option value="perso">Personnel</option>
+          <option value="repas">Repas en famille</option>
+          <option value="amis">Entre amis</option>
+          <option value="resto">Restaurant</option>
+          <option value="degustation">Dégustation</option>
+          <option value="evenement">Événement</option>
+        </select>
+      </div>
+      <div class="profile-fg full">
+        <label>Commentaire de dégustation</label>
+        <textarea id="drink-comment" placeholder="Arômes, bouche, finale…" rows="3" style="padding:8px 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:Inter,sans-serif;outline:none;resize:vertical;width:100%;box-sizing:border-box"></textarea>
+      </div>
+    </div>
+    <button class="profile-save-btn" onclick="saveDrink()">Enregistrer la dégustation</button>
+  </div>
+</div>
+
+<!-- MODAL VENDRE -->
+<div class="modal-overlay" id="sell-modal" onclick="if(event.target===this)closeSellModal()">
+  <div class="modal-box" style="max-width:440px">
+    <button class="modal-close" onclick="closeSellModal()">✕</button>
+    <div class="modal-title">💰 Enregistrer une vente</div>
+    <div style="font-size:14px;font-weight:600;color:var(--ink3);margin-bottom:16px" id="sell-wine-name"></div>
+
+    <div class="profile-grid">
+      <div class="profile-fg">
+        <label>Nombre de bouteilles vendues</label>
+        <input type="number" id="sell-qty" value="1" min="1" style="height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:Inter,sans-serif;outline:none">
+      </div>
+      <div class="profile-fg">
+        <label>Date de vente</label>
+        <input type="date" id="sell-date" style="height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:Inter,sans-serif;outline:none">
+      </div>
+      <div class="profile-fg">
+        <label>Prix de vente (€/bouteille)</label>
+        <input type="number" id="sell-price" placeholder="0" min="0" step="0.5" style="height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:Inter,sans-serif;outline:none">
+      </div>
+      <div class="profile-fg">
+        <label>Plateforme</label>
+        <select id="sell-platform" style="height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:Inter,sans-serif;outline:none">
+          <option value="iDealwine">iDealwine</option>
+          <option value="Drouot">Drouot</option>
+          <option value="Millésima">Millésima</option>
+          <option value="Caviste">Caviste</option>
+          <option value="Particulier">Particulier</option>
+          <option value="eBay">eBay</option>
+          <option value="Autre">Autre</option>
+        </select>
+      </div>
+      <div class="profile-fg full">
+        <label>Statut</label>
+        <select id="sell-status" style="height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:Inter,sans-serif;outline:none">
+          <option value="a_vendre">À mettre en vente</option>
+          <option value="en_cours">En cours de vente</option>
+          <option value="vendu">Vendu</option>
+        </select>
+      </div>
+      <div class="profile-fg full">
+        <label>Notes (acheteur, conditions…)</label>
+        <textarea id="sell-notes" placeholder="Optionnel…" rows="2" style="padding:8px 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:Inter,sans-serif;outline:none;resize:vertical;width:100%;box-sizing:border-box"></textarea>
+      </div>
+    </div>
+    <button class="profile-save-btn" onclick="saveSell()">Enregistrer la vente</button>
   </div>
 </div>
 
