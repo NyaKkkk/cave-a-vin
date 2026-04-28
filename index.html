@@ -1085,8 +1085,10 @@ function renderDegustations(){
     const wineRef = wines.find(w=>w.id===d.wineId);
     const wineImg = wineRef?.img_url || d.img_url || null;
     return `<div class="deg-card">
-      ${wineImg?`<img src="${wineImg}" style="width:48px;height:68px;object-fit:cover;border-radius:6px;flex-shrink:0">`:
-        `<div style="min-width:48px;text-align:center;padding-top:4px">${d.note>0?`<div style="font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:700;color:var(--ruby);line-height:1">${d.note}</div><div style="font-size:10px;color:var(--ink4)">/100</div>`:'<div style="font-size:24px">🍷</div>'}</div>`}
+      ${wineImg?`<div style="width:56px;flex-shrink:0;display:flex;align-items:center;justify-content:center"><img src="${wineImg}" style="max-width:56px;max-height:90px;width:auto;height:auto;object-fit:contain;border-radius:4px"></div>`:''}
+      <div style="min-width:48px;text-align:center;flex-shrink:0;${wineImg?'display:none':''}">
+        ${d.note>0?`<div style="font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:700;color:var(--ruby);line-height:1">${d.note}</div><div style="font-size:10px;color:var(--ink4)">/100</div>`:'<div style="font-size:24px">🍷</div>'}
+      </div>
       <div class="deg-card-body">
         <div class="deg-card-name">${d.wineName}${d.wineYear?' '+d.wineYear:''}</div>
         <div class="deg-card-meta">${d.wineApp}${d.wineApp&&d.wineType?' · ':''}${d.wineType} · ${occLabels[d.occasion]||d.occasion||''}</div>
@@ -1149,7 +1151,7 @@ function renderVentes(){
     const wRefV = wines.find(w=>w.id===v.wineId);
     const wImgV = wRefV?.img_url || v.img_url || null;
     return `<div class="vente-card">
-      ${wImgV?`<img src="${wImgV}" style="width:44px;height:62px;object-fit:cover;border-radius:6px;flex-shrink:0;align-self:center">`:``}
+      ${wImgV?`<div style="width:50px;flex-shrink:0;display:flex;align-items:center;justify-content:center"><img src="${wImgV}" style="max-width:50px;max-height:80px;width:auto;height:auto;object-fit:contain;border-radius:4px"></div>`:``}
       <div style="flex:1">
         <div class="vente-card-name">${v.wineName}${v.wineYear?' '+v.wineYear:''}</div>
         <div class="vente-card-meta">${v.wineApp} · ${dateStr} · ${v.qty} bouteille${v.qty>1?'s':''}</div>
