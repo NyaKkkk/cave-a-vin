@@ -2139,9 +2139,6 @@ function renderWines(){
           <button class="delbtn" onclick="confirmDelete('${w.id}')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg></button>
         </div>
       </div>
-      <div style="border-left:1px solid var(--ink5);padding-left:12px;min-width:130px;max-width:180px;cursor:pointer;align-self:stretch;display:flex;align-items:center" onclick="editVenteNotes('${v.id}',this)" title="Cliquer pour modifier">
-        <span style="font-size:11px;color:${v.notes?'var(--ink3)':'var(--ink5)'};font-style:italic;line-height:1.4">${v.notes||'+ Note…'}</span>
-      </div>
     </div>`;
   }).join('');
 }
