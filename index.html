@@ -407,12 +407,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);font-s
 
 <!-- CAVE -->
 <div id="tab-cave">
-  <div class="api-section">
-    <label>🔑 Clé API Anthropic</label>
-    <input class="api-input" type="password" id="api-key-input" placeholder="sk-ant-..." value="">
-    <button class="api-save" onclick="saveApiKey()">Enregistrer</button>
-    <div class="api-hint">Nécessaire pour l'Import IA. Stockée localement dans votre navigateur. Obtenez une clé sur console.anthropic.com</div>
-  </div>
+
 
   <div class="toolbar">
     <div class="search-wrap">
@@ -695,7 +690,8 @@ async function doLogout(){
   const scripts = [
     'https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js',
     'https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js',
-    'https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js'
+    'https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js',
+    'https://www.gstatic.com/firebasejs/9.23.0/firebase-app-check-compat.js'
   ];
 
   let loaded = 0;
@@ -1061,15 +1057,11 @@ let wines=[];
 let wishes=[];
 let imgs={};
 
-function saveApiKey(){
-  const k=document.getElementById('api-key-input').value.trim();
-  if(k)localStorage.setItem('cave_api_key',k);
-  alert('Clé API enregistrée !');
-}
-function getApiKey(){return localStorage.getItem('cave_api_key')||''}
+function saveApiKey(){ /* géré par Firebase AI */ }
+function getApiKey(){ return ''; }
 
 window.addEventListener('load',()=>{
-  const k=getApiKey();
+  const k='';
   if(k)document.getElementById('api-key-input').value=k;
 });
 
@@ -1144,15 +1136,50 @@ const AI_PROMPT=`Tu es un expert sommelier encyclopédiste. À partir du vin fou
 {"name":"Nom complet","appellation":"AOC/AOP exacte","type":"Rouge|Blanc|Rosé|Pétillant|Orange|Vin muté / Fortifié|Vin doux naturel|Vin jaune / Oxydatif|Vin de paille / Passerillé|Vin naturel / Nature|Vin biodynamique|Cidre / Poiré|Autre","region":"Région","year":2019,"apogee":"2024–2035 ou null","notes_degustation":"Description courte ou null","parker":null,"suckling":null,"decanter":null,"vinous":null,"bettane":null,"jancis":null,"ws":null,"bh":null}
 RÈGLE : notes critiques uniquement si CERTAIN. Parker/Suckling/Vinous/WS/BH sur 100. Decanter/Bettane/Jancis sur 20.`;
 
+// ── GEMINI VIA FIREBASE AI ──
+let geminiModel = null;
+
+async function initGemini(){
+  if(geminiModel) return geminiModel;
+  try{
+    // Firebase AI Logic (Gemini)
+    const {getAI, getGenerativeModel, GoogleAIBackend} = await import('https://www.gstatic.com/firebasejs/11.8.1/firebase-ai.js');
+    const ai = getAI(firebase.app(), {backend: new GoogleAIBackend()});
+    geminiModel = getGenerativeModel(ai, {
+      model: 'gemini-2.0-flash',
+      systemInstruction: AI_PROMPT
+    });
+    return geminiModel;
+  }catch(e){
+    console.error('Gemini init error:', e);
+    return null;
+  }
+}
+
 async function callAI(content){
-  const key=getApiKey();
-  if(!key){alert('Veuillez entrer votre clé API Anthropic en haut de la page.');return null;}
-  const res=await fetch('https://api.anthropic.com/v1/messages',{
-    method:'POST',
-    headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:AI_PROMPT,messages:[{role:'user',content}]})
-  });
-  return(await res.json()).content?.map(b=>b.text||'').join('');
+  try{
+    const model = await initGemini();
+    if(!model){ console.error('Gemini non disponible'); return null; }
+    
+    let parts = [];
+    if(typeof content === 'string'){
+      parts = [content];
+    } else if(Array.isArray(content)){
+      // Contenu avec image
+      content.forEach(c=>{
+        if(c.type==='text') parts.push(c.text);
+        else if(c.type==='image'){
+          parts.push({inlineData:{mimeType:c.source.media_type, data:c.source.data}});
+        }
+      });
+    }
+    
+    const result = await model.generateContent(parts);
+    return result.response.text();
+  }catch(e){
+    console.error('callAI error:', e);
+    return null;
+  }
 }
 
 function showL(id){document.getElementById(id).classList.add('visible')}
