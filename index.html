@@ -1085,11 +1085,13 @@ function renderDegustations(){
     const wineRef = wines.find(w=>w.id===d.wineId);
     const wineImg = wineRef?.img_url || d.img_url || null;
     return `<div class="deg-card">
-      ${wineImg?`<div style="width:52px;flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-right:2px"><img src="${wineImg}" style="max-width:52px;max-height:88px;width:auto;height:auto;object-fit:contain;border-radius:4px"></div>`:`<div style="min-width:48px;text-align:center;flex-shrink:0">${d.note>0?`<div style="font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:700;color:var(--ruby);line-height:1">${d.note}</div><div style="font-size:10px;color:var(--ink4)">/100</div>`:`<div style="font-size:24px">🍷</div>`}</div>`}
+      ${wineImg?`<div style="width:52px;flex-shrink:0;display:flex;align-items:center;justify-content:center"><img src="${wineImg}" style="max-width:52px;max-height:88px;width:auto;height:auto;object-fit:contain;border-radius:4px"></div>`:`<div style="font-size:24px;flex-shrink:0;text-align:center;width:52px">🍷</div>`}
+      <div style="flex-shrink:0;text-align:center;min-width:52px;border-left:1px solid var(--ink5);border-right:1px solid var(--ink5);padding:0 12px;margin:0 4px">
+        ${d.note>0?`<div style="font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:700;color:var(--ruby);line-height:1">${d.note}</div><div style="font-size:10px;color:var(--ink4);margin-top:2px">/100</div><div style="color:var(--gold);font-size:11px;margin-top:4px">${starsHtml}</div>`:`<div style="font-size:20px;color:var(--ink5)">—</div>`}
+      </div>
       <div class="deg-card-body">
         <div class="deg-card-name">${d.wineName}${d.wineYear?' '+d.wineYear:''}</div>
         <div class="deg-card-meta">${d.wineApp}${d.wineApp&&d.wineType?' · ':''}${d.wineType} · ${occLabels[d.occasion]||d.occasion||''}</div>
-        ${d.note>0?`<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><span style="color:var(--gold);font-size:13px">${starsHtml}</span><span style="font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:700;color:var(--ruby)">${d.note}<span style="font-size:11px;color:var(--ink4)">/100</span></span></div>`:''}
         ${d.comment?`<div class="deg-card-comment">"${d.comment}"</div>`:''}
         <div style="font-size:10px;color:var(--ink5);margin-top:8px">${dateStr} · ${d.qty} bouteille${d.qty>1?'s':''}</div>
       </div>
@@ -1102,13 +1104,43 @@ function statusLabel(s){
   return {a_vendre:'À vendre',en_cours:'En cours',vendu:'Vendu ✓'}[s||'a_vendre']||'À vendre';
 }
 
-async function updateVenteStatus(id, status){
+async function updateVenteStatus(id){
   const v = ventes.find(x=>x.id===id);
   if(!v) return;
-  v.status = status;
+  const cycle = {a_vendre:'en_cours', en_cours:'vendu', vendu:'a_vendre'};
+  v.status = cycle[v.status||'a_vendre'];
   renderVentes();
   if(db&&currentUser&&id&&!id.startsWith('tmp-')){
-    await db.collection('users').doc(currentUser.uid).collection('ventes').doc(id).update({status});
+    await db.collection('users').doc(currentUser.uid).collection('ventes').doc(id).update({status:v.status});
+  }
+}
+
+async function undoVente(id){
+  const v = ventes.find(x=>x.id===id);
+  if(!v) return;
+  // Remettre les bouteilles en cave
+  const w = wines.find(w=>w.id===v.wineId);
+  if(w){
+    w.qty += v.qty;
+    saveWineToDb(w);
+  } else {
+    // Le vin n'existe plus, le recréer
+    const newWine = {
+      id:'tmp-'+Date.now(), name:v.wineName, app:v.wineApp||'',
+      type:v.wineType||'Rouge', reg:'', country:'France',
+      year:v.wineYear||null, qty:v.qty, buy:v.buyPrice||0, cur:v.price||0,
+      ap:'', cont:'75cl', notes:'', certs:[], customCritics:{},
+      parker:null,suckling:null,decanter:null,vinous:null,
+      bettane:null,jancis:null,ws:null,bh:null, img_url:v.img_url||null
+    };
+    wines.push(newWine);
+    saveWineToDb(newWine).then(()=>renderWines());
+  }
+  // Supprimer la vente
+  ventes = ventes.filter(x=>x.id!==id);
+  renderWines(); updateStats(); renderVentes();
+  if(db&&currentUser&&id&&!id.startsWith('tmp-')){
+    await db.collection('users').doc(currentUser.uid).collection('ventes').doc(id).delete();
   }
 }
 
@@ -1157,13 +1189,10 @@ function renderVentes(){
           <div class="vente-status vente-status-${v.status||'a_vendre'}">${statusLabel(v.status)}</div>
         </div>
         ${v.notes?`<div style="font-size:11px;color:var(--ink4);margin-top:6px;font-style:italic">${v.notes}</div>`:''}
-        <div style="display:flex;align-items:center;gap:8px;margin-top:8px">
-          <select onchange="updateVenteStatus('${v.id}',this.value)" style="height:26px;padding:0 6px;border:1px solid var(--ink5);border-radius:6px;font-size:11px;font-family:Inter,sans-serif;outline:none;cursor:pointer;background:var(--surface);color:var(--ink3)">
-            <option value="a_vendre" ${(v.status||'a_vendre')==='a_vendre'?'selected':''}>À vendre</option>
-            <option value="en_cours" ${v.status==='en_cours'?'selected':''}>En cours</option>
-            <option value="vendu" ${v.status==='vendu'?'selected':''}>Vendu ✓</option>
-          </select>
-          <button type="button" onclick="deleteVente('${v.id}')" style="font-size:10px;padding:3px 8px;border:1px solid var(--ink5);border-radius:6px;background:none;cursor:pointer;color:var(--ink4);font-family:Inter,sans-serif">✕</button>
+        <div style="display:flex;align-items:center;gap:6px;margin-top:8px;flex-wrap:wrap">
+          <div class="vente-status vente-status-${v.status||'a_vendre'}" onclick="updateVenteStatus('${v.id}')" style="cursor:pointer" title="Cliquer pour changer le statut">${statusLabel(v.status)} ›</div>
+          <button type="button" onclick="undoVente('${v.id}')" title="Remettre en cave" style="height:24px;padding:0 8px;border:1px solid var(--ink5);border-radius:6px;background:none;cursor:pointer;color:var(--ink4);font-family:Inter,sans-serif;font-size:11px" >↩ Cave</button>
+          <button type="button" onclick="deleteVente('${v.id}')" title="Supprimer de l'historique" style="height:24px;padding:0 8px;border:1px solid var(--ink5);border-radius:6px;background:none;cursor:pointer;color:var(--ink4);font-family:Inter,sans-serif;font-size:11px">🗑</button>
         </div>
       </div>
       <div class="vente-card-pnl">
