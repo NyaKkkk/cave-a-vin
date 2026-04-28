@@ -1317,11 +1317,20 @@ function saveEdit(id){
     certs:[...formCerts],
     notes:document.getElementById('f-notes').value.trim()
   };
-  const criticVals2=getCriticValues();
-  CRITICS.forEach(c=>{wines[idx][c.k]=criticVals2[c.k]||null;});
-  const customCritics2={};
-  Object.entries(activeCritics).filter(([k,v])=>v.custom).forEach(([k,v])=>{customCritics2[k]={label:v.label,max:v.max,value:criticVals2[k]};});
-  if(Object.keys(customCritics2).length) wines[idx].customCritics=customCritics2;
+  // Remettre tous les critiques standards à null d'abord
+  CRITICS.forEach(c=>{ wines[idx][c.k]=null; });
+  wines[idx].customCritics={};
+  // Appliquer uniquement les critiques encore présents dans activeCritics
+  Object.entries(activeCritics).forEach(([key,c])=>{
+    const el=document.getElementById('fc-'+key);
+    const val=el&&el.value?parseFloat(el.value):null;
+    if(val===null) return;
+    if(!c.custom){
+      wines[idx][key]=val;
+    } else {
+      wines[idx].customCritics[key]={label:c.label,max:c.max,value:val};
+    }
+  });
   const photoData=formPhotoData;formPhotoData=null;
   clearForm();closePanel('add-form');
   renderWines();updateStats();
