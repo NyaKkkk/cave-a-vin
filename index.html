@@ -1093,15 +1093,16 @@ function renderDegustations(){
       <div style="display:flex;gap:0;align-items:stretch;flex:1;min-width:0">
         <div class="deg-card-body" style="flex:none">
           <div class="deg-card-name">${d.wineName}${d.wineYear?' '+d.wineYear:''}</div>
-          <div class="deg-card-meta">${d.wineApp}${d.wineApp&&d.wineType?' · ':''}${d.wineType} · ${occLabels[d.occasion]||d.occasion||''}</div>
+          <div class="deg-card-meta">${d.wineApp}${d.wineApp&&d.wineType?' · ':''}${d.wineType} · <span onclick="editDegOccasion('${d.id}',this)" style="cursor:pointer;text-decoration:underline dotted;text-underline-offset:2px" title="Cliquer pour modifier">${occLabels[d.occasion]||d.occasion||'—'}</span></div>
           <div style="font-size:10px;color:var(--ink5);margin-top:8px">${dateStr} · ${d.qty} bouteille${d.qty>1?'s':''}</div>
-          <div style="margin-top:10px">
-            <button type="button" onclick="deleteDegustation('${d.id}')" style="display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 8px;border:1px solid var(--ink5);border-radius:6px;background:none;cursor:pointer;color:var(--ink4);font-family:Inter,sans-serif;font-size:11px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg> Supprimer</button>
-          </div>
         </div>
         <div style="width:1px;background:var(--ink5);margin:0 14px;flex-shrink:0"></div>
         <div style="width:200px;flex-shrink:0;cursor:pointer;display:flex;align-items:center" onclick="editDegComment('${d.id}',this)" title="Cliquer pour modifier">
           <span style="font-size:13px;color:${d.comment?'var(--ink3)':'var(--ink5)'};font-style:italic;line-height:1.5">${d.comment||'+ Commentaire…'}</span>
+        </div>
+        <div style="width:1px;background:var(--ink5);margin:0 14px;flex-shrink:0"></div>
+        <div style="flex-shrink:0;display:flex;align-items:center;justify-content:center">
+          <button type="button" onclick="deleteDegustation('${d.id}')" title="Supprimer" style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border:1px solid var(--ink5);border-radius:6px;background:none;cursor:pointer;color:var(--ink4);transition:all .2s" onmouseover="this.style.borderColor='var(--ruby)';this.style.color='var(--ruby)'" onmouseout="this.style.borderColor='var(--ink5)';this.style.color='var(--ink4)'"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg></button>
         </div>
       </div>
     </div>`;
@@ -1203,6 +1204,31 @@ async function undoVente(id){
   if(db&&currentUser&&id&&!id.startsWith('tmp-')){
     await db.collection('users').doc(currentUser.uid).collection('ventes').doc(id).delete();
   }
+}
+
+async function editDegOccasion(id, el){
+  const d = degustations.find(x=>x.id===id);
+  if(!d) return;
+  const occLabels={perso:'Personnel',repas:'Repas en famille',amis:'Entre amis',resto:'Restaurant',degustation:'Dégustation',evenement:'Événement'};
+  const sel = document.createElement('select');
+  sel.style.cssText = 'border:none;border-bottom:1.5px solid var(--ruby);font-size:11px;font-family:Inter,sans-serif;outline:none;cursor:pointer;background:transparent;color:var(--ink3);padding:0';
+  Object.entries(occLabels).forEach(([k,v])=>{
+    const opt = document.createElement('option');
+    opt.value=k; opt.textContent=v;
+    if(k===d.occasion) opt.selected=true;
+    sel.appendChild(opt);
+  });
+  el.replaceWith(sel);
+  sel.focus();
+  const save = async()=>{
+    d.occasion = sel.value;
+    renderDegustations();
+    if(db&&currentUser&&id&&!id.startsWith('tmp-')){
+      await db.collection('users').doc(currentUser.uid).collection('degustations').doc(id).update({occasion:d.occasion});
+    }
+  };
+  sel.onchange = save;
+  sel.onblur = save;
 }
 
 async function editDegComment(id, el){
