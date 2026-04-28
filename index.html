@@ -1449,7 +1449,7 @@ function renderWines(){
         <div class="wbody">
           <div class="wname">${w.name}</div>
           ${w.year?`<div class="wyear">${w.year}</div>`:''}
-          <div class="wmeta">${w.country?`<span class="wmeta-country">${w.country}</span><span class="wmeta-dot"></span>':''} ${w.reg?`<span class="wmeta-reg">${w.reg}</span>`:''}${w.reg&&w.app?`<span class="wmeta-dot"></span>`:''}${w.app?`<span class="wmeta-txt">${w.app}</span>`:''}${w.cont?`<span class="wmeta-dot"></span><span class="wmeta-txt">${w.cont}</span>`:''}</div>
+          <div class="wmeta">${w.country?`<span class="wmeta-country">${w.country}</span><span class="wmeta-dot"></span>`:''} ${w.reg?`<span class="wmeta-reg">${w.reg}</span>`:''}${w.reg&&w.app?`<span class="wmeta-dot"></span>`:''}${w.app?`<span class="wmeta-txt">${w.app}</span>`:''}${w.cont?`<span class="wmeta-dot"></span><span class="wmeta-txt">${w.cont}</span>`:''}</div>
           <div class="wtags"><span class="tpill" style="background:${pb};color:${pt}">${shortType}</span>${w.ap?`<div class="apbadge">⏳ ${w.ap}</div>`:''}</div>
           ${pH}
           ${w.notes?`<div class="wnotes">${w.notes}</div>`:''}
