@@ -2229,81 +2229,95 @@ function updateStats(){
 }
 
 // ── CARTE DU MONDE ──
+// Coordonnées pixel dans une projection Mercator simplifiée (viewBox 1000x500)
 const COUNTRY_COORDS = {
-  'France':{x:480,y:185},'Italie':{x:505,y:205},'Espagne':{x:455,y:205},
-  'Portugal':{x:440,y:205},'Allemagne':{x:495,y:175},'Autriche':{x:510,y:180},
-  'Hongrie':{x:520,y:180},'Grèce':{x:525,y:215},'Bulgarie':{x:530,y:195},
-  'Roumanie':{x:535,y:185},'Croatie':{x:515,y:190},'Slovénie':{x:510,y:185},
-  'USA':{x:200,y:185},'Canada':{x:210,y:155},'Mexique':{x:210,y:220},
-  'Argentine':{x:270,y:340},'Chili':{x:255,y:330},'Uruguay':{x:280,y:330},
-  'Brésil':{x:295,y:300},'Australie':{x:760,y:360},'Nouvelle-Zélande':{x:870,y:400},
-  'Afrique du Sud':{x:535,y:370},'Maroc':{x:460,y:220},'Tunisie':{x:490,y:215},
-  'Liban':{x:560,y:210},'Israël':{x:555,y:215},'Géorgie':{x:575,y:195},
-  'Arménie':{x:575,y:195},'Turquie':{x:550,y:200},'Chine':{x:750,y:200},
-  'Japon':{x:820,y:190},'Inde':{x:680,y:240}
+  'France':[484,183],'Italie':[504,195],'Espagne':[458,198],'Portugal':[443,202],
+  'Allemagne':[496,170],'Autriche':[511,175],'Hongrie':[519,174],'Grèce':[523,206],
+  'Bulgarie':[530,188],'Roumanie':[533,180],'Croatie':[512,185],'Slovénie':[508,180],
+  'USA':[200,190],'Canada':[215,155],'Mexique':[213,225],
+  'Argentine':[268,348],'Chili':[254,338],'Uruguay':[278,335],
+  'Brésil':[292,305],'Australie':[758,368],'Nouvelle-Zélande':[868,405],
+  'Afrique du Sud':[536,375],'Maroc':[462,218],'Tunisie':[492,212],
+  'Liban':[558,208],'Israël':[553,212],'Géorgie':[576,193],
+  'Arménie':[574,192],'Turquie':[548,198],'Chine':[748,202],
+  'Japon':[818,192],'Inde':[676,242],'Angleterre':[476,167]
 };
 
+// Fond de carte SVG simplifié des continents (coordonnées calibrées)
+const WORLD_BG = `
+<rect width="1000" height="500" fill="#dce8f2" rx="6"/>
+<g fill="#c5d9b5" stroke="#a8c090" stroke-width="0.8">
+<!-- Europe -->
+<path d="M442,145 L458,138 L472,135 L488,132 L502,130 L515,128 L528,125 L542,128 L550,135 L558,140 L562,148 L558,155 L552,162 L544,168 L536,172 L528,178 L522,185 L516,190 L510,196 L506,202 L508,210 L512,216 L516,220 L514,226 L508,230 L500,228 L492,224 L486,218 L480,212 L474,206 L468,200 L462,195 L456,190 L450,185 L444,178 L440,170 L438,162 L440,154 Z"/>
+<!-- Scandinavie -->
+<path d="M468,108 L478,102 L490,98 L502,96 L512,100 L518,108 L514,116 L508,122 L500,126 L492,130 L484,132 L476,130 L470,122 L466,114 Z"/>
+<!-- Afrique -->
+<path d="M448,222 L462,218 L476,215 L490,214 L504,215 L518,218 L530,224 L542,232 L550,242 L556,255 L558,268 L556,282 L550,296 L542,310 L532,322 L520,332 L508,340 L496,344 L482,344 L468,340 L456,332 L446,322 L438,310 L432,296 L428,282 L428,268 L430,255 L436,242 L442,232 Z"/>
+<!-- Asie -->
+<path d="M558,98 L580,92 L605,88 L632,86 L658,88 L682,92 L705,98 L726,106 L744,116 L758,128 L768,140 L772,152 L768,164 L760,174 L750,182 L738,188 L724,192 L710,194 L696,192 L682,188 L668,184 L655,180 L642,178 L628,178 L614,180 L600,182 L586,182 L572,180 L560,176 L550,170 L544,162 L542,152 L544,142 L550,132 L556,122 L558,112 Z"/>
+<!-- Moyen-Orient -->
+<path d="M542,196 L556,192 L570,190 L582,192 L592,198 L598,208 L596,218 L588,226 L576,230 L562,230 L550,226 L542,218 L540,208 Z"/>
+<!-- Inde -->
+<path d="M638,200 L654,196 L668,198 L678,206 L682,218 L680,230 L674,240 L664,248 L652,252 L640,250 L630,244 L624,234 L622,222 L626,212 L632,206 Z"/>
+<!-- Asie du Sud-Est -->
+<path d="M740,210 L756,206 L770,208 L780,216 L782,226 L776,234 L764,238 L752,236 L742,228 L738,218 Z"/>
+<!-- Amérique du Nord -->
+<path d="M105,108 L130,100 L158,96 L186,96 L212,100 L234,108 L252,120 L264,134 L270,150 L268,166 L258,180 L244,192 L228,200 L210,205 L192,206 L174,204 L156,198 L140,190 L126,180 L114,168 L106,154 L102,140 L102,126 Z"/>
+<!-- Mexique/Am Centrale -->
+<path d="M172,210 L188,206 L204,208 L218,214 L228,224 L232,236 L228,246 L218,252 L206,254 L194,250 L184,242 L178,230 L174,218 Z"/>
+<!-- Amérique du Sud -->
+<path d="M220,264 L240,256 L262,254 L282,256 L300,264 L314,276 L322,292 L324,310 L318,328 L306,344 L290,356 L272,364 L254,366 L236,362 L220,352 L208,338 L200,320 L196,302 L198,284 L206,270 Z"/>
+<!-- Australie -->
+<path d="M706,318 L730,310 L756,308 L780,312 L802,322 L818,336 L826,352 L824,368 L814,382 L798,392 L778,396 L756,394 L736,386 L720,374 L710,358 L706,342 Z"/>
+<!-- Nouvelle-Zélande -->
+<path d="M856,380 L866,374 L874,376 L878,384 L876,394 L868,400 L860,400 L854,394 L852,386 Z"/>
+<!-- Japon -->
+<path d="M810,168 L820,162 L828,164 L832,172 L828,180 L818,184 L810,182 L806,174 Z"/>
+</g>`;
+
 function renderWorldMap(wines){
-  const svg = document.getElementById('world-map-svg');
+  const svg=document.getElementById('world-map-svg');
   if(!svg) return;
-  // Compter les bouteilles par pays
   const byCountry={};
   wines.forEach(w=>{
     const c=w.country||'France';
     byCountry[c]=(byCountry[c]||0)+w.qty;
   });
+  if(Object.keys(byCountry).length===0){
+    svg.innerHTML=WORLD_BG+'<text x="500" y="260" text-anchor="middle" fill="#a0b0c0" style="font-size:14px">Aucun vin avec un pays renseigné</text>';
+    return;
+  }
   const maxQty=Math.max(...Object.values(byCountry),1);
-  document.getElementById('world-map-max').textContent=maxQty+' btl';
-  // Fond carte simple (paths simplifiés des continents)
-  const bgPath=`
-    M160,120 C180,100 220,95 260,100 C300,105 340,110 370,120 C400,130 430,140 450,155
-    C470,170 480,185 480,185 C480,185 500,170 530,165 C560,160 590,165 615,175
-    C640,185 660,195 665,210 C670,225 660,235 645,235 C630,235 610,230 595,230
-    C580,230 570,235 560,245 C550,255 545,265 540,275 C535,285 530,290 520,295
-    C510,300 495,295 485,285 C475,275 470,265 460,260 C450,255 435,255 420,260
-    C405,265 390,275 375,285 C360,295 345,300 330,295 C315,290 305,280 300,265
-    C295,250 295,235 290,225 C285,215 275,210 265,210 C255,210 240,215 225,215
-    C210,215 195,210 182,200 C169,190 160,175 155,165 C150,155 148,145 150,135 Z
-    M240,260 C260,255 280,260 295,270 C310,280 315,295 310,310 C305,325 290,340 270,345
-    C250,350 230,345 215,330 C200,315 198,295 205,280 C212,265 220,265 240,260 Z
-    M490,280 C510,275 530,280 545,295 C560,310 565,330 555,350 C545,370 525,385 500,385
-    C475,385 455,370 448,350 C441,330 450,310 465,298 C480,286 490,280 490,280 Z
-    M720,320 C750,310 780,315 800,330 C820,345 825,370 815,390 C805,410 780,425 750,425
-    C720,425 695,410 685,390 C675,370 682,345 700,335 Z
-    M520,330 C535,320 555,325 565,340 C575,355 570,375 555,382 C540,389 520,382 513,367
-    C506,352 505,340 520,330 Z
-  `;
-  // Construire les cercles de bulles par pays
+  const maxEl=document.getElementById('world-map-max');
+  if(maxEl) maxEl.textContent=maxQty+' btl';
   let bubblesHTML='';
-  const tooltip=document.getElementById('world-map-tooltip');
   Object.entries(byCountry).forEach(([country,qty])=>{
     const coords=COUNTRY_COORDS[country];
     if(!coords) return;
+    const [cx,cy]=coords;
     const ratio=qty/maxQty;
-    const r=6+ratio*24;
-    const opacity=0.3+ratio*0.7;
-    const color=`rgba(139,26,42,${opacity})`;
-    bubblesHTML+=`<circle cx="${coords.x}" cy="${coords.y}" r="${r}" fill="${color}" stroke="rgba(139,26,42,0.6)" stroke-width="1.5" style="cursor:pointer" data-country="${country}" data-qty="${qty}" onmouseover="showMapTooltip(event,'${country}',${qty})" onmouseout="hideMapTooltip()"/>`;
-    bubblesHTML+=`<text x="${coords.x}" y="${coords.y+3}" text-anchor="middle" style="font-size:9px;fill:#fff;font-weight:700;pointer-events:none">${qty}</text>`;
+    const r=Math.max(8,6+ratio*22);
+    const lightness=Math.round(25+ratio*15);
+    const fill=`hsl(350,68%,${lightness}%)`;
+    bubblesHTML+=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="${fill}" fill-opacity="0.85" stroke="#fff" stroke-width="1.5" style="cursor:pointer" onmouseover="showMapTooltip(event,'${country}',${qty})" onmouseout="hideMapTooltip()"/>`;
+    if(r>=12) bubblesHTML+=`<text x="${cx}" y="${cy+4}" text-anchor="middle" fill="#fff" font-size="10" font-weight="700" style="pointer-events:none">${qty}</text>`;
   });
-  svg.innerHTML=`
-    <rect width="1000" height="500" fill="#e8f0f8" rx="8"/>
-    <path d="${bgPath}" fill="#c8d8c0" stroke="#b0c0a8" stroke-width="0.5" opacity="0.6"/>
-    ${bubblesHTML}
-  `;
+  svg.innerHTML=WORLD_BG+bubblesHTML;
 }
 
 function showMapTooltip(e,country,qty){
   const t=document.getElementById('world-map-tooltip');
+  if(!t) return;
   t.textContent=country+' : '+qty+' bouteille'+(qty>1?'s':'');
   t.style.display='block';
-  const rect=document.getElementById('world-map-svg').getBoundingClientRect();
-  const containerRect=document.getElementById('world-map-container').getBoundingClientRect();
-  t.style.left=(e.clientX-containerRect.left+10)+'px';
-  t.style.top=(e.clientY-containerRect.top-30)+'px';
+  const cont=document.getElementById('world-map-container');
+  const rect=cont.getBoundingClientRect();
+  t.style.left=(e.clientX-rect.left+12)+'px';
+  t.style.top=(e.clientY-rect.top-36)+'px';
 }
 function hideMapTooltip(){
-  document.getElementById('world-map-tooltip').style.display='none';
+  const t=document.getElementById('world-map-tooltip');
+  if(t) t.style.display='none';
 }
 
 function filteredWines(){return statFilter==='all'?wines:wines.filter(w=>w.type===statFilter)}
@@ -2321,33 +2335,33 @@ function renderStats(){
   const rE=Object.entries(byR).map(([r,d])=>({r,pnl:Math.round(d.cur-d.buy),pct:d.buy>0?Math.round((d.cur-d.buy)/d.buy*100):0})).sort((a,b)=>b.pnl-a.pnl);
   const maxP=Math.max(...rE.map(x=>Math.abs(x.pnl)),1);
   document.getElementById('st-reg-pnl').innerHTML=rE.map(({r,pnl,pct})=>`<div class="rbar"><span class="rname">${r}</span><div class="btrack"><div class="bfill" style="width:${Math.round(Math.abs(pnl)/maxP*100)}%;background:${pnl>=0?'#2a7a2a':'#8b1a2a'}"></div></div><span class="bcnt" style="color:${pnl>=0?'#2a7a2a':'#8b1a2a'}">${pnl>=0?'+':''}${pnl}€</span></div>`).join('')||'<span style="font-size:12px;color:var(--ink4)">—</span>';
-  // Camembert répartition par type
+  // Camembert plein avec couleurs distinctes
   const byT={};fw.forEach(w=>{byT[w.type]=(byT[w.type]||0)+w.qty;});
   const totT=Math.max(Object.values(byT).reduce((a,b)=>a+b,0),1);
   const typeEntries=Object.entries(byT).sort((a,b)=>b[1]-a[1]);
-  // Dessiner le camembert
+  const PIE_COLORS=['#8b1a2a','#2a6b8b','#d4891a','#2a7a2a','#8b4a8b','#5a7a3a','#c44a1a','#1a5a8b','#8b7a2a','#4a2a8b','#7a2a4a','#2a4a7a'];
   const pieCanvas=document.getElementById('chart-type');
   if(pieCanvas){
     const ctx=pieCanvas.getContext('2d');
+    const dpr=window.devicePixelRatio||1;
+    pieCanvas.width=180*dpr; pieCanvas.height=180*dpr;
+    pieCanvas.style.width='180px'; pieCanvas.style.height='180px';
+    ctx.scale(dpr,dpr);
     ctx.clearRect(0,0,180,180);
-    const cx=90,cy=90,r=80;
+    const cx=90,cy=90,r=82;
     let startAngle=-Math.PI/2;
-    typeEntries.forEach(([t,c])=>{
+    typeEntries.forEach(([t,c],i)=>{
       const slice=(c/totT)*2*Math.PI;
       ctx.beginPath();ctx.moveTo(cx,cy);
       ctx.arc(cx,cy,r,startAngle,startAngle+slice);
-      ctx.closePath();ctx.fillStyle=tc(t,'bar');ctx.fill();
+      ctx.closePath();
+      ctx.fillStyle=PIE_COLORS[i%PIE_COLORS.length];ctx.fill();
       ctx.strokeStyle='#fff';ctx.lineWidth=2;ctx.stroke();
       startAngle+=slice;
     });
-    // Trou central
-    ctx.beginPath();ctx.arc(cx,cy,40,0,2*Math.PI);ctx.fillStyle='var(--surface)';ctx.fill();
-    ctx.fillStyle='var(--ink3)';ctx.font='bold 14px Inter,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
-    ctx.fillText(totT,cx,cy-6);ctx.font='10px Inter,sans-serif';ctx.fillStyle='var(--ink4)';ctx.fillText('btl',cx,cy+8);
   }
-  // Légende
-  document.getElementById('st-type-legend').innerHTML=typeEntries.map(([t,c])=>
-    `<div style="display:flex;align-items:center;gap:6px"><div style="width:10px;height:10px;border-radius:50%;background:${tc(t,'bar')};flex-shrink:0"></div><span style="font-size:11px;color:var(--ink3)">${t} <span style="color:var(--ink4)">${c} (${Math.round(c/totT*100)}%)</span></span></div>`
+  document.getElementById('st-type-legend').innerHTML=typeEntries.map(([t,c],i)=>
+    `<div style="display:flex;align-items:center;gap:6px"><div style="width:12px;height:12px;border-radius:3px;background:${PIE_COLORS[i%PIE_COLORS.length]};flex-shrink:0"></div><span style="font-size:11px;color:var(--ink3)">${t} <span style="color:var(--ink4)">${c} (${Math.round(c/totT*100)}%)</span></span></div>`
   ).join('');
   // Carte monde
   renderWorldMap(fw);
