@@ -614,10 +614,22 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);font-s
   <div class="pnl-summary" id="pnl-summary"></div>
   <div class="sgrid">
     <div class="scard"><h4>Plus-value par région</h4><div id="st-reg-pnl"></div></div>
-    <div class="scard"><h4>Répartition par type</h4><div style="position:relative;height:200px;display:flex;align-items:center;justify-content:center;gap:20px"><canvas id="chart-type" width="180" height="180" style="flex-shrink:0"></canvas><div id="st-type-legend" style="display:flex;flex-direction:column;gap:6px"></div></div></div>
+    <div class="scard"><h4>Répartition par type</h4><div style="position:relative;height:200px;display:flex;align-items:center;justify-content:center;gap:20px"><canvas id="chart-type" width="200" height="200" style="flex-shrink:0;cursor:pointer" onmousemove="pieHover(event)" onmouseleave="pieUnhover()"></canvas><div id="st-type-legend" style="display:flex;flex-direction:column;gap:6px"></div></div><div id="pie-tooltip" style="display:none;position:absolute;background:rgba(28,10,13,.88);color:#fff;font-size:11px;font-family:Inter,sans-serif;padding:5px 9px;border-radius:6px;pointer-events:none;z-index:10"></div></div>
     <div class="scard" style="grid-column:1/-1"><h4>Plus-value par millésime</h4><div class="chart-wrap"><canvas id="chart-millesime"></canvas></div></div>
     <div class="scard"><h4>Valeur achat vs actuelle par région</h4><div class="chart-wrap"><canvas id="chart-region"></canvas></div></div>
     <div class="scard"><h4>Top bouteilles par plus-value</h4><div id="st-top"></div></div>
+    <div class="scard" style="grid-column:1/-1">
+      <h4>Carte du monde — bouteilles par pays</h4>
+      <div id="world-map-container" style="width:100%;height:340px;position:relative;background:#dce8f2;border-radius:8px;overflow:hidden">
+        <svg id="world-map-svg" viewBox="0 0 1000 500" style="width:100%;height:100%;display:block"></svg>
+        <div id="world-map-tooltip" style="display:none;position:absolute;background:rgba(28,10,13,.88);color:#fff;font-size:11px;font-family:Inter,sans-serif;padding:6px 10px;border-radius:6px;pointer-events:none;white-space:nowrap;z-index:10"></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;margin-top:8px;font-size:11px;color:var(--ink4)">
+        <span>0</span>
+        <div style="flex:1;height:6px;border-radius:3px;background:linear-gradient(to right,#f0d8dc,#8b1a2a)"></div>
+        <span id="world-map-max">max</span>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -645,18 +657,6 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);font-s
     <div style="font-size:40px;margin-bottom:12px">💰</div>
     <div style="font-size:15px;font-weight:600;color:var(--ink3);margin-bottom:6px">Aucune vente</div>
     <div style="font-size:13px">Cliquez sur 💰 sur une carte de vin pour enregistrer une vente</div>
-    <div class="scard" style="grid-column:1/-1">
-    <h4>Carte du monde — bouteilles par pays</h4>
-    <div id="world-map-container" style="width:100%;min-height:320px;position:relative;background:var(--ink6);border-radius:8px;overflow:hidden">
-      <svg id="world-map-svg" viewBox="0 0 1000 500" style="width:100%;height:100%;display:block"></svg>
-      <div id="world-map-tooltip" style="display:none;position:absolute;background:rgba(28,10,13,.85);color:#fff;font-size:11px;padding:6px 10px;border-radius:6px;pointer-events:none;white-space:nowrap;z-index:10"></div>
-    </div>
-    <div id="world-map-legend" style="display:flex;align-items:center;gap:8px;margin-top:10px;font-size:11px;color:var(--ink4)">
-      <span>0</span>
-      <div style="flex:1;height:8px;border-radius:4px;background:linear-gradient(to right,#f5e6ea,#8b1a2a)"></div>
-      <span id="world-map-max">max</span>
-    </div>
-  </div>
 </div>
 </div>
 
@@ -2228,6 +2228,62 @@ function updateStats(){
   pe.className='hstat-val '+(pnl>0?'pnl-pos':pnl<0?'pnl-neg':'pnl-neu');
 }
 
+// ── CAMEMBERT ──
+function drawPie(hoverIdx){
+  const pieCanvas=document.getElementById('chart-type');
+  if(!pieCanvas||!window._pieData) return;
+  const dpr=window.devicePixelRatio||1;
+  pieCanvas.width=200*dpr; pieCanvas.height=200*dpr;
+  pieCanvas.style.width='200px'; pieCanvas.style.height='200px';
+  const ctx=pieCanvas.getContext('2d');
+  ctx.scale(dpr,dpr);
+  ctx.clearRect(0,0,200,200);
+  const cx=100,cy=100,r=92;
+  let startAngle=-Math.PI/2;
+  window._pieData.forEach(({t,c,color},i)=>{
+    const slice=(c/window._pieTot)*2*Math.PI;
+    const isHover=hoverIdx===i;
+    const rr=isHover?r+6:r;
+    ctx.beginPath();ctx.moveTo(cx,cy);
+    ctx.arc(cx,cy,rr,startAngle,startAngle+slice);
+    ctx.closePath();
+    ctx.fillStyle=isHover?color+'cc':color;ctx.fill();
+    ctx.strokeStyle='#fff';ctx.lineWidth=isHover?0.5:0.5;ctx.stroke();
+    if(isHover){
+      // Afficher le % au centre
+      ctx.fillStyle='#1c0a0d';ctx.font='bold 15px Inter,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.fillText(Math.round(c/window._pieTot*100)+'%',cx,cy-8);
+      ctx.font='11px Inter,sans-serif';ctx.fillStyle='#7a4a52';
+      ctx.fillText(t.substring(0,12),cx,cy+8);
+    }
+    startAngle+=slice;
+  });
+}
+function pieHover(e){
+  const pieCanvas=document.getElementById('chart-type');
+  if(!pieCanvas||!window._pieData) return;
+  const rect=pieCanvas.getBoundingClientRect();
+  const x=(e.clientX-rect.left)*(200/rect.width)-100;
+  const y=(e.clientY-rect.top)*(200/rect.height)-100;
+  const angle=Math.atan2(y,x);
+  const dist=Math.sqrt(x*x+y*y);
+  if(dist>98){pieUnhover();return;}
+  let norm=angle+Math.PI/2; if(norm<0)norm+=2*Math.PI;
+  let cumul=0,hovIdx=null;
+  window._pieData.forEach(({c},i)=>{
+    const slice=(c/window._pieTot)*2*Math.PI;
+    if(hovIdx===null&&norm>=cumul&&norm<cumul+slice)hovIdx=i;
+    cumul+=slice;
+  });
+  drawPie(hovIdx);
+  if(hovIdx!==null){
+    const d=window._pieData[hovIdx];
+    const tip=document.getElementById('pie-tooltip');
+    if(tip){tip.textContent=d.t+' : '+d.c+' btl ('+Math.round(d.c/window._pieTot*100)+'%)';tip.style.display='block';tip.style.left=(e.clientX-pieCanvas.getBoundingClientRect().left+12)+'px';tip.style.top=(e.clientY-pieCanvas.getBoundingClientRect().top-30)+'px';}
+  }
+}
+function pieUnhover(){drawPie(null);const t=document.getElementById('pie-tooltip');if(t)t.style.display='none';}
+
 // ── CARTE DU MONDE ──
 // Coordonnées pixel dans une projection Mercator simplifiée (viewBox 1000x500)
 const COUNTRY_COORDS = {
@@ -2339,29 +2395,19 @@ function renderStats(){
   const byT={};fw.forEach(w=>{byT[w.type]=(byT[w.type]||0)+w.qty;});
   const totT=Math.max(Object.values(byT).reduce((a,b)=>a+b,0),1);
   const typeEntries=Object.entries(byT).sort((a,b)=>b[1]-a[1]);
-  const PIE_COLORS=['#8b1a2a','#2a6b8b','#d4891a','#2a7a2a','#8b4a8b','#5a7a3a','#c44a1a','#1a5a8b','#8b7a2a','#4a2a8b','#7a2a4a','#2a4a7a'];
-  const pieCanvas=document.getElementById('chart-type');
-  if(pieCanvas){
-    const ctx=pieCanvas.getContext('2d');
-    const dpr=window.devicePixelRatio||1;
-    pieCanvas.width=180*dpr; pieCanvas.height=180*dpr;
-    pieCanvas.style.width='180px'; pieCanvas.style.height='180px';
-    ctx.scale(dpr,dpr);
-    ctx.clearRect(0,0,180,180);
-    const cx=90,cy=90,r=82;
-    let startAngle=-Math.PI/2;
-    typeEntries.forEach(([t,c],i)=>{
-      const slice=(c/totT)*2*Math.PI;
-      ctx.beginPath();ctx.moveTo(cx,cy);
-      ctx.arc(cx,cy,r,startAngle,startAngle+slice);
-      ctx.closePath();
-      ctx.fillStyle=PIE_COLORS[i%PIE_COLORS.length];ctx.fill();
-      ctx.strokeStyle='#fff';ctx.lineWidth=2;ctx.stroke();
-      startAngle+=slice;
-    });
-  }
-  document.getElementById('st-type-legend').innerHTML=typeEntries.map(([t,c],i)=>
-    `<div style="display:flex;align-items:center;gap:6px"><div style="width:12px;height:12px;border-radius:3px;background:${PIE_COLORS[i%PIE_COLORS.length]};flex-shrink:0"></div><span style="font-size:11px;color:var(--ink3)">${t} <span style="color:var(--ink4)">${c} (${Math.round(c/totT*100)}%)</span></span></div>`
+  // Palette cohérente univers du vin
+  const PIE_COLORS={
+    'Rouge':'#6b1520','Blanc':'#d4a843','Rosé':'#e8a0a8','Pétillant':'#4a7c9e',
+    'Orange':'#c47830','Vin naturel / Nature':'#5a7840','Vin biodynamique':'#486838',
+    'Vin muté / Fortifié':'#7a4020','Vin doux naturel':'#c4902a','Vin jaune / Oxydatif':'#b8962a',
+    'Vin de paille / Passerillé':'#c8a450','Cidre / Poiré':'#7aaa50','Autre':'#888'
+  };
+  const getPieColor=(t,i)=>PIE_COLORS[t]||['#8b1a2a','#2a5a8b','#c47030','#2a7a3a','#7a3a8b','#5a7830'][i%6];
+  window._pieData=typeEntries.map(([t,c],i)=>({t,c,color:getPieColor(t,i)}));
+  window._pieTot=totT;
+  drawPie(null);
+  document.getElementById('st-type-legend').innerHTML=window._pieData.map(({t,c,color})=>
+    `<div style="display:flex;align-items:center;gap:6px"><div style="width:10px;height:10px;border-radius:2px;background:${color};flex-shrink:0"></div><span style="font-size:11px;color:var(--ink3)">${t} <span style="color:var(--ink4)">${c} (${Math.round(c/totT*100)}%)</span></span></div>`
   ).join('');
   // Carte monde
   renderWorldMap(fw);
