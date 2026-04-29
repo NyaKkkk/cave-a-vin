@@ -2188,7 +2188,9 @@ function addWish(){
   const wish={id:'tmp-'+Date.now(),name:n,note:document.getElementById('wf-r').value.trim(),done:false};
   wishes.push(wish);
   document.getElementById('wf-n').value='';document.getElementById('wf-r').value='';
-  closePanel('wish-form');renderWishes();
+  closeWishManualModal();
+  showTab('wish');
+  renderWishes();
   if(db)saveWishToDb(wish);
 }
 function chgQty(id,d){const w=wines.find(x=>x.id===id);if(w){w.qty=Math.max(0,w.qty+d);renderWines();updateStats();if(db)saveWineToDb(w);}}
@@ -2479,9 +2481,9 @@ window.onerror = function(){
   <div class="modal-box" style="max-width:400px">
     <button class="modal-close" onclick="closeWishManualModal()">✕</button>
     <div class="modal-title">Nouveau souhait</div>
-    <div class="profile-grid">
-      <div class="profile-fg full"><label>Nom du vin *</label><input type="text" id="wf-n" placeholder="Pétrus 2015"></div>
-      <div class="profile-fg full"><label>Note / région</label><input type="text" id="wf-r" placeholder="Pomerol, grande année…"></div>
+    <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:4px">
+      <div class="profile-fg"><label>Nom du vin *</label><input type="text" id="wf-n" placeholder="Pétrus 2015" style="height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:Inter,sans-serif;outline:none"></div>
+      <div class="profile-fg"><label>Note</label><input type="text" id="wf-r" placeholder="Pomerol, grande année…" style="height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:Inter,sans-serif;outline:none"></div>
     </div>
     <button class="profile-save-btn" onclick="addWish()">Ajouter à la liste</button>
   </div>
