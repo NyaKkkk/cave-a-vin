@@ -618,22 +618,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);font-s
     <div class="scard" style="grid-column:1/-1"><h4>Plus-value par millésime</h4><div class="chart-wrap"><canvas id="chart-millesime"></canvas></div></div>
     <div class="scard"><h4>Valeur achat vs actuelle par région</h4><div class="chart-wrap"><canvas id="chart-region"></canvas></div></div>
     <div class="scard"><h4>Top bouteilles par plus-value</h4><div id="st-top"></div></div>
-    <div class="scard" style="grid-column:1/-1">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-        <h4 style="margin:0" id="world-map-title">Carte du monde — bouteilles par pays</h4>
-        <button id="world-map-back" onclick="worldMapBack()" style="display:none;font-size:11px;padding:4px 10px;border:1px solid var(--ink5);border-radius:6px;background:none;cursor:pointer;color:var(--ink4);font-family:Inter,sans-serif">← Retour monde</button>
-      </div>
-      <div id="world-map-container" style="width:100%;height:400px;position:relative;background:#fff;border-radius:8px;overflow:hidden;border:1px solid var(--ink5)">
-        <svg id="world-map-svg" style="width:100%;height:100%;display:block;cursor:pointer"></svg>
-        <div id="world-map-tooltip" style="display:none;position:absolute;background:rgba(28,10,13,.88);color:#fff;font-size:11px;font-family:Inter,sans-serif;padding:6px 10px;border-radius:6px;pointer-events:none;white-space:nowrap;z-index:10"></div>
-        <div id="world-map-loading" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--ink4);font-family:Inter,sans-serif">Chargement de la carte…</div>
-      </div>
-      <div style="display:flex;align-items:center;gap:8px;margin-top:8px;font-size:11px;color:var(--ink4)">
-        <span>0 btl</span>
-        <div style="flex:1;height:6px;border-radius:3px;background:linear-gradient(to right,#fce8ea,#8b1a2a)"></div>
-        <span id="world-map-max">max</span>
-      </div>
-    </div>
+
   </div>
 </div>
 
@@ -2237,28 +2222,47 @@ function drawPie(hoverIdx){
   const pieCanvas=document.getElementById('chart-type');
   if(!pieCanvas||!window._pieData) return;
   const dpr=window.devicePixelRatio||1;
-  pieCanvas.width=200*dpr; pieCanvas.height=200*dpr;
-  pieCanvas.style.width='200px'; pieCanvas.style.height='200px';
+  const SIZE=220;
+  pieCanvas.width=SIZE*dpr; pieCanvas.height=SIZE*dpr;
+  pieCanvas.style.width=SIZE+'px'; pieCanvas.style.height=SIZE+'px';
   const ctx=pieCanvas.getContext('2d');
   ctx.scale(dpr,dpr);
-  ctx.clearRect(0,0,200,200);
-  const cx=100,cy=100,r=92;
+  ctx.clearRect(0,0,SIZE,SIZE);
+  const cx=SIZE/2,cy=SIZE/2,r=SIZE/2-4;
   let startAngle=-Math.PI/2;
+  // Dessiner les tranches
   window._pieData.forEach(({t,c,color},i)=>{
     const slice=(c/window._pieTot)*2*Math.PI;
     const isHover=hoverIdx===i;
-    const rr=isHover?r+6:r;
     ctx.beginPath();ctx.moveTo(cx,cy);
-    ctx.arc(cx,cy,rr,startAngle,startAngle+slice);
+    ctx.arc(cx,cy,r,startAngle,startAngle+slice);
     ctx.closePath();
-    ctx.fillStyle=isHover?color+'cc':color;ctx.fill();
-    ctx.strokeStyle='#fff';ctx.lineWidth=isHover?0.5:0.5;ctx.stroke();
+    ctx.fillStyle=color;ctx.fill();
+    ctx.strokeStyle='#fff';ctx.lineWidth=isHover?2.5:0.8;ctx.stroke();
+    startAngle+=slice;
+  });
+  // Labels au milieu de chaque tranche (toujours visibles)
+  startAngle=-Math.PI/2;
+  window._pieData.forEach(({t,c,color},i)=>{
+    const slice=(c/window._pieTot)*2*Math.PI;
+    const pct=Math.round(c/window._pieTot*100);
+    const isHover=hoverIdx===i;
     if(isHover){
-      // Afficher le % au centre
-      ctx.fillStyle='#1c0a0d';ctx.font='bold 15px Inter,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
-      ctx.fillText(Math.round(c/window._pieTot*100)+'%',cx,cy-8);
-      ctx.font='11px Inter,sans-serif';ctx.fillStyle='#7a4a52';
-      ctx.fillText(t.substring(0,12),cx,cy+8);
+      const midAngle=startAngle+slice/2;
+      const labelR=r*0.65;
+      const lx=cx+Math.cos(midAngle)*labelR;
+      const ly=cy+Math.sin(midAngle)*labelR;
+      ctx.textAlign='center';ctx.textBaseline='middle';
+      const txt=pct+'%';
+      ctx.font='bold 14px Inter,sans-serif';
+      const tw=ctx.measureText(txt).width;
+      ctx.fillStyle='rgba(255,255,255,0.25)';
+      ctx.beginPath();ctx.roundRect(lx-tw/2-6,ly-12,tw+12,24,6);ctx.fill();
+      ctx.font='bold 14px Inter,sans-serif';
+      ctx.fillStyle='#fff';ctx.fillText(txt,lx,ly-4);
+      ctx.font='9px Inter,sans-serif';
+      ctx.fillStyle='rgba(255,255,255,0.9)';
+      ctx.fillText(c+' btl',lx,ly+8);
     }
     startAngle+=slice;
   });
@@ -2287,413 +2291,6 @@ function pieHover(e){
   }
 }
 function pieUnhover(){drawPie(null);const t=document.getElementById('pie-tooltip');if(t)t.style.display='none';}
-
-// ── CARTE DU MONDE GEOJSON ──
-// Mapping noms FR → ISO-3 (pour le GeoJSON)
-const COUNTRY_ISO = {
-  'France':'FRA','Italie':'ITA','Espagne':'ESP','Portugal':'PRT','Allemagne':'DEU',
-  'Autriche':'AUT','Hongrie':'HUN','Grèce':'GRC','Bulgarie':'BGR','Roumanie':'ROU',
-  'Croatie':'HRV','Slovénie':'SVN','Serbie':'SRB','Suisse':'CHE','Belgique':'BEL',
-  'Pays-Bas':'NLD','Angleterre':'GBR','Angleterre / UK':'GBR',
-  'USA':'USA','Canada':'CAN','Mexique':'MEX',
-  'Argentine':'ARG','Chili':'CHL','Uruguay':'URY','Brésil':'BRA',
-  'Australie':'AUS','Nouvelle-Zélande':'NZL',
-  'Afrique du Sud':'ZAF','Maroc':'MAR','Tunisie':'TUN','Algérie':'DZA',
-  'Liban':'LBN','Israël':'ISR','Géorgie':'GEO','Arménie':'ARM',
-  'Turquie':'TUR','Chine':'CHN','Japon':'JPN','Inde':'IND',
-  'Moldavie':'MDA','Macédoine':'MKD','Albanie':'ALB','Luxembourg':'LUX'
-};
-
-// Régions FR → coordonnées [lon,lat] pour la vue drill-down
-const REGION_COORDS = {
-  'France':{
-    'Bordeaux':[-0.57,44.84],'Bourgogne':[4.83,47.05],'Champagne':[4.02,49.05],
-    'Rhône':[4.83,45.0],'Loire':[-1.0,47.5],'Alsace':[7.5,48.3],
-    'Languedoc':[3.5,43.5],'Roussillon':[2.8,42.7],'Provence':[5.8,43.5],
-    'Jura':[5.55,46.8],'Savoie':[6.2,45.6],'Sud-Ouest':[0.5,44.0],
-    'Corse':[9.0,42.2],'Beaujolais':[4.65,46.1]
-  },
-  'Italie':{
-    'Toscane':[11.25,43.5],'Piémont':[8.0,44.8],'Vénétie':[11.9,45.4],
-    'Sicile':[14.0,37.6],'Sardaigne':[9.1,40.1],'Campanie':[14.8,40.9],
-    'Pouilles':[16.5,40.7],'Ombrie':[12.4,42.9],'Lombardie':[9.9,45.5],
-    'Frioul':[13.2,46.0],'Calabre':[16.1,38.9]
-  },
-  'Espagne':{
-    'Rioja':[-2.5,42.5],'Ribera del Duero':[-3.7,41.7],'Priorat':[0.8,41.2],
-    'Galice':[-8.0,42.7],'Catalogne':[2.0,41.7],'Castille':[-4.5,40.5],
-    'Andalousie':[-4.5,37.5],'Aragon':[-1.0,41.5],'Valence':[-0.4,39.5]
-  }
-};
-
-let _worldGeoData = null;
-let _worldCurrentCountry = null;
-let _worldWines = [];
-
-async function renderWorldMap(wines){
-  _worldWines = wines;
-  _worldCurrentCountry = null;
-  document.getElementById('world-map-back').style.display='none';
-  document.getElementById('world-map-title').textContent='Carte du monde — bouteilles par pays';
-  
-  if(!_worldGeoData){
-    try{
-      const r = await fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json');
-      const topo = await r.json();
-      // Convertir TopoJSON → GeoJSON simplifié
-      _worldGeoData = topoToGeo(topo);
-    }catch(e){
-      console.error('Erreur chargement carte:', e);
-      document.getElementById('world-map-loading').textContent = 'Carte non disponible';
-      return;
-    }
-  }
-  document.getElementById('world-map-loading').style.display='none';
-  
-  const byCountry={};
-  wines.forEach(w=>{const c=w.country||'France';byCountry[c]=(byCountry[c]||0)+w.qty;});
-  const maxQty=Math.max(...Object.values(byCountry),1);
-  const maxEl=document.getElementById('world-map-max');
-  if(maxEl) maxEl.textContent=maxQty+' btl';
-  
-  drawWorldMap(byCountry, maxQty);
-}
-
-// Conversion TopoJSON → paths SVG via projection Mercator
-function topoToGeo(topo){
-  // Décoder les arcs TopoJSON
-  const arcs = topo.arcs;
-  const scale = topo.transform.scale;
-  const translate = topo.transform.translate;
-  
-  function decodeArc(arcIdx){
-    const reversed = arcIdx < 0;
-    const arc = arcs[reversed ? ~arcIdx : arcIdx];
-    let x=0,y=0;
-    const pts=arc.map(([dx,dy])=>{x+=dx;y+=dy;return[x*scale[0]+translate[0],y*scale[1]+translate[1]]});
-    return reversed ? pts.reverse() : pts;
-  }
-  
-  function geomToPath(geom){
-    const rings=[];
-    const arcsArr = geom.type==='Polygon'?[geom.arcs]:geom.arcs;
-    arcsArr.forEach(poly=>{
-      poly.forEach(ring=>{
-        let pts=[];
-        ring.forEach(ai=>{pts=[...pts,...decodeArc(ai)];});
-        rings.push(pts);
-      });
-    });
-    return rings;
-  }
-  
-  const countries=[];
-  topo.objects.countries.geometries.forEach(geom=>{
-    if(!geom.arcs) return;
-    const rings=geomToPath(geom);
-    countries.push({id:geom.id, rings});
-  });
-  return countries;
-}
-
-// ISO numeric → ISO-3 mapping (principaux pays viticoles)
-const ISO_NUM_TO_3 = {
-  '250':'FRA','380':'ITA','724':'ESP','620':'PRT','276':'DEU','040':'AUT',
-  '348':'HUN','300':'GRC','100':'BGR','642':'ROU','191':'HRV','705':'SVN',
-  '688':'SRB','756':'CHE','056':'BEL','528':'NLD','826':'GBR','036':'AUS',
-  '554':'NZL','710':'ZAF','504':'MAR','788':'TUN','012':'DZA','422':'LBN',
-  '376':'ISR','268':'GEO','051':'ARM','792':'TUR','156':'CHN','392':'JPN',
-  '356':'IND','840':'USA','124':'CAN','484':'MEX','032':'ARG','152':'CHL',
-  '858':'URY','076':'BRA','498':'MDA','807':'MKD','008':'ALB','442':'LUX',
-  '724':'ESP','620':'PRT'
-};
-
-// Projection Mercator calibrée sur lat -60 → 80
-const MERC_LAT_MIN = -60, MERC_LAT_MAX = 80;
-function _merc(lat){ return Math.log(Math.tan(Math.PI/4 + lat*Math.PI/360)); }
-const _mercMin = _merc(MERC_LAT_MIN);
-const _mercMax = _merc(MERC_LAT_MAX);
-
-function mercator(lon, lat, w, h){
-  lat = Math.max(MERC_LAT_MIN, Math.min(MERC_LAT_MAX, lat));
-  const x = (lon + 180) / 360 * w;
-  const y = (_mercMax - _merc(lat)) / (_mercMax - _mercMin) * h;
-  return [x, y];
-}
-
-function ringsToSVGPath(rings, w, h){
-  return rings.map(pts=>{
-    if(pts.length<3) return '';
-    // Détecter les ruptures de méridien (saut > 180°) pour éviter les lignes grises
-    const segs=[];let seg=[];
-    for(let i=0;i<pts.length;i++){
-      if(i>0&&Math.abs(pts[i][0]-pts[i-1][0])>180){
-        if(seg.length>1) segs.push(seg);
-        seg=[];
-      }
-      seg.push(pts[i]);
-    }
-    if(seg.length>1) segs.push(seg);
-    return segs.map(s=>{
-      const proj=s.map(([lon,lat])=>mercator(lon,lat,w,h));
-      return 'M'+proj.map(([x,y])=>x.toFixed(1)+','+y.toFixed(1)).join('L')+'Z';
-    }).join(' ');
-  }).join(' ');
-}
-
-// ID Antarctique (iso num 010) à exclure
-const ANTARCTIC_IDS = new Set(['10','010']);
-
-function drawWorldMap(byCountry, maxQty){
-  const svg = document.getElementById('world-map-svg');
-  if(!svg||!_worldGeoData) return;
-  const W=1000,H=570;
-  svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
-  
-  const iso3ToFR={};
-  Object.entries(COUNTRY_ISO).forEach(([fr,iso3])=>iso3ToFR[iso3]=fr);
-  const isoNumToFR={};
-  Object.entries(ISO_NUM_TO_3).forEach(([num,iso3])=>{if(iso3ToFR[iso3])isoNumToFR[num]=iso3ToFR[iso3];});
-  
-  let paths='';
-  _worldGeoData.forEach(({id,rings})=>{
-    const isoNum=String(id);
-    // Exclure Antarctique
-    if(ANTARCTIC_IDS.has(isoNum)||isoNum==='10') return;
-    // Exclure pays très au sud (lat < -60)
-    const country=isoNumToFR[String(id).padStart(3,'0')];
-    const qty=country?byCountry[country]||0:0;
-    
-    // Filtrer les rings avec des points trop au sud (Antarctique partiel)
-    const filteredRings = rings.filter(ring=>{
-      const avgLat = ring.reduce((s,[,lat])=>s+lat,0)/(ring.length||1);
-      return avgLat > -60;
-    });
-    if(!filteredRings.length) return;
-    
-    const d=ringsToSVGPath(filteredRings,W,H);
-    if(!d.trim()) return;
-    
-    let fill='#e0e0e0',stroke='#c0c0c0',strokeW='0.3';
-    if(qty>0){
-      const ratio=qty/maxQty;
-      // Dégradé monochrome rouge : clair → foncé
-      const lightness=Math.round(85-ratio*55); // 85% (clair) → 30% (foncé)
-      fill=`hsl(350,70%,${lightness}%)`;
-      stroke='hsl(350,50%,45%)';
-      strokeW='0.5';
-    }
-    const hasDrill=qty>0&&!!REGION_COORDS[country];
-    const cursor=hasDrill?'cursor:pointer':'';
-    const onclick=hasDrill?`onclick="worldDrillDown('${country}')"`:
-                  qty>0?`onclick="worldTooltip(event,'${country}',${qty})"`:'' ;
-    paths+=`<path d="${d}" fill="${fill}" stroke="${stroke}" stroke-width="${strokeW}" style="${cursor}"
-      ${onclick}
-      onmouseover="${qty>0?`worldTooltip(event,'${country}',${qty})`:''}"
-      onmouseout="hideMapTooltip()"/>`;
-  });
-  
-  // Labels sur les pays avec vins
-  const LABEL_POS={'FRA':[2.35,46.8],'ITA':[12.5,42.8],'ESP':[-3.7,40.4],'PRT':[-8,39.5],
-    'DEU':[10.4,51.2],'AUT':[14.5,47.5],'HUN':[19,47],'GRC':[21.8,39.1],
-    'BGR':[25,42.7],'ROU':[25,45.9],'HRV':[16.5,45.1],'CHE':[8.2,46.8],
-    'GBR':[-3,54],'USA':[-98,39.5],'CAN':[-96,56],'MEX':[-102,24],
-    'ARG':[-64,34],'CHL':[-71,30],'URY':[-56,33],'BRA':[-51,14],
-    'AUS':[133,-27],'NZL':[172,-42],'ZAF':[25,-29],'MAR':[-7,32],
-    'TUN':[9,34],'LBN':[35.5,33.9],'ISR':[34.9,31.5],'GEO':[43.4,42.3],
-    'ARM':[45,40.1],'TUR':[35.2,39],'CHN':[104,35],'JPN':[138,37],
-    'IND':[78,20],'MDA':[28.4,47.4],'DZA':[3,28]
-  };
-  
-  let labels='';
-  Object.entries(byCountry).forEach(([frName,qty])=>{
-    const iso3=COUNTRY_ISO[frName];
-    if(!iso3||!qty) return;
-    const pos=LABEL_POS[iso3];
-    if(!pos) return;
-    const [cx,cy]=mercator(pos[0],pos[1],W,H);
-    const hasDrill=!!REGION_COORDS[frName];
-    labels+=`<text x="${cx.toFixed(1)}" y="${cy.toFixed(1)}" text-anchor="middle" dominant-baseline="middle"
-      fill="white" font-size="10" font-weight="700" font-family="Inter,sans-serif"
-      style="pointer-events:none;text-shadow:0 0 3px rgba(0,0,0,0.5)">${qty}</text>`;
-    if(hasDrill){
-      // Petit indicateur drill-down
-      labels+=`<text x="${cx.toFixed(1)}" y="${(cy+12).toFixed(1)}" text-anchor="middle"
-        fill="rgba(255,255,255,0.8)" font-size="7" font-family="Inter,sans-serif"
-        style="pointer-events:none">cliquer →</text>`;
-    }
-  });
-  
-  svg.innerHTML=`<rect width="${W}" height="${H}" fill="#f8f9fa"/>${paths}${labels}`;
-}
-
-// Cache GeoJSON régions par pays
-const _regionGeoCache={};
-const REGION_GEO_MATCH={
-  'France':{
-    url:'https://raw.githubusercontent.com/gregoiredavid/france-geojson/master/regions-version-simplifiee.geojson',
-    match:{
-      'Bordeaux':'Nouvelle-Aquitaine','Bourgogne':'Bourgogne-Franche-Comté',
-      'Champagne':'Grand Est','Rhône':'Auvergne-Rhône-Alpes','Loire':'Pays de la Loire',
-      'Alsace':'Grand Est','Languedoc':'Occitanie','Roussillon':'Occitanie',
-      'Provence':"Provence-Alpes-Côte d'Azur",'Jura':'Bourgogne-Franche-Comté',
-      'Savoie':'Auvergne-Rhône-Alpes','Sud-Ouest':'Occitanie',
-      'Corse':'Corse','Beaujolais':'Auvergne-Rhône-Alpes'
-    }
-  }
-};
-
-async function worldDrillDown(country){
-  _worldCurrentCountry=country;
-  document.getElementById('world-map-back').style.display='inline-block';
-  document.getElementById('world-map-title').textContent=`${country} — bouteilles par région`;
-  document.getElementById('world-map-loading').style.display='flex';
-  document.getElementById('world-map-loading').textContent='Chargement…';
-
-  const byRegion={};
-  _worldWines.filter(w=>w.country===country).forEach(w=>{
-    const r=w.reg||'Inconnue';
-    byRegion[r]=(byRegion[r]||0)+w.qty;
-  });
-  const maxQty=Math.max(...Object.values(byRegion),1);
-  const maxEl=document.getElementById('world-map-max');
-  if(maxEl) maxEl.textContent=maxQty+' btl';
-
-  const svg=document.getElementById('world-map-svg');
-  if(!svg) return;
-
-  const geoConf=REGION_GEO_MATCH[country];
-  if(geoConf&&!_regionGeoCache[country]){
-    try{
-      const r=await fetch(geoConf.url);
-      _regionGeoCache[country]=await r.json();
-    }catch(e){ console.warn('GeoJSON régions:', e); }
-  }
-
-  // Bounds depuis GeoJSON mondial
-  const iso3=COUNTRY_ISO[country];
-  const isoNum=Object.entries(ISO_NUM_TO_3).find(([n,c])=>c===iso3)?.[0];
-  const countryGeo=_worldGeoData?.find(d=>String(d.id).padStart(3,'0')===isoNum);
-  let minLon=180,maxLon=-180,minLat=90,maxLat=-90;
-  if(countryGeo){
-    countryGeo.rings.forEach(ring=>ring.forEach(([lon,lat])=>{
-      if(lat<-60) return;
-      minLon=Math.min(minLon,lon);maxLon=Math.max(maxLon,lon);
-      minLat=Math.min(minLat,lat);maxLat=Math.max(maxLat,lat);
-    }));
-  } else {
-    Object.values(REGION_COORDS[country]||{}).forEach(([lon,lat])=>{
-      minLon=Math.min(minLon,lon-4);maxLon=Math.max(maxLon,lon+4);
-      minLat=Math.min(minLat,lat-3);maxLat=Math.max(maxLat,lat+3);
-    });
-  }
-  const pad=0.05;
-  minLon-=(maxLon-minLon)*pad;maxLon+=(maxLon-minLon)*pad;
-  minLat-=(maxLat-minLat)*pad;maxLat+=(maxLat-minLat)*pad;
-
-  const W=1000,H=570;
-  function _m(lat){return Math.log(Math.tan(Math.PI/4+Math.max(-85,Math.min(85,lat))*Math.PI/360));}
-  const mMin=_m(minLat),mMax=_m(maxLat);
-  function project(lon,lat){
-    return [(lon-minLon)/(maxLon-minLon)*W, (mMax-_m(lat))/(mMax-mMin)*H];
-  }
-  svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
-  document.getElementById('world-map-loading').style.display='none';
-
-  if(_regionGeoCache[country]&&geoConf){
-    const features=_regionGeoCache[country].features||[];
-    const matchMap=geoConf.match;
-    const adminToViti={};
-    Object.entries(matchMap).forEach(([viti,admin])=>{
-      if(!adminToViti[admin]) adminToViti[admin]=[];
-      adminToViti[admin].push(viti);
-    });
-
-    let paths='',labels='';
-    features.forEach(feat=>{
-      const adminName=feat.properties.nom||feat.properties.name||'';
-      const vitiRegs=(adminToViti[adminName]||[]).filter(r=>byRegion[r]);
-      const qty=vitiRegs.reduce((s,r)=>s+(byRegion[r]||0),0);
-      const ratio=qty>0?qty/maxQty:0;
-      const lightness=qty>0?Math.round(80-ratio*50):88;
-      const fill=qty>0?`hsl(350,65%,${lightness}%)`:'#e0e0e0';
-      const stroke=qty>0?`hsl(350,45%,${lightness-12}%)`:'#bbb';
-      const geom=feat.geometry;
-      const polys=geom.type==='Polygon'?[geom.coordinates]:geom.coordinates;
-      const d=polys.map(poly=>poly.map(ring=>{
-        const pts=ring.map(([lon,lat])=>project(lon,lat));
-        return 'M'+pts.map(([x,y])=>x.toFixed(1)+','+y.toFixed(1)).join('L')+'Z';
-      }).join(' ')).join(' ');
-      const tip=qty>0?`onmouseover="worldTooltip(event,'${vitiRegs.join(' / ')}',${qty})" onmouseout="hideMapTooltip()"`:'';
-      paths+=`<path d="${d}" fill="${fill}" stroke="${stroke}" stroke-width="0.8" ${tip}/>`;
-      if(qty>0){
-        const allPts=polys.flat(1).map(([lon,lat])=>project(lon,lat));
-        const cx=allPts.reduce((s,[x])=>s+x,0)/allPts.length;
-        const cy=allPts.reduce((s,[,y])=>s+y,0)/allPts.length;
-        labels+=`<text x="${cx.toFixed(0)}" y="${cy.toFixed(0)}" text-anchor="middle" dominant-baseline="middle"
-          fill="white" font-size="12" font-weight="700" font-family="Inter,sans-serif" style="pointer-events:none">${qty}</text>`;
-      }
-    });
-    svg.innerHTML=`<rect width="${W}" height="${H}" fill="#f8f9fa"/>${paths}${labels}`;
-  } else {
-    // Fallback : fond pays + marqueurs sur coordonnées connues
-    let pathStr='';
-    if(countryGeo){
-      pathStr=countryGeo.rings.filter(r=>r.reduce((s,[,lat])=>s+lat,0)/r.length>-60).map(pts=>{
-        const segs=[];let seg=[];
-        for(let i=0;i<pts.length;i++){
-          if(i>0&&Math.abs(pts[i][0]-pts[i-1][0])>90){if(seg.length>1)segs.push(seg);seg=[];}
-          seg.push(pts[i]);
-        }
-        if(seg.length>1) segs.push(seg);
-        return segs.map(s=>'M'+s.map(([lon,lat])=>project(lon,lat)).map(([x,y])=>x.toFixed(1)+','+y.toFixed(1)).join('L')+'Z').join(' ');
-      }).join(' ');
-    }
-    const regData=REGION_COORDS[country]||{};
-    let markers='';
-    Object.entries(byRegion).forEach(([reg,qty])=>{
-      const coords=regData[reg];if(!coords) return;
-      const [cx,cy]=project(coords[0],coords[1]);
-      const ratio=qty/maxQty;
-      const lightness=Math.round(80-ratio*50);
-      markers+=`<circle cx="${cx.toFixed(0)}" cy="${cy.toFixed(0)}" r="22" fill="hsl(350,65%,${lightness}%)" stroke="white" stroke-width="1.5"
-        onmouseover="worldTooltip(event,'${reg}',${qty})" onmouseout="hideMapTooltip()"/>
-      <text x="${cx.toFixed(0)}" y="${(+cy-2).toFixed(0)}" text-anchor="middle" fill="white" font-size="9" font-weight="700" font-family="Inter,sans-serif" style="pointer-events:none">${reg}</text>
-      <text x="${cx.toFixed(0)}" y="${(+cy+9).toFixed(0)}" text-anchor="middle" fill="rgba(255,255,255,0.9)" font-size="8" font-family="Inter,sans-serif" style="pointer-events:none">${qty}b</text>`;
-    });
-    const msg=Object.keys(byRegion).length===0?`<text x="${W/2}" y="${H/2}" text-anchor="middle" fill="#a0a0a0" font-size="13">Aucune région renseignée</text>`:'';
-    svg.innerHTML=`<rect width="${W}" height="${H}" fill="#f8f9fa"/>
-      ${pathStr?`<path d="${pathStr}" fill="#e8e4e0" stroke="#b0a090" stroke-width="0.5"/>`:''}
-      ${markers}${msg}`;
-  }
-}
-function worldMapBack(){
-  _worldCurrentCountry=null;
-  document.getElementById('world-map-back').style.display='none';
-  document.getElementById('world-map-title').textContent='Carte du monde — bouteilles par pays';
-  const byCountry={};
-  _worldWines.forEach(w=>{const c=w.country||'France';byCountry[c]=(byCountry[c]||0)+w.qty;});
-  const maxQty=Math.max(...Object.values(byCountry),1);
-  const maxEl=document.getElementById('world-map-max');
-  if(maxEl) maxEl.textContent=maxQty+' btl';
-  drawWorldMap(byCountry,maxQty);
-}
-
-function worldTooltip(e,country,qty){
-  if(!country||!qty) return;
-  const t=document.getElementById('world-map-tooltip');
-  if(!t) return;
-  t.textContent=country+(qty?' : '+qty+' bouteille'+(qty>1?'s':''):'');
-  t.style.display='block';
-  const cont=document.getElementById('world-map-container');
-  const rect=cont.getBoundingClientRect();
-  t.style.left=(e.clientX-rect.left+12)+'px';
-  t.style.top=(e.clientY-rect.top-36)+'px';
-}
-function hideMapTooltip(){
-  const t=document.getElementById('world-map-tooltip');
-  if(t) t.style.display='none';
-}
 
 
 function filteredWines(){return statFilter==='all'?wines:wines.filter(w=>w.type===statFilter)}
