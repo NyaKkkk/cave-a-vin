@@ -368,8 +368,8 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);font-s
 /* ── BOUTONS BOIRE/VENDRE ── */
 .winebtn{height:28px;padding:0 8px;border-radius:6px;border:1.5px solid var(--ink5);background:var(--surface);cursor:pointer;font-size:13px;transition:all .2s;display:inline-flex;align-items:center;justify-content:center}
 .winebtn:hover{transform:scale(1.1)}
-.wine-drink:hover{border-color:#8b1a2a;background:#fff5f5}
-.wine-sell:hover{border-color:#b8860b;background:#fffdf0}
+.wine-drink:hover{border-color:var(--ruby)!important;color:var(--ruby)!important}
+.wine-sell:hover{border-color:#b8860b!important;color:#b8860b!important}
 
 /* ── CARTES DÉGUSTATION ── */
 .deg-card{background:var(--surface);border:1px solid var(--ink5);border-radius:var(--r2);padding:16px 28px;display:flex;gap:18px;align-items:center;margin-bottom:4px}
@@ -2203,8 +2203,8 @@ function renderWines(){
         </div>
         <div class="footer-actions">
           <button class="editbtn" onclick="editWine('${w.id}')"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Modifier</button>
-          <button class="winebtn wine-drink" onclick="openDrinkModal('${w.id}')" title="Boire">🍷</button>
-          <button class="winebtn wine-sell" onclick="openSellModal('${w.id}')" title="Vendre">💰</button>
+          <button class="editbtn wine-drink" onclick="openDrinkModal('${w.id}')"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 22h8M12 11v11M5 2h14l-3 9a5 5 0 0 1-8 0Z"/></svg> Boire</button>
+          <button class="editbtn wine-sell" onclick="openSellModal('${w.id}')"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 1 0 0 7h5a3.5 3.5 0 1 1 0 7H6"/></svg> Vendre</button>
           <button class="delbtn" onclick="confirmDelete('${w.id}')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg></button>
         </div>
       </div>
@@ -2436,7 +2436,7 @@ window.onerror = function(){
 <div class="modal-overlay" id="drink-modal" onclick="if(event.target===this)closeDrinkModal()">
   <div class="modal-box" style="max-width:440px">
     <button class="modal-close" onclick="closeDrinkModal()">✕</button>
-    <div class="modal-title">🍷 Enregistrer une dégustation</div>
+    <div class="modal-title" style="display:flex;align-items:center;gap:8px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 22h8M12 11v11M5 2h14l-3 9a5 5 0 0 1-8 0Z"/></svg> Enregistrer une dégustation</div>
     <div style="font-size:14px;font-weight:600;color:var(--ink3);margin-bottom:16px" id="drink-wine-name"></div>
 
     <div class="profile-grid">
@@ -2480,7 +2480,7 @@ window.onerror = function(){
 <div class="modal-overlay" id="sell-modal" onclick="if(event.target===this)closeSellModal()">
   <div class="modal-box" style="max-width:440px">
     <button class="modal-close" onclick="closeSellModal()">✕</button>
-    <div class="modal-title">💰 Enregistrer une vente</div>
+    <div class="modal-title" style="display:flex;align-items:center;gap:8px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 1 0 0 7h5a3.5 3.5 0 1 1 0 7H6"/></svg> Enregistrer une vente</div>
     <div style="font-size:14px;font-weight:600;color:var(--ink3);margin-bottom:16px" id="sell-wine-name"></div>
 
     <div class="profile-grid">
