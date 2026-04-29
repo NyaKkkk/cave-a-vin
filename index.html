@@ -666,41 +666,9 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);font-s
 <div id="tab-wish" style="display:none">
   <div class="wish-shdr">
     <span class="wish-label" id="wcnt">0 vin souhaité</span>
-    <div style="display:flex;gap:8px">
-      <button class="btn-ia" onclick="togglePanel('wish-import-panel')">✦ Import IA</button>
-      <button class="btn-add" onclick="togglePanel('wish-form')">+ Ajouter</button>
-    </div>
+    <button class="btn-add" onclick="openWishAddModal()">+ Ajouter un souhait</button>
   </div>
-  <div class="panel" id="wish-import-panel">
-    <div class="panel-title">Ajouter par IA <span class="badge-ia">⚡ IA</span></div>
-    <div class="import-modes">
-      <div class="imode active" id="wmode-text" onclick="setMode('text','w')"><div class="imode-icon">⌨️</div><div class="imode-label">Texte libre</div><div class="imode-sub">Tapez le nom</div></div>
-      <div class="imode" id="wmode-photo" onclick="setMode('photo','w')"><div class="imode-icon">📷</div><div class="imode-label">Photo étiquette</div><div class="imode-sub">L'IA lit et complète</div></div>
-    </div>
-    <div class="import-text-area visible" id="wish-text-area">
-      <div class="ti-row"><input class="ti" type="text" id="wai-text" placeholder="Ex : Pétrus 2010…" onkeydown="if(event.key==='Enter')analyzeWish()"><button class="bsub" onclick="analyzeWish()">Analyser →</button></div>
-    </div>
-    <div class="import-photo-area" id="wish-photo-area">
-      <div class="photo-drop" id="wphoto-drop" onclick="document.getElementById('wphoto-file').click()">
-        <input type="file" id="wphoto-file" accept="image/*" style="display:none" onchange="handlePhotoSelect(this,'w')">
-        <div style="font-size:24px">📷</div><p>Photo d'étiquette</p>
-        <img id="wphoto-preview" class="photo-preview" style="display:none">
-      </div>
-      <div style="display:flex;justify-content:center;margin-top:8px"><button class="bsub" id="wbtn-analyze" onclick="analyzeWishPhoto()" style="display:none">Analyser →</button></div>
-    </div>
-    <div class="ai-loading" id="wai-loading"><div class="spinner"></div><span>Analyse en cours…</span></div>
-    <div class="ai-err" id="wai-err"></div>
-    <div class="ai-result" id="wai-result">
-      <div class="ai-result-title">Résultat — confirmez l'ajout</div>
-      <div class="ai-fields" id="wai-fields"></div>
-      <div class="ai-actions"><button class="bsub" onclick="applyWishAI()">Ajouter aux souhaits</button><button class="bcan" onclick="resetWAI()">Recommencer</button></div>
-    </div>
-  </div>
-  <div class="panel" id="wish-form">
-    <div class="panel-title">Nouveau souhait</div>
-    <div class="fr fr2"><div class="fg"><label>Nom *</label><input type="text" id="wf-n" placeholder="Pétrus"></div><div class="fg"><label>Note / région</label><input type="text" id="wf-r" placeholder="Pomerol, grande année"></div></div>
-    <div class="factions"><button class="bsub" onclick="addWish()">Ajouter</button><button class="bcan" onclick="closePanel('wish-form')">Annuler</button></div>
-  </div>
+
   <div id="wishlist"></div>
 </div>
 
@@ -926,6 +894,101 @@ async function uploadPhoto(wineId, dataUrl){
 }
 
 function save(){ /* données gérées par Firebase */ }
+
+// ── SOUHAITS ──
+function openWishAddModal(){ document.getElementById('wish-add-modal').classList.add('open'); }
+function closeWishAddModal(){ document.getElementById('wish-add-modal').classList.remove('open'); }
+
+function openWishManualForm(){
+  closeWishAddModal();
+  document.getElementById('wf-n').value='';
+  document.getElementById('wf-r').value='';
+  document.getElementById('wish-manual-modal').classList.add('open');
+}
+function closeWishManualModal(){ document.getElementById('wish-manual-modal').classList.remove('open'); }
+
+function openWishAIModal(mode){
+  closeWishAddModal();
+  // Réutiliser le modal IA principal mais pour les souhaits
+  aiCurrentMode=mode;
+  aiResult=null; aiPhotoB64=null;
+  _aiForWish=true;
+  resetAIModal();
+  document.getElementById('ai-mode-text').style.display=mode==='text'?'':'none';
+  document.getElementById('ai-mode-photo').style.display=mode==='photo'?'':'none';
+  document.getElementById('ai-modal-title').textContent=mode==='photo'?'📷 Photo étiquette':'🔍 Nom de la cuvée';
+  // Changer le bouton confirmer pour ajouter aux souhaits
+  document.getElementById('ai-modal').classList.add('open');
+  _aiForWish=true;
+}
+
+let _aiForWish=false;
+
+// Surcharger confirmAIResult pour gérer le cas souhait
+const _origConfirmAI=window.confirmAIResult;
+function confirmAIResult(){
+  if(_aiForWish){
+    confirmAIResultForWish();
+  } else {
+    _origConfirmAI&&_origConfirmAI();
+  }
+  _aiForWish=false;
+}
+
+function confirmAIResultForWish(){
+  if(!aiResult) return;
+  const r=aiResult;
+  const wish={
+    id:'tmp-'+Date.now(),
+    name:r.name||(r.appellation?r.name+' '+r.appellation:'Vin inconnu'),
+    note:[r.region,r.appellation,r.year].filter(Boolean).join(' · '),
+    done:false
+  };
+  wishes.unshift(wish);
+  closeAIModal();
+  renderWishes();
+  saveWishToDb(wish);
+  aiResult=null;
+}
+
+// Passer souhait en cave
+let _wishToCaveId=null;
+function openWishToCave(id){
+  _wishToCaveId=id;
+  const w=wishes.find(x=>x.id==id);
+  if(!w) return;
+  document.getElementById('wish-to-cave-name').textContent=w.name;
+  document.getElementById('wtc-qty').value=1;
+  document.getElementById('wtc-price').value='';
+  document.getElementById('wish-to-cave-modal').classList.add('open');
+}
+function closeWishToCave(){ document.getElementById('wish-to-cave-modal').classList.remove('open'); _wishToCaveId=null; }
+
+async function confirmWishToCave(){
+  const w=wishes.find(x=>x.id==_wishToCaveId);
+  if(!w) return;
+  const qty=parseInt(document.getElementById('wtc-qty').value)||1;
+  const buy=parseFloat(document.getElementById('wtc-price').value)||0;
+  // Créer le vin dans la cave
+  const newWine={
+    id:'tmp-'+Date.now(),
+    name:w.name, app:'', type:'Rouge', reg:w.note||'',
+    country:'France', year:null, qty, buy, cur:buy,
+    ap:'', cont:'75cl', notes:'', certs:[], customCritics:{},
+    parker:null,suckling:null,decanter:null,vinous:null,
+    bettane:null,jancis:null,ws:null,bh:null,img_url:null
+  };
+  wines.push(newWine);
+  // Supprimer le souhait
+  wishes=wishes.filter(x=>x.id!=_wishToCaveId);
+  if(db&&currentUser) deleteWishFromDb(_wishToCaveId);
+  // Sauvegarder le vin
+  if(db&&currentUser) saveWineToDb(newWine).then(()=>renderWines());
+  closeWishToCave();
+  renderWines(); updateStats(); renderWishes();
+  // Basculer vers l'onglet cave
+  showTab('cave');
+}
 
 // ── DONNÉES DÉGUSTATIONS & VENTES ──
 let degustations = [];
@@ -1313,7 +1376,7 @@ function renderVentes(){
     const wRefV = wines.find(w=>w.id===v.wineId);
     const wImgV = wRefV?.img_url || v.img_url || null;
     return `<div class="vente-card">
-      ${wImgV?`<div style="width:50px;flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-right:2px"><img src="${wImgV}" style="max-width:50px;max-height:82px;width:auto;height:auto;object-fit:contain;border-radius:4px"></div>`:``}
+      ${wImgV?`<div style="width:50px;flex-shrink:0;display:flex;align-items:center;justify-content:center"><img src="${wImgV}" style="max-width:50px;max-height:82px;width:auto;height:auto;object-fit:contain;border-radius:4px"></div><div style="width:1px;background:var(--ink5);margin:0 12px;flex-shrink:0"></div>`:``}
       <div style="display:flex;gap:0;align-items:stretch">
         <div>
           <div class="vente-card-name">${v.wineName}${v.wineYear?' '+v.wineYear:''}</div>
@@ -2339,12 +2402,34 @@ function renderStats(){
 function renderWishes(){
   const el=document.getElementById('wishlist');
   document.getElementById('wcnt').textContent=`${wishes.length} vin${wishes.length>1?'s':''} souhaité${wishes.length>1?'s':''}`;
-  if(!wishes.length){el.innerHTML='<div class="empty"><div class="empty-icon">✦</div><p>Votre liste de souhaits est vide</p></div>';return}
-  el.innerHTML=wishes.map(w=>`<div class="wcrd" style="${w.done?'opacity:.4':''}">
-    <div class="wchk${w.done?' chk':''}" onclick="togWish(${w.id})"><svg viewBox="0 0 12 10"><path d="M1 5l3 3L11 1"/></svg></div>
-    <div class="winfo"><h3 style="${w.done?'text-decoration:line-through':''}">${w.name}</h3>${w.note?`<p>${w.note}</p>`:''}</div>
-    <button class="wdel" onclick="delWish(${w.id})"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
-  </div>`).join('');
+  if(!wishes.length){
+    el.innerHTML='<div class="empty"><div class="empty-icon">✦</div><p>Votre liste de souhaits est vide</p></div>';
+    return;
+  }
+  el.innerHTML=`<div style="display:flex;flex-direction:column;gap:10px">${wishes.map(w=>`
+    <div style="background:var(--surface);border:1px solid var(--ink5);border-radius:var(--r2);padding:16px 20px;display:flex;align-items:center;gap:14px;transition:all .2s;${w.done?'opacity:.5':''}">
+      <!-- Checkbox -->
+      <div onclick="togWish('${w.id}')" style="width:20px;height:20px;border-radius:50%;border:2px solid ${w.done?'var(--ruby)':'var(--ink5)'};background:${w.done?'var(--ruby)':'transparent'};cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s">
+        ${w.done?'<svg width="10" height="8" viewBox="0 0 12 10" fill="none" stroke="#fff" stroke-width="2"><path d="M1 5l3 3L11 1"/></svg>':''}
+      </div>
+      <!-- Infos -->
+      <div style="flex:1;min-width:0">
+        <div style="font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:600;color:var(--ink);${w.done?'text-decoration:line-through':''}">${w.name}</div>
+        ${w.note?`<div style="font-size:12px;color:var(--ink4);margin-top:2px">${w.note}</div>`:''}
+      </div>
+      <!-- Boutons -->
+      <div style="display:flex;gap:8px;flex-shrink:0">
+        <button type="button" class="editbtn" onclick="openWishToCave('${w.id}')" style="border-color:var(--ruby);color:var(--ruby)">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg>
+          En cave
+        </button>
+        <button type="button" class="editbtn" onclick="delWish('${w.id}')">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg>
+          Supprimer
+        </button>
+      </div>
+    </div>
+  `).join('')}</div>`;
 }
 
 // Init géré par onAuthStateChange
@@ -2357,6 +2442,73 @@ window.onerror = function(){
   }catch(e){}
 };
 </script>
+
+<!-- MODAL AJOUT SOUHAIT -->
+<div class="add-choice-modal" id="wish-add-modal" onclick="if(event.target===this)closeWishAddModal()">
+  <div class="add-choice-box">
+    <div class="add-choice-title">Ajouter un souhait</div>
+    <div class="add-choice-sub">Comment souhaitez-vous procéder ?</div>
+    <div class="add-choice-options">
+      <button type="button" class="add-choice-btn" onclick="openWishAIModal('photo')">
+        <div class="add-choice-btn-icon" style="background:#fff8f0">📷</div>
+        <div class="add-choice-btn-text">
+          <span class="add-choice-btn-label">Photo de l'étiquette</span>
+          <span class="add-choice-btn-hint">L'IA analyse et pré-remplit</span>
+        </div>
+      </button>
+      <button type="button" class="add-choice-btn" onclick="openWishAIModal('text')">
+        <div class="add-choice-btn-icon" style="background:#f8f0ff">🔍</div>
+        <div class="add-choice-btn-text">
+          <span class="add-choice-btn-label">Nom de la cuvée</span>
+          <span class="add-choice-btn-hint">L'IA recherche les informations</span>
+        </div>
+      </button>
+      <button type="button" class="add-choice-btn" onclick="openWishManualForm()">
+        <div class="add-choice-btn-icon" style="background:#f0f8f0">✏️</div>
+        <div class="add-choice-btn-text">
+          <span class="add-choice-btn-label">Saisie manuelle</span>
+          <span class="add-choice-btn-hint">Remplir le formulaire vous-même</span>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL MANUEL SOUHAIT -->
+<div class="modal-overlay" id="wish-manual-modal" onclick="if(event.target===this)closeWishManualModal()">
+  <div class="modal-box" style="max-width:400px">
+    <button class="modal-close" onclick="closeWishManualModal()">✕</button>
+    <div class="modal-title">Nouveau souhait</div>
+    <div class="profile-grid">
+      <div class="profile-fg full"><label>Nom du vin *</label><input type="text" id="wf-n" placeholder="Pétrus 2015"></div>
+      <div class="profile-fg full"><label>Note / région</label><input type="text" id="wf-r" placeholder="Pomerol, grande année…"></div>
+    </div>
+    <button class="profile-save-btn" onclick="addWish()">Ajouter à la liste</button>
+  </div>
+</div>
+
+<!-- MODAL EN CAVE (souhait → cave) -->
+<div class="modal-overlay" id="wish-to-cave-modal" onclick="if(event.target===this)closeWishToCave()">
+  <div class="modal-box" style="max-width:380px">
+    <button class="modal-close" onclick="closeWishToCave()">✕</button>
+    <div class="modal-title" style="display:flex;align-items:center;gap:8px">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg>
+      Ajouter à la cave
+    </div>
+    <div style="font-size:14px;font-weight:600;color:var(--ink3);margin-bottom:16px" id="wish-to-cave-name"></div>
+    <div class="profile-grid">
+      <div class="profile-fg">
+        <label>Nombre de bouteilles</label>
+        <input type="number" id="wtc-qty" value="1" min="1" style="height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:Inter,sans-serif;outline:none">
+      </div>
+      <div class="profile-fg">
+        <label>Prix d'achat (€/btl)</label>
+        <input type="number" id="wtc-price" placeholder="0" min="0" step="0.5" style="height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:Inter,sans-serif;outline:none">
+      </div>
+    </div>
+    <button class="profile-save-btn" onclick="confirmWishToCave()">Ajouter à la cave</button>
+  </div>
+</div>
 
 <!-- MODAL CHOIX AJOUT -->
 <div class="add-choice-modal" id="add-choice-modal" onclick="if(event.target===this)closeAddModal()">
