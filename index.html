@@ -372,7 +372,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);font-s
 .wine-sell:hover{border-color:#b8860b;background:#fffdf0}
 
 /* ── CARTES DÉGUSTATION ── */
-.deg-card{background:var(--surface);border:1px solid var(--ink5);border-radius:var(--r2);padding:16px 18px;display:flex;gap:14px;align-items:flex-start}
+.deg-card{background:var(--surface);border:1px solid var(--ink5);border-radius:var(--r2);padding:16px 28px;display:flex;gap:18px;align-items:center;margin-bottom:4px}
 .deg-card-body{flex:1}
 .deg-card-name{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:600;color:var(--ink);margin-bottom:3px}
 .deg-card-meta{font-size:11px;color:var(--ink4);margin-bottom:8px}
@@ -388,13 +388,13 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);font-s
 .deg-star:hover{transform:scale(1.2)}
 
 /* ── CARTES VENTES ── */
-.vente-card{background:var(--surface);border:1px solid var(--ink5);border-radius:var(--r2);padding:16px 18px;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center}
-.vente-card-name{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:600;color:var(--ink)}
-.vente-card-meta{font-size:11px;color:var(--ink4);margin-top:3px}
+.vente-card{background:var(--surface);border:1px solid var(--ink5);border-radius:var(--r2);padding:16px 28px;display:grid;grid-template-columns:auto auto 1fr;gap:20px;align-items:center;margin-bottom:4px}
+.vente-card-name{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:600;color:var(--ink)}
+.vente-card-meta{font-size:12px;color:var(--ink4);margin-top:3px}
 .vente-card-platform{display:inline-block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;background:var(--ink6);color:var(--ink3);padding:2px 8px;border-radius:10px;margin-top:6px}
 .vente-card-pnl{text-align:right}
-.vente-card-price{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;color:var(--ink)}
-.vente-card-pnl-val{font-size:12px;font-weight:600;margin-top:2px}
+.vente-card-price{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:700;color:var(--ink)}
+.vente-card-pnl-val{font-size:13px;font-weight:600;margin-top:2px}
 .vente-pnl-pos{color:#2a7a2a}
 .vente-pnl-neg{color:var(--ruby)}
 .vente-status{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:3px 9px;border-radius:10px;margin-top:6px}
@@ -612,25 +612,9 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);font-s
     <div class="stats-chip" onclick="setStatFilter(this,'Vin naturel / Nature')">Naturel</div>
   </div>
   <div class="pnl-summary" id="pnl-summary"></div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-    <div class="scard" style="display:flex;gap:16px;align-items:center;overflow:hidden">
-      <div style="position:relative;flex-shrink:0">
-        <canvas id="chart-type" width="180" height="180" style="display:block;cursor:pointer" onmousemove="pieHover(event)" onmouseleave="pieUnhover()"></canvas>
-        <div id="pie-tooltip" style="display:none;position:absolute;background:rgba(28,10,13,.88);color:#fff;font-size:11px;font-family:Inter,sans-serif;padding:5px 9px;border-radius:6px;pointer-events:none;z-index:10;white-space:nowrap"></div>
-      </div>
-      <div><h4>Répartition par type</h4><div id="st-type-legend" style="display:flex;flex-direction:column;gap:5px"></div></div>
-    </div>
+  <div class="sgrid">
     <div class="scard"><h4>Plus-value par région</h4><div id="st-reg-pnl"></div></div>
-    <div class="scard">
-  <h4>Répartition par type</h4>
-  <div style="position:relative;display:flex;align-items:center;gap:16px">
-    <div style="position:relative;flex-shrink:0">
-      <canvas id="chart-type" width="180" height="180" style="display:block;cursor:pointer" onmousemove="pieHover(event)" onmouseleave="pieUnhover()"></canvas>
-      <div id="pie-tooltip" style="display:none;position:absolute;background:rgba(28,10,13,.88);color:#fff;font-size:11px;font-family:Inter,sans-serif;padding:5px 9px;border-radius:6px;pointer-events:none;z-index:10;white-space:nowrap"></div>
-    </div>
-    <div id="st-type-legend" style="display:flex;flex-direction:column;gap:5px"></div>
-  </div>
-</div>
+    <div class="scard"><h4>Répartition par type</h4><div id="st-type"></div></div>
     <div class="scard" style="grid-column:1/-1"><h4>Plus-value par millésime</h4><div class="chart-wrap"><canvas id="chart-millesime"></canvas></div></div>
     <div class="scard"><h4>Valeur achat vs actuelle par région</h4><div class="chart-wrap"><canvas id="chart-region"></canvas></div></div>
     <div class="scard"><h4>Top bouteilles par plus-value</h4><div id="st-top"></div></div>
@@ -667,7 +651,10 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);font-s
 <div id="tab-wish" style="display:none">
   <div class="wish-shdr">
     <span class="wish-label" id="wcnt">0 vin souhaité</span>
-    <button class="btn-add" onclick="openWishAddModal()">+ Ajouter un souhait</button>
+    <div style="display:flex;gap:8px">
+      <button class="btn-ia" onclick="togglePanel('wish-import-panel')">✦ Import IA</button>
+      <button class="btn-add" onclick="togglePanel('wish-form')">+ Ajouter</button>
+    </div>
   </div>
   <div class="panel" id="wish-import-panel">
     <div class="panel-title">Ajouter par IA <span class="badge-ia">⚡ IA</span></div>
@@ -858,6 +845,7 @@ async function loadFromFirebase(){
     ]);
     wines  = wSnap.docs.map(d=>({id:d.id, ...d.data()}));
     wishes = whSnap.docs.map(d=>({id:d.id, ...d.data()}));
+    activeType = ''; // reset filtre
     renderWines(); updateStats(); renderWishes();
   }catch(e){ console.error('loadFromFirebase:', e); }
 }
@@ -923,63 +911,6 @@ async function uploadPhoto(wineId, dataUrl){
 }
 
 function save(){ /* données gérées par Firebase */ }
-
-// ── SOUHAITS ──
-function openWishAddModal(){ document.getElementById('wish-add-modal').classList.add('open'); }
-function closeWishAddModal(){ document.getElementById('wish-add-modal').classList.remove('open'); }
-function openWishManualForm(){
-  closeWishAddModal();
-  ['wf-n','wf-app','wf-r','wf-country','wf-year','wf-note'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
-  document.getElementById('wish-manual-modal').classList.add('open');
-}
-function closeWishManualModal(){ document.getElementById('wish-manual-modal').classList.remove('open'); }
-function addWish(){
-  const n=document.getElementById('wf-n')?.value.trim();if(!n)return;
-  const app=document.getElementById('wf-app')?.value.trim()||'';
-  const reg=document.getElementById('wf-r')?.value.trim()||'';
-  const country=document.getElementById('wf-country')?.value.trim()||'';
-  const year=document.getElementById('wf-year')?.value||'';
-  const note=document.getElementById('wf-note')?.value.trim()||'';
-  const parts=[app,reg,country,year].filter(Boolean).join(' · ');
-  const wish={id:'tmp-'+Date.now(),name:n,note:parts+(note?' — '+note:''),done:false};
-  wishes.unshift(wish);
-  if(db&&currentUser) saveWishToDb(wish);
-  closeWishManualModal();
-  renderWishes();
-}
-function openWishAIModal(mode){
-  closeWishAddModal();
-  aiCurrentMode=mode; aiResult=null; aiPhotoB64=null; _aiForWish=true;
-  resetAIModal();
-  document.getElementById('ai-mode-text').style.display=mode==='text'?'':'none';
-  document.getElementById('ai-mode-photo').style.display=mode==='photo'?'':'none';
-  document.getElementById('ai-modal-title').textContent=mode==='photo'?'📷 Photo étiquette':'🔍 Nom de la cuvée';
-  const qs=document.getElementById('ai-qty-section');if(qs)qs.style.display='none';
-  document.getElementById('ai-modal').classList.add('open');
-}
-let _aiForWish=false;
-let _wishToCaveId=null;
-function openWishToCave(id){
-  _wishToCaveId=id;
-  const w=wishes.find(x=>x.id==id);if(!w)return;
-  document.getElementById('wish-to-cave-name').textContent=w.name;
-  document.getElementById('wtc-qty').value=1;
-  document.getElementById('wtc-price').value='';
-  document.getElementById('wish-to-cave-modal').classList.add('open');
-}
-function closeWishToCave(){ document.getElementById('wish-to-cave-modal').classList.remove('open'); _wishToCaveId=null; }
-async function confirmWishToCave(){
-  const w=wishes.find(x=>x.id==_wishToCaveId);if(!w)return;
-  const qty=parseInt(document.getElementById('wtc-qty').value)||1;
-  const buy=parseFloat(document.getElementById('wtc-price').value)||0;
-  const newWine={id:'tmp-'+Date.now(),name:w.name,app:'',type:'Rouge',reg:w.note||'',country:'France',year:null,qty,buy,cur:buy,ap:'',cont:'75cl',notes:'',certs:[],customCritics:{},parker:null,suckling:null,decanter:null,vinous:null,bettane:null,jancis:null,ws:null,bh:null,img_url:null};
-  wines.push(newWine);
-  wishes=wishes.filter(x=>x.id!=_wishToCaveId);
-  if(db&&currentUser){ deleteWishFromDb(_wishToCaveId); saveWineToDb(newWine).then(()=>renderWines()); }
-  closeWishToCave();
-  renderWines(); updateStats(); renderWishes();
-  showTab('cave');
-}
 
 // ── DONNÉES DÉGUSTATIONS & VENTES ──
 let degustations = [];
@@ -1155,13 +1086,25 @@ function renderDegustations(){
     const wineRef = wines.find(w=>w.id===d.wineId);
     const wineImg = wineRef?.img_url || d.img_url || null;
     return `<div class="deg-card">
-      ${wineImg?`<div style="width:52px;flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-right:2px"><img src="${wineImg}" style="max-width:52px;max-height:88px;width:auto;height:auto;object-fit:contain;border-radius:4px"></div>`:`<div style="min-width:48px;text-align:center;flex-shrink:0">${d.note>0?`<div style="font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:700;color:var(--ruby);line-height:1">${d.note}</div><div style="font-size:10px;color:var(--ink4)">/100</div>`:`<div style="font-size:24px">🍷</div>`}</div>`}
-      <div class="deg-card-body">
-        <div class="deg-card-name">${d.wineName}${d.wineYear?' '+d.wineYear:''}</div>
-        <div class="deg-card-meta">${d.wineApp}${d.wineApp&&d.wineType?' · ':''}${d.wineType} · ${occLabels[d.occasion]||d.occasion||''}</div>
-        ${d.note>0?`<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><span style="color:var(--gold);font-size:13px">${starsHtml}</span><span style="font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:700;color:var(--ruby)">${d.note}<span style="font-size:11px;color:var(--ink4)">/100</span></span></div>`:''}
-        ${d.comment?`<div class="deg-card-comment">"${d.comment}"</div>`:''}
-        <div style="font-size:10px;color:var(--ink5);margin-top:8px">${dateStr} · ${d.qty} bouteille${d.qty>1?'s':''}</div>
+      ${wineImg?`<div style="width:52px;flex-shrink:0;display:flex;align-items:center;justify-content:center"><img src="${wineImg}" style="max-width:52px;max-height:88px;width:auto;height:auto;object-fit:contain;border-radius:4px"></div>`:`<div style="font-size:24px;flex-shrink:0;text-align:center;width:52px">🍷</div>`}
+      <div style="flex-shrink:0;text-align:center;min-width:52px;border-left:1px solid var(--ink5);border-right:1px solid var(--ink5);padding:0 12px;margin:0 4px">
+        ${d.note>0?`<div style="font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:700;color:var(--ruby);line-height:1">${d.note}</div><div style="font-size:10px;color:var(--ink4);margin-top:2px">/100</div><div style="color:var(--gold);font-size:11px;margin-top:4px">${starsHtml}</div>`:`<div style="font-size:20px;color:var(--ink5)">—</div>`}
+      </div>
+      <div style="display:flex;gap:0;align-items:stretch;flex:1;min-width:0">
+        <div class="deg-card-body" style="flex:none">
+          <div class="deg-card-name">${d.wineName}${d.wineYear?' '+d.wineYear:''}</div>
+          <div class="deg-card-meta">${d.wineApp}${d.wineApp&&d.wineType?' · ':''}${d.wineType} · <span onclick="editDegOccasion('${d.id}',this)" style="cursor:pointer;text-decoration:underline dotted;text-underline-offset:2px" title="Cliquer pour modifier">${occLabels[d.occasion]||d.occasion||'—'}</span></div>
+          <div style="font-size:10px;color:var(--ink5);margin-top:8px">${dateStr} · ${d.qty} bouteille${d.qty>1?'s':''}</div>
+        </div>
+        <div style="width:1px;background:var(--ink5);margin:0 14px;flex-shrink:0"></div>
+        <div style="width:200px;flex-shrink:0;cursor:pointer;display:flex;align-items:center" onclick="editDegComment('${d.id}',this)" title="Cliquer pour modifier">
+          <span style="font-size:13px;color:${d.comment?'var(--ink3)':'var(--ink5)'};font-style:italic;line-height:1.5">${d.comment||'+ Commentaire…'}</span>
+        </div>
+        <div style="flex:1"></div>
+        <div style="width:1px;background:var(--ink5);margin:0 14px;flex-shrink:0"></div>
+        <div style="flex-shrink:0;display:flex;align-items:center">
+          <button type="button" onclick="deleteDegustation('${d.id}')" title="Supprimer" style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border:1px solid var(--ink5);border-radius:6px;background:none;cursor:pointer;color:var(--ink4);transition:all .2s" onmouseover="this.style.borderColor='var(--ruby)';this.style.color='var(--ruby)'" onmouseout="this.style.borderColor='var(--ink5)';this.style.color='var(--ink4)'"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg></button>
+        </div>
       </div>
     </div>`;
     }).join('');
@@ -1172,13 +1115,150 @@ function statusLabel(s){
   return {a_vendre:'À vendre',en_cours:'En cours',vendu:'Vendu ✓'}[s||'a_vendre']||'À vendre';
 }
 
-async function updateVenteStatus(id, status){
+async function updateVenteStatus(id){
   const v = ventes.find(x=>x.id===id);
   if(!v) return;
-  v.status = status;
+  const cycle = {a_vendre:'en_cours', en_cours:'vendu', vendu:'a_vendre'};
+  v.status = cycle[v.status||'a_vendre'];
   renderVentes();
   if(db&&currentUser&&id&&!id.startsWith('tmp-')){
-    await db.collection('users').doc(currentUser.uid).collection('ventes').doc(id).update({status});
+    await db.collection('users').doc(currentUser.uid).collection('ventes').doc(id).update({status:v.status});
+  }
+}
+
+async function editVenteNotes(id, el){
+  const v = ventes.find(x=>x.id===id);
+  if(!v) return;
+  // Trouver le span à l'intérieur si on a cliqué sur le div conteneur
+  const target = el.tagName==='DIV' ? el : el.closest('div');
+  const ta = document.createElement('textarea');
+  ta.value = v.notes||'';
+  ta.placeholder = 'Ajouter une note…';
+  ta.style.cssText = 'width:220px;padding:0;border:none;border-bottom:1.5px solid var(--ruby);font-size:13px;font-family:Inter,sans-serif;outline:none;resize:none;box-sizing:border-box;font-style:italic;color:var(--ink3);background:transparent;line-height:1.5;min-height:24px';
+  ta.rows = 1;
+  ta.oninput = function(){ this.style.height="auto"; this.style.height=this.scrollHeight+"px"; };
+  target.innerHTML = "";
+  target.appendChild(ta);
+  ta.focus();
+  const save = async()=>{
+    v.notes = ta.value.trim();
+    renderVentes();
+    if(db&&currentUser&&id&&!id.startsWith('tmp-')){
+      await db.collection('users').doc(currentUser.uid).collection('ventes').doc(id).update({notes:v.notes});
+    }
+  };
+  ta.onblur = save;
+}
+
+async function editVentePlatform(id){
+  const v = ventes.find(x=>x.id===id);
+  if(!v) return;
+  const platforms = ['iDealwine','Drouot','Millésima','Caviste','Particulier','eBay','Autre'];
+  // Créer un petit popover inline
+  const badge = event.target.closest('.vente-card-platform');
+  if(!badge) return;
+  const sel = document.createElement('select');
+  sel.style.cssText = 'height:24px;padding:0 6px;border:1px solid var(--ink5);border-radius:6px;font-size:11px;font-family:Inter,sans-serif;outline:none;cursor:pointer';
+  platforms.forEach(p=>{
+    const opt = document.createElement('option');
+    opt.value=p; opt.textContent=p;
+    if(p===v.platform) opt.selected=true;
+    sel.appendChild(opt);
+  });
+  badge.replaceWith(sel);
+  sel.focus();
+  const save = async()=>{
+    v.platform = sel.value;
+    renderVentes();
+    if(db&&currentUser&&id&&!id.startsWith('tmp-')){
+      await db.collection('users').doc(currentUser.uid).collection('ventes').doc(id).update({platform:v.platform});
+    }
+  };
+  sel.onchange = save;
+  sel.onblur = save;
+}
+
+async function undoVente(id){
+  const v = ventes.find(x=>x.id===id);
+  if(!v) return;
+  // Remettre les bouteilles en cave
+  const w = wines.find(w=>w.id===v.wineId);
+  if(w){
+    w.qty += v.qty;
+    saveWineToDb(w);
+  } else {
+    // Le vin n'existe plus, le recréer
+    const newWine = {
+      id:'tmp-'+Date.now(), name:v.wineName, app:v.wineApp||'',
+      type:v.wineType||'Rouge', reg:'', country:'France',
+      year:v.wineYear||null, qty:v.qty, buy:v.buyPrice||0, cur:v.price||0,
+      ap:'', cont:'75cl', notes:'', certs:[], customCritics:{},
+      parker:null,suckling:null,decanter:null,vinous:null,
+      bettane:null,jancis:null,ws:null,bh:null, img_url:v.img_url||null
+    };
+    wines.push(newWine);
+    saveWineToDb(newWine).then(()=>renderWines());
+  }
+  // Supprimer la vente
+  ventes = ventes.filter(x=>x.id!==id);
+  renderWines(); updateStats(); renderVentes();
+  if(db&&currentUser&&id&&!id.startsWith('tmp-')){
+    await db.collection('users').doc(currentUser.uid).collection('ventes').doc(id).delete();
+  }
+}
+
+async function editDegOccasion(id, el){
+  const d = degustations.find(x=>x.id===id);
+  if(!d) return;
+  const occLabels={perso:'Personnel',repas:'Repas en famille',amis:'Entre amis',resto:'Restaurant',degustation:'Dégustation',evenement:'Événement'};
+  const sel = document.createElement('select');
+  sel.style.cssText = 'border:none;border-bottom:1.5px solid var(--ruby);font-size:11px;font-family:Inter,sans-serif;outline:none;cursor:pointer;background:transparent;color:var(--ink3);padding:0';
+  Object.entries(occLabels).forEach(([k,v])=>{
+    const opt = document.createElement('option');
+    opt.value=k; opt.textContent=v;
+    if(k===d.occasion) opt.selected=true;
+    sel.appendChild(opt);
+  });
+  el.replaceWith(sel);
+  sel.focus();
+  const save = async()=>{
+    d.occasion = sel.value;
+    renderDegustations();
+    if(db&&currentUser&&id&&!id.startsWith('tmp-')){
+      await db.collection('users').doc(currentUser.uid).collection('degustations').doc(id).update({occasion:d.occasion});
+    }
+  };
+  sel.onchange = save;
+  sel.onblur = save;
+}
+
+async function editDegComment(id, el){
+  const d = degustations.find(x=>x.id===id);
+  if(!d) return;
+  const ta = document.createElement('textarea');
+  ta.value = d.comment||'';
+  ta.placeholder = 'Ajouter un commentaire…';
+  ta.style.cssText = 'width:100%;padding:0;border:none;border-bottom:1.5px solid var(--ruby);font-size:13px;font-family:Inter,sans-serif;outline:none;resize:none;box-sizing:border-box;font-style:italic;color:var(--ink3);background:transparent;line-height:1.5;min-height:24px';
+  ta.rows = 1;
+  ta.oninput = function(){ this.style.height='auto'; this.style.height=this.scrollHeight+'px'; };
+  el.replaceWith(ta);
+  ta.focus();
+  if(d.comment) { ta.style.height='auto'; ta.style.height=ta.scrollHeight+'px'; }
+  const save = async()=>{
+    d.comment = ta.value.trim();
+    renderDegustations();
+    if(db&&currentUser&&id&&!id.startsWith('tmp-')){
+      await db.collection('users').doc(currentUser.uid).collection('degustations').doc(id).update({comment:d.comment});
+    }
+  };
+  ta.onblur = save;
+}
+
+async function deleteDegustation(id){
+  degustations = degustations.filter(d=>d.id!==id);
+  renderDegustations();
+  if(db&&currentUser&&id&&!id.startsWith('tmp-')){
+    await db.collection('users').doc(currentUser.uid).collection('degustations').doc(id).delete();
   }
 }
 
@@ -1219,21 +1299,22 @@ function renderVentes(){
     const wImgV = wRefV?.img_url || v.img_url || null;
     return `<div class="vente-card">
       ${wImgV?`<div style="width:50px;flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-right:2px"><img src="${wImgV}" style="max-width:50px;max-height:82px;width:auto;height:auto;object-fit:contain;border-radius:4px"></div>`:``}
-      <div>
-        <div class="vente-card-name">${v.wineName}${v.wineYear?' '+v.wineYear:''}</div>
-        <div class="vente-card-meta">${v.wineApp} · ${dateStr} · ${v.qty} bouteille${v.qty>1?'s':''}</div>
-        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:4px">
-          <div class="vente-card-platform">${v.platform}</div>
-          <div class="vente-status vente-status-${v.status||'a_vendre'}">${statusLabel(v.status)}</div>
+      <div style="display:flex;gap:0;align-items:stretch">
+        <div>
+          <div class="vente-card-name">${v.wineName}${v.wineYear?' '+v.wineYear:''}</div>
+          <div class="vente-card-meta">${v.wineApp} · ${dateStr} · ${v.qty} bouteille${v.qty>1?'s':''}</div>
+          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:6px">
+            <div class="vente-status vente-status-${v.status||'a_vendre'}" onclick="updateVenteStatus('${v.id}')" style="cursor:pointer;user-select:none" title="Cliquer pour changer">${statusLabel(v.status)}</div>
+            <span onclick="editVentePlatform('${v.id}')" class="vente-card-platform" style="cursor:pointer" title="Cliquer pour modifier">${v.platform} ✎</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;margin-top:8px;flex-wrap:wrap">
+            <button type="button" onclick="undoVente('${v.id}')" title="Remettre en cave" style="display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border:1px solid var(--ink5);border-radius:6px;background:none;cursor:pointer;color:var(--ink4);font-family:Inter,sans-serif;font-size:11px">↩ Cave</button>
+            <button type="button" onclick="deleteVente('${v.id}')" title="Supprimer de l'historique" style="display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border:1px solid var(--ink5);border-radius:6px;background:none;cursor:pointer;color:var(--ink4);font-family:Inter,sans-serif;font-size:11px"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg> Supprimer</button>
+          </div>
         </div>
-        ${v.notes?`<div style="font-size:11px;color:var(--ink4);margin-top:6px;font-style:italic">${v.notes}</div>`:''}
-        <div style="display:flex;align-items:center;gap:8px;margin-top:8px">
-          <select onchange="updateVenteStatus('${v.id}',this.value)" style="height:26px;padding:0 6px;border:1px solid var(--ink5);border-radius:6px;font-size:11px;font-family:Inter,sans-serif;outline:none;cursor:pointer;background:var(--surface);color:var(--ink3)">
-            <option value="a_vendre" ${(v.status||'a_vendre')==='a_vendre'?'selected':''}>À vendre</option>
-            <option value="en_cours" ${v.status==='en_cours'?'selected':''}>En cours</option>
-            <option value="vendu" ${v.status==='vendu'?'selected':''}>Vendu ✓</option>
-          </select>
-          <button type="button" onclick="deleteVente('${v.id}')" style="font-size:10px;padding:3px 8px;border:1px solid var(--ink5);border-radius:6px;background:none;cursor:pointer;color:var(--ink4);font-family:Inter,sans-serif">✕</button>
+        <div style="width:1px;background:var(--ink5);margin:0 14px;flex-shrink:0"></div>
+        <div style="width:220px;flex-shrink:0;cursor:pointer;display:flex;align-items:center" onclick="editVenteNotes('${v.id}',this)" title="Cliquer pour modifier">
+          <span style="font-size:13px;color:${v.notes?'var(--ink3)':'var(--ink5)'};font-style:italic;line-height:1.5">${v.notes||'+ Note…'}</span>
         </div>
       </div>
       <div class="vente-card-pnl">
@@ -1499,6 +1580,7 @@ function showTab(t){
   if(t==='wish')renderWishes();
   if(t==='degustation')renderDegustations();
   if(t==='ventes')renderVentes();
+  if(t==='cave'){ activeType=''; renderWines(); }
 }
 function togglePanel(id){
   const p=document.getElementById(id);
@@ -2112,8 +2194,8 @@ function renderWines(){
         </div>
         <div class="footer-actions">
           <button class="editbtn" onclick="editWine('${w.id}')"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Modifier</button>
-          <button class="winebtn wine-drink" onclick="openDrinkModal('${w.id}')" title="Boire"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 22h8M12 11v11M5 2h14l-3 9a5 5 0 0 1-8 0Z"/></svg> Boire</button>
-          <button class="winebtn wine-sell" onclick="openSellModal('${w.id}')" title="Vendre"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 1 0 0 7h5a3.5 3.5 0 1 1 0 7H6"/></svg> Vendre</button>
+          <button class="winebtn wine-drink" onclick="openDrinkModal('${w.id}')" title="Boire">🍷</button>
+          <button class="winebtn wine-sell" onclick="openSellModal('${w.id}')" title="Vendre">💰</button>
           <button class="delbtn" onclick="confirmDelete('${w.id}')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg></button>
         </div>
       </div>
@@ -2134,62 +2216,6 @@ function updateStats(){
   pe.className='hstat-val '+(pnl>0?'pnl-pos':pnl<0?'pnl-neg':'pnl-neu');
 }
 
-function drawPie(hoverIdx){
-  const pieCanvas=document.getElementById('chart-type');
-  if(!pieCanvas||!window._pieData) return;
-  const dpr=window.devicePixelRatio||1;
-  const SIZE=180;
-  pieCanvas.width=SIZE*dpr; pieCanvas.height=SIZE*dpr;
-  pieCanvas.style.width=SIZE+'px'; pieCanvas.style.height=SIZE+'px';
-  const ctx=pieCanvas.getContext('2d');
-  ctx.scale(dpr,dpr);
-  ctx.clearRect(0,0,SIZE,SIZE);
-  const cx=SIZE/2,cy=SIZE/2,r=SIZE/2-2;
-  let startAngle=-Math.PI/2;
-  window._pieData.forEach(({color},i)=>{
-    const slice=(window._pieData[i].c/window._pieTot)*2*Math.PI;
-    const isHover=hoverIdx===i;
-    ctx.beginPath();ctx.moveTo(cx,cy);
-    ctx.arc(cx,cy,r,startAngle,startAngle+slice);
-    ctx.closePath();
-    ctx.fillStyle=color;ctx.fill();
-    ctx.strokeStyle='#fff';ctx.lineWidth=isHover?2:0.5;ctx.stroke();
-    startAngle+=slice;
-  });
-}
-function pieHover(e){
-  const pieCanvas=document.getElementById('chart-type');
-  if(!pieCanvas||!window._pieData) return;
-  const rect=pieCanvas.getBoundingClientRect();
-  const SIZE=180;
-  const x=(e.clientX-rect.left)*(SIZE/rect.width)-SIZE/2;
-  const y=(e.clientY-rect.top)*(SIZE/rect.height)-SIZE/2;
-  const dist=Math.sqrt(x*x+y*y);
-  if(dist>SIZE/2){pieUnhover();return;}
-  let norm=Math.atan2(y,x)+Math.PI/2;
-  if(norm<0) norm+=2*Math.PI;
-  let cumul=0,hovIdx=null;
-  window._pieData.forEach(({c},i)=>{
-    const slice=(c/window._pieTot)*2*Math.PI;
-    if(hovIdx===null&&norm>=cumul&&norm<cumul+slice) hovIdx=i;
-    cumul+=slice;
-  });
-  drawPie(hovIdx);
-  const tip=document.getElementById('pie-tooltip');
-  if(tip&&hovIdx!==null){
-    const d=window._pieData[hovIdx];
-    tip.textContent=d.t+' : '+d.c+' btl ('+Math.round(d.c/window._pieTot*100)+'%)';
-    tip.style.display='block';
-    tip.style.left=(e.clientX-rect.left+12)+'px';
-    tip.style.top=(e.clientY-rect.top-36)+'px';
-  } else if(tip) tip.style.display='none';
-}
-function pieUnhover(){
-  drawPie(null);
-  const t=document.getElementById('pie-tooltip');
-  if(t) t.style.display='none';
-}
-
 function filteredWines(){return statFilter==='all'?wines:wines.filter(w=>w.type===statFilter)}
 
 function renderStats(){
@@ -2207,15 +2233,7 @@ function renderStats(){
   document.getElementById('st-reg-pnl').innerHTML=rE.map(({r,pnl,pct})=>`<div class="rbar"><span class="rname">${r}</span><div class="btrack"><div class="bfill" style="width:${Math.round(Math.abs(pnl)/maxP*100)}%;background:${pnl>=0?'#2a7a2a':'#8b1a2a'}"></div></div><span class="bcnt" style="color:${pnl>=0?'#2a7a2a':'#8b1a2a'}">${pnl>=0?'+':''}${pnl}€</span></div>`).join('')||'<span style="font-size:12px;color:var(--ink4)">—</span>';
   const byT={};fw.forEach(w=>{byT[w.type]=(byT[w.type]||0)+w.qty;});
   const totT=Math.max(Object.values(byT).reduce((a,b)=>a+b,0),1);
-  const typeEntries=Object.entries(byT).sort((a,b)=>b[1]-a[1]);
-  const PIE_COLORS={'Rouge':'#6b1520','Blanc':'#d4a843','Rosé':'#e8a0a8','Pétillant':'#4a7c9e','Orange':'#c47830','Vin naturel / Nature':'#5a7840','Vin biodynamique':'#486838','Vin muté / Fortifié':'#7a4020','Vin doux naturel':'#c4902a','Vin jaune / Oxydatif':'#b8962a','Cidre / Poiré':'#7aaa50','Autre':'#888'};
-  const getPieColor=(t,i)=>PIE_COLORS[t]||['#8b1a2a','#2a5a8b','#c47030','#2a7a3a','#7a3a8b','#5a7830'][i%6];
-  window._pieData=typeEntries.map(([t,c],i)=>({t,c,color:getPieColor(t,i)}));
-  window._pieTot=totT;
-  drawPie(null);
-  document.getElementById('st-type-legend').innerHTML=window._pieData.map(({t,c,color})=>
-    `<div style="display:flex;align-items:center;gap:6px"><div style="width:10px;height:10px;border-radius:2px;background:${color};flex-shrink:0"></div><span style="font-size:11px;color:var(--ink3)">${t} <span style="color:var(--ink4)">${c} (${Math.round(c/totT*100)}%)</span></span></div>`
-  ).join('');
+  document.getElementById('st-type').innerHTML=Object.entries(byT).sort((a,b)=>b[1]-a[1]).map(([t,c])=>`<div class="tdrow"><div class="tdot" style="background:${tc(t,'bar')}"></div><span style="font-size:12px;color:var(--ink3);flex:1;font-weight:500">${t}</span><span style="font-size:11px;color:var(--ink4)">${c} · ${Math.round(c/totT*100)}%</span></div>`).join('')||'—';
   const top5=[...fw].map(w=>({...w,pnl:(w.cur-w.buy)*w.qty})).sort((a,b)=>b.pnl-a.pnl).slice(0,5);
   document.getElementById('st-top').innerHTML=top5.map(w=>`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="font-size:12px;color:var(--ink3);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:60%">${w.name}</span><span style="font-size:12px;font-weight:600;color:${w.pnl>=0?'#2a7a2a':'var(--ruby)'}">${w.pnl>=0?'+':''}${Math.round(w.pnl)} €</span></div>`).join('')||'—';
   const byY={};fw.filter(w=>w.year).forEach(w=>{if(!byY[w.year])byY[w.year]={buy:0,cur:0};byY[w.year].buy+=w.qty*w.buy;byY[w.year].cur+=w.qty*(w.cur||w.buy);});
@@ -2230,26 +2248,12 @@ function renderStats(){
 function renderWishes(){
   const el=document.getElementById('wishlist');
   document.getElementById('wcnt').textContent=`${wishes.length} vin${wishes.length>1?'s':''} souhaité${wishes.length>1?'s':''}`;
-  if(!wishes.length){el.innerHTML='<div class="empty"><div class="empty-icon">✦</div><p>Votre liste de souhaits est vide</p></div>';return;}
-  el.innerHTML=`<div style="display:flex;flex-direction:column;gap:10px">${wishes.map(w=>`
-    <div style="background:var(--surface);border:1px solid var(--ink5);border-radius:var(--r2);padding:16px 20px;display:flex;align-items:center;gap:14px;${w.done?'opacity:.5':''}">
-      <div onclick="togWish('${w.id}')" style="width:20px;height:20px;border-radius:50%;border:2px solid ${w.done?'var(--ruby)':'var(--ink5)'};background:${w.done?'var(--ruby)':'transparent'};cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center">
-        ${w.done?'<svg width="10" height="8" viewBox="0 0 12 10" fill="none" stroke="#fff" stroke-width="2"><path d="M1 5l3 3L11 1"/></svg>':''}
-      </div>
-      <div style="flex:1;min-width:0">
-        <div style="font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:600;color:var(--ink);${w.done?'text-decoration:line-through':''}">${w.name}</div>
-        ${w.note?`<div style="font-size:12px;color:var(--ink4);margin-top:2px">${w.note}</div>`:''}
-      </div>
-      <div style="display:flex;gap:8px;flex-shrink:0">
-        <button type="button" class="editbtn" onclick="openWishToCave('${w.id}')" style="border-color:var(--ruby);color:var(--ruby)">
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg> En cave
-        </button>
-        <button type="button" class="editbtn" onclick="delWish('${w.id}')">
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg> Supprimer
-        </button>
-      </div>
-    </div>
-  `).join('')}</div>`;
+  if(!wishes.length){el.innerHTML='<div class="empty"><div class="empty-icon">✦</div><p>Votre liste de souhaits est vide</p></div>';return}
+  el.innerHTML=wishes.map(w=>`<div class="wcrd" style="${w.done?'opacity:.4':''}">
+    <div class="wchk${w.done?' chk':''}" onclick="togWish(${w.id})"><svg viewBox="0 0 12 10"><path d="M1 5l3 3L11 1"/></svg></div>
+    <div class="winfo"><h3 style="${w.done?'text-decoration:line-through':''}">${w.name}</h3>${w.note?`<p>${w.note}</p>`:''}</div>
+    <button class="wdel" onclick="delWish(${w.id})"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+  </div>`).join('');
 }
 
 // Init géré par onAuthStateChange
@@ -2375,7 +2379,7 @@ window.onerror = function(){
 <div class="modal-overlay" id="drink-modal" onclick="if(event.target===this)closeDrinkModal()">
   <div class="modal-box" style="max-width:440px">
     <button class="modal-close" onclick="closeDrinkModal()">✕</button>
-    <div class="modal-title" style="display:flex;align-items:center;gap:8px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 22h8M12 11v11M5 2h14l-3 9a5 5 0 0 1-8 0Z"/></svg> Enregistrer une dégustation</div>
+    <div class="modal-title">🍷 Enregistrer une dégustation</div>
     <div style="font-size:14px;font-weight:600;color:var(--ink3);margin-bottom:16px" id="drink-wine-name"></div>
 
     <div class="profile-grid">
@@ -2419,7 +2423,7 @@ window.onerror = function(){
 <div class="modal-overlay" id="sell-modal" onclick="if(event.target===this)closeSellModal()">
   <div class="modal-box" style="max-width:440px">
     <button class="modal-close" onclick="closeSellModal()">✕</button>
-    <div class="modal-title" style="display:flex;align-items:center;gap:8px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 1 0 0 7h5a3.5 3.5 0 1 1 0 7H6"/></svg> Enregistrer une vente</div>
+    <div class="modal-title">💰 Enregistrer une vente</div>
     <div style="font-size:14px;font-weight:600;color:var(--ink3);margin-bottom:16px" id="sell-wine-name"></div>
 
     <div class="profile-grid">
@@ -2461,67 +2465,6 @@ window.onerror = function(){
       </div>
     </div>
     <button class="profile-save-btn" onclick="saveSell()">Enregistrer la vente</button>
-  </div>
-</div>
-
-
-<!-- MODAL AJOUT SOUHAIT -->
-<div class="add-choice-modal" id="wish-add-modal" onclick="if(event.target===this)closeWishAddModal()">
-  <div class="add-choice-box">
-    <div class="add-choice-title">Ajouter un souhait</div>
-    <div class="add-choice-sub">Comment souhaitez-vous procéder ?</div>
-    <div class="add-choice-options">
-      <button type="button" class="add-choice-btn" onclick="openWishAIModal('photo')">
-        <div class="add-choice-btn-icon" style="background:#fff8f0">📷</div>
-        <div class="add-choice-btn-text"><span class="add-choice-btn-label">Photo de l'étiquette</span><span class="add-choice-btn-hint">L'IA analyse et pré-remplit</span></div>
-      </button>
-      <button type="button" class="add-choice-btn" onclick="openWishAIModal('text')">
-        <div class="add-choice-btn-icon" style="background:#f8f0ff">🔍</div>
-        <div class="add-choice-btn-text"><span class="add-choice-btn-label">Nom de la cuvée</span><span class="add-choice-btn-hint">L'IA recherche les informations</span></div>
-      </button>
-      <button type="button" class="add-choice-btn" onclick="openWishManualForm()">
-        <div class="add-choice-btn-icon" style="background:#f0f8f0">✏️</div>
-        <div class="add-choice-btn-text"><span class="add-choice-btn-label">Saisie manuelle</span><span class="add-choice-btn-hint">Remplir le formulaire vous-même</span></div>
-      </button>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL MANUEL SOUHAIT -->
-<div class="modal-overlay" id="wish-manual-modal" onclick="if(event.target===this)closeWishManualModal()">
-  <div class="modal-box" style="max-width:620px;max-height:90vh;overflow-y:auto">
-    <button class="modal-close" onclick="closeWishManualModal()">✕</button>
-    <div class="modal-title">Nouveau souhait</div>
-    <div class="fsec"><div class="fsec-label">Identité</div>
-      <div class="fr fr2">
-        <div class="fg"><label>Château / Domaine *</label><input type="text" id="wf-n" placeholder="Château Pétrus"></div>
-        <div class="fg"><label>Appellation</label><input type="text" id="wf-app" placeholder="Pomerol AOC"></div>
-      </div>
-      <div class="fr fr4">
-        <div class="fg"><label>Type</label><select id="wf-type"><option>Rouge</option><option>Blanc</option><option>Rosé</option><option>Pétillant</option><option>Orange</option><option>Vin muté / Fortifié</option><option>Autre</option></select></div>
-        <div class="fg"><label>Région</label><input type="text" id="wf-r" placeholder="Bordeaux"></div>
-        <div class="fg"><label>Pays</label><input type="text" id="wf-country" placeholder="France" list="country-list"></div>
-        <div class="fg"><label>Millésime</label><input type="number" id="wf-year" placeholder="2019" min="1900" max="2030"></div>
-      </div>
-    </div>
-    <div class="fsec"><div class="fsec-label">Note personnelle</div>
-      <textarea id="wf-note" placeholder="Vu chez un ami, grande année…" rows="2" style="width:100%;padding:8px 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:Inter,sans-serif;outline:none;resize:vertical;box-sizing:border-box"></textarea>
-    </div>
-    <button class="profile-save-btn" onclick="addWish()">Ajouter à la liste de souhaits</button>
-  </div>
-</div>
-
-<!-- MODAL EN CAVE -->
-<div class="modal-overlay" id="wish-to-cave-modal" onclick="if(event.target===this)closeWishToCave()">
-  <div class="modal-box" style="max-width:380px">
-    <button class="modal-close" onclick="closeWishToCave()">✕</button>
-    <div class="modal-title">Ajouter à la cave</div>
-    <div style="font-size:14px;font-weight:600;color:var(--ink3);margin-bottom:16px" id="wish-to-cave-name"></div>
-    <div class="profile-grid">
-      <div class="profile-fg"><label>Nombre de bouteilles</label><input type="number" id="wtc-qty" value="1" min="1" style="height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:Inter,sans-serif;outline:none;width:100%;box-sizing:border-box"></div>
-      <div class="profile-fg"><label>Prix d'achat (€/btl)</label><input type="number" id="wtc-price" placeholder="0" min="0" step="0.5" style="height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:Inter,sans-serif;outline:none;width:100%;box-sizing:border-box"></div>
-    </div>
-    <button class="profile-save-btn" onclick="confirmWishToCave()">Ajouter à la cave</button>
   </div>
 </div>
 
