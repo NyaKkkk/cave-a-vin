@@ -2326,8 +2326,7 @@ function renderStats(){
   document.getElementById('st-type-legend').innerHTML=window._pieData.map(({t,c,color})=>
     `<div style="display:flex;align-items:center;gap:6px"><div style="width:10px;height:10px;border-radius:2px;background:${color};flex-shrink:0"></div><span style="font-size:11px;color:var(--ink3)">${t} <span style="color:var(--ink4)">${c} (${Math.round(c/totT*100)}%)</span></span></div>`
   ).join('');
-  // Carte monde
-  renderWorldMap(fw);
+
   const top5=[...fw].map(w=>({...w,pnl:(w.cur-w.buy)*w.qty})).sort((a,b)=>b.pnl-a.pnl).slice(0,5);
   document.getElementById('st-top').innerHTML=top5.map(w=>`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="font-size:12px;color:var(--ink3);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:60%">${w.name}</span><span style="font-size:12px;font-weight:600;color:${w.pnl>=0?'#2a7a2a':'var(--ruby)'}">${w.pnl>=0?'+':''}${Math.round(w.pnl)} €</span></div>`).join('')||'—';
   const byY={};fw.filter(w=>w.year).forEach(w=>{if(!byY[w.year])byY[w.year]={buy:0,cur:0};byY[w.year].buy+=w.qty*w.buy;byY[w.year].cur+=w.qty*(w.cur||w.buy);});
