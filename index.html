@@ -148,7 +148,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);font-s
 .tbar{width:4px;align-self:stretch;flex-shrink:0}
 .wimg-wrap{width:112px;height:200px;flex-shrink:0;background:#fff;position:relative;display:flex;align-items:center;justify-content:left;align-self:center;margin:8px 0 8px 80px;overflow:visible;z-index:2}
 .wimg-wrap img{width:72px;height:100%;object-fit:contain;display:block;background:#fff;flex-shrink:0}
-.wimg-placeholder{width:100%;min-height:110px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:background .2s;gap:6px;padding:8px}
+.wimg-placeholder{width:100%;min-height:110px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:default;transition:background .2s;gap:6px;padding:8px}
 .wimg-placeholder:hover{background:var(--ink5)}
 .wimg-placeholder-icon{width:28px;height:28px;border-radius:50%;background:rgba(184,144,152,.2);display:flex;align-items:center;justify-content:center}
 .wimg-del{display:none}
@@ -862,7 +862,11 @@ async function saveWishToDb(wish){
   if(!db||!currentUser) return;
   try{
     const ref = db.collection('users').doc(currentUser.uid).collection('wishes');
-    const data = {name:wish.name||'', note:wish.note||'', done:wish.done||false};
+    const data = {
+      name:wish.name||'', note:wish.note||'', done:wish.done||false,
+      app:wish.app||'', reg:wish.reg||'', country:wish.country||'',
+      year:wish.year||null, type:wish.type||'Rouge', img_url:wish.img_url||null
+    };
     if(wish.id && !wish.id.startsWith('tmp-')){
       await ref.doc(wish.id).set(data, {merge:true});
     } else {
@@ -2373,6 +2377,33 @@ function saveWishEdit(id){
 
 
 
+let wishFormPhotoData = null;
+
+function handleWishFormPhoto(inp){
+  const f=inp.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=e=>{
+    wishFormPhotoData=e.target.result;
+    const inner=document.getElementById('wish-photo-inner');
+    if(inner) inner.innerHTML=`<img src="${wishFormPhotoData}" style="max-height:120px;max-width:100%;object-fit:contain;border-radius:6px"><span style="font-size:11px;color:var(--ink4);margin-top:4px">Cliquer pour changer</span>`;
+  };
+  r.readAsDataURL(f);
+}
+
+function applyWishAIToForm(){
+  if(!wishAIResult)return;
+  const r=wishAIResult;
+  const setV=(id,v)=>{const el=document.getElementById(id);if(el&&v!=null)el.value=v;};
+  setV('wf-name',r.name); setV('wf-app',r.appellation);
+  setV('wf-reg',r.region); setV('wf-country',r.country);
+  setV('wf-year',r.year); setV('wf-note',r.notes_degustation||'');
+  if(r.type){const sel=document.getElementById('wf-type');if(sel)sel.value=r.type;}
+  const btn=document.getElementById('wish-manual-modal').querySelector('.profile-save-btn');
+  if(btn){btn.textContent='Ajouter à la liste de souhaits';btn.onclick=saveWishManual;}
+  closeWishAIModal();
+  document.getElementById('wish-manual-modal').classList.add('open');
+}
+
 function openAddWishModal(){ document.getElementById('wish-choice-modal').classList.add('open'); }
 function closeAddWishModal(){ document.getElementById('wish-choice-modal').classList.remove('open'); }
 
@@ -2392,7 +2423,12 @@ function openWishMode(mode){
   document.getElementById('wish-ai-modal').classList.add('open');
 }
 function closeWishAIModal(){ document.getElementById('wish-ai-modal').classList.remove('open'); }
-function closeWishManualModal(){ document.getElementById('wish-manual-modal').classList.remove('open'); }
+function closeWishManualModal(){
+  document.getElementById('wish-manual-modal').classList.remove('open');
+  wishFormPhotoData=null;
+  const inner=document.getElementById('wish-photo-inner');
+  if(inner) inner.innerHTML=`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span style="font-size:12px;color:var(--ink4)">Cliquer pour ajouter une photo</span>`;
+}
 
 function resetWishAI(){
   wishAIResult=null; wishAIPhotoB64=null;
@@ -2488,9 +2524,11 @@ function saveWishManual(){
   const year=document.getElementById('wf-year')?.value||null;
   const type=document.getElementById('wf-type')?.value||'Rouge';
   const note=document.getElementById('wf-note')?.value.trim()||'';
-  const wish={id:'tmp-'+Date.now(),name,app,reg,country,year,type,note,done:false};
+  const img_url=wishFormPhotoData||null;
+  const wish={id:'tmp-'+Date.now(),name,app,reg,country,year,type,note,img_url,done:false};
   wishes.unshift(wish);
   if(db&&currentUser) saveWishToDb(wish);
+  wishFormPhotoData=null;
   closeWishManualModal();
   renderWishes();
 }
@@ -2803,7 +2841,7 @@ window.onerror = function(){
       <div class="ai-fields-grid" id="wish-ai-fields"></div>
       <div class="ai-result-actions">
         <button type="button" class="ai-import-btn" onclick="confirmWishAI()">✓ Ajouter aux souhaits</button>
-        <button type="button" class="ai-retry-btn" onclick="resetWishAI()">↩ Recommencer</button>
+        <button type="button" class="ai-retry-btn" onclick="applyWishAIToForm()">✏️ Modifier</button>
         <button type="button" class="ai-retry-btn" onclick="closeWishAIModal()">✕ Annuler</button>
       </div>
     </div>
@@ -2831,6 +2869,15 @@ window.onerror = function(){
     </div>
     <div class="fsec"><div class="fsec-label">Note personnelle</div>
       <textarea id="wf-note" placeholder="Vu chez un ami, grande année, budget max…" rows="2" style="width:100%;padding:8px 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:Inter,sans-serif;outline:none;resize:vertical;box-sizing:border-box"></textarea>
+    </div>
+    <div class="fsec"><div class="fsec-label">Photo</div>
+      <div class="photo-upload-zone" id="wish-photo-zone" onclick="document.getElementById('wf-photo').click()" style="cursor:pointer">
+        <input type="file" id="wf-photo" accept="image/*" style="display:none" onchange="handleWishFormPhoto(this)">
+        <div id="wish-photo-inner" style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:20px">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+          <span style="font-size:12px;color:var(--ink4)">Cliquer pour ajouter une photo</span>
+        </div>
+      </div>
     </div>
     <button class="profile-save-btn" onclick="saveWishManual()">Ajouter à la liste de souhaits</button>
   </div>
