@@ -216,7 +216,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);font-s
 .stats-toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
 .stats-chip{height:30px;padding:0 12px;border:1.5px solid var(--ink5);border-radius:var(--r3);background:var(--surface);font-family:'Inter',sans-serif;font-size:11px;font-weight:500;color:var(--ink3);cursor:pointer;transition:all .2s;white-space:nowrap;display:inline-flex;align-items:center;justify-content:center}
 .stats-chip:hover{border-color:var(--ink4)}.stats-chip.active{background:var(--ink);border-color:var(--ink);color:#fff}
-.sgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.sgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px}
 .scard{background:var(--surface);border:1px solid var(--ink5);border-radius:var(--r2);padding:clamp(14px,3vw,20px)}
 .scard h4{font-size:10px;font-weight:600;color:var(--ink4);text-transform:uppercase;letter-spacing:.8px;margin-bottom:14px}
 .rbar{display:flex;align-items:center;gap:8px;margin-bottom:8px}
@@ -227,7 +227,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);font-s
 .tdrow{display:flex;align-items:center;gap:8px;margin-bottom:8px}
 .tdot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 .chart-wrap{position:relative;height:160px;margin-top:4px}
-.pnl-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.pnl-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
 @media(max-width:480px){.pnl-summary{grid-template-columns:1fr}}
 .pnl-kpi{background:var(--ink6);border-radius:var(--r);padding:10px 12px}
 .pnl-kpi-val{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--ink);line-height:1}
@@ -366,10 +366,8 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);font-s
 .ai-err-msg.visible{display:block}
 
 /* ── BOUTONS BOIRE/VENDRE ── */
-.winebtn{height:28px;padding:0 8px;border-radius:6px;border:1.5px solid var(--ink5);background:var(--surface);cursor:pointer;font-size:13px;transition:all .2s;display:inline-flex;align-items:center;justify-content:center}
-.winebtn:hover{transform:scale(1.1)}
-.wine-drink:hover{border-color:#8b1a2a;background:#fff5f5}
-.wine-sell:hover{border-color:#b8860b;background:#fffdf0}
+.wine-drink:hover{border-color:var(--ruby)!important;color:var(--ruby)!important;background:#fff5f5!important}
+.wine-sell:hover{border-color:#b8860b!important;color:#b8860b!important;background:#fffdf0!important}
 
 /* ── CARTES DÉGUSTATION ── */
 .deg-card{background:var(--surface);border:1px solid var(--ink5);border-radius:var(--r2);padding:16px 28px;display:flex;gap:18px;align-items:center;margin-bottom:4px}
@@ -602,7 +600,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);font-s
 </div>
 
 <!-- STATS -->
-<div id="tab-stats" style="display:none">
+<div id="tab-stats" style="display:none;padding-top:4px">
   <div class="stats-toolbar">
     <div class="stats-chip active" onclick="setStatFilter(this,'all')">Toute la cave</div>
     <div class="stats-chip" onclick="setStatFilter(this,'Rouge')">Rouge</div>
@@ -2195,8 +2193,8 @@ function renderWines(){
         </div>
         <div class="footer-actions">
           <button class="editbtn" onclick="editWine('${w.id}')"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Modifier</button>
-          <button class="winebtn wine-drink" onclick="openDrinkModal('${w.id}')" title="Boire">🍷</button>
-          <button class="winebtn wine-sell" onclick="openSellModal('${w.id}')" title="Vendre">💰</button>
+          <button class="editbtn wine-drink" onclick="openDrinkModal('${w.id}')"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 22H5a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5"/><path d="M11 14c0 3.31-2.69 6-6 6"/><path d="M15.5 9.5 20 14l-5 5"/><path d="m20 14-5-5 5-5"/></svg> Boire</button>
+          <button class="editbtn wine-sell" onclick="openSellModal('${w.id}')"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 1 0 0 7h5a3.5 3.5 0 1 1 0 7H6"/></svg> Vendre</button>
           <button class="delbtn" onclick="confirmDelete('${w.id}')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg></button>
         </div>
       </div>
