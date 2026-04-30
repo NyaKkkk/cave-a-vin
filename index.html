@@ -634,7 +634,10 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);font-s
 <div id="tab-degustation" style="display:none">
   <div class="tab-header">
     <h2 class="tab-title">Mes dégustations</h2>
-    <div id="deg-count" style="font-size:12px;color:var(--ink4)"></div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <div id="deg-count" style="font-size:12px;color:var(--ink4)"></div>
+      <button class="btn-add" onclick="openFreeDrinkModal()" style="font-size:12px;padding:0 12px;height:32px">+ Ajouter une dégustation</button>
+    </div>
   </div>
   <div id="deg-list" style="display:flex;flex-direction:column;gap:10px"></div>
   <div id="deg-empty" style="width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 20px;color:var(--ink4);text-align:center">
@@ -929,10 +932,72 @@ function execDelete(){
 
 // ── MODAL BOIRE ──
 let _drinkWineId = null;
+function updateDrinkScale(){
+  const scale=parseInt(document.getElementById('drink-note-scale').value)||100;
+  const range=document.getElementById('drink-note-range');
+  const label=document.getElementById('drink-note-scale-label');
+  if(scale===100){ range.max=100;range.step=1; }
+  else if(scale===20){ range.max=20;range.step=0.5; }
+  else if(scale===5){ range.max=5;range.step=0.1; }
+  range.value=0;
+  document.getElementById('drink-note-val').textContent='0';
+  if(label) label.textContent='/'+scale;
+}
+function updateDrinkNote(val){
+  document.getElementById('drink-note-val').textContent=val;
+}
+
+// Modifier la note d'une dégustation
+async function editDegNote(id, el){
+  const d=degustations.find(x=>x.id===id);if(!d)return;
+  const scale=d.noteMax||100;
+  const step=scale===20?0.5:scale===5?0.1:1;
+  const inp=document.createElement('input');
+  inp.type='number';inp.value=d.note||0;inp.min=0;inp.max=scale;inp.step=step;
+  inp.style.cssText='width:60px;border:none;border-bottom:1.5px solid var(--ruby);font-family:"Cormorant Garamond",serif;font-size:28px;font-weight:700;color:var(--ruby);text-align:center;background:transparent;outline:none';
+  el.innerHTML='';el.appendChild(inp);
+  inp.focus();
+  const save=async()=>{
+    d.note=parseFloat(inp.value)||0;
+    renderDegustations();
+    if(db&&currentUser&&id&&!id.startsWith('tmp-')){
+      await db.collection('users').doc(currentUser.uid).collection('degustations').doc(id).update({note:d.note});
+    }
+  };
+  inp.onblur=save;inp.onkeydown=e=>{if(e.key==='Enter')inp.blur();};
+}
+
+// Dégustation d'un vin non en cave
+function openFreeDrinkModal(){
+  _drinkWineId=null;
+  document.getElementById('drink-wine-name').textContent='';
+  document.getElementById('drink-wine-name').style.display='none';
+  // Afficher un champ nom libre
+  let nameRow=document.getElementById('drink-free-name-row');
+  if(!nameRow){
+    nameRow=document.createElement('div');
+    nameRow.id='drink-free-name-row';
+    nameRow.className='profile-grid';
+    nameRow.style.marginBottom='12px';
+    nameRow.innerHTML='<div class="profile-fg full"><label>Nom du vin</label><input type="text" id="drink-free-name" placeholder="Château Pétrus 2015…" style="height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:Inter,sans-serif;outline:none;width:100%;box-sizing:border-box"></div>';
+    document.getElementById('drink-modal').querySelector('.modal-box').insertBefore(nameRow,document.getElementById('drink-modal').querySelector('.profile-grid'));
+  }
+  nameRow.style.display='grid';
+  document.getElementById('drink-qty').value=1;
+  document.getElementById('drink-date').value=new Date().toISOString().split('T')[0];
+  document.getElementById('drink-note-range').value=0;
+  document.getElementById('drink-note-val').textContent='0';
+  document.getElementById('drink-comment').value='';
+  document.getElementById('drink-modal').classList.add('open');
+}
+
 function openDrinkModal(id){
   _drinkWineId = id;
   const w = wines.find(w=>w.id===id);
   if(!w) return;
+  // Cacher le champ nom libre si visible
+  const fr=document.getElementById('drink-free-name-row');if(fr)fr.style.display='none';
+  document.getElementById('drink-wine-name').style.display='';
   document.getElementById('drink-wine-name').textContent = w.name + (w.year?' '+w.year:'');
   document.getElementById('drink-qty').value = 1;
   document.getElementById('drink-qty').max = w.qty;
@@ -965,13 +1030,15 @@ async function saveDrink(){
     createdAt: new Date().toISOString()
   };
 
-  // Décrémenter la quantité
-  w.qty -= qty;
-  if(w.qty <= 0){
-    wines = wines.filter(x=>x.id!==w.id);
-    deleteWineFromDb(w.id);
-  } else {
-    saveWineToDb(w);
+  // Décrémenter la quantité (seulement si vin en cave)
+  if(w){
+    w.qty -= qty;
+    if(w.qty <= 0){
+      wines = wines.filter(x=>x.id!==w.id);
+      deleteWineFromDb(w.id);
+    } else {
+      saveWineToDb(w);
+    }
   }
 
   // Sauvegarder la dégustation
@@ -1026,13 +1093,15 @@ async function saveSell(){
     createdAt: new Date().toISOString()
   };
 
-  // Décrémenter la quantité
-  w.qty -= qty;
-  if(w.qty <= 0){
-    wines = wines.filter(x=>x.id!==w.id);
-    deleteWineFromDb(w.id);
-  } else {
-    saveWineToDb(w);
+  // Décrémenter la quantité (seulement si vin en cave)
+  if(w){
+    w.qty -= qty;
+    if(w.qty <= 0){
+      wines = wines.filter(x=>x.id!==w.id);
+      deleteWineFromDb(w.id);
+    } else {
+      saveWineToDb(w);
+    }
   }
 
   ventes.unshift({id:'tmp-'+Date.now(),...vente});
@@ -1061,15 +1130,13 @@ function renderDegustations(){
   count.textContent = degustations.length+' dégustation'+(degustations.length>1?'s':'');
   const occLabels={perso:'Personnel',repas:'Repas en famille',amis:'Entre amis',resto:'Restaurant',degustation:'Dégustation',evenement:'Événement'};
   list.innerHTML = degustations.map(d=>{
-    const stars = d.note ? Math.round(d.note/100*5) : 0;
-    const starsHtml = '★'.repeat(stars)+'☆'.repeat(5-stars);
     const dateStr = d.date ? new Date(d.date+'T12:00:00').toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'}) : '';
     const wineRef = wines.find(w=>w.id===d.wineId);
     const wineImg = wineRef?.img_url || d.img_url || null;
     return `<div class="deg-card">
       ${wineImg?`<div style="width:52px;flex-shrink:0;display:flex;align-items:center;justify-content:center"><img src="${wineImg}" style="max-width:52px;max-height:88px;width:auto;height:auto;object-fit:contain;border-radius:4px"></div>`:`<div style="font-size:24px;flex-shrink:0;text-align:center;width:52px">🍷</div>`}
-      <div style="flex-shrink:0;text-align:center;min-width:52px;border-left:1px solid var(--ink5);border-right:1px solid var(--ink5);padding:0 12px;margin:0 4px">
-        ${d.note>0?`<div style="font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:700;color:var(--ruby);line-height:1">${d.note}</div><div style="font-size:10px;color:var(--ink4);margin-top:2px">/100</div><div style="color:var(--gold);font-size:11px;margin-top:4px">${starsHtml}</div>`:`<div style="font-size:20px;color:var(--ink5)">—</div>`}
+      <div style="flex-shrink:0;text-align:center;min-width:52px;border-left:1px solid var(--ink5);border-right:1px solid var(--ink5);padding:0 12px;margin:0 4px;cursor:pointer" onclick="editDegNote('${d.id}',this)" title="Cliquer pour modifier la note">
+        ${d.note>0?`<div style="font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:700;color:var(--ruby);line-height:1">${d.note}</div><div style="font-size:10px;color:var(--ink4);margin-top:2px">/${d.noteMax||100}</div>`:`<div style="font-size:20px;color:var(--ink5)">+ note</div>`}
       </div>
       <div style="display:flex;gap:0;align-items:stretch;flex:1;min-width:0">
         <div class="deg-card-body" style="flex:none">
@@ -2723,11 +2790,18 @@ window.onerror = function(){
         <input type="date" id="drink-date" style="height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:Inter,sans-serif;outline:none">
       </div>
       <div class="profile-fg full">
-        <label>Ma note /100</label>
+        <label>Ma note</label>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+          <select id="drink-note-scale" onchange="updateDrinkScale()" style="height:32px;padding:0 8px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:12px;font-family:Inter,sans-serif;outline:none">
+            <option value="100">/ 100</option>
+            <option value="20">/ 20</option>
+            <option value="5">/ 5</option>
+          </select>
+        </div>
         <div style="display:flex;align-items:center;gap:12px">
-          <input type="range" id="drink-note-range" min="0" max="100" step="1" value="0" oninput="document.getElementById('drink-note-val').textContent=this.value" style="flex:1">
-          <span id="drink-note-val" style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;color:var(--ruby);min-width:36px;text-align:center">0</span>
-          <span style="font-size:12px;color:var(--ink4)">/100</span>
+          <input type="range" id="drink-note-range" min="0" max="100" step="1" value="0" oninput="updateDrinkNote(this.value)" style="flex:1">
+          <span id="drink-note-val" style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;color:var(--ruby);min-width:42px;text-align:center">0</span>
+          <span id="drink-note-scale-label" style="font-size:12px;color:var(--ink4)">/100</span>
         </div>
       </div>
       <div class="profile-fg full">
