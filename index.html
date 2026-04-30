@@ -932,6 +932,27 @@ function execDelete(){
 
 // ── MODAL BOIRE ──
 let _drinkWineId = null;
+function applyNoteScale(){
+  const scale=parseInt(document.getElementById('pf-noteScale')?.value)||100;
+  userProfile.noteScale=scale;
+  // Mettre à jour le slider si le modal est ouvert
+  updateDrinkScaleFromProfile();
+}
+function updateDrinkScaleFromProfile(){
+  const scale=userProfile.noteScale||100;
+  const range=document.getElementById('drink-note-range');
+  const label=document.getElementById('drink-note-scale-label');
+  const lbl=document.getElementById('drink-note-label');
+  if(range){
+    if(scale===100){range.max=100;range.step=1;}
+    else if(scale===20){range.max=20;range.step=0.5;}
+    else if(scale===5){range.max=5;range.step=0.1;}
+    range.value=0;
+    document.getElementById('drink-note-val').textContent='0';
+  }
+  if(label) label.textContent='/'+scale;
+  if(lbl) lbl.textContent='Ma note /'+scale;
+}
 function updateDrinkScale(){
   const scale=parseInt(document.getElementById('drink-note-scale').value)||100;
   const range=document.getElementById('drink-note-range');
@@ -942,6 +963,16 @@ function updateDrinkScale(){
   range.value=0;
   document.getElementById('drink-note-val').textContent='0';
   if(label) label.textContent='/'+scale;
+}
+function handleFreeDrinkPhoto(inp){
+  const f=inp.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=e=>{
+    window._drinkFreePhotoData=e.target.result;
+    const lbl=document.getElementById('drink-free-photo-label');
+    if(lbl) lbl.textContent='✓ Photo ajoutée';
+  };
+  r.readAsDataURL(f);
 }
 function updateDrinkNote(val){
   document.getElementById('drink-note-val').textContent=val;
@@ -979,7 +1010,11 @@ function openFreeDrinkModal(){
     nameRow.id='drink-free-name-row';
     nameRow.className='profile-grid';
     nameRow.style.marginBottom='12px';
-    nameRow.innerHTML='<div class="profile-fg full"><label>Nom du vin</label><input type="text" id="drink-free-name" placeholder="Château Pétrus 2015…" style="height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:Inter,sans-serif;outline:none;width:100%;box-sizing:border-box"></div>';
+    nameRow.innerHTML='<div class="profile-fg full"><label>Nom du vin *</label><input type="text" id="drink-free-name" placeholder="Château Pétrus…" style="height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:Inter,sans-serif;outline:none;width:100%;box-sizing:border-box"></div>'
+      +'<div class="profile-fg"><label>Appellation</label><input type="text" id="drink-free-app" placeholder="Pomerol AOC" style="height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:Inter,sans-serif;outline:none;width:100%;box-sizing:border-box"></div>'
+      +'<div class="profile-fg"><label>Millésime</label><input type="number" id="drink-free-year" placeholder="2015" min="1900" max="2030" style="height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:Inter,sans-serif;outline:none;width:100%;box-sizing:border-box"></div>'
+      +'<div class="profile-fg"><label>Type</label><select id="drink-free-type" style="height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:Inter,sans-serif;outline:none"><option>Rouge</option><option>Blanc</option><option>Rosé</option><option>Pétillant</option><option>Orange</option><option>Vin naturel / Nature</option><option>Autre</option></select></div>'
+      +'<div class="profile-fg full"><label>Photo</label><div onclick="document.getElementById(\'drink-free-photo-inp\').click()" style="cursor:pointer;border:1.5px dashed var(--ink5);border-radius:var(--r);padding:10px;text-align:center;font-size:12px;color:var(--ink4)"><input type="file" id="drink-free-photo-inp" accept="image/*" style="display:none" onchange="handleFreeDrinkPhoto(this)"><span id="drink-free-photo-label">📷 Ajouter une photo</span></div></div>';
     document.getElementById('drink-modal').querySelector('.modal-box').insertBefore(nameRow,document.getElementById('drink-modal').querySelector('.profile-grid'));
   }
   nameRow.style.display='grid';
@@ -1005,44 +1040,54 @@ function openDrinkModal(id){
   document.getElementById('drink-note-range').value = 0;
   document.getElementById('drink-note-val').textContent = '0';
   document.getElementById('drink-comment').value = '';
+  updateDrinkScaleFromProfile();
   document.getElementById('drink-modal').classList.add('open');
 }
 function closeDrinkModal(){
   document.getElementById('drink-modal').classList.remove('open');
   _drinkWineId = null;
+  window._drinkFreePhotoData = null;
+  const fr=document.getElementById('drink-free-name-row');if(fr)fr.style.display='none';
+  document.getElementById('drink-wine-name').style.display='';
 }
 async function saveDrink(){
-  if(!_drinkWineId) return;
-  const w = wines.find(w=>w.id===_drinkWineId);
-  if(!w) return;
-  const qty   = parseInt(document.getElementById('drink-qty').value)||1;
-  const note  = parseFloat(document.getElementById('drink-note-range').value)||0;
-  const date  = document.getElementById('drink-date').value;
-  const occ   = document.getElementById('drink-occasion').value;
-  const comm  = document.getElementById('drink-comment').value.trim();
+  const w = _drinkWineId ? wines.find(x=>x.id===_drinkWineId) : null;
+  // Récupérer la note et son échelle depuis le profil
+  const noteMax = userProfile.noteScale||100;
+  const qty  = parseInt(document.getElementById('drink-qty').value)||1;
+  const note = parseFloat(document.getElementById('drink-note-range').value)||0;
+  const date = document.getElementById('drink-date').value;
+  const occ  = document.getElementById('drink-occasion').value;
+  const comm = document.getElementById('drink-comment').value.trim();
+  // Champs dégustation libre
+  const freeName = document.getElementById('drink-free-name')?.value.trim()||'';
+  const freeYear = document.getElementById('drink-free-year')?.value||null;
+  const freeApp  = document.getElementById('drink-free-app')?.value.trim()||'';
+  const freeType = document.getElementById('drink-free-type')?.value||'Rouge';
+  const freeImgData = window._drinkFreePhotoData||null;
+
+  const wineName = w ? w.name : freeName;
+  if(!wineName){ alert('Veuillez renseigner le nom du vin.'); return; }
 
   const deg = {
-    wineId:w.id, wineName:w.name, wineYear:w.year||null,
-    wineApp:w.app||'', wineType:w.type||'',
-    img_url:w.img_url||null,
-    qty, note, date, occasion:occ, comment:comm,
-    buyPrice:w.buy||0,
+    wineId:w?.id||null,
+    wineName, wineYear:w?.year||freeYear||null,
+    wineApp:w?.app||freeApp||'', wineType:w?.type||freeType||'',
+    img_url:w?.img_url||freeImgData||null,
+    qty, note, noteMax, date, occasion:occ, comment:comm,
+    buyPrice:w?.buy||0,
     createdAt: new Date().toISOString()
   };
 
   // Décrémenter la quantité (seulement si vin en cave)
   if(w){
     w.qty -= qty;
-    if(w.qty <= 0){
-      wines = wines.filter(x=>x.id!==w.id);
-      deleteWineFromDb(w.id);
-    } else {
-      saveWineToDb(w);
-    }
+    if(w.qty <= 0){ wines=wines.filter(x=>x.id!==w.id); deleteWineFromDb(w.id); }
+    else saveWineToDb(w);
   }
 
-  // Sauvegarder la dégustation
   degustations.unshift({id:'tmp-'+Date.now(),...deg});
+  window._drinkFreePhotoData = null;
   renderWines(); updateStats();
   closeDrinkModal();
 
@@ -1436,6 +1481,7 @@ function openProfile(){
   document.getElementById('pf-capacity').value   = p.capacity||'';
   document.getElementById('pf-objective').value  = p.objective||'plaisir';
   document.getElementById('pf-region').value     = p.region||'';
+  document.getElementById('pf-noteScale').value  = String(p.noteScale||100);
 
   // Avatar preview
   const preview = document.getElementById('profile-avatar-preview');
@@ -1477,6 +1523,7 @@ async function saveProfile(){
     capacity   : parseInt(document.getElementById('pf-capacity').value)||null,
     objective  : document.getElementById('pf-objective').value,
     region     : document.getElementById('pf-region').value.trim(),
+    noteScale  : parseInt(document.getElementById('pf-noteScale').value)||100,
     email      : currentUser.email,
   };
   if(profilePhotoData) data.photoUrl = profilePhotoData;
@@ -2790,14 +2837,7 @@ window.onerror = function(){
         <input type="date" id="drink-date" style="height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:Inter,sans-serif;outline:none">
       </div>
       <div class="profile-fg full">
-        <label>Ma note</label>
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
-          <select id="drink-note-scale" onchange="updateDrinkScale()" style="height:32px;padding:0 8px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:12px;font-family:Inter,sans-serif;outline:none">
-            <option value="100">/ 100</option>
-            <option value="20">/ 20</option>
-            <option value="5">/ 5</option>
-          </select>
-        </div>
+        <label id="drink-note-label">Ma note /100</label>
         <div style="display:flex;align-items:center;gap:12px">
           <input type="range" id="drink-note-range" min="0" max="100" step="1" value="0" oninput="updateDrinkNote(this.value)" style="flex:1">
           <span id="drink-note-val" style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;color:var(--ruby);min-width:42px;text-align:center">0</span>
@@ -2998,5 +3038,52 @@ window.onerror = function(){
     <button class="profile-save-btn" onclick="confirmWishToCave()">Ajouter à la cave</button>
   </div>
 </div>
+<!-- MODAL PROFIL -->
+<div class="modal-overlay" id="profile-modal" onclick="if(event.target===this)closeProfile()">
+  <div class="modal-box" style="max-width:480px">
+    <button class="modal-close" onclick="closeProfile()">✕</button>
+    <div class="modal-title">Mon profil</div>
+    <div class="modal-avatar">
+      <div class="modal-avatar-preview" id="profile-avatar-preview" onclick="document.getElementById('profile-photo-input').click()">
+        <span class="modal-avatar-initials-big" id="profile-avatar-big">?</span>
+      </div>
+      <input type="file" id="profile-photo-input" accept="image/*" style="display:none" onchange="handleProfilePhoto(this)">
+      <span class="modal-avatar-hint" onclick="document.getElementById('profile-photo-input').click()">Changer la photo</span>
+    </div>
+    <div class="profile-grid">
+      <div class="profile-fg"><label>Prénom</label><input type="text" id="pf-firstname" placeholder="Thomas"></div>
+      <div class="profile-fg"><label>Nom</label><input type="text" id="pf-lastname" placeholder="Dupont"></div>
+      <div class="profile-fg full"><label>Nom de la cave</label><input type="text" id="pf-cave" placeholder="Cave de Thomas"></div>
+      <div class="profile-fg full"><label>Email</label><input type="email" id="pf-email" disabled style="opacity:.6"></div>
+      <div class="profile-fg"><label>Devise</label>
+        <select id="pf-currency">
+          <option value="€">€ Euro</option>
+          <option value="$">$ Dollar</option>
+          <option value="£">£ Livre</option>
+          <option value="CHF">CHF Franc suisse</option>
+        </select>
+      </div>
+      <div class="profile-fg"><label>Capacité cave (bouteilles)</label><input type="number" id="pf-capacity" placeholder="200" min="0"></div>
+      <div class="profile-fg"><label>Objectif principal</label>
+        <select id="pf-objective">
+          <option value="plaisir">Plaisir personnel</option>
+          <option value="collection">Collection</option>
+          <option value="investissement">Investissement</option>
+          <option value="mixte">Mixte</option>
+        </select>
+      </div>
+      <div class="profile-fg"><label>Échelle de notation</label>
+        <select id="pf-noteScale" onchange="applyNoteScale()">
+          <option value="100">/ 100 (Parker, Vivino…)</option>
+          <option value="20">/ 20 (RVF, Bettane…)</option>
+          <option value="5">/ 5 (étoiles)</option>
+        </select>
+      </div>
+      <div class="profile-fg full"><label>Région préférée</label><input type="text" id="pf-region" placeholder="Bordeaux, Bourgogne..."></div>
+    </div>
+    <button class="profile-save-btn" onclick="saveProfile()">Enregistrer le profil</button>
+  </div>
+</div>
+
 </body>
 </html>
