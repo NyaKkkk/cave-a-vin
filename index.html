@@ -87,9 +87,9 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);font-s
 .btn-filter.active{border-color:var(--ruby);color:var(--ruby);background:var(--surface)}
 .filter-badge{display:inline-flex;align-items:center;justify-content:center;min-width:16px;height:16px;background:var(--ruby);color:#fff;border-radius:8px;font-size:9px;font-weight:700;padding:0 3px}
 /* FILTER SIDEBAR */
-.filter-overlay{position:fixed;inset:0;background:rgba(28,10,13,.3);z-index:399;display:none}
+.filter-overlay{position:fixed;top:clamp(54px,8vw,68px);left:0;right:0;bottom:0;background:rgba(28,10,13,.25);z-index:399;display:none}
 .filter-overlay.open{display:block}
-.filter-sidebar{position:fixed;top:0;left:-360px;width:320px;height:100vh;background:var(--surface);border-right:1.5px solid var(--ink5);z-index:400;transition:left .3s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;box-shadow:8px 0 32px rgba(28,10,13,.1)}
+.filter-sidebar{position:fixed;top:clamp(54px,8vw,68px);left:-360px;width:320px;height:calc(100vh - clamp(54px,8vw,68px));background:var(--surface);border-right:1.5px solid var(--ink5);z-index:400;transition:left .3s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;box-shadow:8px 0 24px rgba(28,10,13,.1)}
 .filter-sidebar.open{left:0}
 .filter-sidebar-header{display:flex;align-items:center;justify-content:space-between;padding:20px 20px 16px;border-bottom:1px solid var(--ink5);flex-shrink:0}
 .filter-sidebar-title{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--ink)}
@@ -104,6 +104,8 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);font-s
 .fchip{height:28px;padding:0 11px;border:1.5px solid var(--ink5);border-radius:var(--r3);background:var(--surface);font-family:'Inter',sans-serif;font-size:11px;font-weight:500;color:var(--ink3);cursor:pointer;transition:all .15s;white-space:nowrap;display:inline-flex;align-items:center}
 .fchip:hover{border-color:var(--ink4);color:var(--ink)}
 .fchip.active{background:var(--ink);border-color:var(--ink);color:#fff}
+.chip-count{display:inline-flex;align-items:center;justify-content:center;min-width:15px;height:15px;background:rgba(0,0,0,.1);border-radius:8px;font-size:9px;font-weight:700;margin-left:4px;padding:0 3px;line-height:1}
+.fchip.active .chip-count{background:rgba(255,255,255,.2)}
 .fchip-dyn-wrap{display:flex;flex-wrap:wrap;gap:5px;max-height:110px;overflow-y:auto;padding-right:2px}
 .fchip-dyn-wrap::-webkit-scrollbar{width:3px}
 .fchip-dyn-wrap::-webkit-scrollbar-thumb{background:var(--ink5);border-radius:2px}
@@ -864,8 +866,8 @@ async function loadFromFirebase(){
     ]);
     wines  = wSnap.docs.map(d=>({id:d.id, ...d.data()}));
     wishes = whSnap.docs.map(d=>({id:d.id, ...d.data()}));
-    activeType = ''; // reset filtre
-    renderWines(); updateStats(); renderWishes();
+    activeTypes = []; // reset filtre
+    renderWines(); updateStats(); renderWishes(); updateSidebarCounts();
   }catch(e){ console.error('loadFromFirebase:', e); }
 }
 
@@ -1762,12 +1764,37 @@ function populateFilterDropdowns(){
   const cWrap=document.getElementById('filter-country-chips');
   const rWrap=document.getElementById('filter-region-chips');
   cWrap.innerHTML=countries.length
-    ?countries.map(c=>`<div class="fchip${advFilters.countries.includes(c)?' active':''}" onclick="toggleMultiChip(this,'countries',${JSON.stringify(c)})">${c}</div>`).join('')
+    ?countries.map(c=>{
+        const cnt=wines.filter(w=>w.country===c).length;
+        const esc=c.replace(/&/g,'&amp;').replace(/"/g,'&quot;');
+        return `<div class="fchip${advFilters.countries.includes(c)?' active':''}" data-key="countries" data-val="${esc}" onclick="toggleMultiChipEl(this)">${c}<span class="chip-count">${cnt}</span></div>`;
+      }).join('')
     :'<span class="fchip-dyn-empty">Aucun pays enregistré</span>';
   rWrap.innerHTML=regions.length
-    ?regions.map(r=>`<div class="fchip${advFilters.regions.includes(r)?' active':''}" onclick="toggleMultiChip(this,'regions',${JSON.stringify(r)})">${r}</div>`).join('')
+    ?regions.map(r=>{
+        const cnt=wines.filter(w=>w.reg===r).length;
+        const esc=r.replace(/&/g,'&amp;').replace(/"/g,'&quot;');
+        return `<div class="fchip${advFilters.regions.includes(r)?' active':''}" data-key="regions" data-val="${esc}" onclick="toggleMultiChipEl(this)">${r}<span class="chip-count">${cnt}</span></div>`;
+      }).join('')
     :'<span class="fchip-dyn-empty">Aucune région enregistrée</span>';
+  updateSidebarCounts();
   initRangeSliders();
+}
+function toggleMultiChipEl(el){
+  const key=el.dataset.key,val=el.dataset.val;
+  const arr=advFilters[key];
+  const idx=arr.indexOf(val);
+  if(idx>=0){arr.splice(idx,1);el.classList.remove('active');}
+  else{arr.push(val);el.classList.add('active');}
+  applyAdvFilters();
+}
+function updateSidebarCounts(){
+  document.querySelectorAll('.filter-type-chips .fchip[data-type]').forEach(chip=>{
+    const type=chip.dataset.type;
+    const cnt=type===''?wines.length:wines.filter(w=>w.type===type).length;
+    const span=chip.querySelector('.chip-count');
+    if(span)span.textContent=cnt||'';
+  });
 }
 function initRangeSliders(){
   const years=wines.map(w=>w.year).filter(Boolean);
@@ -3264,20 +3291,20 @@ window.onerror = function(){
     <div class="filter-section">
       <div class="filter-section-label">Type de vin</div>
       <div class="filter-type-chips">
-        <div class="fchip active" onclick="setSidebarType(this,'')">Tous</div>
-        <div class="fchip" onclick="setSidebarType(this,'Rouge')">Rouge</div>
-        <div class="fchip" onclick="setSidebarType(this,'Blanc')">Blanc</div>
-        <div class="fchip" onclick="setSidebarType(this,'Rosé')">Rosé</div>
-        <div class="fchip" onclick="setSidebarType(this,'Pétillant')">Champagne</div>
-        <div class="fchip" onclick="setSidebarType(this,'Orange')">Orange</div>
-        <div class="fchip" onclick="setSidebarType(this,'Vin muté / Fortifié')">Muté / Fortifié</div>
-        <div class="fchip" onclick="setSidebarType(this,'Vin doux naturel')">Doux naturel</div>
-        <div class="fchip" onclick="setSidebarType(this,'Vin jaune / Oxydatif')">Jaune / Oxydatif</div>
-        <div class="fchip" onclick="setSidebarType(this,'Vin de paille / Passerillé')">Paille / Passerillé</div>
-        <div class="fchip" onclick="setSidebarType(this,'Vin naturel / Nature')">Naturel / Nature</div>
-        <div class="fchip" onclick="setSidebarType(this,'Vin biodynamique')">Biodynamique</div>
-        <div class="fchip" onclick="setSidebarType(this,'Cidre / Poiré')">Cidre / Poiré</div>
-        <div class="fchip" onclick="setSidebarType(this,'Autre')">Autre</div>
+        <div class="fchip active" data-type="" onclick="setSidebarType(this,'')">Tous <span class="chip-count"></span></div>
+        <div class="fchip" data-type="Rouge" onclick="setSidebarType(this,'Rouge')">Rouge <span class="chip-count"></span></div>
+        <div class="fchip" data-type="Blanc" onclick="setSidebarType(this,'Blanc')">Blanc <span class="chip-count"></span></div>
+        <div class="fchip" data-type="Rosé" onclick="setSidebarType(this,'Rosé')">Rosé <span class="chip-count"></span></div>
+        <div class="fchip" data-type="Pétillant" onclick="setSidebarType(this,'Pétillant')">Champagne <span class="chip-count"></span></div>
+        <div class="fchip" data-type="Orange" onclick="setSidebarType(this,'Orange')">Orange <span class="chip-count"></span></div>
+        <div class="fchip" data-type="Vin muté / Fortifié" onclick="setSidebarType(this,'Vin muté / Fortifié')">Muté / Fortifié <span class="chip-count"></span></div>
+        <div class="fchip" data-type="Vin doux naturel" onclick="setSidebarType(this,'Vin doux naturel')">Doux naturel <span class="chip-count"></span></div>
+        <div class="fchip" data-type="Vin jaune / Oxydatif" onclick="setSidebarType(this,'Vin jaune / Oxydatif')">Jaune / Oxydatif <span class="chip-count"></span></div>
+        <div class="fchip" data-type="Vin de paille / Passerillé" onclick="setSidebarType(this,'Vin de paille / Passerillé')">Paille / Passerillé <span class="chip-count"></span></div>
+        <div class="fchip" data-type="Vin naturel / Nature" onclick="setSidebarType(this,'Vin naturel / Nature')">Naturel / Nature <span class="chip-count"></span></div>
+        <div class="fchip" data-type="Vin biodynamique" onclick="setSidebarType(this,'Vin biodynamique')">Biodynamique <span class="chip-count"></span></div>
+        <div class="fchip" data-type="Cidre / Poiré" onclick="setSidebarType(this,'Cidre / Poiré')">Cidre / Poiré <span class="chip-count"></span></div>
+        <div class="fchip" data-type="Autre" onclick="setSidebarType(this,'Autre')">Autre <span class="chip-count"></span></div>
       </div>
     </div>
 
