@@ -89,8 +89,8 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);font-s
 /* FILTER SIDEBAR */
 .filter-overlay{position:fixed;inset:0;background:rgba(28,10,13,.3);z-index:399;display:none}
 .filter-overlay.open{display:block}
-.filter-sidebar{position:fixed;top:0;right:-360px;width:320px;height:100vh;background:var(--surface);border-left:1.5px solid var(--ink5);z-index:400;transition:right .3s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;box-shadow:-8px 0 32px rgba(28,10,13,.1)}
-.filter-sidebar.open{right:0}
+.filter-sidebar{position:fixed;top:0;left:-360px;width:320px;height:100vh;background:var(--surface);border-right:1.5px solid var(--ink5);z-index:400;transition:left .3s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;box-shadow:8px 0 32px rgba(28,10,13,.1)}
+.filter-sidebar.open{left:0}
 .filter-sidebar-header{display:flex;align-items:center;justify-content:space-between;padding:20px 20px 16px;border-bottom:1px solid var(--ink5);flex-shrink:0}
 .filter-sidebar-title{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--ink)}
 .filter-sidebar-close{width:30px;height:30px;border-radius:50%;border:1px solid var(--ink5);background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--ink4);font-size:16px;transition:all .2s;line-height:1}
@@ -104,6 +104,19 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);font-s
 .fchip{height:28px;padding:0 11px;border:1.5px solid var(--ink5);border-radius:var(--r3);background:var(--surface);font-family:'Inter',sans-serif;font-size:11px;font-weight:500;color:var(--ink3);cursor:pointer;transition:all .15s;white-space:nowrap;display:inline-flex;align-items:center}
 .fchip:hover{border-color:var(--ink4);color:var(--ink)}
 .fchip.active{background:var(--ink);border-color:var(--ink);color:#fff}
+.fchip-dyn-wrap{display:flex;flex-wrap:wrap;gap:5px;max-height:110px;overflow-y:auto;padding-right:2px}
+.fchip-dyn-wrap::-webkit-scrollbar{width:3px}
+.fchip-dyn-wrap::-webkit-scrollbar-thumb{background:var(--ink5);border-radius:2px}
+.fchip-dyn-empty{font-size:11px;color:var(--ink4);font-style:italic}
+/* NV TOGGLE */
+.nv-row{display:flex;align-items:center;justify-content:space-between;margin-top:6px}
+.nv-row-label{font-size:12px;color:var(--ink3)}
+.toggle-sw{position:relative;display:inline-block;width:34px;height:18px;flex-shrink:0}
+.toggle-sw input{opacity:0;width:0;height:0;position:absolute}
+.toggle-sw-sl{position:absolute;inset:0;background:var(--ink5);border-radius:9px;cursor:pointer;transition:.2s}
+.toggle-sw-sl:before{content:'';position:absolute;width:14px;height:14px;left:2px;top:2px;background:#fff;border-radius:50%;transition:.2s}
+.toggle-sw input:checked+.toggle-sw-sl{background:var(--ruby)}
+.toggle-sw input:checked+.toggle-sw-sl:before{transform:translateX(16px)}
 .filter-field{display:flex;flex-direction:column;gap:5px}
 .filter-field label{font-size:9px;font-weight:600;color:var(--ink4);text-transform:uppercase;letter-spacing:.8px}
 .filter-field select,.filter-field input[type=number]{height:36px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);background:var(--surface);font-family:'Inter',sans-serif;font-size:12px;color:var(--ink);outline:none;transition:border .2s;width:100%}
@@ -1676,8 +1689,8 @@ function clearCritics(){
   if(container)container.innerHTML='';
 }
 const VALID_TYPES=Object.keys(TC);
-let activeType='',statFilter='all';
-let advFilters={country:'',region:'',yearMin:'',yearMax:'',priceMin:'',priceMax:'',qtyMin:'',cert:''};
+let activeTypes=[],statFilter='all';
+let advFilters={countries:[],regions:[],certs:[],yearMin:'',yearMax:'',priceMin:'',priceMax:'',qtyMin:'',includeNV:true};
 let chartM=null,chartR=null,waiResult=null,wishPhotoB64=null,aiResult=null,currentPhotoB64=null;
 
 let wines=[];
@@ -1702,7 +1715,7 @@ function showTab(t){
   if(t==='wish')renderWishes();
   if(t==='degustation')renderDegustations();
   if(t==='ventes')renderVentes();
-  if(t==='cave'){ activeType=''; document.querySelectorAll('.filter-type-chips .fchip').forEach((c,i)=>c.classList.toggle('active',i===0)); renderWines(); }
+  if(t==='cave'){ activeTypes=[]; document.querySelectorAll('.filter-type-chips .fchip').forEach((c,i)=>c.classList.toggle('active',i===0)); renderWines(); }
 }
 function togglePanel(id){
   const p=document.getElementById(id);
@@ -1714,9 +1727,23 @@ function closePanel(id){document.getElementById(id).classList.remove('visible')}
 
 
 function setSidebarType(el,type){
-  activeType=type;
-  document.querySelectorAll('.filter-type-chips .fchip').forEach(c=>c.classList.remove('active'));
-  el.classList.add('active');
+  if(type===''){
+    activeTypes=[];
+    document.querySelectorAll('.filter-type-chips .fchip').forEach((c,i)=>c.classList.toggle('active',i===0));
+  }else{
+    document.querySelector('.filter-type-chips .fchip').classList.remove('active');
+    const idx=activeTypes.indexOf(type);
+    if(idx>=0){activeTypes.splice(idx,1);el.classList.remove('active');}
+    else{activeTypes.push(type);el.classList.add('active');}
+    if(!activeTypes.length)document.querySelector('.filter-type-chips .fchip').classList.add('active');
+  }
+  applyAdvFilters();
+}
+function toggleMultiChip(el,key,val){
+  const arr=advFilters[key];
+  const idx=arr.indexOf(val);
+  if(idx>=0){arr.splice(idx,1);el.classList.remove('active');}
+  else{arr.push(val);el.classList.add('active');}
   applyAdvFilters();
 }
 function toggleFilterPanel(){
@@ -1727,22 +1754,24 @@ function toggleFilterPanel(){
   sidebar.classList.toggle('open',!open);
   overlay.classList.toggle('open',!open);
   btn.classList.toggle('active',!open);
-  if(!open) populateFilterDropdowns();
+  if(!open)populateFilterDropdowns();
 }
 function populateFilterDropdowns(){
   const countries=[...new Set(wines.map(w=>w.country).filter(Boolean))].sort();
   const regions=[...new Set(wines.map(w=>w.reg).filter(Boolean))].sort();
-  const cSel=document.getElementById('f-filter-country');
-  const rSel=document.getElementById('f-filter-region');
-  const cv=cSel.value,rv=rSel.value;
-  cSel.innerHTML='<option value="">Tous les pays</option>'+countries.map(c=>`<option value="${c}">${c}</option>`).join('');
-  rSel.innerHTML='<option value="">Toutes les régions</option>'+regions.map(r=>`<option value="${r}">${r}</option>`).join('');
-  cSel.value=cv;rSel.value=rv;
+  const cWrap=document.getElementById('filter-country-chips');
+  const rWrap=document.getElementById('filter-region-chips');
+  cWrap.innerHTML=countries.length
+    ?countries.map(c=>`<div class="fchip${advFilters.countries.includes(c)?' active':''}" onclick="toggleMultiChip(this,'countries',${JSON.stringify(c)})">${c}</div>`).join('')
+    :'<span class="fchip-dyn-empty">Aucun pays enregistré</span>';
+  rWrap.innerHTML=regions.length
+    ?regions.map(r=>`<div class="fchip${advFilters.regions.includes(r)?' active':''}" onclick="toggleMultiChip(this,'regions',${JSON.stringify(r)})">${r}</div>`).join('')
+    :'<span class="fchip-dyn-empty">Aucune région enregistrée</span>';
   initRangeSliders();
 }
 function initRangeSliders(){
   const years=wines.map(w=>w.year).filter(Boolean);
-  const minY=years.length?Math.min(...years):1990, maxY=years.length?Math.max(...years):2025;
+  const minY=years.length?Math.min(...years):1990,maxY=years.length?Math.max(...years):2025;
   const prices=wines.map(w=>w.buy).filter(v=>v>0);
   const maxP=prices.length?Math.ceil(Math.max(...prices)/10)*10:500;
   const yMin=document.getElementById('f-filter-year-min');
@@ -1759,7 +1788,7 @@ function onRangeInput(prefix){
   const lo=document.getElementById('f-filter-'+prefix+'-min');
   const hi=document.getElementById('f-filter-'+prefix+'-max');
   if(parseFloat(lo.value)>parseFloat(hi.value)){
-    if(event.target===lo)lo.value=hi.value; else hi.value=lo.value;
+    if(event.target===lo)lo.value=hi.value;else hi.value=lo.value;
   }
   updateRangeFill(prefix);applyAdvFilters();
 }
@@ -1782,14 +1811,13 @@ function applyAdvFilters(){
   const yMax=document.getElementById('f-filter-year-max');
   const pMin=document.getElementById('f-filter-price-min');
   const pMax=document.getElementById('f-filter-price-max');
-  advFilters.country=document.getElementById('f-filter-country').value;
-  advFilters.region=document.getElementById('f-filter-region').value;
+  const nvEl=document.getElementById('f-filter-include-nv');
   advFilters.yearMin=yMin?yMin.value:'';
   advFilters.yearMax=yMax?yMax.value:'';
   advFilters.priceMin=pMin?pMin.value:'';
   advFilters.priceMax=pMax?pMax.value:'';
   advFilters.qtyMin=document.getElementById('f-filter-qty-min').value;
-  advFilters.cert=document.getElementById('f-filter-cert').value;
+  advFilters.includeNV=nvEl?nvEl.checked:true;
   updateFilterBadge();renderWines();
 }
 function updateFilterBadge(){
@@ -1798,11 +1826,12 @@ function updateFilterBadge(){
   const pMin=document.getElementById('f-filter-price-min');
   const pMax=document.getElementById('f-filter-price-max');
   let count=0;
-  if(activeType)count++;
-  if(advFilters.country)count++;
-  if(advFilters.region)count++;
+  if(activeTypes.length)count++;
+  if(advFilters.countries.length)count++;
+  if(advFilters.regions.length)count++;
+  if(advFilters.certs.length)count++;
   if(advFilters.qtyMin)count++;
-  if(advFilters.cert)count++;
+  if(!advFilters.includeNV)count++;
   if(yMin&&yMax&&(parseFloat(yMin.value)>parseFloat(yMin.min)||parseFloat(yMax.value)<parseFloat(yMax.max)))count++;
   if(pMin&&pMax&&(parseFloat(pMin.value)>0||parseFloat(pMax.value)<parseFloat(pMax.max)))count++;
   const badge=document.getElementById('filter-badge');
@@ -1810,13 +1839,13 @@ function updateFilterBadge(){
   else badge.style.display='none';
 }
 function resetFilters(){
-  activeType='';
-  advFilters={country:'',region:'',yearMin:'',yearMax:'',priceMin:'',priceMax:'',qtyMin:'',cert:''};
-  document.querySelectorAll('.filter-type-chips .fchip').forEach((c,i)=>{c.classList.toggle('active',i===0);});
-  ['f-filter-country','f-filter-region','f-filter-cert'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
-  document.getElementById('f-filter-qty-min').value='';
-  initRangeSliders();
-  updateFilterBadge();renderWines();
+  activeTypes=[];
+  advFilters={countries:[],regions:[],certs:[],yearMin:'',yearMax:'',priceMin:'',priceMax:'',qtyMin:'',includeNV:true};
+  document.querySelectorAll('.filter-type-chips .fchip').forEach((c,i)=>c.classList.toggle('active',i===0));
+  document.querySelectorAll('#filter-country-chips .fchip,#filter-region-chips .fchip,#filter-cert-chips .fchip').forEach(c=>c.classList.remove('active'));
+  const qEl=document.getElementById('f-filter-qty-min');if(qEl)qEl.value='';
+  const nvEl=document.getElementById('f-filter-include-nv');if(nvEl)nvEl.checked=true;
+  initRangeSliders();updateFilterBadge();renderWines();
 }
 
 function setStatFilter(el,f){
@@ -2342,22 +2371,27 @@ function renderWines(){
   const so=document.getElementById('fsort').value;
   let list=wines.filter(w=>{
     if(s&&!(w.name+w.reg+w.app+(w.notes||'')).toLowerCase().includes(s))return false;
-    if(activeType&&w.type!==activeType)return false;
-    if(advFilters.country&&w.country!==advFilters.country)return false;
-    if(advFilters.region&&w.reg!==advFilters.region)return false;
+    if(activeTypes.length&&!activeTypes.includes(w.type))return false;
+    if(advFilters.countries.length&&!advFilters.countries.includes(w.country))return false;
+    if(advFilters.regions.length&&!advFilters.regions.includes(w.reg))return false;
+    if(advFilters.certs.length&&!advFilters.certs.some(cert=>(w.certs||[]).some(wc=>wc.toLowerCase().includes(cert))))return false;
+    if(advFilters.qtyMin&&(w.qty||0)<Number(advFilters.qtyMin))return false;
     const yMinEl=document.getElementById('f-filter-year-min');
     const yMaxEl=document.getElementById('f-filter-year-max');
+    if(yMinEl&&yMaxEl){
+      const yRangeActive=parseFloat(yMinEl.value)>parseFloat(yMinEl.min)||parseFloat(yMaxEl.value)<parseFloat(yMaxEl.max);
+      if(w.year){
+        if(yRangeActive&&(w.year<Number(yMinEl.value)||w.year>Number(yMaxEl.value)))return false;
+      }else{
+        if(!advFilters.includeNV)return false;
+      }
+    }
     const pMinEl=document.getElementById('f-filter-price-min');
     const pMaxEl=document.getElementById('f-filter-price-max');
-    if(yMinEl&&yMaxEl&&w.year){
-      if(w.year<Number(yMinEl.value)||w.year>Number(yMaxEl.value))return false;
-    }
     if(pMinEl&&pMaxEl){
       const buy=w.buy||0;
       if(buy<Number(pMinEl.value)||buy>Number(pMaxEl.value))return false;
     }
-    if(advFilters.qtyMin&&(w.qty||0)<Number(advFilters.qtyMin))return false;
-    if(advFilters.cert&&!(w.certs||[]).some(c=>c.toLowerCase().includes(advFilters.cert)))return false;
     return true;
   });
   list.sort((a,b)=>{
@@ -3261,6 +3295,13 @@ window.onerror = function(){
           <span id="range-val-year-max">—</span>
         </div>
       </div>
+      <div class="nv-row">
+        <span class="nv-row-label">Inclure les vins sans millésime (NV)</span>
+        <label class="toggle-sw">
+          <input type="checkbox" id="f-filter-include-nv" checked onchange="applyAdvFilters()">
+          <span class="toggle-sw-sl"></span>
+        </label>
+      </div>
     </div>
 
     <!-- PRIX ACHAT -->
@@ -3282,20 +3323,16 @@ window.onerror = function(){
     <!-- PAYS -->
     <div class="filter-section">
       <div class="filter-section-label">Pays</div>
-      <div class="filter-field">
-        <select id="f-filter-country" onchange="applyAdvFilters()">
-          <option value="">Tous les pays</option>
-        </select>
+      <div class="fchip-dyn-wrap" id="filter-country-chips">
+        <span class="fchip-dyn-empty">Aucun vin enregistré</span>
       </div>
     </div>
 
     <!-- RÉGION -->
     <div class="filter-section">
       <div class="filter-section-label">Région</div>
-      <div class="filter-field">
-        <select id="f-filter-region" onchange="applyAdvFilters()">
-          <option value="">Toutes les régions</option>
-        </select>
+      <div class="fchip-dyn-wrap" id="filter-region-chips">
+        <span class="fchip-dyn-empty">Aucun vin enregistré</span>
       </div>
     </div>
 
@@ -3310,15 +3347,12 @@ window.onerror = function(){
     <!-- CERTIFICATION -->
     <div class="filter-section">
       <div class="filter-section-label">Certification</div>
-      <div class="filter-field">
-        <select id="f-filter-cert" onchange="applyAdvFilters()">
-          <option value="">Toutes</option>
-          <option value="bio">Bio (AB)</option>
-          <option value="biodynamie">Biodynamie</option>
-          <option value="hve">HVE</option>
-          <option value="raisonné">Raisonné</option>
-          <option value="lutte">Lutte intégrée</option>
-        </select>
+      <div class="filter-type-chips" id="filter-cert-chips">
+        <div class="fchip" onclick="toggleMultiChip(this,'certs','bio')">Bio (AB)</div>
+        <div class="fchip" onclick="toggleMultiChip(this,'certs','biodynamie')">Biodynamie</div>
+        <div class="fchip" onclick="toggleMultiChip(this,'certs','hve')">HVE</div>
+        <div class="fchip" onclick="toggleMultiChip(this,'certs','raisonné')">Raisonné</div>
+        <div class="fchip" onclick="toggleMultiChip(this,'certs','lutte')">Lutte intégrée</div>
       </div>
     </div>
 
