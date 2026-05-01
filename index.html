@@ -135,6 +135,8 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);font-s
 .range-slider-track input[type=range]::-moz-range-track{background:none}
 .range-slider-vals{display:flex;justify-content:space-between;gap:4px}
 .range-val-input{flex:1;min-width:0;height:auto;background:transparent;border:1px solid transparent;border-radius:4px;font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:600;color:var(--ink2);text-align:center;outline:none;padding:1px 2px;cursor:default;transition:border-color .15s,background .15s;-moz-appearance:textfield}
+.range-slider-vals .range-val-input:first-child{text-align:left;padding-left:9px}
+.range-slider-vals .range-val-input:last-child{text-align:right;padding-right:9px}
 .range-val-input::-webkit-inner-spin-button,.range-val-input::-webkit-outer-spin-button{-webkit-appearance:none}
 .range-val-input:hover{border-color:var(--ink5);cursor:text}
 .range-val-input:focus{border-color:var(--gold2);background:var(--gold4);cursor:text}
@@ -1764,10 +1766,12 @@ function toggleFilterPanel(){
   if(!open)populateFilterDropdowns();
 }
 const TYPE_LABELS={'Rouge':'Rouge','Blanc':'Blanc','Rosé':'Rosé','Pétillant':'Champagne','Orange':'Orange','Vin muté / Fortifié':'Muté / Fortifié','Vin doux naturel':'Doux naturel','Vin jaune / Oxydatif':'Jaune / Oxydatif','Vin de paille / Passerillé':'Paille / Passerillé','Vin naturel / Nature':'Naturel / Nature','Vin biodynamique':'Biodynamique','Cidre / Poiré':'Cidre / Poiré','Autre':'Autre'};
-function _makeChip(val,key,activeArr,cnt){
+const CERT_LABELS={'bio':'AB / Ecocert','demeter':'Demeter','biody':'Biodyvin','hve':'HVE','nature':'Vin Méthode Nature','vegan':'Vegan','terra':'Terra Vitis'};
+function _makeChip(val,key,activeArr,cnt,label){
   const esc=val.replace(/&/g,'&amp;').replace(/"/g,'&quot;');
+  const lbl=(label||esc);
   const active=activeArr.includes(val)?' active':'';
-  return `<div class="fchip${active}" data-key="${key}" data-val="${esc}" onclick="toggleMultiChipEl(this)">${esc}<span class="chip-count">${cnt||''}</span></div>`;
+  return `<div class="fchip${active}" data-key="${key}" data-val="${esc}" onclick="toggleMultiChipEl(this)">${lbl}<span class="chip-count">${cnt||''}</span></div>`;
 }
 function populateFilterDropdowns(){
   // Type chips (dynamic, only types present in cave)
@@ -1799,7 +1803,7 @@ function populateFilterDropdowns(){
   const allCerts=[...new Set(wines.flatMap(w=>w.certs||[]).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
   const certWrap=document.getElementById('filter-cert-chips');
   certWrap.innerHTML=allCerts.length
-    ?allCerts.map(cert=>_makeChip(cert,'certs',advFilters.certs,wines.filter(w=>(w.certs||[]).includes(cert)).length)).join('')
+    ?allCerts.map(cert=>_makeChip(cert,'certs',advFilters.certs,wines.filter(w=>(w.certs||[]).includes(cert)).length,CERT_LABELS[cert]||cert)).join('')
     :'<span class="fchip-dyn-empty">Aucune certification enregistrée</span>';
   initRangeSliders();
 }
