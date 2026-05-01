@@ -31,7 +31,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);font-s
 .app{width:100%;margin:0 auto;padding:0 0 60px}
 
 /* HEADER */
-.header{background:var(--ink);padding:0 clamp(16px,4vw,36px);display:flex;align-items:center;justify-content:space-between;height:clamp(54px,8vw,68px);gap:16px}
+.header{background:var(--ink);padding:0 clamp(16px,4vw,36px);display:flex;align-items:center;justify-content:space-between;height:clamp(54px,8vw,68px);gap:16px;position:sticky;top:0;z-index:150}
 .header-brand{display:flex;align-items:center;gap:10px;flex-shrink:0}
 .header-monogram{width:36px;height:36px;border:1.5px solid rgba(201,168,76,.5);border-radius:4px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:1px}
 .header-monogram span{font-family:'Cormorant Garamond',serif;font-size:11px;color:var(--gold3);line-height:1;letter-spacing:1px;font-weight:600}
@@ -47,7 +47,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);font-s
 @media(max-width:560px){.header-stats{display:none}}
 
 /* NAV */
-.nav{background:var(--surface);border-bottom:1px solid var(--ink5);padding:0 clamp(16px,4vw,36px);display:flex;overflow-x:auto}
+.nav{background:var(--surface);border-bottom:1px solid var(--ink5);padding:0 clamp(16px,4vw,36px);display:flex;overflow-x:auto;position:sticky;top:clamp(54px,8vw,68px);z-index:149}
 .nav::-webkit-scrollbar{display:none}
 .ntab{padding:13px 18px;font-size:11px;font-weight:600;color:var(--ink4);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap;letter-spacing:.5px;text-transform:uppercase}
 .ntab:hover{color:var(--ink2)}.ntab.active{color:var(--ruby);border-bottom-color:var(--ruby)}
@@ -133,7 +133,10 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);font-s
 .range-slider-track input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.15)}
 .range-slider-track input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--surface);border:2px solid var(--ruby);cursor:pointer;pointer-events:auto;box-shadow:0 1px 6px rgba(139,26,42,.2);border-color:var(--ruby)}
 .range-slider-track input[type=range]::-moz-range-track{background:none}
-.range-slider-vals{display:flex;justify-content:space-between;font-family:'Cormorant Garamond',serif;font-size:14px;font-weight:600;color:var(--ink2)}
+.range-slider-vals{display:flex;justify-content:space-between;gap:8px}
+.range-val-input{width:0;flex:1;height:30px;border:1.5px solid var(--ink5);border-radius:var(--r);font-family:'Cormorant Garamond',serif;font-size:13px;font-weight:600;color:var(--ink2);text-align:center;outline:none;transition:border .2s;background:var(--surface);padding:0 4px;-moz-appearance:textfield;min-width:0}
+.range-val-input::-webkit-inner-spin-button,.range-val-input::-webkit-outer-spin-button{-webkit-appearance:none}
+.range-val-input:focus{border-color:var(--gold2)}
 /* FILTER SIDEBAR FOOTER */
 .filter-sidebar-footer{padding:16px 20px;border-top:1px solid var(--ink5);flex-shrink:0;display:flex;flex-direction:column;gap:8px}
 .filter-sidebar-count{font-size:11px;color:var(--ink4);text-align:center;font-style:italic;min-height:16px}
@@ -1795,6 +1798,25 @@ function updateSidebarCounts(){
     const span=chip.querySelector('.chip-count');
     if(span)span.textContent=cnt||'';
   });
+  document.querySelectorAll('#filter-cert-chips .fchip[data-certkey]').forEach(chip=>{
+    const key=chip.dataset.certkey;
+    const cnt=wines.filter(w=>(w.certs||[]).some(c=>c.toLowerCase().includes(key))).length;
+    const span=chip.querySelector('.chip-count');
+    if(span)span.textContent=cnt||'';
+  });
+}
+function onRangeValInput(prefix,which){
+  const lo=document.getElementById('f-filter-'+prefix+'-min');
+  const hi=document.getElementById('f-filter-'+prefix+'-max');
+  const valLo=document.getElementById('range-val-'+prefix+'-min');
+  const valHi=document.getElementById('range-val-'+prefix+'-max');
+  let newLo=parseFloat(valLo.value),newHi=parseFloat(valHi.value);
+  const absMin=parseFloat(lo.min),absMax=parseFloat(lo.max);
+  newLo=Math.max(absMin,Math.min(isNaN(newLo)?absMin:newLo,absMax));
+  newHi=Math.max(absMin,Math.min(isNaN(newHi)?absMax:newHi,absMax));
+  if(newLo>newHi){if(which==='min')newLo=newHi;else newHi=newLo;}
+  lo.value=newLo;hi.value=newHi;
+  updateRangeFill(prefix);applyAdvFilters();
 }
 function initRangeSliders(){
   const years=wines.map(w=>w.year).filter(Boolean);
@@ -1830,8 +1852,8 @@ function updateRangeFill(prefix){
   const range=max-min||1;
   fill.style.left=((loV-min)/range*100)+'%';
   fill.style.right=((max-hiV)/range*100)+'%';
-  if(labLo)labLo.textContent=prefix==='price'?loV+'€':loV;
-  if(labHi)labHi.textContent=prefix==='price'?hiV+'€':hiV;
+  if(labLo)labLo.value=loV;
+  if(labHi)labHi.value=hiV;
 }
 function applyAdvFilters(){
   const yMin=document.getElementById('f-filter-year-min');
@@ -3318,8 +3340,8 @@ window.onerror = function(){
           <input type="range" id="f-filter-year-max" oninput="onRangeInput('year')">
         </div>
         <div class="range-slider-vals">
-          <span id="range-val-year-min">—</span>
-          <span id="range-val-year-max">—</span>
+          <input type="number" class="range-val-input" id="range-val-year-min" onchange="onRangeValInput('year','min')">
+          <input type="number" class="range-val-input" id="range-val-year-max" onchange="onRangeValInput('year','max')">
         </div>
       </div>
       <div class="nv-row">
@@ -3341,8 +3363,8 @@ window.onerror = function(){
           <input type="range" id="f-filter-price-max" oninput="onRangeInput('price')">
         </div>
         <div class="range-slider-vals">
-          <span id="range-val-price-min">—</span>
-          <span id="range-val-price-max">—</span>
+          <input type="number" class="range-val-input" id="range-val-price-min" onchange="onRangeValInput('price','min')">
+          <input type="number" class="range-val-input" id="range-val-price-max" onchange="onRangeValInput('price','max')">
         </div>
       </div>
     </div>
@@ -3375,11 +3397,11 @@ window.onerror = function(){
     <div class="filter-section">
       <div class="filter-section-label">Certification</div>
       <div class="filter-type-chips" id="filter-cert-chips">
-        <div class="fchip" onclick="toggleMultiChip(this,'certs','bio')">Bio (AB)</div>
-        <div class="fchip" onclick="toggleMultiChip(this,'certs','biodynamie')">Biodynamie</div>
-        <div class="fchip" onclick="toggleMultiChip(this,'certs','hve')">HVE</div>
-        <div class="fchip" onclick="toggleMultiChip(this,'certs','raisonné')">Raisonné</div>
-        <div class="fchip" onclick="toggleMultiChip(this,'certs','lutte')">Lutte intégrée</div>
+        <div class="fchip" data-certkey="bio" onclick="toggleMultiChip(this,'certs','bio')">Bio (AB) <span class="chip-count"></span></div>
+        <div class="fchip" data-certkey="biodynamie" onclick="toggleMultiChip(this,'certs','biodynamie')">Biodynamie <span class="chip-count"></span></div>
+        <div class="fchip" data-certkey="hve" onclick="toggleMultiChip(this,'certs','hve')">HVE <span class="chip-count"></span></div>
+        <div class="fchip" data-certkey="raisonné" onclick="toggleMultiChip(this,'certs','raisonné')">Raisonné <span class="chip-count"></span></div>
+        <div class="fchip" data-certkey="lutte" onclick="toggleMultiChip(this,'certs','lutte')">Lutte intégrée <span class="chip-count"></span></div>
       </div>
     </div>
 
