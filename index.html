@@ -133,10 +133,11 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);font-s
 .range-slider-track input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.15)}
 .range-slider-track input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--surface);border:2px solid var(--ruby);cursor:pointer;pointer-events:auto;box-shadow:0 1px 6px rgba(139,26,42,.2);border-color:var(--ruby)}
 .range-slider-track input[type=range]::-moz-range-track{background:none}
-.range-slider-vals{display:flex;justify-content:space-between;gap:8px}
-.range-val-input{width:0;flex:1;height:30px;border:1.5px solid var(--ink5);border-radius:var(--r);font-family:'Cormorant Garamond',serif;font-size:13px;font-weight:600;color:var(--ink2);text-align:center;outline:none;transition:border .2s;background:var(--surface);padding:0 4px;-moz-appearance:textfield;min-width:0}
+.range-slider-vals{display:flex;justify-content:space-between;gap:4px}
+.range-val-input{flex:1;min-width:0;height:auto;background:transparent;border:1px solid transparent;border-radius:4px;font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:600;color:var(--ink2);text-align:center;outline:none;padding:1px 2px;cursor:default;transition:border-color .15s,background .15s;-moz-appearance:textfield}
 .range-val-input::-webkit-inner-spin-button,.range-val-input::-webkit-outer-spin-button{-webkit-appearance:none}
-.range-val-input:focus{border-color:var(--gold2)}
+.range-val-input:hover{border-color:var(--ink5);cursor:text}
+.range-val-input:focus{border-color:var(--gold2);background:var(--gold4);cursor:text}
 /* FILTER SIDEBAR FOOTER */
 .filter-sidebar-footer{padding:16px 20px;border-top:1px solid var(--ink5);flex-shrink:0;display:flex;flex-direction:column;gap:8px}
 .filter-sidebar-count{font-size:11px;color:var(--ink4);text-align:center;font-style:italic;min-height:16px}
@@ -870,7 +871,7 @@ async function loadFromFirebase(){
     wines  = wSnap.docs.map(d=>({id:d.id, ...d.data()}));
     wishes = whSnap.docs.map(d=>({id:d.id, ...d.data()}));
     activeTypes = []; // reset filtre
-    renderWines(); updateStats(); renderWishes(); updateSidebarCounts();
+    renderWines(); updateStats(); renderWishes(); populateFilterDropdowns();
   }catch(e){ console.error('loadFromFirebase:', e); }
 }
 
@@ -1720,7 +1721,7 @@ function showTab(t){
   if(t==='wish')renderWishes();
   if(t==='degustation')renderDegustations();
   if(t==='ventes')renderVentes();
-  if(t==='cave'){ activeTypes=[]; document.querySelectorAll('.filter-type-chips .fchip').forEach((c,i)=>c.classList.toggle('active',i===0)); renderWines(); }
+  if(t==='cave'){ activeTypes=[]; renderWines(); }
 }
 function togglePanel(id){
   const p=document.getElementById(id);
@@ -1731,16 +1732,17 @@ function togglePanel(id){
 function closePanel(id){document.getElementById(id).classList.remove('visible')}
 
 
+function setSidebarTypeEl(el){setSidebarType(el,el.dataset.type);}
 function setSidebarType(el,type){
   if(type===''){
     activeTypes=[];
-    document.querySelectorAll('.filter-type-chips .fchip').forEach((c,i)=>c.classList.toggle('active',i===0));
+    document.querySelectorAll('#filter-type-chips .fchip').forEach((c,i)=>c.classList.toggle('active',i===0));
   }else{
-    document.querySelector('.filter-type-chips .fchip').classList.remove('active');
+    document.querySelector('#filter-type-chips .fchip').classList.remove('active');
     const idx=activeTypes.indexOf(type);
     if(idx>=0){activeTypes.splice(idx,1);el.classList.remove('active');}
     else{activeTypes.push(type);el.classList.add('active');}
-    if(!activeTypes.length)document.querySelector('.filter-type-chips .fchip').classList.add('active');
+    if(!activeTypes.length)document.querySelector('#filter-type-chips .fchip').classList.add('active');
   }
   applyAdvFilters();
 }
@@ -1761,26 +1763,44 @@ function toggleFilterPanel(){
   btn.classList.toggle('active',!open);
   if(!open)populateFilterDropdowns();
 }
+const TYPE_LABELS={'Rouge':'Rouge','Blanc':'Blanc','Rosé':'Rosé','Pétillant':'Champagne','Orange':'Orange','Vin muté / Fortifié':'Muté / Fortifié','Vin doux naturel':'Doux naturel','Vin jaune / Oxydatif':'Jaune / Oxydatif','Vin de paille / Passerillé':'Paille / Passerillé','Vin naturel / Nature':'Naturel / Nature','Vin biodynamique':'Biodynamique','Cidre / Poiré':'Cidre / Poiré','Autre':'Autre'};
+function _makeChip(val,key,activeArr,cnt){
+  const esc=val.replace(/&/g,'&amp;').replace(/"/g,'&quot;');
+  const active=activeArr.includes(val)?' active':'';
+  return `<div class="fchip${active}" data-key="${key}" data-val="${esc}" onclick="toggleMultiChipEl(this)">${esc}<span class="chip-count">${cnt||''}</span></div>`;
+}
 function populateFilterDropdowns(){
+  // Type chips (dynamic, only types present in cave)
+  const types=[...new Set(wines.map(w=>w.type).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+  const typeWrap=document.getElementById('filter-type-chips');
+  const tousCount=wines.length;
+  const tousActive=activeTypes.length===0?' active':'';
+  typeWrap.innerHTML=`<div class="fchip${tousActive}" data-type="" onclick="setSidebarType(this,'')">Tous <span class="chip-count">${tousCount}</span></div>`
+    +types.map(t=>{
+      const cnt=wines.filter(w=>w.type===t).length;
+      const esc=t.replace(/&/g,'&amp;').replace(/"/g,'&quot;');
+      const label=TYPE_LABELS[t]||t;
+      const active=activeTypes.includes(t)?' active':'';
+      return `<div class="fchip${active}" data-type="${esc}" onclick="setSidebarTypeEl(this)">${label} <span class="chip-count">${cnt}</span></div>`;
+    }).join('');
+  // Country chips
   const countries=[...new Set(wines.map(w=>w.country).filter(Boolean))].sort();
-  const regions=[...new Set(wines.map(w=>w.reg).filter(Boolean))].sort();
   const cWrap=document.getElementById('filter-country-chips');
-  const rWrap=document.getElementById('filter-region-chips');
   cWrap.innerHTML=countries.length
-    ?countries.map(c=>{
-        const cnt=wines.filter(w=>w.country===c).length;
-        const esc=c.replace(/&/g,'&amp;').replace(/"/g,'&quot;');
-        return `<div class="fchip${advFilters.countries.includes(c)?' active':''}" data-key="countries" data-val="${esc}" onclick="toggleMultiChipEl(this)">${c}<span class="chip-count">${cnt}</span></div>`;
-      }).join('')
+    ?countries.map(c=>_makeChip(c,'countries',advFilters.countries,wines.filter(w=>w.country===c).length)).join('')
     :'<span class="fchip-dyn-empty">Aucun pays enregistré</span>';
+  // Region chips
+  const regions=[...new Set(wines.map(w=>w.reg).filter(Boolean))].sort();
+  const rWrap=document.getElementById('filter-region-chips');
   rWrap.innerHTML=regions.length
-    ?regions.map(r=>{
-        const cnt=wines.filter(w=>w.reg===r).length;
-        const esc=r.replace(/&/g,'&amp;').replace(/"/g,'&quot;');
-        return `<div class="fchip${advFilters.regions.includes(r)?' active':''}" data-key="regions" data-val="${esc}" onclick="toggleMultiChipEl(this)">${r}<span class="chip-count">${cnt}</span></div>`;
-      }).join('')
+    ?regions.map(r=>_makeChip(r,'regions',advFilters.regions,wines.filter(w=>w.reg===r).length)).join('')
     :'<span class="fchip-dyn-empty">Aucune région enregistrée</span>';
-  updateSidebarCounts();
+  // Cert chips (dynamic, only certs present in cave)
+  const allCerts=[...new Set(wines.flatMap(w=>w.certs||[]).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+  const certWrap=document.getElementById('filter-cert-chips');
+  certWrap.innerHTML=allCerts.length
+    ?allCerts.map(cert=>_makeChip(cert,'certs',advFilters.certs,wines.filter(w=>(w.certs||[]).includes(cert)).length)).join('')
+    :'<span class="fchip-dyn-empty">Aucune certification enregistrée</span>';
   initRangeSliders();
 }
 function toggleMultiChipEl(el){
@@ -1790,20 +1810,6 @@ function toggleMultiChipEl(el){
   if(idx>=0){arr.splice(idx,1);el.classList.remove('active');}
   else{arr.push(val);el.classList.add('active');}
   applyAdvFilters();
-}
-function updateSidebarCounts(){
-  document.querySelectorAll('.filter-type-chips .fchip[data-type]').forEach(chip=>{
-    const type=chip.dataset.type;
-    const cnt=type===''?wines.length:wines.filter(w=>w.type===type).length;
-    const span=chip.querySelector('.chip-count');
-    if(span)span.textContent=cnt||'';
-  });
-  document.querySelectorAll('#filter-cert-chips .fchip[data-certkey]').forEach(chip=>{
-    const key=chip.dataset.certkey;
-    const cnt=wines.filter(w=>(w.certs||[]).some(c=>c.toLowerCase().includes(key))).length;
-    const span=chip.querySelector('.chip-count');
-    if(span)span.textContent=cnt||'';
-  });
 }
 function onRangeValInput(prefix,which){
   const lo=document.getElementById('f-filter-'+prefix+'-min');
@@ -1890,8 +1896,7 @@ function updateFilterBadge(){
 function resetFilters(){
   activeTypes=[];
   advFilters={countries:[],regions:[],certs:[],yearMin:'',yearMax:'',priceMin:'',priceMax:'',qtyMin:'',includeNV:true};
-  document.querySelectorAll('.filter-type-chips .fchip').forEach((c,i)=>c.classList.toggle('active',i===0));
-  document.querySelectorAll('#filter-country-chips .fchip,#filter-region-chips .fchip,#filter-cert-chips .fchip').forEach(c=>c.classList.remove('active'));
+  populateFilterDropdowns();
   const qEl=document.getElementById('f-filter-qty-min');if(qEl)qEl.value='';
   const nvEl=document.getElementById('f-filter-include-nv');if(nvEl)nvEl.checked=true;
   initRangeSliders();updateFilterBadge();renderWines();
@@ -3312,21 +3317,8 @@ window.onerror = function(){
     <!-- TYPE -->
     <div class="filter-section">
       <div class="filter-section-label">Type de vin</div>
-      <div class="filter-type-chips">
+      <div class="filter-type-chips" id="filter-type-chips">
         <div class="fchip active" data-type="" onclick="setSidebarType(this,'')">Tous <span class="chip-count"></span></div>
-        <div class="fchip" data-type="Rouge" onclick="setSidebarType(this,'Rouge')">Rouge <span class="chip-count"></span></div>
-        <div class="fchip" data-type="Blanc" onclick="setSidebarType(this,'Blanc')">Blanc <span class="chip-count"></span></div>
-        <div class="fchip" data-type="Rosé" onclick="setSidebarType(this,'Rosé')">Rosé <span class="chip-count"></span></div>
-        <div class="fchip" data-type="Pétillant" onclick="setSidebarType(this,'Pétillant')">Champagne <span class="chip-count"></span></div>
-        <div class="fchip" data-type="Orange" onclick="setSidebarType(this,'Orange')">Orange <span class="chip-count"></span></div>
-        <div class="fchip" data-type="Vin muté / Fortifié" onclick="setSidebarType(this,'Vin muté / Fortifié')">Muté / Fortifié <span class="chip-count"></span></div>
-        <div class="fchip" data-type="Vin doux naturel" onclick="setSidebarType(this,'Vin doux naturel')">Doux naturel <span class="chip-count"></span></div>
-        <div class="fchip" data-type="Vin jaune / Oxydatif" onclick="setSidebarType(this,'Vin jaune / Oxydatif')">Jaune / Oxydatif <span class="chip-count"></span></div>
-        <div class="fchip" data-type="Vin de paille / Passerillé" onclick="setSidebarType(this,'Vin de paille / Passerillé')">Paille / Passerillé <span class="chip-count"></span></div>
-        <div class="fchip" data-type="Vin naturel / Nature" onclick="setSidebarType(this,'Vin naturel / Nature')">Naturel / Nature <span class="chip-count"></span></div>
-        <div class="fchip" data-type="Vin biodynamique" onclick="setSidebarType(this,'Vin biodynamique')">Biodynamique <span class="chip-count"></span></div>
-        <div class="fchip" data-type="Cidre / Poiré" onclick="setSidebarType(this,'Cidre / Poiré')">Cidre / Poiré <span class="chip-count"></span></div>
-        <div class="fchip" data-type="Autre" onclick="setSidebarType(this,'Autre')">Autre <span class="chip-count"></span></div>
       </div>
     </div>
 
@@ -3397,11 +3389,7 @@ window.onerror = function(){
     <div class="filter-section">
       <div class="filter-section-label">Certification</div>
       <div class="filter-type-chips" id="filter-cert-chips">
-        <div class="fchip" data-certkey="bio" onclick="toggleMultiChip(this,'certs','bio')">Bio (AB) <span class="chip-count"></span></div>
-        <div class="fchip" data-certkey="biodynamie" onclick="toggleMultiChip(this,'certs','biodynamie')">Biodynamie <span class="chip-count"></span></div>
-        <div class="fchip" data-certkey="hve" onclick="toggleMultiChip(this,'certs','hve')">HVE <span class="chip-count"></span></div>
-        <div class="fchip" data-certkey="raisonné" onclick="toggleMultiChip(this,'certs','raisonné')">Raisonné <span class="chip-count"></span></div>
-        <div class="fchip" data-certkey="lutte" onclick="toggleMultiChip(this,'certs','lutte')">Lutte intégrée <span class="chip-count"></span></div>
+        <span class="fchip-dyn-empty">Aucune certification enregistrée</span>
       </div>
     </div>
 
