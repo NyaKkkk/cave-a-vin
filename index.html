@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="Application de gestion de cave à vin">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjUwNSAxNTAgMzM0IDQ5NiI+PGcgZmlsbD0iIzdhMWEyYSI+PHBhdGggZD0iTTUxMy45IDUwNi40IGMwIC05OSAwLjMgLTEyMi4yIDEuNSAtMTMyLjkgNC44IC00MC45IDIwLjYgLTcyLjggNTAuNCAtMTAxLjMgMTEuMyAtMTAuOSAyMi42IC0xOC43IDM2LjYgLTI1LjggMTEuOSAtNS44IDI5LjcgLTEyIDM1LjEgLTEyIGw0LjMgMCAwIDkuMSAwIDkgLTYuOSAyLjMgYy00OCAxNS44IC04NC40IDU0LjUgLTk3IDEwMy4yIC01LjUgMjEuMSAtNS42IDI0LjMgLTUuNiAxNDEuNyBsMCAxMDguNCAzNi45IDAgMzYuOSAwIDAgLTY2LjkgYzAgLTM3LjggMC40IC02Ny4zIDAuOSAtNjcuNiAwLjUgLTAuMyA2LjEgLTEuOSAxMi42IC0zLjYgMjEuMyAtNS41IDM2LjMgLTEyLjYgNTIgLTI0LjMgMTcgLTEyLjggMjkuNCAtMjcuNSAzOC43IC00NiAxMy42IC0yNy4yIDExLjEgLTQ0LjkgLTEwIC03MC4xIC04LjYgLTEwLjIgLTEzLjkgLTE5LjMgLTE3IC0yOC43IC0xLjUgLTQuOCAtMS44IC0xMC42IC0yLjMgLTQxLjEgLTAuMyAtMzEuMiAtMC4yIC0zNS44IDEuMiAtMzcuOSAyIC0zIDIgLTcuNCAwIC05LjQgLTEuMSAtMS4yIC0zLjcgLTEuNiAtMTAuMSAtMS42IC03LjcgMCAtOC43IDAuMiAtMTAuMSAyLjMgLTIgMi45IC0yIDQuNiAtMC4xIDguNCAyLjQgNC40IDIuMyA2Ni43IC0wLjEgNzYuMyAtMi42IDEwLjYgLTcuOCAyMC41IC0xNS44IDI5LjYgLTEyLjYgMTQuNSAtMTguMiAyNS43IC0yMC40IDM5LjggLTAuNyA0LjUgLTEuMSAyNS4xIC0xLjEgNTIuOSBsMCA0NS42IC0zLjggMC43IGMtMi4xIDAuNCAtNi4xIDAuOCAtOSAwLjggbC01LjEgMC4xIDAgLTUzLjIgYzAgLTUxLjkgMC4xIC01My40IDIuMyAtNjEuOSAzLjMgLTEyLjUgOS4yIC0yMy42IDE4LjIgLTM0LjMgMTYuMiAtMTkuMSAxNy45IC0yNC4yIDE4LjYgLTU2LjQgMC41IC0yMS42IDAuNCAtMjQuMSAtMS4zIC0yOC43IC0xLjUgLTMuOCAtMS45IC03LjYgLTEuOCAtMTUuOCAwIC0xMi42IDEuNCAtMTYuOCA3LjIgLTIxLjEgMy44IC0zIDQgLTMgMjAuMyAtMy4zIDEwIC0wLjMgMTcuOSAwIDIwLjIgMC43IDQuNiAxLjQgOS42IDYuOSAxMS4xIDEyLjEgMS42IDUuOCAxLjQgMjEuMiAtMC40IDI1LjYgLTIuMyA1LjMgLTIuMyA0OS41IDAgNTguMSAyLjUgOS40IDcuMSAxNy43IDE0LjIgMjUuOCAxMC45IDEyLjIgMTUgMTkgMTkuMiAzMS42IDIgNi4yIDIuNCA5IDIuNCAyMy40IDAgMTQuMyAtMC4zIDE3LjMgLTIuNCAyNC4xIC01LjggMTguNSAtMTcuNyAzNy45IC0zMi4zIDUyLjcgLTIwLjIgMjAuNCAtMzkuOCAzMS4zIC03NC4zIDQxLjQgbC0yLjYgMC44IC0wLjMgNTkuNSAtMC4yIDU5LjYgNDQuMSAwIGMyOC4zIDAgNDQuNyAtMC40IDQ2LjEgLTEgNS4xIC0yLjggNSAtMC43IDUgLTkzIGwwIC04NiA1LjcgLTEwLjMgYzUuNSAtOS44IDUuOSAtMTAuMiA5LjIgLTEwLjIgbDMuNSAwIDAgOTkuMSBjMCA2Ny41IC0wLjQgMTAwLjMgLTEuMSAxMDMuMSAtMS43IDYuNCAtNS43IDExLjUgLTExLjUgMTQuMyBsLTUuMiAyLjYgLTEwMy4yIDAgLTEwMy4yIDAgMCAtMTIwLjF6Ii8+CjxwYXRoIGQ9Ik03MzMuOSA2MjMuNyBjMCAtMS42IDEuNCAtNS43IDMuMyAtOS4yIGwzLjQgLTYuNCAzNS42IDAgMzUuNiAwIC0wLjQgLTExNC45IC0wLjMgLTExNSAtMi40IC0xMC4yIGMtOS4zIC00MS4xIC0zMS4xIC03NC41IC02Mi41IC05NS41IC05LjEgLTYuMSAtMjUuOCAtMTQuMiAtMzUuMiAtMTcuMiBsLTguOCAtMi43IDAgLTkuMSAwIC05LjEgNC4xIDAgYzUuOCAwIDIyLjIgNS40IDM1LjMgMTEuOCAzNi42IDE3LjYgNjYuNSA1Mi40IDc5LjcgOTIuOCAzLjQgMTAuNCA2LjMgMjQuOCA3LjcgMzYuOSAwLjcgNi40IDEuMSA1MS45IDEuMSAxMzAuMyBsMCAxMjAuMyAtNDguMSAwIC00OC4xIDAgMCAtMi44eiIvPjwvZz48L3N2Zz4=">
 <title>Cave à Vin — Sommelier numérique</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -407,7 +406,34 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);font-s
 .tab-header{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px}
 .tab-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--ink);margin:0}
 
+
+/* ── FILTRE PANEL ── */
+.filter-panel{position:fixed;top:0;right:-360px;width:340px;height:100vh;background:var(--surface);border-left:1px solid var(--ink5);z-index:400;overflow-y:auto;transition:right .28s cubic-bezier(.4,0,.2,1);box-shadow:-4px 0 24px rgba(0,0,0,.1)}
+.filter-panel.open{right:0}
+.filter-overlay{position:fixed;inset:0;background:rgba(28,10,13,.3);z-index:399;display:none;backdrop-filter:blur(1px)}
+.filter-overlay.open{display:block}
+.filter-header{display:flex;align-items:center;justify-content:space-between;padding:20px 20px 16px;border-bottom:1px solid var(--ink5);position:sticky;top:0;background:var(--surface);z-index:1}
+.filter-title{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--ink)}
+.filter-close{width:28px;height:28px;border-radius:50%;border:1px solid var(--ink5);background:none;cursor:pointer;font-size:14px;color:var(--ink4);display:flex;align-items:center;justify-content:center}
+.filter-section{padding:16px 20px;border-bottom:1px solid var(--ink5)}
+.filter-section-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--ink4);margin-bottom:10px}
+.filter-chips{display:flex;flex-wrap:wrap;gap:6px}
+.fchip{height:28px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r3);background:var(--surface);font-size:11px;font-weight:500;color:var(--ink3);cursor:pointer;transition:all .15s;white-space:nowrap;display:inline-flex;align-items:center}
+.fchip:hover{border-color:var(--ruby);color:var(--ruby)}
+.fchip.active{background:var(--ruby);border-color:var(--ruby);color:#fff}
+.filter-range{display:flex;flex-direction:column;gap:8px}
+.filter-range-row{display:flex;align-items:center;gap:8px}
+.filter-range-row label{font-size:11px;color:var(--ink4);min-width:40px}
+.filter-range-row input{flex:1;height:32px;padding:0 8px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:12px;font-family:Inter,sans-serif;outline:none;color:var(--ink)}
+.filter-range-row input:focus{border-color:var(--ruby)}
+.filter-actions{padding:16px 20px;display:flex;gap:10px;position:sticky;bottom:0;background:var(--surface);border-top:1px solid var(--ink5)}
+.filter-reset{flex:1;height:38px;border:1.5px solid var(--ink5);background:none;border-radius:var(--r);font-size:13px;cursor:pointer;color:var(--ink3);font-family:Inter,sans-serif}
+.filter-apply{flex:2;height:38px;background:var(--ruby);color:#fff;border:none;border-radius:var(--r);font-size:13px;font-weight:600;cursor:pointer;font-family:Inter,sans-serif}
+.active-filter-tag{display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;background:var(--ruby);color:#fff;border-radius:10px;font-size:11px;font-weight:500}
+.active-filter-tag button{background:none;border:none;color:#fff;cursor:pointer;font-size:13px;padding:0;line-height:1;opacity:.8}
+.active-filter-tag button:hover{opacity:1}
 </style>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMzQzIDgxOSI+PHJlY3Qgd2lkdGg9IjEzNDMiIGhlaWdodD0iODE5IiByeD0iMTIwIiBmaWxsPSIjOGIxYTJhIi8+PGcgZmlsbD0iI2M0YTAzMCI+CiAgPHBhdGggZD0iTTUxMy45IDUwNi40IGMwIC05OSAwLjMgLTEyMi4yIDEuNSAtMTMyLjkgNC44IC00MC45IDIwLjYgLTcyLjggNTAuNCAtMTAxLjMgMTEuMyAtMTAuOSAyMi42IC0xOC43IDM2LjYgLTI1LjggMTEuOSAtNS44IDI5LjcgLTEyIDM1LjEgLTEyIGw0LjMgMCAwIDkuMSAwIDkgLTYuOSAyLjMgYy00OCAxNS44IC04NC40IDU0LjUgLTk3IDEwMy4yIC01LjUgMjEuMSAtNS42IDI0LjMgLTUuNiAxNDEuNyBsMCAxMDguNCAzNi45IDAgMzYuOSAwIDAgLTY2LjkgYzAgLTM3LjggMC40IC02Ny4zIDAuOSAtNjcuNiAwLjUgLTAuMyA2LjEgLTEuOSAxMi42IC0zLjYgMjEuMyAtNS41IDM2LjMgLTEyLjYgNTIgLTI0LjMgMTcgLTEyLjggMjkuNCAtMjcuNSAzOC43IC00NiAxMy42IC0yNy4yIDExLjEgLTQ0LjkgLTEwIC03MC4xIC04LjYgLTEwLjIgLTEzLjkgLTE5LjMgLTE3IC0yOC43IC0xLjUgLTQuOCAtMS44IC0xMC42IC0yLjMgLTQxLjEgLTAuMyAtMzEuMiAtMC4yIC0zNS44IDEuMiAtMzcuOSAyIC0zIDIgLTcuNCAwIC05LjQgLTEuMSAtMS4yIC0zLjcgLTEuNiAtMTAuMSAtMS42IC03LjcgMCAtOC43IDAuMiAtMTAuMSAyLjMgLTIgMi45IC0yIDQuNiAtMC4xIDguNCAyLjQgNC40IDIuMyA2Ni43IC0wLjEgNzYuMyAtMi42IDEwLjYgLTcuOCAyMC41IC0xNS44IDI5LjYgLTEyLjYgMTQuNSAtMTguMiAyNS43IC0yMC40IDM5LjggLTAuNyA0LjUgLTEuMSAyNS4xIC0xLjEgNTIuOSBsMCA0NS42IC0zLjggMC43IGMtMi4xIDAuNCAtNi4xIDAuOCAtOSAwLjggbC01LjEgMC4xIDAgLTUzLjIgYzAgLTUxLjkgMC4xIC01My40IDIuMyAtNjEuOSAzLjMgLTEyLjUgOS4yIC0yMy42IDE4LjIgLTM0LjMgMTYuMiAtMTkuMSAxNy45IC0yNC4yIDE4LjYgLTU2LjQgMC41IC0yMS42IDAuNCAtMjQuMSAtMS4zIC0yOC43IC0xLjUgLTMuOCAtMS45IC03LjYgLTEuOCAtMTUuOCAwIC0xMi42IDEuNCAtMTYuOCA3LjIgLTIxLjEgMy44IC0zIDQgLTMgMjAuMyAtMy4zIDEwIC0wLjMgMTcuOSAwIDIwLjIgMC43IDQuNiAxLjQgOS42IDYuOSAxMS4xIDEyLjEgMS42IDUuOCAxLjQgMjEuMiAtMC40IDI1LjYgLTIuMyA1LjMgLTIuMyA0OS41IDAgNTguMSAyLjUgOS40IDcuMSAxNy43IDE0LjIgMjUuOCAxMC45IDEyLjIgMTUgMTkgMTkuMiAzMS42IDIgNi4yIDIuNCA5IDIuNCAyMy40IDAgMTQuMyAtMC4zIDE3LjMgLTIuNCAyNC4xIC01LjggMTguNSAtMTcuNyAzNy45IC0zMi4zIDUyLjcgLTIwLjIgMjAuNCAtMzkuOCAzMS4zIC03NC4zIDQxLjQgbC0yLjYgMC44IC0wLjMgNTkuNSAtMC4yIDU5LjYgNDQuMSAwIGMyOC4zIDAgNDQuNyAtMC40IDQ2LjEgLTEgNS4xIC0yLjggNSAtMC43IDUgLTkzIGwwIC04NiA1LjcgLTEwLjMgYzUuNSAtOS44IDUuOSAtMTAuMiA5LjIgLTEwLjIgbDMuNSAwIDAgOTkuMSBjMCA2Ny41IC0wLjQgMTAwLjMgLTEuMSAxMDMuMSAtMS43IDYuNCAtNS43IDExLjUgLTExLjUgMTQuMyBsLTUuMiAyLjYgLTEwMy4yIDAgLTEwMy4yIDAgMCAtMTIwLjF6Ii8+CiAgPHBhdGggZD0iTTczMy45IDYyMy43IGMwIC0xLjYgMS40IC01LjcgMy4zIC05LjIgbDMuNCAtNi40IDM1LjYgMCAzNS42IDAgLTAuNCAtMTE0LjkgLTAuMyAtMTE1IC0yLjQgLTEwLjIgYy05LjMgLTQxLjEgLTMxLjEgLTc0LjUgLTYyLjUgLTk1LjUgLTkuMSAtNi4xIC0yNS44IC0xNC4yIC0zNS4yIC0xNy4yIGwtOC44IC0yLjcgMCAtOS4xIDAgLTkuMSA0LjEgMCBjNS44IDAgMjIuMiA1LjQgMzUuMyAxMS44IDM2LjYgMTcuNiA2Ni41IDUyLjQgNzkuNyA5Mi44IDMuNCAxMC40IDYuMyAyNC44IDcuNyAzNi45IDAuNyA2LjQgMS4xIDUxLjkgMS4xIDEzMC4zIGwwIDEyMC4zIC00OC4xIDAgLTQ4LjEgMCAwIC0yLjh6Ii8+CiA8L2c+CiA8ZyBmaWxsPSIjZmZmIj4KICA8cGF0aCBkPSJNMCA0MDkuNSBsMCAtNDA5LjUgNjcxLjUgMCA2NzEuNSAwIDAgNDA5LjUgMCA0MDkuNSAtNjcxLjUgMCAtNjcxLjUgMCAwIC00MDkuNXogbTcyMi40IDIxMS40IGM1LjkgLTMgOS45IC04LjEgMTEuNiAtMTQuOCAwLjcgLTMuMiAxIC0zMy44IDAuOCAtMTAwLjMgbC0wLjMgLTk1LjYgLTUuOCAxMC40IC01LjkgMTAuNSAwIDg2IGMwIDkyLjMgMC4xIDkwLjMgLTUgOTMgLTEuMyAwLjYgLTE4LjggMSAtNDkuMSAxIGwtNDcuMiAwIDAuMiAtNjIuNiAwLjMgLTYyLjUgMi42IC0wLjggYzI0LjggLTcuMiA0Mi4xIC0xNSA1Ni41IC0yNS42IDIzLjEgLTE3LjEgNDIuMiAtNDMgNTAuMiAtNjguNSAzLjQgLTExLjEgMy40IC0zMS4xIDAgLTQxLjQgLTQuMiAtMTIuNiAtOC40IC0xOS40IC0xOS4yIC0zMS42IC03LjIgLTguMSAtMTEuOCAtMTYuNCAtMTQuMiAtMjUuOCAtMi4zIC04LjcgLTIuMyAtNTkgMCAtNjQuMyAxLjcgLTQuMyAyIC0xMy44IDAuNCAtMTkuNCAtMS40IC01LjIgLTYuNCAtMTAuNiAtMTEuMSAtMTIuMSAtMi4zIC0wLjcgLTkuMiAtMSAtMTcuMiAtMC44IC0xMi44IDAuNCAtMTMuNCAwLjUgLTE3LjEgMy40IC0yLjEgMS42IC00LjYgNC42IC01LjUgNi43IC0yLjMgNS4zIC0yLjEgMTcuOCAwLjIgMjQuMSAxLjcgNC42IDEuOCA3LjMgMS4zIDMxLjcgLTAuNyAzNS42IC0yIDM5LjggLTE4LjYgNTkuNSAtOSAxMC42IC0xNC45IDIxLjggLTE4LjIgMzQuMyAtMi4xIDguNCAtMi4zIDEwLjEgLTIuMyA1OC45IGwwIDUwLjIgMi42IC0wLjIgYzEuNCAtMC4yIDQuMSAtMC41IDUuOSAtMC44IGwzLjMgLTAuNiAwIC00NS42IGMwIC0yNy44IDAuNCAtNDguNCAxLjEgLTUyLjkgMi4xIC0xNC4xIDcuOCAtMjUuMyAyMC40IC0zOS44IDggLTkuMSAxMy4yIC0xOC45IDE1LjggLTI5LjYgMi40IC05LjUgMi41IC02NS43IDAuMSAtNzAuMSAtMS45IC0zLjkgLTEuOSAtMTEuNyAwLjEgLTE0LjUgMS40IC0yLjEgMi40IC0yLjMgMTMuMiAtMi4zIDkuMiAwIDEyIDAuMyAxMy4yIDEuNiAyLjMgMi4xIDIuMyAxMi41IDAgMTUuNiAtMS40IDIgLTEuNSA2LjMgLTEuMiAzNC44IDAuNCAyNy40IDAuNyAzMy4zIDIuMyAzOC4xIDMuMSA5LjMgOC40IDE4LjQgMTcgMjguNyAyMS43IDI1LjggMjQuNSA0Ny40IDEwIDc2LjIgLTkuMyAxOC41IC0yMS43IDMzLjMgLTM4LjcgNDYuMSAtMTUuNyAxMS43IC0zMC43IDE4LjcgLTUyIDI0LjMgLTYuNCAxLjYgLTEyLjEgMy4zIC0xMi42IDMuNiAtMC41IDAuMyAtMC45IDI5LjggLTAuOSA2Ny42IGwwIDY2LjkgLTM5LjkgMCAtMzkuOSAwIDAgLTExMS41IGMwIC0xMjAuNyAwLjEgLTEyMy43IDUuNiAtMTQ0LjcgMTIuNiAtNDguNyA0OSAtODcuNCA5NyAtMTAzLjIgbDYuOSAtMi4zIDAgLTUuOSBjMCAtMy45IC0wLjQgLTYgLTEuMiAtNiAtMi44IDAgLTIzLjUgNy44IC0zMiAxMiAtMjQuNiAxMi4zIC00Ni45IDMyLjQgLTYyLjIgNTYuMiAtOS43IDE1IC0xNS44IDI5IC0yMC4zIDQ2LjQgLTUuOSAyMi45IC02IDI2LjIgLTYgMTU0LjQgbDAgMTE3IDEwMC4xIDAgMTAwLjEgMCA1LjIgLTIuNnogbTEwNC43IC0xMTQuNiBjMCAtMTIwLjggLTAuMiAtMTI4IC00LjIgLTE0Ni44IC0xMC41IC00OC42IC00MiAtODkuOCAtODQuMyAtMTEwLjEgLTkuNyAtNC43IC0yOS4yIC0xMS44IC0zMi4yIC0xMS44IC0wLjYgMCAtMSAyLjcgLTEgNiBsMCA2IDguOCAyLjcgYzkuNCAzIDI2LjEgMTEuMSAzNS4yIDE3LjIgMzEuNCAyMSA1My4yIDU0LjQgNjIuNSA5NS41IGwyLjQgMTAuMiAwLjMgMTE4IDAuNCAxMTcuOSAtMzUuNiAwIC0zNS42IDAgLTMuMyA2LjEgLTMuMyA2LjEgNDQuOSAwIDQ1IDAgMCAtMTE3LjJ6Ii8+CiA8L2c+PC9zdmc+">
 </head>
 <body>
 
@@ -452,8 +478,13 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);font-s
 
 <div class="header">
   <div class="header-brand">
-    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjUwNSAxNTAgMzM0IDQ5NiI+PGcgZmlsbD0iI2M5YTg0YyI+PHBhdGggZD0iTTUxMy45IDUwNi40IGMwIC05OSAwLjMgLTEyMi4yIDEuNSAtMTMyLjkgNC44IC00MC45IDIwLjYgLTcyLjggNTAuNCAtMTAxLjMgMTEuMyAtMTAuOSAyMi42IC0xOC43IDM2LjYgLTI1LjggMTEuOSAtNS44IDI5LjcgLTEyIDM1LjEgLTEyIGw0LjMgMCAwIDkuMSAwIDkgLTYuOSAyLjMgYy00OCAxNS44IC04NC40IDU0LjUgLTk3IDEwMy4yIC01LjUgMjEuMSAtNS42IDI0LjMgLTUuNiAxNDEuNyBsMCAxMDguNCAzNi45IDAgMzYuOSAwIDAgLTY2LjkgYzAgLTM3LjggMC40IC02Ny4zIDAuOSAtNjcuNiAwLjUgLTAuMyA2LjEgLTEuOSAxMi42IC0zLjYgMjEuMyAtNS41IDM2LjMgLTEyLjYgNTIgLTI0LjMgMTcgLTEyLjggMjkuNCAtMjcuNSAzOC43IC00NiAxMy42IC0yNy4yIDExLjEgLTQ0LjkgLTEwIC03MC4xIC04LjYgLTEwLjIgLTEzLjkgLTE5LjMgLTE3IC0yOC43IC0xLjUgLTQuOCAtMS44IC0xMC42IC0yLjMgLTQxLjEgLTAuMyAtMzEuMiAtMC4yIC0zNS44IDEuMiAtMzcuOSAyIC0zIDIgLTcuNCAwIC05LjQgLTEuMSAtMS4yIC0zLjcgLTEuNiAtMTAuMSAtMS42IC03LjcgMCAtOC43IDAuMiAtMTAuMSAyLjMgLTIgMi45IC0yIDQuNiAtMC4xIDguNCAyLjQgNC40IDIuMyA2Ni43IC0wLjEgNzYuMyAtMi42IDEwLjYgLTcuOCAyMC41IC0xNS44IDI5LjYgLTEyLjYgMTQuNSAtMTguMiAyNS43IC0yMC40IDM5LjggLTAuNyA0LjUgLTEuMSAyNS4xIC0xLjEgNTIuOSBsMCA0NS42IC0zLjggMC43IGMtMi4xIDAuNCAtNi4xIDAuOCAtOSAwLjggbC01LjEgMC4xIDAgLTUzLjIgYzAgLTUxLjkgMC4xIC01My40IDIuMyAtNjEuOSAzLjMgLTEyLjUgOS4yIC0yMy42IDE4LjIgLTM0LjMgMTYuMiAtMTkuMSAxNy45IC0yNC4yIDE4LjYgLTU2LjQgMC41IC0yMS42IDAuNCAtMjQuMSAtMS4zIC0yOC43IC0xLjUgLTMuOCAtMS45IC03LjYgLTEuOCAtMTUuOCAwIC0xMi42IDEuNCAtMTYuOCA3LjIgLTIxLjEgMy44IC0zIDQgLTMgMjAuMyAtMy4zIDEwIC0wLjMgMTcuOSAwIDIwLjIgMC43IDQuNiAxLjQgOS42IDYuOSAxMS4xIDEyLjEgMS42IDUuOCAxLjQgMjEuMiAtMC40IDI1LjYgLTIuMyA1LjMgLTIuMyA0OS41IDAgNTguMSAyLjUgOS40IDcuMSAxNy43IDE0LjIgMjUuOCAxMC45IDEyLjIgMTUgMTkgMTkuMiAzMS42IDIgNi4yIDIuNCA5IDIuNCAyMy40IDAgMTQuMyAtMC4zIDE3LjMgLTIuNCAyNC4xIC01LjggMTguNSAtMTcuNyAzNy45IC0zMi4zIDUyLjcgLTIwLjIgMjAuNCAtMzkuOCAzMS4zIC03NC4zIDQxLjQgbC0yLjYgMC44IC0wLjMgNTkuNSAtMC4yIDU5LjYgNDQuMSAwIGMyOC4zIDAgNDQuNyAtMC40IDQ2LjEgLTEgNS4xIC0yLjggNSAtMC43IDUgLTkzIGwwIC04NiA1LjcgLTEwLjMgYzUuNSAtOS44IDUuOSAtMTAuMiA5LjIgLTEwLjIgbDMuNSAwIDAgOTkuMSBjMCA2Ny41IC0wLjQgMTAwLjMgLTEuMSAxMDMuMSAtMS43IDYuNCAtNS43IDExLjUgLTExLjUgMTQuMyBsLTUuMiAyLjYgLTEwMy4yIDAgLTEwMy4yIDAgMCAtMTIwLjF6Ii8+CjxwYXRoIGQ9Ik03MzMuOSA2MjMuNyBjMCAtMS42IDEuNCAtNS43IDMuMyAtOS4yIGwzLjQgLTYuNCAzNS42IDAgMzUuNiAwIC0wLjQgLTExNC45IC0wLjMgLTExNSAtMi40IC0xMC4yIGMtOS4zIC00MS4xIC0zMS4xIC03NC41IC02Mi41IC05NS41IC05LjEgLTYuMSAtMjUuOCAtMTQuMiAtMzUuMiAtMTcuMiBsLTguOCAtMi43IDAgLTkuMSAwIC05LjEgNC4xIDAgYzUuOCAwIDIyLjIgNS40IDM1LjMgMTEuOCAzNi42IDE3LjYgNjYuNSA1Mi40IDc5LjcgOTIuOCAzLjQgMTAuNCA2LjMgMjQuOCA3LjcgMzYuOSAwLjcgNi40IDEuMSA1MS45IDEuMSAxMzAuMyBsMCAxMjAuMyAtNDguMSAwIC00OC4xIDAgMCAtMi44eiIvPjwvZz48L3N2Zz4=" style="width:36px;height:36px;" alt="logo">
-    <div><div class="header-title">Cave à Vin</div><div class="header-sub">Sommelier numérique</div></div>
+    <svg viewBox="0 0 1343 819" style="height:38px;width:auto;display:block" xmlns="http://www.w3.org/2000/svg"><g fill="#000000">
+  <path d="M513.9 506.4 c0 -99 0.3 -122.2 1.5 -132.9 4.8 -40.9 20.6 -72.8 50.4 -101.3 11.3 -10.9 22.6 -18.7 36.6 -25.8 11.9 -5.8 29.7 -12 35.1 -12 l4.3 0 0 9.1 0 9 -6.9 2.3 c-48 15.8 -84.4 54.5 -97 103.2 -5.5 21.1 -5.6 24.3 -5.6 141.7 l0 108.4 36.9 0 36.9 0 0 -66.9 c0 -37.8 0.4 -67.3 0.9 -67.6 0.5 -0.3 6.1 -1.9 12.6 -3.6 21.3 -5.5 36.3 -12.6 52 -24.3 17 -12.8 29.4 -27.5 38.7 -46 13.6 -27.2 11.1 -44.9 -10 -70.1 -8.6 -10.2 -13.9 -19.3 -17 -28.7 -1.5 -4.8 -1.8 -10.6 -2.3 -41.1 -0.3 -31.2 -0.2 -35.8 1.2 -37.9 2 -3 2 -7.4 0 -9.4 -1.1 -1.2 -3.7 -1.6 -10.1 -1.6 -7.7 0 -8.7 0.2 -10.1 2.3 -2 2.9 -2 4.6 -0.1 8.4 2.4 4.4 2.3 66.7 -0.1 76.3 -2.6 10.6 -7.8 20.5 -15.8 29.6 -12.6 14.5 -18.2 25.7 -20.4 39.8 -0.7 4.5 -1.1 25.1 -1.1 52.9 l0 45.6 -3.8 0.7 c-2.1 0.4 -6.1 0.8 -9 0.8 l-5.1 0.1 0 -53.2 c0 -51.9 0.1 -53.4 2.3 -61.9 3.3 -12.5 9.2 -23.6 18.2 -34.3 16.2 -19.1 17.9 -24.2 18.6 -56.4 0.5 -21.6 0.4 -24.1 -1.3 -28.7 -1.5 -3.8 -1.9 -7.6 -1.8 -15.8 0 -12.6 1.4 -16.8 7.2 -21.1 3.8 -3 4 -3 20.3 -3.3 10 -0.3 17.9 0 20.2 0.7 4.6 1.4 9.6 6.9 11.1 12.1 1.6 5.8 1.4 21.2 -0.4 25.6 -2.3 5.3 -2.3 49.5 0 58.1 2.5 9.4 7.1 17.7 14.2 25.8 10.9 12.2 15 19 19.2 31.6 2 6.2 2.4 9 2.4 23.4 0 14.3 -0.3 17.3 -2.4 24.1 -5.8 18.5 -17.7 37.9 -32.3 52.7 -20.2 20.4 -39.8 31.3 -74.3 41.4 l-2.6 0.8 -0.3 59.5 -0.2 59.6 44.1 0 c28.3 0 44.7 -0.4 46.1 -1 5.1 -2.8 5 -0.7 5 -93 l0 -86 5.7 -10.3 c5.5 -9.8 5.9 -10.2 9.2 -10.2 l3.5 0 0 99.1 c0 67.5 -0.4 100.3 -1.1 103.1 -1.7 6.4 -5.7 11.5 -11.5 14.3 l-5.2 2.6 -103.2 0 -103.2 0 0 -120.1z"/>
+  <path d="M733.9 623.7 c0 -1.6 1.4 -5.7 3.3 -9.2 l3.4 -6.4 35.6 0 35.6 0 -0.4 -114.9 -0.3 -115 -2.4 -10.2 c-9.3 -41.1 -31.1 -74.5 -62.5 -95.5 -9.1 -6.1 -25.8 -14.2 -35.2 -17.2 l-8.8 -2.7 0 -9.1 0 -9.1 4.1 0 c5.8 0 22.2 5.4 35.3 11.8 36.6 17.6 66.5 52.4 79.7 92.8 3.4 10.4 6.3 24.8 7.7 36.9 0.7 6.4 1.1 51.9 1.1 130.3 l0 120.3 -48.1 0 -48.1 0 0 -2.8z"/>
+ </g>
+ <g fill="#ffffff">
+  <path d="M0 409.5 l0 -409.5 671.5 0 671.5 0 0 409.5 0 409.5 -671.5 0 -671.5 0 0 -409.5z m722.4 211.4 c5.9 -3 9.9 -8.1 11.6 -14.8 0.7 -3.2 1 -33.8 0.8 -100.3 l-0.3 -95.6 -5.8 10.4 -5.9 10.5 0 86 c0 92.3 0.1 90.3 -5 93 -1.3 0.6 -18.8 1 -49.1 1 l-47.2 0 0.2 -62.6 0.3 -62.5 2.6 -0.8 c24.8 -7.2 42.1 -15 56.5 -25.6 23.1 -17.1 42.2 -43 50.2 -68.5 3.4 -11.1 3.4 -31.1 0 -41.4 -4.2 -12.6 -8.4 -19.4 -19.2 -31.6 -7.2 -8.1 -11.8 -16.4 -14.2 -25.8 -2.3 -8.7 -2.3 -59 0 -64.3 1.7 -4.3 2 -13.8 0.4 -19.4 -1.4 -5.2 -6.4 -10.6 -11.1 -12.1 -2.3 -0.7 -9.2 -1 -17.2 -0.8 -12.8 0.4 -13.4 0.5 -17.1 3.4 -2.1 1.6 -4.6 4.6 -5.5 6.7 -2.3 5.3 -2.1 17.8 0.2 24.1 1.7 4.6 1.8 7.3 1.3 31.7 -0.7 35.6 -2 39.8 -18.6 59.5 -9 10.6 -14.9 21.8 -18.2 34.3 -2.1 8.4 -2.3 10.1 -2.3 58.9 l0 50.2 2.6 -0.2 c1.4 -0.2 4.1 -0.5 5.9 -0.8 l3.3 -0.6 0 -45.6 c0 -27.8 0.4 -48.4 1.1 -52.9 2.1 -14.1 7.8 -25.3 20.4 -39.8 8 -9.1 13.2 -18.9 15.8 -29.6 2.4 -9.5 2.5 -65.7 0.1 -70.1 -1.9 -3.9 -1.9 -11.7 0.1 -14.5 1.4 -2.1 2.4 -2.3 13.2 -2.3 9.2 0 12 0.3 13.2 1.6 2.3 2.1 2.3 12.5 0 15.6 -1.4 2 -1.5 6.3 -1.2 34.8 0.4 27.4 0.7 33.3 2.3 38.1 3.1 9.3 8.4 18.4 17 28.7 21.7 25.8 24.5 47.4 10 76.2 -9.3 18.5 -21.7 33.3 -38.7 46.1 -15.7 11.7 -30.7 18.7 -52 24.3 -6.4 1.6 -12.1 3.3 -12.6 3.6 -0.5 0.3 -0.9 29.8 -0.9 67.6 l0 66.9 -39.9 0 -39.9 0 0 -111.5 c0 -120.7 0.1 -123.7 5.6 -144.7 12.6 -48.7 49 -87.4 97 -103.2 l6.9 -2.3 0 -5.9 c0 -3.9 -0.4 -6 -1.2 -6 -2.8 0 -23.5 7.8 -32 12 -24.6 12.3 -46.9 32.4 -62.2 56.2 -9.7 15 -15.8 29 -20.3 46.4 -5.9 22.9 -6 26.2 -6 154.4 l0 117 100.1 0 100.1 0 5.2 -2.6z m104.7 -114.6 c0 -120.8 -0.2 -128 -4.2 -146.8 -10.5 -48.6 -42 -89.8 -84.3 -110.1 -9.7 -4.7 -29.2 -11.8 -32.2 -11.8 -0.6 0 -1 2.7 -1 6 l0 6 8.8 2.7 c9.4 3 26.1 11.1 35.2 17.2 31.4 21 53.2 54.4 62.5 95.5 l2.4 10.2 0.3 118 0.4 117.9 -35.6 0 -35.6 0 -3.3 6.1 -3.3 6.1 44.9 0 45 0 0 -117.2z"/>
+ </g></svg>
   </div>
   <div class="header-stats">
     <div class="hstat"><div class="hstat-val" id="hs-bot">0</div><div class="hstat-label">Bouteilles</div></div>
@@ -517,26 +548,13 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);font-s
     <button class="btn-add" onclick="openAddModal()">+ Ajouter un vin</button>
   </div>
 
-  <div class="chips-row">
-    <div class="chip active" onclick="setType(this,'')">Tous</div>
-    <div class="chip" onclick="setType(this,'Rouge')">Rouge</div>
-    <div class="chip" onclick="setType(this,'Blanc')">Blanc</div>
-    <div class="chip" onclick="setType(this,'Rosé')">Rosé</div>
-    <div class="chip" onclick="setType(this,'Pétillant')">Champagne</div>
-    <div class="chip" onclick="setType(this,'Orange')">Orange</div>
-    <div class="more-wrap">
-      <button class="more-btn" id="more-btn" onclick="toggleMore()">Autres ▾</button>
-      <div class="more-dropdown" id="more-dropdown">
-        <div class="chip" onclick="setTypeMore(this,'Vin muté / Fortifié')">Muté / Fortifié</div>
-        <div class="chip" onclick="setTypeMore(this,'Vin doux naturel')">Doux naturel</div>
-        <div class="chip" onclick="setTypeMore(this,'Vin jaune / Oxydatif')">Jaune / Oxydatif</div>
-        <div class="chip" onclick="setTypeMore(this,'Vin de paille / Passerillé')">Paille / Passerillé</div>
-        <div class="chip" onclick="setTypeMore(this,'Vin naturel / Nature')">Naturel / Nature</div>
-        <div class="chip" onclick="setTypeMore(this,'Vin biodynamique')">Biodynamique</div>
-        <div class="chip" onclick="setTypeMore(this,'Cidre / Poiré')">Cidre / Poiré</div>
-        <div class="chip" onclick="setTypeMore(this,'Autre')">Autre</div>
-      </div>
-    </div>
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap">
+    <button type="button" id="filter-btn" onclick="toggleFilterPanel()" style="display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 14px;border:1.5px solid var(--ink5);border-radius:var(--r3);background:var(--surface);font-family:Inter,sans-serif;font-size:12px;font-weight:500;color:var(--ink3);cursor:pointer;transition:all .2s">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
+      Filtrer
+      <span id="filter-count" style="display:none;background:var(--ruby);color:#fff;border-radius:10px;font-size:10px;font-weight:700;padding:1px 6px;margin-left:2px">0</span>
+    </button>
+    <div id="active-filters-row" style="display:flex;gap:6px;flex-wrap:wrap"></div>
   </div>
 
 
@@ -554,7 +572,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);font-s
     </div>
     <div class="fsec"><div class="fsec-label">Identité</div>
       <div class="fr fr2"><div class="fg" id="fg-name"><label>Nom *</label><input type="text" id="f-name" placeholder="Château Margaux"></div><div class="fg" id="fg-app"><label>Appellation</label><input type="text" id="f-app" placeholder="Margaux AOC"></div></div>
-      <div class="fr fr4"><div class="fg" id="fg-type"><label>Type *</label><select id="f-type"><option>Rouge</option><option>Blanc</option><option>Rosé</option><option>Pétillant</option><option>Orange</option><option>Vin muté / Fortifié</option><option>Vin doux naturel</option><option>Vin jaune / Oxydatif</option><option>Vin de paille / Passerillé</option><option>Vin naturel / Nature</option><option>Vin biodynamique</option><option>Cidre / Poiré</option><option>Autre</option></select></div><div class="fg" id="fg-reg"><label>Région</label><input type="text" id="f-reg" placeholder="Bordeaux"></div><div class="fg"><label>Pays</label><input type="text" id="f-country" placeholder="France, Italie..." list="country-list"><datalist id="country-list"><option value="France"><option value="Italie"><option value="Espagne"><option value="Portugal"><option value="Allemagne"><option value="Autriche"><option value="USA"><option value="Argentine"><option value="Chili"><option value="Australie"><option value="Afrique du Sud"><option value="Nouvelle-Zélande"><option value="Hongrie"><option value="Grèce"><option value="Liban"></datalist></div><div class="fg" id="fg-year"><label>Millésime</label><input type="number" id="f-year" placeholder="2019" min="1900" max="2030"></div></div>
+      <div class="fr fr4"><div class="fg" id="fg-type"><label>Type *</label><select id="f-type"><option>Rouge</option><option>Blanc sec</option><option>Blanc moelleux</option><option>Blanc liquoreux</option><option>Rosé</option><option>Pétillant</option><option>Macération</option><option>Vin oxydatif</option><option>Passerillé</option><option>Vin muté / Fortifié</option><option>Autre</option></select></div><div class="fg" id="fg-reg"><label>Région</label><input type="text" id="f-reg" placeholder="Bordeaux"></div><div class="fg"><label>Pays</label><input type="text" id="f-country" placeholder="France, Italie..." list="country-list"><datalist id="country-list"><option value="France"><option value="Italie"><option value="Espagne"><option value="Portugal"><option value="Allemagne"><option value="Autriche"><option value="USA"><option value="Argentine"><option value="Chili"><option value="Australie"><option value="Afrique du Sud"><option value="Nouvelle-Zélande"><option value="Hongrie"><option value="Grèce"><option value="Liban"></datalist></div><div class="fg" id="fg-year"><label>Millésime</label><input type="number" id="f-year" placeholder="2019" min="1900" max="2030"></div></div>
     </div>
     <div class="fsec"><div class="fsec-label">Stock & prix</div>
       <div class="fr fr4"><div class="fg"><label>Quantité</label><input type="number" id="f-qty" value="1" min="0"></div><div class="fg"><label>Contenance</label><select id="f-cont"><option value="">—</option><option value="18.7cl">18.7 cl (Piccolo)</option><option value="37.5cl">37.5 cl (Demi)</option><option value="50cl">50 cl</option><option value="75cl" selected>75 cl (Standard)</option><option value="1L">1 L</option><option value="1.5L">1.5 L (Magnum)</option><option value="3L">3 L (Double Magnum)</option><option value="4.5L">4.5 L (Jéroboam)</option><option value="6L">6 L (Impériale)</option><option value="9L">9 L (Salmanazar)</option><option value="12L">12 L (Balthazar)</option><option value="15L">15 L (Nabuchodonosor)</option></select></div><div class="fg"><label>Prix achat (€)</label><input type="number" id="f-buy" placeholder="0" min="0" step="0.5"></div><div class="fg"><label>Prix actuel (€)</label><input type="number" id="f-cur" placeholder="0" min="0" step="0.5"></div><div class="fg" id="fg-ap"><label>Apogée</label><input type="text" id="f-ap" placeholder="2026 – 2038"></div></div>
@@ -607,9 +625,9 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);font-s
   <div class="stats-toolbar">
     <div class="stats-chip active" onclick="setStatFilter(this,'all')">Toute la cave</div>
     <div class="stats-chip" onclick="setStatFilter(this,'Rouge')">Rouge</div>
-    <div class="stats-chip" onclick="setStatFilter(this,'Blanc')">Blanc</div>
-    <div class="stats-chip" onclick="setStatFilter(this,'Pétillant')">Champagne</div>
-    <div class="stats-chip" onclick="setStatFilter(this,'Orange')">Orange</div>
+    <div class="stats-chip" onclick="setStatFilter(this,'Blanc sec')">Blanc</div>
+    <div class="stats-chip" onclick="setStatFilter(this,'Pétillant')">Pétillant</div>
+    <div class="stats-chip" onclick="setStatFilter(this,'Macération')">Macération</div>
     <div class="stats-chip" onclick="setStatFilter(this,'Vin naturel / Nature')">Naturel</div>
   </div>
   <div class="pnl-summary" id="pnl-summary"></div>
@@ -1014,7 +1032,7 @@ function openFreeDrinkModal(){
     nameRow.innerHTML='<div class="profile-fg full"><label>Nom du vin *</label><input type="text" id="drink-free-name" placeholder="Château Pétrus…" style="height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:Inter,sans-serif;outline:none;width:100%;box-sizing:border-box"></div>'
       +'<div class="profile-fg"><label>Appellation</label><input type="text" id="drink-free-app" placeholder="Pomerol AOC" style="height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:Inter,sans-serif;outline:none;width:100%;box-sizing:border-box"></div>'
       +'<div class="profile-fg"><label>Millésime</label><input type="number" id="drink-free-year" placeholder="2015" min="1900" max="2030" style="height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:Inter,sans-serif;outline:none;width:100%;box-sizing:border-box"></div>'
-      +'<div class="profile-fg"><label>Type</label><select id="drink-free-type" style="height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:Inter,sans-serif;outline:none"><option>Rouge</option><option>Blanc</option><option>Rosé</option><option>Pétillant</option><option>Orange</option><option>Vin naturel / Nature</option><option>Autre</option></select></div>'
+      +'<div class="profile-fg"><label>Type</label><select id="drink-free-type" style="height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:Inter,sans-serif;outline:none"><option>Rouge</option><option>Blanc sec</option><option>Blanc moelleux</option><option>Blanc liquoreux</option><option>Rosé</option><option>Pétillant</option><option>Macération</option><option>Vin oxydatif</option><option>Passerillé</option><option>Vin muté / Fortifié</option><option>Autre</option></select></div>'
       +'<div class="profile-fg full"><label>Photo</label><div onclick="document.getElementById(\'drink-free-photo-inp\').click()" style="cursor:pointer;border:1.5px dashed var(--ink5);border-radius:var(--r);padding:10px;text-align:center;font-size:12px;color:var(--ink4)"><input type="file" id="drink-free-photo-inp" accept="image/*" style="display:none" onchange="handleFreeDrinkPhoto(this)"><span id="drink-free-photo-label">📷 Ajouter une photo</span></div></div>';
     document.getElementById('drink-modal').querySelector('.modal-box').insertBefore(nameRow,document.getElementById('drink-modal').querySelector('.profile-grid'));
   }
@@ -1540,17 +1558,15 @@ async function saveProfile(){
 
 const TC={
   'Rouge':{bar:'#8b1a2a',pill:'#fdf0f1',pt:'#6a1020'},
-  'Blanc':{bar:'#a8822a',pill:'#fdf8ed',pt:'#6a5010'},
+  'Blanc sec':{bar:'#a8822a',pill:'#fdf8ed',pt:'#6a5010'},
+  'Blanc moelleux':{bar:'#c4962a',pill:'#fdf5e0',pt:'#7a5800'},
+  'Blanc liquoreux':{bar:'#d4a020',pill:'#fef8d8',pt:'#8a6000'},
   'Rosé':{bar:'#c0607a',pill:'#fdf0f4',pt:'#7a3050'},
   'Pétillant':{bar:'#c0a020',pill:'#fdf8e0',pt:'#6a5800'},
-  'Orange':{bar:'#c07820',pill:'#fdf3e0',pt:'#6a3c00'},
+  'Macération':{bar:'#c07820',pill:'#fdf3e0',pt:'#6a3c00'},
+  'Vin oxydatif':{bar:'#8a9800',pill:'#f6f8d8',pt:'#3a4200'},
+  'Passerillé':{bar:'#b07818',pill:'#fdf4d8',pt:'#5a3c00'},
   'Vin muté / Fortifié':{bar:'#7a3a18',pill:'#f8ede8',pt:'#4a2010'},
-  'Vin doux naturel':{bar:'#a07818',pill:'#fdf6e0',pt:'#5a4200'},
-  'Vin jaune / Oxydatif':{bar:'#8a9800',pill:'#f6f8d8',pt:'#3a4200'},
-  'Vin de paille / Passerillé':{bar:'#b07818',pill:'#fdf4d8',pt:'#5a3c00'},
-  'Vin naturel / Nature':{bar:'#3a7a3a',pill:'#eef7ee',pt:'#1a4a1a'},
-  'Vin biodynamique':{bar:'#286828',pill:'#eaf5ea',pt:'#184018'},
-  'Cidre / Poiré':{bar:'#5a8a28',pill:'#f0f7e8',pt:'#284a08'},
   'Autre':{bar:'#6068a0',pill:'#eeeef8',pt:'#303068'},
 };
 function tc(t,k){return(TC[t]||TC['Autre'])[k]}
@@ -1652,6 +1668,156 @@ function clearCritics(){
 }
 const VALID_TYPES=Object.keys(TC);
 let activeType='',statFilter='all';
+
+// ── FILTRE AVANCÉ ──
+let activeFilters = {types:[], countries:[], regions:[], certs:[], yearMin:null, yearMax:null, qtyMin:null, qtyMax:null, priceMin:null, priceMax:null, apogee:[]};
+
+function toggleFilterPanel(){
+  const panel = document.getElementById('filter-panel');
+  const overlay = document.getElementById('filter-overlay');
+  const isOpen = panel.classList.contains('open');
+  if(isOpen){ closeFilterPanel(); return; }
+  // Peupler pays et régions depuis la cave
+  populateFilterChips();
+  panel.classList.add('open');
+  overlay.classList.add('open');
+  document.getElementById('filter-btn').style.borderColor = 'var(--ruby)';
+  document.getElementById('filter-btn').style.color = 'var(--ruby)';
+}
+function closeFilterPanel(){
+  document.getElementById('filter-panel').classList.remove('open');
+  document.getElementById('filter-overlay').classList.remove('open');
+  const hasFilters = countActiveFilters() > 0;
+  document.getElementById('filter-btn').style.borderColor = hasFilters ? 'var(--ruby)' : '';
+  document.getElementById('filter-btn').style.color = hasFilters ? 'var(--ruby)' : '';
+}
+
+function populateFilterChips(){
+  // Pays
+  const countries = [...new Set(wines.map(w=>w.country).filter(Boolean))].sort();
+  const ccont = document.getElementById('fcountry-chips');
+  if(ccont){
+    ccont.innerHTML = countries.map(c=>`<div class="fchip${activeFilters.countries.includes(c)?' active':''}" data-filter="country" data-val="${c}" onclick="toggleFChip(this)">${c}</div>`).join('');
+  }
+  // Régions
+  const regions = [...new Set(wines.map(w=>w.reg).filter(Boolean))].sort();
+  const rcont = document.getElementById('freg-chips');
+  if(rcont){
+    rcont.innerHTML = regions.map(r=>`<div class="fchip${activeFilters.regions.includes(r)?' active':''}" data-filter="region" data-val="${r}" onclick="toggleFChip(this)">${r}</div>`).join('');
+  }
+  // Restaurer états actifs
+  document.querySelectorAll('#filter-panel .fchip[data-filter="type"]').forEach(c=>{
+    c.classList.toggle('active', activeFilters.types.includes(c.dataset.val));
+  });
+  document.querySelectorAll('#filter-panel .fchip[data-filter="cert"]').forEach(c=>{
+    c.classList.toggle('active', activeFilters.certs.includes(c.dataset.val));
+  });
+  document.querySelectorAll('#filter-panel .fchip[data-filter="apogee"]').forEach(c=>{
+    c.classList.toggle('active', activeFilters.apogee.includes(c.dataset.val));
+  });
+  if(activeFilters.yearMin) document.getElementById('fyear-min').value = activeFilters.yearMin;
+  if(activeFilters.yearMax) document.getElementById('fyear-max').value = activeFilters.yearMax;
+  if(activeFilters.qtyMin) document.getElementById('fqty-min').value = activeFilters.qtyMin;
+  if(activeFilters.qtyMax) document.getElementById('fqty-max').value = activeFilters.qtyMax;
+  if(activeFilters.priceMin) document.getElementById('fprice-min').value = activeFilters.priceMin;
+  if(activeFilters.priceMax) document.getElementById('fprice-max').value = activeFilters.priceMax;
+}
+
+function toggleFChip(el){
+  el.classList.toggle('active');
+}
+
+function applyFilters(){
+  const active = chip => [...document.querySelectorAll(`#filter-panel .fchip[data-filter="${chip}"].active`)].map(c=>c.dataset.val);
+  activeFilters.types = active('type');
+  activeFilters.countries = active('country');
+  activeFilters.regions = active('region');
+  activeFilters.certs = active('cert');
+  activeFilters.apogee = active('apogee');
+  activeFilters.yearMin = parseInt(document.getElementById('fyear-min').value)||null;
+  activeFilters.yearMax = parseInt(document.getElementById('fyear-max').value)||null;
+  activeFilters.qtyMin  = parseInt(document.getElementById('fqty-min').value)||null;
+  activeFilters.qtyMax  = parseInt(document.getElementById('fqty-max').value)||null;
+  activeFilters.priceMin = parseFloat(document.getElementById('fprice-min').value)||null;
+  activeFilters.priceMax = parseFloat(document.getElementById('fprice-max').value)||null;
+  closeFilterPanel();
+  updateFilterBadge();
+  renderWines();
+}
+
+function resetFilters(){
+  activeFilters = {types:[], countries:[], regions:[], certs:[], yearMin:null, yearMax:null, qtyMin:null, qtyMax:null, priceMin:null, priceMax:null, apogee:[]};
+  document.querySelectorAll('#filter-panel .fchip').forEach(c=>c.classList.remove('active'));
+  ['fyear-min','fyear-max','fqty-min','fqty-max','fprice-min','fprice-max'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  updateFilterBadge();
+  renderWines();
+}
+
+function countActiveFilters(){
+  return activeFilters.types.length + activeFilters.countries.length + activeFilters.regions.length +
+    activeFilters.certs.length + activeFilters.apogee.length +
+    (activeFilters.yearMin||activeFilters.yearMax?1:0) +
+    (activeFilters.qtyMin||activeFilters.qtyMax?1:0) +
+    (activeFilters.priceMin||activeFilters.priceMax?1:0);
+}
+
+function updateFilterBadge(){
+  const n = countActiveFilters();
+  const badge = document.getElementById('filter-count');
+  if(badge){ badge.textContent=n; badge.style.display=n>0?'inline':'none'; }
+  // Tags actifs
+  const row = document.getElementById('active-filters-row');
+  if(!row) return;
+  const tags = [];
+  if(activeFilters.types.length) tags.push({label:'Type: '+activeFilters.types.join(', '), key:'types'});
+  if(activeFilters.countries.length) tags.push({label:'Pays: '+activeFilters.countries.join(', '), key:'countries'});
+  if(activeFilters.regions.length) tags.push({label:'Région: '+activeFilters.regions.join(', '), key:'regions'});
+  if(activeFilters.certs.length) tags.push({label:'Certif: '+activeFilters.certs.join(', '), key:'certs'});
+  if(activeFilters.apogee.length) tags.push({label:'Apogée', key:'apogee'});
+  if(activeFilters.yearMin||activeFilters.yearMax) tags.push({label:`Millésime${activeFilters.yearMin?' ≥'+activeFilters.yearMin:''}${activeFilters.yearMax?' ≤'+activeFilters.yearMax:''}`, key:'year'});
+  if(activeFilters.qtyMin||activeFilters.qtyMax) tags.push({label:`Qté${activeFilters.qtyMin?' ≥'+activeFilters.qtyMin:''}${activeFilters.qtyMax?' ≤'+activeFilters.qtyMax:''}`, key:'qty'});
+  if(activeFilters.priceMin||activeFilters.priceMax) tags.push({label:`Prix${activeFilters.priceMin?' ≥'+activeFilters.priceMin+'€':''}${activeFilters.priceMax?' ≤'+activeFilters.priceMax+'€':''}`, key:'price'});
+  row.innerHTML = tags.map(t=>`<span class="active-filter-tag">${t.label}<button onclick="clearFilter('${t.key}')">×</button></span>`).join('');
+}
+
+function clearFilter(key){
+  if(key==='types') activeFilters.types=[];
+  else if(key==='countries') activeFilters.countries=[];
+  else if(key==='regions') activeFilters.regions=[];
+  else if(key==='certs') activeFilters.certs=[];
+  else if(key==='apogee') activeFilters.apogee=[];
+  else if(key==='year'){activeFilters.yearMin=null;activeFilters.yearMax=null;}
+  else if(key==='qty'){activeFilters.qtyMin=null;activeFilters.qtyMax=null;}
+  else if(key==='price'){activeFilters.priceMin=null;activeFilters.priceMax=null;}
+  updateFilterBadge();
+  renderWines();
+}
+
+function applyAdvancedFilters(list){
+  const f = activeFilters;
+  return list.filter(w=>{
+    if(f.types.length && !f.types.includes(w.type)) return false;
+    if(f.countries.length && !f.countries.includes(w.country)) return false;
+    if(f.regions.length && !f.regions.includes(w.reg)) return false;
+    if(f.certs.length && !f.certs.some(c=>(w.certs||[]).includes(c))) return false;
+    if(f.yearMin && (w.year||0) < f.yearMin) return false;
+    if(f.yearMax && (w.year||0) > f.yearMax) return false;
+    if(f.qtyMin && w.qty < f.qtyMin) return false;
+    if(f.qtyMax && w.qty > f.qtyMax) return false;
+    if(f.priceMin && (w.buy||0) < f.priceMin) return false;
+    if(f.priceMax && (w.buy||0) > f.priceMax) return false;
+    if(f.apogee.length){
+      const now=new Date().getFullYear();
+      const ap=parseInt((w.ap||'').split('-')[0])||0;
+      const ap2=parseInt((w.ap||'').split('-')[1])||ap;
+      if(f.apogee.includes('now') && !(now>=ap&&now<=ap2)) return false;
+      if(f.apogee.includes('5') && !(ap2<=now+5)) return false;
+      if(f.apogee.includes('10') && !(ap2<=now+10)) return false;
+      if(f.apogee.includes('later') && !(ap>now+10)) return false;
+    }
+    return true;
+  });
+}
 let chartM=null,chartR=null,waiResult=null,wishPhotoB64=null,aiResult=null,currentPhotoB64=null;
 
 let wines=[];
@@ -1738,7 +1904,7 @@ function handlePhotoSelect(inp,prefix){
 }
 
 const AI_PROMPT=`Tu es un expert sommelier encyclopédiste. À partir du vin fourni, retourne UNIQUEMENT un objet JSON valide (sans markdown, sans explication) :
-{"name":"...","appellation":"...","type":"Rouge|Blanc|Rosé|Pétillant|Orange|Vin muté / Fortifié|Vin doux naturel|Vin jaune / Oxydatif|Vin naturel / Nature|Vin biodynamique","region":"...","country":"...","year":2015,"apogee":"2025-2035","notes_degustation":"5-8 mots-clés ex: minéral, fruits noirs, tannins soyeux","certs":["bio"],"critics":{"parker":{"score":96,"max":100}}}
+{"name":"...","appellation":"...","type":"Rouge|Blanc sec|Blanc moelleux|Blanc liquoreux|Rosé|Pétillant|Orange|Vin oxydatif|Passerillé|Vin muté / Fortifié|Autre","region":"...","country":"...","year":2015,"apogee":"2025-2035","notes_degustation":"5-8 mots-clés ex: minéral, fruits noirs, tannins soyeux","certs":["bio"],"critics":{"parker":{"score":96,"max":100}}}
 
 RÈGLES STRICTES :
 - Ne JAMAIS inventer de notes critiques. Omets si pas certain à 100%. Si aucune certitude : "critics":{}
@@ -2236,7 +2402,8 @@ function buildScores(w){
 function renderWines(){
   const s=document.getElementById('sinp').value.toLowerCase();
   const so=document.getElementById('fsort').value;
-  let list=wines.filter(w=>(!s||(w.name+w.reg+w.app+(w.notes||'')).toLowerCase().includes(s))&&(!activeType||w.type===activeType));
+  let list=wines.filter(w=>(!s||(w.name+w.reg+w.app+(w.notes||'')).toLowerCase().includes(s)));
+  list=applyAdvancedFilters(list);
   list.sort((a,b)=>{
     if(so==='name')return a.name.localeCompare(b.name);
     if(so==='year')return(b.year||0)-(a.year||0);
@@ -2370,7 +2537,7 @@ function renderStats(){
   const totT=Math.max(Object.values(byT).reduce((a,b)=>a+b,0),1);
   // Camembert
   const typeEntries=Object.entries(byT).sort((a,b)=>b[1]-a[1]);
-  const PIE_COLORS={'Rouge':'#6b1520','Blanc':'#c4a030','Rosé':'#e8a0a8','Pétillant':'#4a7c9e','Orange':'#c47830','Vin naturel / Nature':'#5a7840','Vin biodynamique':'#486838','Vin muté / Fortifié':'#7a4020','Vin doux naturel':'#c4902a','Vin jaune / Oxydatif':'#b8962a','Cidre / Poiré':'#7aaa50','Autre':'#888'};
+  const PIE_COLORS={'Rouge':'#6b1520','Blanc':'#c4a030','Rosé':'#e8a0a8','Pétillant':'#4a7c9e','Macération':'#c47830','Vin naturel / Nature':'#5a7840','Vin biodynamique':'#486838','Vin muté / Fortifié':'#7a4020','Vin doux naturel':'#c4902a','Vin jaune / Oxydatif':'#b8962a','Cidre / Poiré':'#7aaa50','Autre':'#888'};
   const getPieColor=(t,i)=>PIE_COLORS[t]||['#8b1a2a','#2a5a8b','#c47030','#2a7a3a','#7a3a8b','#5a7830'][i%6];
   window._pieData=typeEntries.map(([t,c],i)=>({t,c,color:getPieColor(t,i)}));
   window._pieTot=totT;
@@ -2400,7 +2567,7 @@ function renderWishes(){
   const grid=document.getElementById('wishlist');
   grid.innerHTML=wishes.map(w=>{
     // Couleur barre selon type (même logique que cave)
-    const typeColors={'Rouge':'#8b1a2a','Blanc':'#c4a030','Rosé':'#e8a0a8','Pétillant':'#4a7c9e','Orange':'#c47830'};
+    const typeColors={'Rouge':'#8b1a2a','Blanc sec':'#a8822a','Blanc moelleux':'#c4962a','Blanc liquoreux':'#d4a020','Rosé':'#c0607a','Pétillant':'#c0a020','Macération':'#c07820','Vin oxydatif':'#8a9800','Passerillé':'#b07818','Vin muté / Fortifié':'#7a3a18','Autre':'#6068a0'};
     const barC=typeColors[w.type]||'#888';
     const pb=typeColors[w.type]||'#eee';
     const pt=w.type&&['Rouge','Pétillant'].includes(w.type)?'#fff':'#333';
@@ -2996,7 +3163,7 @@ window.onerror = function(){
       </div>
       <div class="fr fr4">
         <div class="fg"><label>Type</label>
-          <select id="wf-type"><option>Rouge</option><option>Blanc</option><option>Rosé</option><option>Pétillant</option><option>Orange</option><option>Vin muté / Fortifié</option><option>Vin doux naturel</option><option>Vin jaune / Oxydatif</option><option>Vin naturel / Nature</option><option>Vin biodynamique</option><option>Autre</option></select>
+          <select id="wf-type"><option>Rouge</option><option>Blanc sec</option><option>Blanc moelleux</option><option>Blanc liquoreux</option><option>Rosé</option><option>Pétillant</option><option>Macération</option><option>Vin oxydatif</option><option>Passerillé</option><option>Vin muté / Fortifié</option><option>Autre</option></select>
         </div>
         <div class="fg"><label>Région</label><input type="text" id="wf-reg" placeholder="Bordeaux"></div>
         <div class="fg"><label>Pays</label><input type="text" id="wf-country" placeholder="France" list="country-list"></div>
@@ -3083,6 +3250,114 @@ window.onerror = function(){
       <div class="profile-fg full"><label>Région préférée</label><input type="text" id="pf-region" placeholder="Bordeaux, Bourgogne..."></div>
     </div>
     <button class="profile-save-btn" onclick="saveProfile()">Enregistrer le profil</button>
+  </div>
+</div>
+
+
+<!-- ── PANNEAU FILTRE ── -->
+<div class="filter-overlay" id="filter-overlay" onclick="closeFilterPanel()"></div>
+<div class="filter-panel" id="filter-panel">
+  <div class="filter-header">
+    <div class="filter-title">Filtrer les vins</div>
+    <button class="filter-close" onclick="closeFilterPanel()">✕</button>
+  </div>
+
+  <!-- Type -->
+  <div class="filter-section">
+    <div class="filter-section-title">Type</div>
+    <div class="filter-chips" id="ftype-chips">
+      <div class="fchip" data-filter="type" data-val="Rouge" onclick="toggleFChip(this)">Rouge</div>
+      <div class="fchip" data-filter="type" data-val="Blanc sec" onclick="toggleFChip(this)">Blanc sec</div>
+      <div class="fchip" data-filter="type" data-val="Blanc moelleux" onclick="toggleFChip(this)">Blanc moelleux</div>
+      <div class="fchip" data-filter="type" data-val="Blanc liquoreux" onclick="toggleFChip(this)">Blanc liquoreux</div>
+      <div class="fchip" data-filter="type" data-val="Rosé" onclick="toggleFChip(this)">Rosé</div>
+      <div class="fchip" data-filter="type" data-val="Pétillant" onclick="toggleFChip(this)">Pétillant</div>
+      <div class="fchip" data-filter="type" data-val="Macération" onclick="toggleFChip(this)">Macération</div>
+      <div class="fchip" data-filter="type" data-val="Vin oxydatif" onclick="toggleFChip(this)">Vin oxydatif</div>
+      <div class="fchip" data-filter="type" data-val="Passerillé" onclick="toggleFChip(this)">Passerillé</div>
+      <div class="fchip" data-filter="type" data-val="Vin muté / Fortifié" onclick="toggleFChip(this)">Muté / Fortifié</div>
+      <div class="fchip" data-filter="type" data-val="Autre" onclick="toggleFChip(this)">Autre</div>
+    </div>
+  </div>
+
+  <!-- Pays -->
+  <div class="filter-section">
+    <div class="filter-section-title">Pays</div>
+    <div class="filter-chips" id="fcountry-chips"></div>
+  </div>
+
+  <!-- Région -->
+  <div class="filter-section">
+    <div class="filter-section-title">Région</div>
+    <div class="filter-chips" id="freg-chips"></div>
+  </div>
+
+  <!-- Certifications -->
+  <div class="filter-section">
+    <div class="filter-section-title">Certifications</div>
+    <div class="filter-chips">
+      <div class="fchip" data-filter="cert" data-val="bio" onclick="toggleFChip(this)">Agriculture Bio</div>
+      <div class="fchip" data-filter="cert" data-val="demeter" onclick="toggleFChip(this)">Demeter</div>
+      <div class="fchip" data-filter="cert" data-val="biody" onclick="toggleFChip(this)">Biodyvin</div>
+      <div class="fchip" data-filter="cert" data-val="hve" onclick="toggleFChip(this)">HVE</div>
+      <div class="fchip" data-filter="cert" data-val="nature" onclick="toggleFChip(this)">Méthode Nature</div>
+      <div class="fchip" data-filter="cert" data-val="vegan" onclick="toggleFChip(this)">Vegan</div>
+    </div>
+  </div>
+
+  <!-- Millésime -->
+  <div class="filter-section">
+    <div class="filter-section-title">Millésime</div>
+    <div class="filter-range">
+      <div class="filter-range-row">
+        <label>De</label>
+        <input type="number" id="fyear-min" placeholder="1990" min="1900" max="2030">
+        <label>À</label>
+        <input type="number" id="fyear-max" placeholder="2024" min="1900" max="2030">
+      </div>
+    </div>
+  </div>
+
+  <!-- Apogée -->
+  <div class="filter-section">
+    <div class="filter-section-title">À boire d'ici (apogée)</div>
+    <div class="filter-chips">
+      <div class="fchip" data-filter="apogee" data-val="now" onclick="toggleFChip(this)">À boire maintenant</div>
+      <div class="fchip" data-filter="apogee" data-val="5" onclick="toggleFChip(this)">Dans les 5 ans</div>
+      <div class="fchip" data-filter="apogee" data-val="10" onclick="toggleFChip(this)">Dans les 10 ans</div>
+      <div class="fchip" data-filter="apogee" data-val="later" onclick="toggleFChip(this)">Garde longue</div>
+    </div>
+  </div>
+
+  <!-- Quantité -->
+  <div class="filter-section">
+    <div class="filter-section-title">Quantité en cave</div>
+    <div class="filter-range">
+      <div class="filter-range-row">
+        <label>Min</label>
+        <input type="number" id="fqty-min" placeholder="1" min="0">
+        <label>Max</label>
+        <input type="number" id="fqty-max" placeholder="100" min="0">
+      </div>
+    </div>
+  </div>
+
+  <!-- Prix -->
+  <div class="filter-section">
+    <div class="filter-section-title">Prix d'achat (€/btl)</div>
+    <div class="filter-range">
+      <div class="filter-range-row">
+        <label>Min</label>
+        <input type="number" id="fprice-min" placeholder="0" min="0">
+        <label>Max</label>
+        <input type="number" id="fprice-max" placeholder="1000" min="0">
+      </div>
+    </div>
+  </div>
+
+  <div class="filter-actions">
+    <button class="filter-reset" onclick="resetFilters()">Réinitialiser</button>
+    <button class="filter-apply" onclick="applyFilters()">Appliquer les filtres</button>
   </div>
 </div>
 
