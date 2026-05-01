@@ -81,6 +81,29 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);font-s
 .more-dropdown.open{display:flex;flex-direction:column;gap:4px}
 .more-dropdown .chip{width:100%;justify-content:flex-start;border-radius:var(--r);height:34px}
 
+/* FILTER PANEL */
+.btn-filter{height:40px;padding:0 14px;background:var(--surface);border:1.5px solid var(--ink5);border-radius:var(--r);font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:var(--ink3);cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:6px;white-space:nowrap;flex-shrink:0}
+.btn-filter:hover{border-color:var(--ink4);color:var(--ink)}
+.btn-filter.active{background:var(--ink);border-color:var(--ink);color:#fff}
+.filter-badge{display:inline-flex;align-items:center;justify-content:center;min-width:16px;height:16px;background:var(--ruby);color:#fff;border-radius:8px;font-size:9px;font-weight:700;padding:0 3px}
+.filter-panel{background:var(--surface);border:1.5px solid var(--ink5);border-radius:var(--r2);padding:16px 20px;margin-bottom:14px;display:none}
+.filter-panel.open{display:block}
+.filter-panel-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.filter-panel-title{font-size:11px;font-weight:600;color:var(--ink4);text-transform:uppercase;letter-spacing:.8px}
+.filter-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px}
+.filter-field{display:flex;flex-direction:column;gap:4px}
+.filter-field label{font-size:10px;font-weight:600;color:var(--ink4);text-transform:uppercase;letter-spacing:.5px}
+.filter-field select,.filter-field input[type=number]{height:36px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);background:var(--surface);font-family:'Inter',sans-serif;font-size:12px;color:var(--ink);outline:none;transition:border .2s;width:100%}
+.filter-field select{appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23b89098' stroke-width='1.5' stroke-linecap='round' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 9px center}
+.filter-field select:focus,.filter-field input[type=number]:focus{border-color:var(--gold2)}
+.filter-range{display:flex;gap:6px;align-items:center}
+.filter-range input{flex:1;min-width:0}
+.filter-range-sep{font-size:11px;color:var(--ink4);flex-shrink:0}
+.filter-footer{display:flex;align-items:center;justify-content:space-between;margin-top:14px;flex-wrap:wrap;gap:8px}
+.filter-count{font-size:12px;color:var(--ink3);font-style:italic}
+.filter-reset{height:32px;padding:0 14px;background:none;border:1.5px solid var(--ink5);border-radius:var(--r);font-family:'Inter',sans-serif;font-size:12px;color:var(--ink4);cursor:pointer;transition:all .2s}
+.filter-reset:hover{border-color:var(--ink4);color:var(--ink3)}
+
 /* PANELS */
 .panel{background:var(--surface);border:1.5px solid var(--ink5);border-radius:var(--r2);padding:clamp(14px,3vw,22px);margin-bottom:14px;display:none}
 .panel.visible{display:block}
@@ -514,6 +537,10 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);font-s
       <option value="cur">Trier : Prix actuel</option>
       <option value="pnl">Trier : +/- value</option>
     </select>
+    <button class="btn-filter" id="btn-filter" onclick="toggleFilterPanel()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
+      Filtres <span class="filter-badge" id="filter-badge" style="display:none">0</span>
+    </button>
     <button class="btn-add" onclick="openAddModal()">+ Ajouter un vin</button>
   </div>
 
@@ -539,7 +566,61 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);font-s
     </div>
   </div>
 
-
+  <!-- PANNEAU FILTRES AVANCÉS -->
+  <div class="filter-panel" id="filter-panel">
+    <div class="filter-panel-header">
+      <span class="filter-panel-title">Filtres avancés</span>
+      <button class="filter-reset" onclick="resetFilters()">Réinitialiser tout</button>
+    </div>
+    <div class="filter-grid">
+      <div class="filter-field">
+        <label>Pays</label>
+        <select id="f-filter-country" onchange="applyAdvFilters()">
+          <option value="">Tous les pays</option>
+        </select>
+      </div>
+      <div class="filter-field">
+        <label>Région</label>
+        <select id="f-filter-region" onchange="applyAdvFilters()">
+          <option value="">Toutes les régions</option>
+        </select>
+      </div>
+      <div class="filter-field">
+        <label>Millésime</label>
+        <div class="filter-range">
+          <input type="number" id="f-filter-year-min" placeholder="De" min="1900" max="2030" oninput="applyAdvFilters()">
+          <span class="filter-range-sep">–</span>
+          <input type="number" id="f-filter-year-max" placeholder="À" min="1900" max="2030" oninput="applyAdvFilters()">
+        </div>
+      </div>
+      <div class="filter-field">
+        <label>Prix achat (€)</label>
+        <div class="filter-range">
+          <input type="number" id="f-filter-price-min" placeholder="Min" min="0" step="1" oninput="applyAdvFilters()">
+          <span class="filter-range-sep">–</span>
+          <input type="number" id="f-filter-price-max" placeholder="Max" min="0" step="1" oninput="applyAdvFilters()">
+        </div>
+      </div>
+      <div class="filter-field">
+        <label>Quantité minimum</label>
+        <input type="number" id="f-filter-qty-min" placeholder="Ex: 1" min="0" oninput="applyAdvFilters()">
+      </div>
+      <div class="filter-field">
+        <label>Certification</label>
+        <select id="f-filter-cert" onchange="applyAdvFilters()">
+          <option value="">Toutes</option>
+          <option value="bio">Bio (AB)</option>
+          <option value="biodynamie">Biodynamie</option>
+          <option value="hve">HVE</option>
+          <option value="raisonné">Raisonné</option>
+          <option value="lutte">Lutte intégrée</option>
+        </select>
+      </div>
+    </div>
+    <div class="filter-footer">
+      <span class="filter-count" id="filter-result-count"></span>
+    </div>
+  </div>
 
   <div class="panel" id="add-form">
     <div class="panel-title">Nouvelle bouteille <span class="badge-ia" id="ai-badge-form" style="display:none">⚡ Pré-rempli IA</span></div>
@@ -1652,6 +1733,7 @@ function clearCritics(){
 }
 const VALID_TYPES=Object.keys(TC);
 let activeType='',statFilter='all';
+let advFilters={country:'',region:'',yearMin:'',yearMax:'',priceMin:'',priceMax:'',qtyMin:'',cert:''};
 let chartM=null,chartR=null,waiResult=null,wishPhotoB64=null,aiResult=null,currentPhotoB64=null;
 
 let wines=[];
@@ -1715,6 +1797,50 @@ function setTypeMore(el,type){
   el.classList.add('active');
   closeMore();renderWines();
 }
+function toggleFilterPanel(){
+  const panel=document.getElementById('filter-panel');
+  const btn=document.getElementById('btn-filter');
+  const open=panel.classList.contains('open');
+  panel.classList.toggle('open',!open);
+  btn.classList.toggle('active',!open);
+  if(!open) populateFilterDropdowns();
+}
+function populateFilterDropdowns(){
+  const countries=[...new Set(wines.map(w=>w.country).filter(Boolean))].sort();
+  const regions=[...new Set(wines.map(w=>w.reg).filter(Boolean))].sort();
+  const cSel=document.getElementById('f-filter-country');
+  const rSel=document.getElementById('f-filter-region');
+  const cv=cSel.value,rv=rSel.value;
+  cSel.innerHTML='<option value="">Tous les pays</option>'+countries.map(c=>`<option value="${c}">${c}</option>`).join('');
+  rSel.innerHTML='<option value="">Toutes les régions</option>'+regions.map(r=>`<option value="${r}">${r}</option>`).join('');
+  cSel.value=cv;rSel.value=rv;
+}
+function applyAdvFilters(){
+  advFilters.country=document.getElementById('f-filter-country').value;
+  advFilters.region=document.getElementById('f-filter-region').value;
+  advFilters.yearMin=document.getElementById('f-filter-year-min').value;
+  advFilters.yearMax=document.getElementById('f-filter-year-max').value;
+  advFilters.priceMin=document.getElementById('f-filter-price-min').value;
+  advFilters.priceMax=document.getElementById('f-filter-price-max').value;
+  advFilters.qtyMin=document.getElementById('f-filter-qty-min').value;
+  advFilters.cert=document.getElementById('f-filter-cert').value;
+  updateFilterBadge();
+  renderWines();
+}
+function updateFilterBadge(){
+  const count=Object.values(advFilters).filter(v=>v!=='').length;
+  const badge=document.getElementById('filter-badge');
+  if(count>0){badge.style.display='inline-flex';badge.textContent=count;}
+  else badge.style.display='none';
+}
+function resetFilters(){
+  advFilters={country:'',region:'',yearMin:'',yearMax:'',priceMin:'',priceMax:'',qtyMin:'',cert:''};
+  ['f-filter-country','f-filter-region','f-filter-cert'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  ['f-filter-year-min','f-filter-year-max','f-filter-price-min','f-filter-price-max','f-filter-qty-min'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  updateFilterBadge();
+  renderWines();
+}
+
 function setStatFilter(el,f){
   statFilter=f;
   document.querySelectorAll('.stats-chip').forEach(c=>c.classList.remove('active'));
@@ -2236,7 +2362,19 @@ function buildScores(w){
 function renderWines(){
   const s=document.getElementById('sinp').value.toLowerCase();
   const so=document.getElementById('fsort').value;
-  let list=wines.filter(w=>(!s||(w.name+w.reg+w.app+(w.notes||'')).toLowerCase().includes(s))&&(!activeType||w.type===activeType));
+  let list=wines.filter(w=>{
+    if(s&&!(w.name+w.reg+w.app+(w.notes||'')).toLowerCase().includes(s))return false;
+    if(activeType&&w.type!==activeType)return false;
+    if(advFilters.country&&w.country!==advFilters.country)return false;
+    if(advFilters.region&&w.reg!==advFilters.region)return false;
+    if(advFilters.yearMin&&(w.year||0)<Number(advFilters.yearMin))return false;
+    if(advFilters.yearMax&&(w.year||0)>Number(advFilters.yearMax))return false;
+    if(advFilters.priceMin&&(w.buy||0)<Number(advFilters.priceMin))return false;
+    if(advFilters.priceMax&&(w.buy||0)>Number(advFilters.priceMax))return false;
+    if(advFilters.qtyMin&&(w.qty||0)<Number(advFilters.qtyMin))return false;
+    if(advFilters.cert&&!(w.certs||[]).some(c=>c.toLowerCase().includes(advFilters.cert)))return false;
+    return true;
+  });
   list.sort((a,b)=>{
     if(so==='name')return a.name.localeCompare(b.name);
     if(so==='year')return(b.year||0)-(a.year||0);
@@ -2297,6 +2435,12 @@ function renderWines(){
       </div>
     </div>`;
   }).join('');
+  const countEl=document.getElementById('filter-result-count');
+  if(countEl){
+    const total=wines.length;
+    if(list.length<total)countEl.textContent=list.length+' vin'+(list.length>1?'s':'')+' affiché'+(list.length>1?'s':'')+' sur '+total;
+    else countEl.textContent='';
+  }
 }
 
 function updateStats(){
