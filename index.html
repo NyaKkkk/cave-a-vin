@@ -1852,22 +1852,28 @@ async function saveCave(){
   const capacity=parseInt(document.getElementById('cf-capacity').value)||0;
   const clayettes=parseInt(document.getElementById('cf-clayettes').value)||0;
   const description=document.getElementById('cf-desc').value.trim();
-  if(_caveFormId){
-    const idx=caves.findIndex(c=>c.id===_caveFormId);
+  const photo=cavePhotoData;
+  const editId=_caveFormId;
+  closeCaveForm();
+  if(editId){
+    const idx=caves.findIndex(c=>c.id===editId);
     if(idx>=0){caves[idx]={...caves[idx],name,capacity,clayettes,description};}
-    closeCaveForm();renderCaves();
-    if(db&&currentUser){
-      await db.collection('users').doc(currentUser.uid).collection('caves').doc(_caveFormId).set({name,capacity,clayettes,description},{merge:true});
-      if(cavePhotoData){uploadCavePhoto(_caveFormId,cavePhotoData).then(url=>{if(url){caves.find(c=>c.id===_caveFormId).img_url=url;renderCaves();}});}
+    if(photo){caves[idx>=0?idx:0].img_url=photo;}
+    renderCaves();
+    if(db&&currentUser&&!editId.startsWith('tmp-')){
+      const data={name,capacity,clayettes,description};
+      if(photo)data.img_url=photo;
+      await db.collection('users').doc(currentUser.uid).collection('caves').doc(editId).set(data,{merge:true});
     }
   } else {
-    const tmp={id:'tmp-'+Date.now(),name,capacity,clayettes,description,img_url:null};
+    const tmp={id:'tmp-'+Date.now(),name,capacity,clayettes,description,img_url:photo||null};
     caves.push(tmp);
-    closeCaveForm();renderCaves();
+    renderCaves();
     if(db&&currentUser){
-      const ref=await db.collection('users').doc(currentUser.uid).collection('caves').add({name,capacity,clayettes,description,img_url:null,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
+      const data={name,capacity,clayettes,description,img_url:photo||null,createdAt:firebase.firestore.FieldValue.serverTimestamp()};
+      const ref=await db.collection('users').doc(currentUser.uid).collection('caves').add(data);
       tmp.id=ref.id;
-      if(cavePhotoData){uploadCavePhoto(ref.id,cavePhotoData).then(url=>{if(url){tmp.img_url=url;renderCaves();}});}
+      renderCaves();
     }
   }
 }
@@ -1880,19 +1886,7 @@ function handleCavePhoto(inp){
   };
   r.readAsDataURL(f);
 }
-async function uploadCavePhoto(caveId,dataUrl){
-  if(!dataUrl)return null;
-  try{
-    const blob=await(await fetch(dataUrl)).blob();
-    const storage=firebase.storage?firebase.storage():null;
-    if(!storage)return null;
-    const ref=storage.ref(`users/${currentUser.uid}/caves/${caveId}`);
-    await ref.put(blob);
-    const url=await ref.getDownloadURL();
-    if(db)await db.collection('users').doc(currentUser.uid).collection('caves').doc(caveId).update({img_url:url});
-    return url;
-  }catch(e){console.error('uploadCavePhoto:',e);return null;}
-}
+
 function populateCaveSelect(selectedId){
   const sel=document.getElementById('f-cave');
   if(!sel)return;
