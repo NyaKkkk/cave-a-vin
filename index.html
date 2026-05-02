@@ -102,6 +102,29 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
 .filter-sidebar-body{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:22px}
 .filter-sidebar-body::-webkit-scrollbar{width:3px}
 .filter-sidebar-body::-webkit-scrollbar-thumb{background:var(--ink5);border-radius:2px}
+/* CAVES TAB */
+.caves-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px;margin-top:4px}
+.cave-card{background:var(--surface);border:1.5px solid var(--ink5);border-radius:var(--r2);overflow:hidden;display:flex;flex-direction:column}
+.cave-card-img{width:100%;height:160px;object-fit:cover;display:block}
+.cave-card-placeholder{width:100%;height:160px;background:var(--ink6);display:flex;align-items:center;justify-content:center;color:var(--ink5)}
+.cave-card-body{padding:14px 16px;display:flex;flex-direction:column;gap:8px;flex:1}
+.cave-card-name{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;color:var(--ink)}
+.cave-card-desc{font-size:12px;color:var(--ink3);line-height:1.5;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.cave-card-meta{display:flex;gap:14px;font-size:11px;color:var(--ink4);font-weight:500;flex-wrap:wrap}
+.cave-gauge-track{height:8px;background:var(--ink5);border-radius:4px;overflow:hidden;margin-bottom:3px}
+.cave-gauge-fill{height:100%;border-radius:4px;transition:width .4s}
+.cave-gauge-label{font-size:11px;color:var(--ink4);display:flex;justify-content:space-between}
+.cave-card-actions{display:flex;gap:8px;margin-top:4px}
+.cave-btn{height:30px;padding:0 12px;border-radius:var(--r);font-family:'Inter',sans-serif;font-size:11px;font-weight:600;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:4px}
+.cave-btn-edit{background:var(--surface);border:1.5px solid var(--ink5);color:var(--ink3)}
+.cave-btn-edit:hover{border-color:var(--ink3);color:var(--ink)}
+.cave-btn-del{background:var(--surface);border:1.5px solid var(--ink5);color:var(--ink4)}
+.cave-btn-del:hover{border-color:var(--ruby2);color:var(--ruby2)}
+#cave-form-backdrop{display:none;position:fixed;inset:0;background:rgba(28,10,13,.45);z-index:498}
+#cave-form-backdrop.open{display:block}
+#cave-form-modal{display:none;position:fixed;top:clamp(70px,9vw,90px);left:50%;transform:translateX(-50%);z-index:499;max-width:520px;width:calc(100% - 40px);max-height:calc(100vh - clamp(70px,9vw,90px) - 20px);overflow-y:auto;background:var(--surface);border:1.5px solid var(--ink5);border-radius:var(--r2);padding:22px;box-shadow:0 8px 40px rgba(28,10,13,.25)}
+#cave-form-modal.open{display:block}
+.wine-location{font-size:11px;color:var(--ink4);display:inline-flex;align-items:center;gap:3px;margin-top:2px}
 .filter-section{display:flex;flex-direction:column;gap:10px}
 .filter-section-label{font-size:9px;font-weight:600;color:var(--ink4);text-transform:uppercase;letter-spacing:1px;padding-bottom:8px;border-bottom:1px solid var(--ink5)}
 .filter-type-chips{display:flex;flex-wrap:wrap;gap:5px}
@@ -556,6 +579,7 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
 
 <div class="nav">
   <div class="ntab active" onclick="showTab('cave')">Mes vins</div>
+  <div class="ntab" onclick="showTab('caves')">Cave</div>
   <div class="ntab" onclick="showTab('stats')">Statistiques</div>
   <div class="ntab" onclick="showTab('degustation')">Dégustations</div>
   <div class="ntab" onclick="showTab('ventes')">Ventes</div>
@@ -643,11 +667,25 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
         <label style="display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--ink3);cursor:pointer"><input type="checkbox" value="lutte" onchange="toggleCert(this)"> Lutte intégrée</label>
       </div>
     </div>
+    <div class="fsec"><div class="fsec-label">Emplacement</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="fg"><label>Cave</label><select id="f-cave" style="width:100%;height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:Inter,sans-serif;outline:none;color:var(--ink);background:var(--surface)"><option value="">— Aucune —</option></select></div>
+        <div class="fg"><label>Clayette</label><input type="text" id="f-clayette" placeholder="ex: A3, 2" style="width:100%;height:38px;padding:0 12px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:Inter,sans-serif;outline:none;color:var(--ink)"></div>
+      </div>
+    </div>
     <div class="fsec"><div class="fsec-label">Notes personnelles</div><div class="fg"><textarea id="f-notes" placeholder="Arômes, bouche, finale…"></textarea></div></div>
     <div class="factions"><button class="bsub" onclick="addWine()">Ajouter à la cave</button><button class="bcan" onclick="closePanel('add-form')">Annuler</button></div>
   </div>
 
   <div class="wlist" id="wlist"></div>
+</div>
+
+<div id="tab-caves" style="display:none">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+    <div style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--ink)">Mes caves</div>
+    <button class="btn-add" onclick="openCaveForm()">+ Ajouter une cave</button>
+  </div>
+  <div class="caves-grid" id="caves-list"></div>
 </div>
 
 <!-- STATS -->
@@ -870,12 +908,14 @@ async function doLogout(){
 async function loadFromFirebase(){
   if(!db||!currentUser) return;
   try{
-    const [wSnap, whSnap] = await Promise.all([
+    const [wSnap, whSnap, cSnap] = await Promise.all([
       db.collection('users').doc(currentUser.uid).collection('wines').orderBy('createdAt','asc').get(),
-      db.collection('users').doc(currentUser.uid).collection('wishes').orderBy('createdAt','asc').get()
+      db.collection('users').doc(currentUser.uid).collection('wishes').orderBy('createdAt','asc').get(),
+      db.collection('users').doc(currentUser.uid).collection('caves').orderBy('createdAt','asc').get()
     ]);
     wines  = wSnap.docs.map(d=>({id:d.id, ...d.data()}));
     wishes = whSnap.docs.map(d=>({id:d.id, ...d.data()}));
+    caves  = cSnap.docs.map(d=>({id:d.id, ...d.data()}));
     activeTypes = []; // reset filtre
     populateFilterDropdowns(); renderWines(); updateStats(); renderWishes();
   }catch(e){ console.error('loadFromFirebase:', e); }
@@ -894,7 +934,8 @@ async function saveWineToDb(w){
       parker:w.parker||null, suckling:w.suckling||null, decanter:w.decanter||null,
       vinous:w.vinous||null, bettane:w.bettane||null, jancis:w.jancis||null,
       ws:w.ws||null, bh:w.bh||null, img_url:w.img_url||null,
-      customCritics:w.customCritics||{}
+      customCritics:w.customCritics||{},
+      caveId:w.caveId||null, clayette:w.clayette||''
     };
     if(w.id && !w.id.startsWith('tmp-')){
       await ref.doc(w.id).set(data, {merge:true});
@@ -1705,6 +1746,9 @@ let advFilters={countries:[],regions:[],certs:[],yearMin:'',yearMax:'',priceMin:
 let chartM=null,chartR=null,waiResult=null,wishPhotoB64=null,aiResult=null,currentPhotoB64=null;
 
 let wines=[];
+let caves=[];
+let _caveFormId=null;
+let cavePhotoData=null;
 let wishes=[];
 let imgs={};
 
@@ -1717,7 +1761,7 @@ window.addEventListener('load',()=>{
 });
 
 function showTab(t){
-  const tabs=['cave','stats','degustation','ventes','wish'];
+  const tabs=['cave','caves','stats','degustation','ventes','wish'];
   tabs.forEach((n,i)=>{
     document.querySelectorAll('.ntab')[i].classList.toggle('active',n===t);
     document.getElementById('tab-'+n).style.display=n===t?'':'none';
@@ -1727,6 +1771,7 @@ function showTab(t){
   if(t==='degustation')renderDegustations();
   if(t==='ventes')renderVentes();
   if(t==='cave'){ activeTypes=[]; renderWines(); }
+  if(t==='caves')renderCaves();
 }
 function togglePanel(id){
   const p=document.getElementById(id);
@@ -1737,6 +1782,121 @@ function togglePanel(id){
 function closePanel(id){
   document.getElementById(id).classList.remove('visible');
   if(id==='add-form'){document.getElementById('edit-backdrop').classList.remove('open');document.body.classList.remove('edit-mode');}
+}
+
+// ── CAVES ──
+function renderCaves(){
+  const el=document.getElementById('caves-list');
+  if(!caves.length){
+    el.innerHTML='<div style="grid-column:1/-1;display:flex;flex-direction:column;align-items:center;padding:80px 20px;color:var(--ink4);text-align:center"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" style="opacity:.3;margin-bottom:14px"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg><div style="font-size:15px;font-weight:600;color:var(--ink3);margin-bottom:6px">Aucune cave enregistrée</div><div style="font-size:13px">Ajoutez votre première cave avec le bouton ci-dessus</div></div>';
+    return;
+  }
+  el.innerHTML=caves.map(cave=>{
+    const occupied=wines.filter(w=>w.caveId===cave.id).reduce((s,w)=>s+(w.qty||0),0);
+    const cap=cave.capacity||0;
+    const pct=cap>0?Math.min(100,Math.round(occupied/cap*100)):0;
+    const fillColor=pct<70?'#4a9a4a':pct<90?'#c07820':'#8b1a2a';
+    const imgHTML=cave.img_url
+      ?`<img class="cave-card-img" src="${cave.img_url}" alt="">`
+      :`<div class="cave-card-placeholder"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" opacity=".3"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg></div>`;
+    return`<div class="cave-card">
+      ${imgHTML}
+      <div class="cave-card-body">
+        <div class="cave-card-name">${cave.name}</div>
+        ${cave.description?`<div class="cave-card-desc">${cave.description}</div>`:''}
+        <div class="cave-card-meta">
+          ${cave.clayettes?`<span><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="4" rx="1"/><rect x="2" y="10" width="20" height="4" rx="1"/><rect x="2" y="17" width="20" height="4" rx="1"/></svg> ${cave.clayettes} clayette${cave.clayettes>1?'s':''}</span>`:''}
+          <span><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 22h8M12 11v11"/><path d="M5 2h14l-3 9a5 5 0 0 1-8 0Z"/></svg> ${occupied} / ${cap||'?'} bouteilles</span>
+        </div>
+        ${cap>0?`<div><div class="cave-gauge-track"><div class="cave-gauge-fill" style="width:${pct}%;background:${fillColor}"></div></div><div class="cave-gauge-label"><span>${pct}% occupé</span><span>${cap-occupied} places libres</span></div></div>`:''}
+        <div class="cave-card-actions">
+          <button class="cave-btn cave-btn-edit" onclick="editCave('${cave.id}')"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Modifier</button>
+          <button class="cave-btn cave-btn-del" onclick="deleteCave('${cave.id}')"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg> Supprimer</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+function openCaveForm(id){
+  _caveFormId=id||null;
+  cavePhotoData=null;
+  const cave=id?caves.find(c=>c.id===id):null;
+  document.getElementById('cave-form-title').textContent=cave?'Modifier la cave':'Nouvelle cave';
+  document.getElementById('cf-submit').textContent=cave?'Enregistrer les modifications':'Enregistrer';
+  document.getElementById('cf-name').value=cave?cave.name:'';
+  document.getElementById('cf-capacity').value=cave&&cave.capacity?cave.capacity:'';
+  document.getElementById('cf-clayettes').value=cave&&cave.clayettes?cave.clayettes:'';
+  document.getElementById('cf-desc').value=cave?cave.description||'':'';
+  const inner=document.getElementById('cave-photo-inner');
+  if(cave&&cave.img_url){inner.innerHTML=`<img src="${cave.img_url}" style="width:100%;height:140px;object-fit:cover">`;
+  }else{inner.innerHTML='<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span style="font-size:12px;color:var(--ink4)">Cliquer pour ajouter une photo</span>';}
+  document.getElementById('cave-form-backdrop').classList.add('open');
+  document.getElementById('cave-form-modal').classList.add('open');
+}
+function closeCaveForm(){
+  document.getElementById('cave-form-backdrop').classList.remove('open');
+  document.getElementById('cave-form-modal').classList.remove('open');
+  _caveFormId=null;cavePhotoData=null;
+}
+function editCave(id){openCaveForm(id);}
+async function deleteCave(id){
+  if(!confirm('Supprimer cette cave ? Les vins associés ne seront pas supprimés.'))return;
+  caves=caves.filter(c=>c.id!==id);
+  wines.forEach(w=>{if(w.caveId===id){w.caveId=null;w.clayette='';if(db)saveWineToDb(w);}});
+  renderCaves();renderWines();
+  if(db&&currentUser)await db.collection('users').doc(currentUser.uid).collection('caves').doc(id).delete();
+}
+async function saveCave(){
+  const name=document.getElementById('cf-name').value.trim();
+  if(!name)return;
+  const capacity=parseInt(document.getElementById('cf-capacity').value)||0;
+  const clayettes=parseInt(document.getElementById('cf-clayettes').value)||0;
+  const description=document.getElementById('cf-desc').value.trim();
+  if(_caveFormId){
+    const idx=caves.findIndex(c=>c.id===_caveFormId);
+    if(idx>=0){caves[idx]={...caves[idx],name,capacity,clayettes,description};}
+    closeCaveForm();renderCaves();
+    if(db&&currentUser){
+      await db.collection('users').doc(currentUser.uid).collection('caves').doc(_caveFormId).set({name,capacity,clayettes,description},{merge:true});
+      if(cavePhotoData){uploadCavePhoto(_caveFormId,cavePhotoData).then(url=>{if(url){caves.find(c=>c.id===_caveFormId).img_url=url;renderCaves();}});}
+    }
+  } else {
+    const tmp={id:'tmp-'+Date.now(),name,capacity,clayettes,description,img_url:null};
+    caves.push(tmp);
+    closeCaveForm();renderCaves();
+    if(db&&currentUser){
+      const ref=await db.collection('users').doc(currentUser.uid).collection('caves').add({name,capacity,clayettes,description,img_url:null,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
+      tmp.id=ref.id;
+      if(cavePhotoData){uploadCavePhoto(ref.id,cavePhotoData).then(url=>{if(url){tmp.img_url=url;renderCaves();}});}
+    }
+  }
+}
+function handleCavePhoto(inp){
+  const f=inp.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=e=>{
+    cavePhotoData=e.target.result;
+    document.getElementById('cave-photo-inner').innerHTML=`<img src="${e.target.result}" style="width:100%;height:140px;object-fit:cover">`;
+  };
+  r.readAsDataURL(f);
+}
+async function uploadCavePhoto(caveId,dataUrl){
+  if(!dataUrl)return null;
+  try{
+    const blob=await(await fetch(dataUrl)).blob();
+    const storage=firebase.storage?firebase.storage():null;
+    if(!storage)return null;
+    const ref=storage.ref(`users/${currentUser.uid}/caves/${caveId}`);
+    await ref.put(blob);
+    const url=await ref.getDownloadURL();
+    if(db)await db.collection('users').doc(currentUser.uid).collection('caves').doc(caveId).update({img_url:url});
+    return url;
+  }catch(e){console.error('uploadCavePhoto:',e);return null;}
+}
+function populateCaveSelect(selectedId){
+  const sel=document.getElementById('f-cave');
+  if(!sel)return;
+  sel.innerHTML='<option value="">— Aucune —</option>'+caves.map(c=>`<option value="${c.id}"${c.id===selectedId?' selected':''}>${c.name}</option>`).join('');
 }
 
 
@@ -2301,6 +2461,8 @@ function editWine(id){
   sv(document.getElementById('f-cur'),w.cur);
   sv(document.getElementById('f-ap'),w.ap);const fc=document.getElementById('f-cont');if(fc)fc.value=w.cont||'';const fct=document.getElementById('f-country');if(fct)fct.value=w.country||'France';
   sv(document.getElementById('f-notes'),w.notes);
+  populateCaveSelect(w.caveId||'');
+  sv(document.getElementById('f-clayette'),w.clayette||'');
   const cm={parker:'f-parker',suckling:'f-suckling',decanter:'f-decanter',vinous:'f-vinous',bettane:'f-bettane',jancis:'f-jancis',ws:'f-ws',bh:'f-bh'};
   Object.entries(cm).forEach(([k,fid])=>{const el=document.getElementById(fid);if(el)el.value=w[k]!=null?w[k]:'';});
   if(w.certs){formCerts=[...w.certs];document.querySelectorAll('#cert-checkboxes input[type=checkbox]').forEach(cb=>{cb.checked=w.certs.includes(cb.value);});}
@@ -2330,7 +2492,9 @@ function saveEdit(id){
     cur:parseFloat(document.getElementById('f-cur').value)||0,
     ap:document.getElementById('f-ap').value.trim(),cont:document.getElementById('f-cont').value,country:document.getElementById('f-country').value,
     certs:[...formCerts],
-    notes:document.getElementById('f-notes').value.trim()
+    notes:document.getElementById('f-notes').value.trim(),
+    caveId:document.getElementById('f-cave').value||null,
+    clayette:document.getElementById('f-clayette').value.trim()
   };
   // Remettre tous les critiques standards à null d'abord
   CRITICS.forEach(c=>{ wines[idx][c.k]=null; });
@@ -2360,6 +2524,7 @@ function saveEdit(id){
 function clearForm(){
   ['f-name','f-app','f-reg','f-year','f-buy','f-cur','f-ap','f-notes','f-parker','f-suckling','f-decanter','f-vinous','f-bettane','f-jancis','f-ws','f-bh'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
   document.getElementById('f-qty').value='1';document.getElementById('f-type').value='Rouge';const fco=document.getElementById('f-cont');if(fco)fco.value='75cl';clearCritics();
+  populateCaveSelect('');const fcl=document.getElementById('f-clayette');if(fcl)fcl.value='';
   formPhotoData=null;
   const inner=document.getElementById('form-photo-inner');
   if(inner)inner.innerHTML='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#b89098" stroke-width="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span style="font-size:12px;color:var(--ink4)">Cliquez pour ajouter une photo</span>';
@@ -2375,7 +2540,7 @@ function clearForm(){
 }
 function addWine(){
   const n=document.getElementById('f-name').value.trim();if(!n)return;
-  const w={id:'tmp-'+Date.now(),name:n,app:document.getElementById('f-app').value.trim(),type:document.getElementById('f-type').value,reg:document.getElementById('f-reg').value.trim(),year:parseInt(document.getElementById('f-year').value)||null,qty:parseInt(document.getElementById('f-qty').value)||1,cont:document.getElementById('f-cont').value,buy:parseFloat(document.getElementById('f-buy').value)||0,cur:parseFloat(document.getElementById('f-cur').value)||0,ap:document.getElementById('f-ap').value.trim(),certs:[...formCerts],notes:document.getElementById('f-notes').value.trim(),country:document.getElementById('f-country').value};
+  const w={id:'tmp-'+Date.now(),name:n,app:document.getElementById('f-app').value.trim(),type:document.getElementById('f-type').value,reg:document.getElementById('f-reg').value.trim(),year:parseInt(document.getElementById('f-year').value)||null,qty:parseInt(document.getElementById('f-qty').value)||1,cont:document.getElementById('f-cont').value,buy:parseFloat(document.getElementById('f-buy').value)||0,cur:parseFloat(document.getElementById('f-cur').value)||0,ap:document.getElementById('f-ap').value.trim(),certs:[...formCerts],notes:document.getElementById('f-notes').value.trim(),country:document.getElementById('f-country').value,caveId:document.getElementById('f-cave').value||null,clayette:document.getElementById('f-clayette').value.trim()};
   // Récupérer toutes les notes (standards + customs)
 const criticVals = getCriticValues();
 CRITICS.forEach(c=>{ w[c.k]=criticVals[c.k]||null; });
@@ -2501,6 +2666,7 @@ function renderWines(){
           <div class="wtags"><span class="tpill" style="background:${pb};color:${pt}">${shortType}</span>${w.ap?`<div class="apbadge">⏳ ${w.ap}</div>`:''}</div>
           ${pH}
           ${w.notes?`<div class="wnotes">${w.notes}</div>`:''}
+          ${w.caveId?`<div class="wine-location"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>${(caves.find(c=>c.id===w.caveId)||{name:'?'}).name}${w.clayette?` · Clayette ${w.clayette}`:''}</div>`:''}
         </div>
         <div class="wright"></div>
       </div>
@@ -3411,6 +3577,35 @@ window.onerror = function(){
   </div>
 </div>
 
+<div id="cave-form-backdrop" onclick="closeCaveForm()"></div>
+<div id="cave-form-modal">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+    <div style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--ink)" id="cave-form-title">Nouvelle cave</div>
+    <button onclick="closeCaveForm()" style="width:30px;height:30px;border-radius:50%;border:1px solid var(--ink5);background:none;cursor:pointer;font-size:16px;color:var(--ink4);display:flex;align-items:center;justify-content:center">✕</button>
+  </div>
+  <div class="fsec" style="margin-bottom:14px">
+    <div class="fsec-label" style="font-size:10px;font-weight:600;color:var(--ink4);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Photo</div>
+    <div id="cave-photo-zone" onclick="document.getElementById('cave-photo-input').click()" style="width:100%;height:140px;border:1.5px dashed var(--ink5);border-radius:var(--r);cursor:pointer;display:flex;align-items:center;justify-content:center;overflow:hidden;background:var(--ink6)">
+      <div id="cave-photo-inner" style="display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--ink4);font-size:12px">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        Cliquer pour ajouter une photo
+      </div>
+    </div>
+    <input type="file" id="cave-photo-input" accept="image/*" style="display:none" onchange="handleCavePhoto(this)">
+  </div>
+  <div style="display:flex;flex-direction:column;gap:12px">
+    <div class="fg"><label style="display:block;font-size:10px;font-weight:600;color:var(--ink4);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px">Nom *</label><input type="text" id="cf-name" placeholder="Cave garage" style="width:100%;height:38px;padding:0 12px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:Inter,sans-serif;outline:none;color:var(--ink)"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="fg"><label style="display:block;font-size:10px;font-weight:600;color:var(--ink4);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px">Capacité (bouteilles)</label><input type="number" id="cf-capacity" placeholder="200" min="1" style="width:100%;height:38px;padding:0 12px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:Inter,sans-serif;outline:none;color:var(--ink)"></div>
+      <div class="fg"><label style="display:block;font-size:10px;font-weight:600;color:var(--ink4);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px">Nombre de clayettes</label><input type="number" id="cf-clayettes" placeholder="10" min="1" style="width:100%;height:38px;padding:0 12px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:Inter,sans-serif;outline:none;color:var(--ink)"></div>
+    </div>
+    <div class="fg"><label style="display:block;font-size:10px;font-weight:600;color:var(--ink4);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px">Description</label><textarea id="cf-desc" placeholder="Cave enterrée, température 12°C..." style="width:100%;height:72px;padding:8px 12px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:Inter,sans-serif;outline:none;color:var(--ink);resize:vertical"></textarea></div>
+  </div>
+  <div style="display:flex;gap:10px;margin-top:18px">
+    <button onclick="saveCave()" style="flex:1;height:40px;background:var(--ruby);border:none;border-radius:var(--r);font-family:Inter,sans-serif;font-size:13px;font-weight:600;color:#fff;cursor:pointer" id="cf-submit">Enregistrer</button>
+    <button onclick="closeCaveForm()" style="height:40px;padding:0 18px;background:var(--surface);border:1.5px solid var(--ink5);border-radius:var(--r);font-family:Inter,sans-serif;font-size:13px;color:var(--ink3);cursor:pointer">Annuler</button>
+  </div>
+</div>
 <div id="edit-backdrop" onclick="closePanel('add-form')"></div>
 </body>
 </html>
