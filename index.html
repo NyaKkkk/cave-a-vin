@@ -422,6 +422,26 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
 .crop-btn-row button{flex:1;height:38px;border-radius:var(--r);font-size:13px;font-weight:500;cursor:pointer;border:1.5px solid var(--ink5);font-family:'Inter',sans-serif}
 .crop-btn-confirm{background:var(--ruby);color:#fff;border-color:var(--ruby)!important}
 .crop-btn-cancel{background:var(--surface);color:var(--ink)}
+/* AUTH SPLIT */
+.auth-split{display:flex;width:100%;height:100%}
+.auth-left{flex:1;background:#1c0a0d;display:flex;flex-direction:column;justify-content:center;padding:52px 48px;position:relative;overflow:hidden}
+.auth-left::before{content:'';position:absolute;top:-100px;right:-100px;width:360px;height:360px;border-radius:50%;background:rgba(139,26,42,.12);pointer-events:none}
+.auth-left::after{content:'';position:absolute;bottom:-80px;left:-80px;width:260px;height:260px;border-radius:50%;background:rgba(201,168,76,.07);pointer-events:none}
+.auth-brand{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;color:#fff;letter-spacing:10px;margin-bottom:4px}
+.auth-brand-sub{font-size:10px;color:#7a4a52;letter-spacing:4px;text-transform:uppercase;margin-bottom:56px}
+.auth-slides-wrap{position:relative;flex:1;min-height:260px}
+.auth-slide{position:absolute;inset:0;display:flex;flex-direction:column;gap:18px;opacity:0;transition:opacity .65s ease;pointer-events:none;justify-content:center}
+.auth-slide.active{opacity:1;pointer-events:auto}
+.auth-slide-tag{font-size:10px;font-weight:600;color:#8b1a2a;letter-spacing:2px;text-transform:uppercase;background:rgba(139,26,42,.18);padding:4px 12px;border-radius:20px;align-self:flex-start}
+.auth-slide-icon{width:56px;height:56px;color:#c9a84c;flex-shrink:0}
+.auth-slide-title{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:600;color:#fff;line-height:1.15}
+.auth-slide-desc{font-size:14px;color:#b89098;line-height:1.7;max-width:340px}
+.auth-dots{display:flex;gap:8px;padding-top:40px}
+.auth-dot{width:6px;height:6px;border-radius:3px;background:rgba(201,168,76,.25);cursor:pointer;transition:all .4s}
+.auth-dot.active{background:#c9a84c;width:22px}
+.auth-right{flex:1;background:#faf6f3;display:flex;align-items:center;justify-content:center;padding:40px;overflow-y:auto}
+.auth-form-card{width:100%;max-width:380px;background:#fff;border-radius:16px;padding:40px;box-shadow:0 4px 32px rgba(28,10,13,.09)}
+@media(max-width:720px){.auth-left{display:none}.auth-right{flex:1;background:#1c0a0d}.auth-form-card{box-shadow:0 4px 24px rgba(0,0,0,.3)}}
 .loading-screen{position:fixed;inset:0;background:var(--ink);display:flex;align-items:center;justify-content:center;z-index:999;flex-direction:column;gap:16px}
 .loading-spinner{width:32px;height:32px;border:2px solid rgba(201,168,76,.3);border-top-color:var(--gold2);border-radius:50%;animation:spin .7s linear infinite}
 .loading-text{font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--gold3);letter-spacing:2px}
@@ -564,34 +584,111 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
 </div>
 
 <!-- AUTH -->
-<div id="auth-screen" style="position:fixed;inset:0;background:#1c0a0d;display:none;align-items:center;justify-content:center;z-index:9998;flex-direction:column;gap:24px">
-  <div style="text-align:center">
-    <div style="font-family:'Cormorant Garamond',serif;font-size:42px;font-weight:300;color:#fff;letter-spacing:10px">CAVE</div>
-    <div style="font-size:10px;color:#b89098;letter-spacing:4px;text-transform:uppercase;margin-top:4px">à vin · Sommelier numérique</div>
-  </div>
-  <div style="background:#fff;border-radius:12px;padding:40px;width:100%;max-width:400px;box-shadow:0 8px 40px rgba(0,0,0,.4)">
-    <div style="display:flex;border-bottom:1px solid #e8d8dc;margin-bottom:24px">
-      <div id="tab-login" style="flex:1;padding:10px;text-align:center;font-size:13px;font-weight:500;cursor:pointer;border-bottom:2px solid #8b1a2a;color:#8b1a2a" onclick="switchAuthTab('login')">Connexion</div>
-      <div id="tab-signup" style="flex:1;padding:10px;text-align:center;font-size:13px;font-weight:500;cursor:pointer;border-bottom:2px solid transparent;color:#b89098" onclick="switchAuthTab('signup')">Inscription</div>
-    </div>
-    <div id="auth-login">
-      <div style="margin-bottom:14px"><label style="display:block;font-size:10px;font-weight:600;color:#b89098;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px">Email</label><input type="email" id="login-email" placeholder="votre@email.com" style="width:100%;height:40px;padding:0 12px;border:1.5px solid #e8d8dc;border-radius:8px;font-size:13px;outline:none;font-family:Inter,sans-serif"></div>
-      <div style="margin-bottom:14px"><label style="display:block;font-size:10px;font-weight:600;color:#b89098;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px">Mot de passe</label><input type="password" id="login-pass" placeholder="••••••••" style="width:100%;height:40px;padding:0 12px;border:1.5px solid #e8d8dc;border-radius:8px;font-size:13px;outline:none;font-family:Inter,sans-serif" onkeydown="if(event.key==='Enter')doLogin()"></div>
-      <div style="text-align:right;margin-bottom:12px"><span onclick="doForgotPassword()" style="font-size:12px;color:#8b1a2a;cursor:pointer;text-decoration:underline;font-family:Inter,sans-serif">Mot de passe oublié ?</span></div>
-      <button onclick="doLogin()" style="width:100%;height:42px;background:#8b1a2a;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:Inter,sans-serif">Se connecter</button>
-    </div>
-    <div id="auth-signup" style="display:none">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
-        <div><label style="display:block;font-size:10px;font-weight:600;color:#b89098;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px">Prénom</label><input type="text" id="signup-firstname" placeholder="Thomas" style="width:100%;height:38px;padding:0 10px;border:1.5px solid #e8d8dc;border-radius:8px;font-size:13px;outline:none;font-family:Inter,sans-serif"></div>
-        <div><label style="display:block;font-size:10px;font-weight:600;color:#b89098;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px">Nom</label><input type="text" id="signup-lastname" placeholder="Dupont" style="width:100%;height:38px;padding:0 10px;border:1.5px solid #e8d8dc;border-radius:8px;font-size:13px;outline:none;font-family:Inter,sans-serif"></div>
+<div id="auth-screen" style="position:fixed;inset:0;display:none;z-index:9998">
+  <div class="auth-split">
+
+    <!-- GAUCHE : diaporama -->
+    <div class="auth-left">
+      <div class="auth-brand">CAVE</div>
+      <div class="auth-brand-sub">à vin · Sommelier numérique</div>
+      <div class="auth-slides-wrap">
+
+        <div class="auth-slide active">
+          <div class="auth-slide-tag">Collection</div>
+          <svg class="auth-slide-icon" viewBox="0 0 56 56" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 6h8v8c6 2.5 8 8 8 14v20a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V28c0-6 2-11.5 8-14V6Z"/>
+            <line x1="6" y1="34" x2="30" y2="34"/>
+            <path d="M34 10h7v6c4.5 2 6 6.5 6 12v18a2 2 0 0 1-2 2H34"/>
+            <line x1="34" y1="30" x2="47" y2="30"/>
+          </svg>
+          <div class="auth-slide-title">Votre cave,<br>digitalisée</div>
+          <div class="auth-slide-desc">Gérez votre stock, suivez vos millésimes et gardez un œil sur la valeur totale de votre collection.</div>
+        </div>
+
+        <div class="auth-slide">
+          <div class="auth-slide-tag">Dégustation</div>
+          <svg class="auth-slide-icon" viewBox="0 0 56 56" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 6h24l-4 18a12 12 0 0 1-24 0Z"/>
+            <line x1="28" y1="36" x2="28" y2="50"/>
+            <line x1="18" y1="50" x2="38" y2="50"/>
+            <line x1="12" y1="16" x2="44" y2="16"/>
+            <circle cx="44" cy="10" r="2" fill="currentColor" stroke="none"/>
+            <circle cx="48" cy="18" r="1.5" fill="currentColor" stroke="none"/>
+            <circle cx="40" cy="5"  r="1.5" fill="currentColor" stroke="none"/>
+          </svg>
+          <div class="auth-slide-title">Notes de<br>dégustation</div>
+          <div class="auth-slide-desc">Enregistrez vos impressions, notez vos vins et retrouvez facilement vos coups de cœur.</div>
+        </div>
+
+        <div class="auth-slide">
+          <div class="auth-slide-tag">Statistiques</div>
+          <svg class="auth-slide-icon" viewBox="0 0 56 56" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="4"  y1="50" x2="52" y2="50"/>
+            <rect x="6"  y="32" width="10" height="18" rx="2"/>
+            <rect x="23" y="22" width="10" height="28" rx="2"/>
+            <rect x="40" y="12" width="10" height="38" rx="2"/>
+            <polyline points="11,24 28,14 45,6"/>
+            <circle cx="28" cy="14" r="2.5" fill="currentColor" stroke="none"/>
+            <circle cx="11" cy="24" r="2"   fill="currentColor" stroke="none"/>
+            <circle cx="45" cy="6"  r="2"   fill="currentColor" stroke="none"/>
+          </svg>
+          <div class="auth-slide-title">Analyses &<br>statistiques</div>
+          <div class="auth-slide-desc">Visualisez la composition de votre cave, suivez la valeur et optimisez vos achats.</div>
+        </div>
+
+        <div class="auth-slide">
+          <div class="auth-slide-tag">Souhaits</div>
+          <svg class="auth-slide-icon" viewBox="0 0 56 56" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M28 48S8 36 8 20a11 11 0 0 1 20-6.2A11 11 0 0 1 48 20C48 36 28 48 28 48Z"/>
+            <line x1="20" y1="26" x2="36" y2="26"/>
+            <line x1="20" y1="32" x2="32" y2="32"/>
+            <line x1="20" y1="20" x2="34" y2="20"/>
+          </svg>
+          <div class="auth-slide-title">Liste de<br>souhaits</div>
+          <div class="auth-slide-desc">Gardez une trace des vins que vous souhaitez acquérir et ne ratez plus aucune pépite.</div>
+        </div>
+
       </div>
-      <div style="margin-bottom:10px"><label style="display:block;font-size:10px;font-weight:600;color:#b89098;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px">Nom de la cave</label><input type="text" id="signup-cave" placeholder="Cave de Thomas" style="width:100%;height:38px;padding:0 12px;border:1.5px solid #e8d8dc;border-radius:8px;font-size:13px;outline:none;font-family:Inter,sans-serif"></div>
-      <div style="margin-bottom:10px"><label style="display:block;font-size:10px;font-weight:600;color:#b89098;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px">Email</label><input type="email" id="signup-email" placeholder="votre@email.com" style="width:100%;height:38px;padding:0 12px;border:1.5px solid #e8d8dc;border-radius:8px;font-size:13px;outline:none;font-family:Inter,sans-serif"></div>
-      <div style="margin-bottom:14px"><label style="display:block;font-size:10px;font-weight:600;color:#b89098;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px">Mot de passe</label><input type="password" id="signup-pass" placeholder="Min. 6 caractères" style="width:100%;height:38px;padding:0 12px;border:1.5px solid #e8d8dc;border-radius:8px;font-size:13px;outline:none;font-family:Inter,sans-serif" onkeydown="if(event.key==='Enter')doSignup()"></div>
-      <button onclick="doSignup()" style="width:100%;height:42px;background:#8b1a2a;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:Inter,sans-serif">Créer mon compte</button>
+      <div class="auth-dots">
+        <span class="auth-dot active" onclick="_goAuthSlide(0)"></span>
+        <span class="auth-dot" onclick="_goAuthSlide(1)"></span>
+        <span class="auth-dot" onclick="_goAuthSlide(2)"></span>
+        <span class="auth-dot" onclick="_goAuthSlide(3)"></span>
+      </div>
     </div>
-    <div id="auth-err" style="font-size:12px;color:#8b1a2a;margin-top:10px;text-align:center;min-height:18px"></div>
-    <div id="auth-msg" style="font-size:12px;color:#2a7a2a;margin-top:6px;text-align:center;min-height:18px"></div>
+
+    <!-- DROITE : formulaire -->
+    <div class="auth-right">
+      <div class="auth-form-card">
+        <div style="margin-bottom:28px">
+          <div style="font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:600;color:#1c0a0d;line-height:1.2">Bienvenue</div>
+          <div style="font-size:13px;color:#b89098;margin-top:6px">Connectez-vous à votre cave à vin</div>
+        </div>
+        <div style="display:flex;border-bottom:1px solid #e8d8dc;margin-bottom:24px">
+          <div id="tab-login" style="flex:1;padding:10px;text-align:center;font-size:13px;font-weight:500;cursor:pointer;border-bottom:2px solid #8b1a2a;color:#8b1a2a" onclick="switchAuthTab('login')">Connexion</div>
+          <div id="tab-signup" style="flex:1;padding:10px;text-align:center;font-size:13px;font-weight:500;cursor:pointer;border-bottom:2px solid transparent;color:#b89098" onclick="switchAuthTab('signup')">Inscription</div>
+        </div>
+        <div id="auth-login">
+          <div style="margin-bottom:14px"><label style="display:block;font-size:10px;font-weight:600;color:#b89098;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px">Email</label><input type="email" id="login-email" placeholder="votre@email.com" style="width:100%;height:40px;padding:0 12px;border:1.5px solid #e8d8dc;border-radius:8px;font-size:13px;outline:none;font-family:Inter,sans-serif"></div>
+          <div style="margin-bottom:6px"><label style="display:block;font-size:10px;font-weight:600;color:#b89098;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px">Mot de passe</label><input type="password" id="login-pass" placeholder="••••••••" style="width:100%;height:40px;padding:0 12px;border:1.5px solid #e8d8dc;border-radius:8px;font-size:13px;outline:none;font-family:Inter,sans-serif" onkeydown="if(event.key==='Enter')doLogin()"></div>
+          <div style="text-align:right;margin-bottom:16px"><span onclick="doForgotPassword()" style="font-size:12px;color:#8b1a2a;cursor:pointer;text-decoration:underline;font-family:Inter,sans-serif">Mot de passe oublié ?</span></div>
+          <button onclick="doLogin()" style="width:100%;height:42px;background:#8b1a2a;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:Inter,sans-serif">Se connecter</button>
+        </div>
+        <div id="auth-signup" style="display:none">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+            <div><label style="display:block;font-size:10px;font-weight:600;color:#b89098;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px">Prénom</label><input type="text" id="signup-firstname" placeholder="Thomas" style="width:100%;height:38px;padding:0 10px;border:1.5px solid #e8d8dc;border-radius:8px;font-size:13px;outline:none;font-family:Inter,sans-serif"></div>
+            <div><label style="display:block;font-size:10px;font-weight:600;color:#b89098;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px">Nom</label><input type="text" id="signup-lastname" placeholder="Dupont" style="width:100%;height:38px;padding:0 10px;border:1.5px solid #e8d8dc;border-radius:8px;font-size:13px;outline:none;font-family:Inter,sans-serif"></div>
+          </div>
+          <div style="margin-bottom:10px"><label style="display:block;font-size:10px;font-weight:600;color:#b89098;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px">Nom de la cave</label><input type="text" id="signup-cave" placeholder="Cave de Thomas" style="width:100%;height:38px;padding:0 12px;border:1.5px solid #e8d8dc;border-radius:8px;font-size:13px;outline:none;font-family:Inter,sans-serif"></div>
+          <div style="margin-bottom:10px"><label style="display:block;font-size:10px;font-weight:600;color:#b89098;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px">Email</label><input type="email" id="signup-email" placeholder="votre@email.com" style="width:100%;height:38px;padding:0 12px;border:1.5px solid #e8d8dc;border-radius:8px;font-size:13px;outline:none;font-family:Inter,sans-serif"></div>
+          <div style="margin-bottom:14px"><label style="display:block;font-size:10px;font-weight:600;color:#b89098;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px">Mot de passe</label><input type="password" id="signup-pass" placeholder="Min. 6 caractères" style="width:100%;height:38px;padding:0 12px;border:1.5px solid #e8d8dc;border-radius:8px;font-size:13px;outline:none;font-family:Inter,sans-serif" onkeydown="if(event.key==='Enter')doSignup()"></div>
+          <button onclick="doSignup()" style="width:100%;height:42px;background:#8b1a2a;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:Inter,sans-serif">Créer mon compte</button>
+        </div>
+        <div id="auth-err" style="font-size:12px;color:#8b1a2a;margin-top:10px;text-align:center;min-height:18px"></div>
+        <div id="auth-msg" style="font-size:12px;color:#2a7a2a;margin-top:6px;text-align:center;min-height:18px"></div>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -833,12 +930,26 @@ let db = null;
 let auth = null;
 let currentUser = null;
 
+// ── AUTH SLIDESHOW ──
+let _authSlideIdx = 0, _authSlideTimer = null;
+function _renderAuthSlide(){
+  document.querySelectorAll('.auth-slide').forEach((el,i)=>el.classList.toggle('active',i===_authSlideIdx));
+  document.querySelectorAll('.auth-dot').forEach((el,i)=>el.classList.toggle('active',i===_authSlideIdx));
+}
+function _startAuthSlideshow(){
+  clearInterval(_authSlideTimer);
+  _authSlideTimer = setInterval(()=>{ _authSlideIdx=(_authSlideIdx+1)%4; _renderAuthSlide(); }, 4500);
+}
+function _goAuthSlide(n){ _authSlideIdx=n; _renderAuthSlide(); _startAuthSlideshow(); }
+
 // ── HELPERS UI ──
 function _showScreen(screen){
   document.getElementById('loading-screen').style.display = screen==='loading' ? 'flex' : 'none';
   document.getElementById('auth-screen').style.display   = screen==='auth'    ? 'flex' : 'none';
   document.querySelector('.app').style.display           = screen==='app'     ? ''     : 'none';
   document.getElementById('user-info').style.display     = screen==='app'     ? 'flex' : 'none';
+  if(screen==='auth') _startAuthSlideshow();
+  else clearInterval(_authSlideTimer);
 }
 
 // ── AUTH UI ──
