@@ -1656,6 +1656,7 @@ let _cropDragging = false, _cropDragSX, _cropDragSY, _cropDragCX, _cropDragCY;
 
 function handleProfilePhoto(inp){
   const f = inp.files[0]; if(!f) return;
+  inp.value = '';
   const reader = new FileReader();
   reader.onload = e => {
     _cropX = 0; _cropY = 0; _cropZoom = 1;
