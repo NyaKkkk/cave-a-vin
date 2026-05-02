@@ -55,7 +55,11 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);font-s
 .content{padding:clamp(14px,3vw,26px) clamp(16px,4vw,36px)}
 
 /* TOOLBAR */
-.toolbar{display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap}
+.toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;position:sticky;top:calc(clamp(54px,8vw,68px) + 43px);z-index:148;background:var(--bg);padding-top:10px;padding-bottom:10px;margin-left:calc(-1 * clamp(16px,4vw,36px));margin-right:calc(-1 * clamp(16px,4vw,36px));padding-left:clamp(16px,4vw,36px);padding-right:clamp(16px,4vw,36px)}
+/* EDIT MODAL */
+#edit-backdrop{display:none;position:fixed;inset:0;background:rgba(28,10,13,.45);z-index:498}
+#edit-backdrop.open{display:block}
+body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50%;transform:translateX(-50%);z-index:499;max-width:840px;width:calc(100% - 40px);max-height:calc(100vh - clamp(70px,9vw,90px) - 20px);overflow-y:auto;margin:0;box-shadow:0 8px 40px rgba(28,10,13,.25)}
 .search-wrap{position:relative;flex:1;min-width:160px;display:flex;align-items:center}
 .search-wrap svg{position:absolute;left:11px;width:15px;height:15px;stroke:var(--ink4);fill:none;stroke-width:2;stroke-linecap:round;pointer-events:none}
 .search-inp{width:100%;height:40px;padding-left:36px;padding-right:12px;padding-top:0;padding-bottom:0;border:1.5px solid var(--ink5);border-radius:var(--r);background:var(--surface);font-family:'Inter',sans-serif;font-size:13px;color:var(--ink);outline:none;transition:border-color .2s}
@@ -1696,7 +1700,7 @@ function clearCritics(){
   if(container)container.innerHTML='';
 }
 const VALID_TYPES=Object.keys(TC);
-let activeTypes=[],statFilter='all',_editScrollY=null;
+let activeTypes=[],statFilter='all';
 let advFilters={countries:[],regions:[],certs:[],yearMin:'',yearMax:'',priceMin:'',priceMax:'',qtyMin:'',includeNV:true};
 let chartM=null,chartR=null,waiResult=null,wishPhotoB64=null,aiResult=null,currentPhotoB64=null;
 
@@ -1732,7 +1736,7 @@ function togglePanel(id){
 }
 function closePanel(id){
   document.getElementById(id).classList.remove('visible');
-  if(id==='add-form'&&_editScrollY!=null){const y=_editScrollY;_editScrollY=null;requestAnimationFrame(()=>window.scrollTo({top:y,behavior:'smooth'}));}
+  if(id==='add-form'){document.getElementById('edit-backdrop').classList.remove('open');document.body.classList.remove('edit-mode');}
 }
 
 
@@ -2307,8 +2311,8 @@ function editWine(id){
   document.getElementById('add-form').dataset.editId=id;
   const bsub=document.getElementById('add-form').querySelector('.bsub');
   if(bsub){bsub.textContent='Enregistrer les modifications';bsub.onclick=function(e){e.preventDefault();saveEdit(id);};}
-  _editScrollY=window.scrollY;
-  window.scrollTo({top:0,behavior:'smooth'});
+  document.getElementById('edit-backdrop').classList.add('open');
+  document.body.classList.add('edit-mode');
   const inner=document.getElementById('form-photo-inner');
   const wineImg=wines.find(x=>x.id===id);
   if(inner&&wineImg&&wineImg.img_url){inner.innerHTML=`<img src="${wineImg.img_url}" class="photo-upload-preview"><span style="font-size:11px;color:var(--ink4)">Cliquer pour changer</span>`;formPhotoData=null;}
@@ -3407,5 +3411,6 @@ window.onerror = function(){
   </div>
 </div>
 
+<div id="edit-backdrop" onclick="closePanel('add-form')"></div>
 </body>
 </html>
