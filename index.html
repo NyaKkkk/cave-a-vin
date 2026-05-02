@@ -577,6 +577,7 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
     <div id="auth-login">
       <div style="margin-bottom:14px"><label style="display:block;font-size:10px;font-weight:600;color:#b89098;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px">Email</label><input type="email" id="login-email" placeholder="votre@email.com" style="width:100%;height:40px;padding:0 12px;border:1.5px solid #e8d8dc;border-radius:8px;font-size:13px;outline:none;font-family:Inter,sans-serif"></div>
       <div style="margin-bottom:14px"><label style="display:block;font-size:10px;font-weight:600;color:#b89098;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px">Mot de passe</label><input type="password" id="login-pass" placeholder="••••••••" style="width:100%;height:40px;padding:0 12px;border:1.5px solid #e8d8dc;border-radius:8px;font-size:13px;outline:none;font-family:Inter,sans-serif" onkeydown="if(event.key==='Enter')doLogin()"></div>
+      <div style="text-align:right;margin-bottom:12px"><span onclick="doForgotPassword()" style="font-size:12px;color:#8b1a2a;cursor:pointer;text-decoration:underline;font-family:Inter,sans-serif">Mot de passe oublié ?</span></div>
       <button onclick="doLogin()" style="width:100%;height:42px;background:#8b1a2a;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:Inter,sans-serif">Se connecter</button>
     </div>
     <div id="auth-signup" style="display:none">
@@ -861,6 +862,21 @@ async function doLogin(){
   errEl.textContent='Connexion...';
   try{
     await firebase.auth().signInWithEmailAndPassword(email, pass);
+  }catch(e){
+    errEl.textContent = e.message;
+  }
+}
+
+async function doForgotPassword(){
+  const errEl = document.getElementById('auth-err');
+  const msgEl = document.getElementById('auth-msg');
+  errEl.textContent = ''; msgEl.textContent = '';
+  const email = document.getElementById('login-email').value.trim();
+  if(!email){ errEl.textContent = 'Entrez votre email ci-dessus d\'abord.'; return; }
+  if(!auth){ errEl.textContent = 'Firebase en cours de chargement...'; return; }
+  try{
+    await firebase.auth().sendPasswordResetEmail(email);
+    msgEl.textContent = 'Email de réinitialisation envoyé !';
   }catch(e){
     errEl.textContent = e.message;
   }
