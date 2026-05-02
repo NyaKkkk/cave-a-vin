@@ -503,7 +503,7 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
   .wcmain{display:flex;flex-direction:column}
   .tbar{width:100%;height:4px;align-self:auto;flex-shrink:0}
   .wimg-wrap{width:100%;height:auto;margin:0;justify-content:center;align-self:auto;overflow:hidden;flex-direction:column;border-bottom:1px solid var(--ink5)}
-  .wimg-wrap img{width:auto;max-width:100%;height:150px;object-fit:contain}
+  .wimg-wrap img{width:auto;max-width:100%;height:90px;object-fit:contain}
   .wimg-placeholder{min-height:80px;width:100%}
   .scores-row{position:static;flex-direction:row;flex-wrap:wrap;justify-content:center;padding:4px 8px;gap:4px;left:auto;top:auto}
   .cert-row{position:static;flex-direction:row;flex-wrap:wrap;justify-content:center;width:auto;right:auto;bottom:auto;padding:4px 8px;gap:4px}
@@ -523,7 +523,10 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
   /* Caves */
   .caves-grid{grid-template-columns:1fr}
   /* Toolbar */
-  .btn-add{flex:1;justify-content:center}
+  .toolbar .btn-add{flex:1;justify-content:center}
+  /* Tab headers */
+  .tab-header{flex-direction:column;align-items:flex-start;gap:6px}
+  .tab-header > div{display:flex;align-items:center}
   /* Stats */
   .sgrid{grid-template-columns:1fr}
   .import-modes{grid-template-columns:1fr}
