@@ -1696,7 +1696,7 @@ function clearCritics(){
   if(container)container.innerHTML='';
 }
 const VALID_TYPES=Object.keys(TC);
-let activeTypes=[],statFilter='all';
+let activeTypes=[],statFilter='all',_editScrollY=null;
 let advFilters={countries:[],regions:[],certs:[],yearMin:'',yearMax:'',priceMin:'',priceMax:'',qtyMin:'',includeNV:true};
 let chartM=null,chartR=null,waiResult=null,wishPhotoB64=null,aiResult=null,currentPhotoB64=null;
 
@@ -1730,7 +1730,10 @@ function togglePanel(id){
   document.querySelectorAll('.panel').forEach(x=>x.classList.remove('visible'));
   if(!was)p.classList.add('visible');
 }
-function closePanel(id){document.getElementById(id).classList.remove('visible')}
+function closePanel(id){
+  document.getElementById(id).classList.remove('visible');
+  if(id==='add-form'&&_editScrollY!=null){const y=_editScrollY;_editScrollY=null;requestAnimationFrame(()=>window.scrollTo({top:y,behavior:'smooth'}));}
+}
 
 
 function setSidebarTypeEl(el){setSidebarType(el,el.dataset.type);}
@@ -2304,6 +2307,7 @@ function editWine(id){
   document.getElementById('add-form').dataset.editId=id;
   const bsub=document.getElementById('add-form').querySelector('.bsub');
   if(bsub){bsub.textContent='Enregistrer les modifications';bsub.onclick=function(e){e.preventDefault();saveEdit(id);};}
+  _editScrollY=window.scrollY;
   window.scrollTo({top:0,behavior:'smooth'});
   const inner=document.getElementById('form-photo-inner');
   const wineImg=wines.find(x=>x.id===id);
