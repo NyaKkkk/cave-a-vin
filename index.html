@@ -871,7 +871,7 @@ async function loadFromFirebase(){
     wines  = wSnap.docs.map(d=>({id:d.id, ...d.data()}));
     wishes = whSnap.docs.map(d=>({id:d.id, ...d.data()}));
     activeTypes = []; // reset filtre
-    renderWines(); updateStats(); renderWishes(); populateFilterDropdowns();
+    populateFilterDropdowns(); renderWines(); updateStats(); renderWishes();
   }catch(e){ console.error('loadFromFirebase:', e); }
 }
 
