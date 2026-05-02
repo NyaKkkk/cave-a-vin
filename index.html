@@ -500,13 +500,13 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
 /* ── MOBILE ── */
 @media(max-width:560px){
   /* Cartes vin : layout vertical */
-  .wimg-wrap{width:60px;height:auto;margin:6px 0 6px 4px;flex-shrink:0;align-self:center}
+  .wimg-wrap{width:60px;height:auto;margin:6px 0 6px 4px;flex-shrink:0;align-self:center;overflow:hidden}
   .wimg-wrap img{width:52px;height:80px;object-fit:contain}
   .wimg-placeholder{width:60px;min-height:70px;padding:4px}
   .wbody{padding:8px 10px}
   .wname{font-size:14px}
-  .scores-row{left:-38px;top:4px}
-  .cert-row{right:-8px;width:22px}
+  .scores-row{display:none}
+  .cert-row{display:none}
   .wnotes{white-space:normal;-webkit-line-clamp:2;display:-webkit-box;-webkit-box-orient:vertical}
   /* Cartes ventes */
   .vente-card{grid-template-columns:1fr;gap:6px;padding:14px 16px}
