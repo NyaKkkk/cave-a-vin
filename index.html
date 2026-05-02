@@ -500,15 +500,13 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
 /* ── MOBILE ── */
 @media(max-width:560px){
   /* Cartes vin : layout vertical */
-  .wcmain{display:flex;flex-direction:column}
-  .tbar{width:100%;height:4px;align-self:auto;flex-shrink:0}
-  .wimg-wrap{width:100%;height:auto;margin:0;justify-content:center;align-self:auto;overflow:hidden;flex-direction:column;border-bottom:1px solid var(--ink5)}
-  .wimg-wrap img{width:auto;max-width:100%;height:90px;object-fit:contain}
-  .wimg-placeholder{min-height:80px;width:100%}
-  .scores-row{position:static;flex-direction:row;flex-wrap:wrap;justify-content:center;padding:4px 8px;gap:4px;left:auto;top:auto}
-  .cert-row{position:static;flex-direction:row;flex-wrap:wrap;justify-content:center;width:auto;right:auto;bottom:auto;padding:4px 8px;gap:4px}
-  .wbody{border-left:none;padding:8px 12px}
-  .wname{white-space:normal;line-height:1.3}
+  .wimg-wrap{width:60px;height:auto;margin:6px 0 6px 4px;flex-shrink:0;align-self:center}
+  .wimg-wrap img{width:52px;height:80px;object-fit:contain}
+  .wimg-placeholder{width:60px;min-height:70px;padding:4px}
+  .wbody{padding:8px 10px}
+  .wname{font-size:14px}
+  .scores-row{left:-38px;top:4px}
+  .cert-row{right:-8px;width:22px}
   .wnotes{white-space:normal;-webkit-line-clamp:2;display:-webkit-box;-webkit-box-orient:vertical}
   /* Cartes ventes */
   .vente-card{grid-template-columns:1fr;gap:6px;padding:14px 16px}
@@ -525,8 +523,8 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
   /* Toolbar */
   .toolbar .btn-add{flex:1;justify-content:center}
   /* Tab headers */
-  .tab-header{flex-direction:column;align-items:flex-start;gap:6px}
-  .tab-header > div{display:flex;align-items:center}
+  .tab-header{flex-wrap:nowrap;align-items:center}
+  .tab-title{font-size:16px}
   /* Stats */
   .sgrid{grid-template-columns:1fr}
   .import-modes{grid-template-columns:1fr}
