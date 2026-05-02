@@ -500,13 +500,15 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
 /* ── MOBILE ── */
 @media(max-width:560px){
   /* Cartes vin : layout vertical */
-  .wimg-wrap{width:60px;height:auto;margin:6px 0 6px 4px;flex-shrink:0;align-self:center;overflow:hidden}
+  .wcmain{grid-template-columns:4px 72px minmax(0,1fr)}
+  .wimg-wrap{width:64px;height:auto;margin:6px 0 6px 4px;flex-shrink:0;align-self:flex-start;overflow:visible;flex-direction:column;align-items:center;justify-content:flex-start;gap:2px}
   .wimg-wrap img{width:52px;height:80px;object-fit:contain}
   .wimg-placeholder{width:60px;min-height:70px;padding:4px}
   .wbody{padding:8px 10px}
   .wname{font-size:14px}
-  .scores-row{display:none}
-  .cert-row{display:none}
+  .scores-row{position:static;flex-direction:row;flex-wrap:wrap;justify-content:center;gap:2px}
+  .cert-row{position:static;flex-direction:row;flex-wrap:wrap;justify-content:center;gap:2px;width:auto}
+  .cb-raisonné,.cb-lutte{width:60px;font-size:8px}
   .wnotes{white-space:normal;-webkit-line-clamp:2;display:-webkit-box;-webkit-box-orient:vertical}
   /* Cartes ventes */
   .vente-card{grid-template-columns:1fr;gap:6px;padding:14px 16px}
