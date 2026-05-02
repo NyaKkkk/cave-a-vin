@@ -405,6 +405,21 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
 .profile-fg input:focus,.profile-fg select:focus{border-color:var(--ruby)}
 .profile-save-btn{width:100%;height:40px;background:var(--ruby);color:#fff;border:none;border-radius:var(--r);font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;margin-top:20px;transition:background .2s}
 .profile-save-btn:hover{background:#6d1420}
+/* CROP PHOTO */
+#photo-crop-modal{position:fixed;inset:0;background:rgba(28,10,13,.82);z-index:601;display:none;align-items:center;justify-content:center}
+#photo-crop-modal.open{display:flex}
+.crop-modal-box{background:var(--surface);border-radius:var(--r2);padding:24px;display:flex;flex-direction:column;align-items:center;gap:16px;box-shadow:0 8px 40px rgba(0,0,0,.4)}
+.crop-modal-title{font-size:15px;font-weight:600;color:var(--ink);align-self:flex-start}
+#crop-container{position:relative;width:280px;height:280px;overflow:hidden;border-radius:50%;cursor:grab;background:#111;user-select:none;border:2px solid rgba(201,168,76,.6);flex-shrink:0;touch-action:none}
+#crop-container.dragging{cursor:grabbing}
+#crop-img{position:absolute;pointer-events:none;-webkit-user-drag:none;user-select:none}
+.crop-zoom-row{display:flex;align-items:center;gap:10px;width:280px}
+.crop-zoom-row label{font-size:12px;color:var(--ink3);white-space:nowrap}
+.crop-zoom-row input[type=range]{flex:1;accent-color:var(--ruby)}
+.crop-btn-row{display:flex;gap:10px;width:280px}
+.crop-btn-row button{flex:1;height:38px;border-radius:var(--r);font-size:13px;font-weight:500;cursor:pointer;border:1.5px solid var(--ink5);font-family:'Inter',sans-serif}
+.crop-btn-confirm{background:var(--ruby);color:#fff;border-color:var(--ruby)!important}
+.crop-btn-cancel{background:var(--surface);color:var(--ink)}
 .loading-screen{position:fixed;inset:0;background:var(--ink);display:flex;align-items:center;justify-content:center;z-index:999;flex-direction:column;gap:16px}
 .loading-spinner{width:32px;height:32px;border:2px solid rgba(201,168,76,.3);border-top-color:var(--gold2);border-radius:50%;animation:spin .7s linear infinite}
 .loading-text{font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--gold3);letter-spacing:2px}
@@ -1609,7 +1624,6 @@ function openProfile(){
   document.getElementById('pf-cave').value        = p.cave||'';
   document.getElementById('pf-email').value       = p.email||currentUser?.email||'';
   document.getElementById('pf-currency').value   = p.currency||'€';
-  document.getElementById('pf-capacity').value   = p.capacity||'';
   document.getElementById('pf-objective').value  = p.objective||'plaisir';
   document.getElementById('pf-region').value     = p.region||'';
   document.getElementById('pf-noteScale').value  = String(p.noteScale||100);
@@ -1632,28 +1646,113 @@ function closeProfile(){
 }
 
 let profilePhotoData = null;
+
+// ── PHOTO CROP ──
+let _cropX = 0, _cropY = 0, _cropZoom = 1, _cropFitScale = 1;
+const _CROP_SIZE = 280;
+let _cropDragging = false, _cropDragSX, _cropDragSY, _cropDragCX, _cropDragCY;
+
 function handleProfilePhoto(inp){
   const f = inp.files[0]; if(!f) return;
-  const r = new FileReader();
-  r.onload = e => {
-    const img = new Image();
+  const reader = new FileReader();
+  reader.onload = e => {
+    _cropX = 0; _cropY = 0; _cropZoom = 1;
+    document.getElementById('crop-zoom-input').value = 1;
+    const img = document.getElementById('crop-img');
     img.onload = () => {
-      const canvas = document.createElement('canvas');
-      const maxSize = 256;
-      let w = img.width, h = img.height;
-      if(w > h){ if(w > maxSize){ h = Math.round(h * maxSize / w); w = maxSize; } }
-      else      { if(h > maxSize){ w = Math.round(w * maxSize / h); h = maxSize; } }
-      canvas.width = w; canvas.height = h;
-      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-      profilePhotoData = canvas.toDataURL('image/jpeg', 0.75);
-      document.getElementById('profile-avatar-preview').innerHTML =
-        `<img src="${profilePhotoData}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
-      const big = document.getElementById('profile-avatar-big');
-      if(big) big.style.display = 'none';
+      _cropFitScale = Math.max(_CROP_SIZE / img.naturalWidth, _CROP_SIZE / img.naturalHeight);
+      _applyCropTransform();
     };
     img.src = e.target.result;
+    document.getElementById('photo-crop-modal').classList.add('open');
   };
-  r.readAsDataURL(f);
+  reader.readAsDataURL(f);
+}
+
+function closeCropModal(){
+  document.getElementById('photo-crop-modal').classList.remove('open');
+}
+
+function _applyCropTransform(){
+  const img = document.getElementById('crop-img');
+  const scale = _cropFitScale * _cropZoom;
+  const w = img.naturalWidth * scale;
+  const h = img.naturalHeight * scale;
+  const maxDx = Math.max(0, (w - _CROP_SIZE) / 2);
+  const maxDy = Math.max(0, (h - _CROP_SIZE) / 2);
+  _cropX = Math.max(-maxDx, Math.min(maxDx, _cropX));
+  _cropY = Math.max(-maxDy, Math.min(maxDy, _cropY));
+  img.style.width  = w + 'px';
+  img.style.height = h + 'px';
+  img.style.left   = ((_CROP_SIZE - w) / 2 + _cropX) + 'px';
+  img.style.top    = ((_CROP_SIZE - h) / 2 + _cropY) + 'px';
+}
+
+function _onCropZoom(){
+  _cropZoom = parseFloat(document.getElementById('crop-zoom-input').value);
+  _applyCropTransform();
+}
+
+function _onCropMouseDown(e){
+  _cropDragging = true;
+  _cropDragSX = e.clientX; _cropDragSY = e.clientY;
+  _cropDragCX = _cropX;    _cropDragCY = _cropY;
+  document.getElementById('crop-container').classList.add('dragging');
+  e.preventDefault();
+}
+
+function _onCropMouseMove(e){
+  if(!_cropDragging) return;
+  _cropX = _cropDragCX + e.clientX - _cropDragSX;
+  _cropY = _cropDragCY + e.clientY - _cropDragSY;
+  _applyCropTransform();
+}
+
+function _onCropMouseUp(){
+  _cropDragging = false;
+  document.getElementById('crop-container').classList.remove('dragging');
+}
+
+function _onCropTouchStart(e){
+  const t = e.touches[0];
+  _cropDragging = true;
+  _cropDragSX = t.clientX; _cropDragSY = t.clientY;
+  _cropDragCX = _cropX;    _cropDragCY = _cropY;
+  e.preventDefault();
+}
+
+function _onCropTouchMove(e){
+  if(!_cropDragging) return;
+  const t = e.touches[0];
+  _cropX = _cropDragCX + t.clientX - _cropDragSX;
+  _cropY = _cropDragCY + t.clientY - _cropDragSY;
+  _applyCropTransform();
+  e.preventDefault();
+}
+
+function confirmCrop(){
+  const img = document.getElementById('crop-img');
+  const scale = _cropFitScale * _cropZoom;
+  const dispW = img.naturalWidth * scale;
+  const dispH = img.naturalHeight * scale;
+  const imgLeft = (_CROP_SIZE - dispW) / 2 + _cropX;
+  const imgTop  = (_CROP_SIZE - dispH) / 2 + _cropY;
+  const srcX = -imgLeft / scale;
+  const srcY = -imgTop  / scale;
+  const srcW = _CROP_SIZE / scale;
+  const srcH = _CROP_SIZE / scale;
+  const OUT = 256;
+  const canvas = document.createElement('canvas');
+  canvas.width = OUT; canvas.height = OUT;
+  const ctx = canvas.getContext('2d');
+  ctx.beginPath(); ctx.arc(OUT/2, OUT/2, OUT/2, 0, Math.PI*2); ctx.clip();
+  ctx.drawImage(img, srcX, srcY, srcW, srcH, 0, 0, OUT, OUT);
+  profilePhotoData = canvas.toDataURL('image/jpeg', 0.85);
+  document.getElementById('profile-avatar-preview').innerHTML =
+    `<img src="${profilePhotoData}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+  const big = document.getElementById('profile-avatar-big');
+  if(big) big.style.display = 'none';
+  closeCropModal();
 }
 
 async function saveProfile(){
@@ -1663,7 +1762,6 @@ async function saveProfile(){
     lastname   : document.getElementById('pf-lastname').value.trim(),
     cave       : document.getElementById('pf-cave').value.trim(),
     currency   : document.getElementById('pf-currency').value,
-    capacity   : parseInt(document.getElementById('pf-capacity').value)||null,
     objective  : document.getElementById('pf-objective').value,
     region     : document.getElementById('pf-region').value.trim(),
     noteScale  : parseInt(document.getElementById('pf-noteScale').value)||100,
@@ -3478,6 +3576,31 @@ window.onerror = function(){
     <button class="profile-save-btn" onclick="confirmWishToCave()">Ajouter à la cave</button>
   </div>
 </div>
+<!-- MODAL CROP PHOTO -->
+<div id="photo-crop-modal">
+  <div class="crop-modal-box">
+    <div class="crop-modal-title">Centrer la photo de profil</div>
+    <div id="crop-container"
+      onmousedown="_onCropMouseDown(event)"
+      onmousemove="_onCropMouseMove(event)"
+      onmouseup="_onCropMouseUp()"
+      onmouseleave="_onCropMouseUp()"
+      ontouchstart="_onCropTouchStart(event)"
+      ontouchmove="_onCropTouchMove(event)"
+      ontouchend="_cropDragging=false">
+      <img id="crop-img" alt="" draggable="false">
+    </div>
+    <div class="crop-zoom-row">
+      <label>Zoom</label>
+      <input type="range" id="crop-zoom-input" min="1" max="3" step="0.01" value="1" oninput="_onCropZoom()">
+    </div>
+    <div class="crop-btn-row">
+      <button type="button" class="crop-btn-cancel" onclick="closeCropModal()">Annuler</button>
+      <button type="button" class="crop-btn-confirm" onclick="confirmCrop()">Confirmer</button>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL PROFIL -->
 <div class="modal-overlay" id="profile-modal" onclick="if(event.target===this)closeProfile()">
   <div class="modal-box" style="max-width:480px">
@@ -3503,7 +3626,6 @@ window.onerror = function(){
           <option value="CHF">CHF Franc suisse</option>
         </select>
       </div>
-      <div class="profile-fg"><label>Capacité cave (bouteilles)</label><input type="number" id="pf-capacity" placeholder="200" min="0"></div>
       <div class="profile-fg"><label>Objectif principal</label>
         <select id="pf-objective">
           <option value="plaisir">Plaisir personnel</option>
