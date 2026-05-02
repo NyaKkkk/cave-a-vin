@@ -410,13 +410,15 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
 #photo-crop-modal.open{display:flex}
 .crop-modal-box{background:var(--surface);border-radius:var(--r2);padding:24px;display:flex;flex-direction:column;align-items:center;gap:16px;box-shadow:0 8px 40px rgba(0,0,0,.4)}
 .crop-modal-title{font-size:15px;font-weight:600;color:var(--ink);align-self:flex-start}
-#crop-container{position:relative;width:280px;height:280px;overflow:hidden;border-radius:50%;cursor:grab;background:#111;user-select:none;border:2px solid rgba(201,168,76,.6);flex-shrink:0;touch-action:none}
+#crop-container{position:relative;width:300px;height:300px;overflow:hidden;cursor:grab;background:#111;user-select:none;flex-shrink:0;touch-action:none;border-radius:4px}
 #crop-container.dragging{cursor:grabbing}
 #crop-img{position:absolute;pointer-events:none;-webkit-user-drag:none;user-select:none}
-.crop-zoom-row{display:flex;align-items:center;gap:10px;width:280px}
+.crop-overlay{position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle 140px at 50% 50%,transparent 140px,rgba(0,0,0,.58) 140px)}
+.crop-circle-border{position:absolute;top:10px;left:10px;width:280px;height:280px;border-radius:50%;border:2px solid rgba(255,255,255,.65);pointer-events:none}
+.crop-zoom-row{display:flex;align-items:center;gap:10px;width:300px}
 .crop-zoom-row label{font-size:12px;color:var(--ink3);white-space:nowrap}
 .crop-zoom-row input[type=range]{flex:1;accent-color:var(--ruby)}
-.crop-btn-row{display:flex;gap:10px;width:280px}
+.crop-btn-row{display:flex;gap:10px;width:300px}
 .crop-btn-row button{flex:1;height:38px;border-radius:var(--r);font-size:13px;font-weight:500;cursor:pointer;border:1.5px solid var(--ink5);font-family:'Inter',sans-serif}
 .crop-btn-confirm{background:var(--ruby);color:#fff;border-color:var(--ruby)!important}
 .crop-btn-cancel{background:var(--surface);color:var(--ink)}
@@ -1684,8 +1686,8 @@ function _applyCropTransform(){
   _cropY = Math.max(-maxDy, Math.min(maxDy, _cropY));
   img.style.width  = w + 'px';
   img.style.height = h + 'px';
-  img.style.left   = ((_CROP_SIZE - w) / 2 + _cropX) + 'px';
-  img.style.top    = ((_CROP_SIZE - h) / 2 + _cropY) + 'px';
+  img.style.left   = ((300 - w) / 2 + _cropX) + 'px';
+  img.style.top    = ((300 - h) / 2 + _cropY) + 'px';
 }
 
 function _onCropZoom(){
@@ -1735,10 +1737,11 @@ function confirmCrop(){
   const scale = _cropFitScale * _cropZoom;
   const dispW = img.naturalWidth * scale;
   const dispH = img.naturalHeight * scale;
-  const imgLeft = (_CROP_SIZE - dispW) / 2 + _cropX;
-  const imgTop  = (_CROP_SIZE - dispH) / 2 + _cropY;
-  const srcX = -imgLeft / scale;
-  const srcY = -imgTop  / scale;
+  const cropOff = (300 - _CROP_SIZE) / 2;
+  const imgLeft = (300 - dispW) / 2 + _cropX;
+  const imgTop  = (300 - dispH) / 2 + _cropY;
+  const srcX = (cropOff - imgLeft) / scale;
+  const srcY = (cropOff - imgTop)  / scale;
   const srcW = _CROP_SIZE / scale;
   const srcH = _CROP_SIZE / scale;
   const OUT = 256;
@@ -3589,6 +3592,8 @@ window.onerror = function(){
       ontouchmove="_onCropTouchMove(event)"
       ontouchend="_cropDragging=false">
       <img id="crop-img" alt="" draggable="false">
+      <div class="crop-overlay"></div>
+      <div class="crop-circle-border"></div>
     </div>
     <div class="crop-zoom-row">
       <label>Zoom</label>
