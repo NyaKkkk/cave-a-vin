@@ -598,7 +598,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);font-s
     </div>
     <div class="fsec"><div class="fsec-label">Identité</div>
       <div class="fr fr2"><div class="fg" id="fg-name"><label>Nom *</label><input type="text" id="f-name" placeholder="Château Margaux"></div><div class="fg" id="fg-app"><label>Appellation</label><input type="text" id="f-app" placeholder="Margaux AOC"></div></div>
-      <div class="fr fr4"><div class="fg" id="fg-type"><label>Type *</label><select id="f-type"><option>Rouge</option><option>Blanc</option><option>Rosé</option><option>Pétillant</option><option>Orange</option><option>Vin muté / Fortifié</option><option>Vin doux naturel</option><option>Vin jaune / Oxydatif</option><option>Vin de paille / Passerillé</option><option>Vin naturel / Nature</option><option>Vin biodynamique</option><option>Cidre / Poiré</option><option>Autre</option></select></div><div class="fg" id="fg-reg"><label>Région</label><input type="text" id="f-reg" placeholder="Bordeaux"></div><div class="fg"><label>Pays</label><input type="text" id="f-country" placeholder="France, Italie..." list="country-list"><datalist id="country-list"><option value="France"><option value="Italie"><option value="Espagne"><option value="Portugal"><option value="Allemagne"><option value="Autriche"><option value="USA"><option value="Argentine"><option value="Chili"><option value="Australie"><option value="Afrique du Sud"><option value="Nouvelle-Zélande"><option value="Hongrie"><option value="Grèce"><option value="Liban"></datalist></div><div class="fg" id="fg-year"><label>Millésime</label><input type="number" id="f-year" placeholder="2019" min="1900" max="2030"></div></div>
+      <div class="fr fr4"><div class="fg" id="fg-type"><label>Type *</label><select id="f-type"><option>Rouge</option><option>Blanc sec</option><option>Blanc moelleux</option><option>Blanc liquoreux</option><option>Rosé</option><option>Pétillant</option><option>Macération</option><option>Muté / Fortifié</option><option>Doux naturel</option><option>Oxydatif</option><option>Passerillé</option><option>Autre</option></select></div><div class="fg" id="fg-reg"><label>Région</label><input type="text" id="f-reg" placeholder="Bordeaux"></div><div class="fg"><label>Pays</label><input type="text" id="f-country" placeholder="France, Italie..." list="country-list"><datalist id="country-list"><option value="France"><option value="Italie"><option value="Espagne"><option value="Portugal"><option value="Allemagne"><option value="Autriche"><option value="USA"><option value="Argentine"><option value="Chili"><option value="Australie"><option value="Afrique du Sud"><option value="Nouvelle-Zélande"><option value="Hongrie"><option value="Grèce"><option value="Liban"></datalist></div><div class="fg" id="fg-year"><label>Millésime</label><input type="number" id="f-year" placeholder="2019" min="1900" max="2030"></div></div>
     </div>
     <div class="fsec"><div class="fsec-label">Stock & prix</div>
       <div class="fr fr4"><div class="fg"><label>Quantité</label><input type="number" id="f-qty" value="1" min="0"></div><div class="fg"><label>Contenance</label><select id="f-cont"><option value="">—</option><option value="18.7cl">18.7 cl (Piccolo)</option><option value="37.5cl">37.5 cl (Demi)</option><option value="50cl">50 cl</option><option value="75cl" selected>75 cl (Standard)</option><option value="1L">1 L</option><option value="1.5L">1.5 L (Magnum)</option><option value="3L">3 L (Double Magnum)</option><option value="4.5L">4.5 L (Jéroboam)</option><option value="6L">6 L (Impériale)</option><option value="9L">9 L (Salmanazar)</option><option value="12L">12 L (Balthazar)</option><option value="15L">15 L (Nabuchodonosor)</option></select></div><div class="fg"><label>Prix achat (€)</label><input type="number" id="f-buy" placeholder="0" min="0" step="0.5"></div><div class="fg"><label>Prix actuel (€)</label><input type="number" id="f-cur" placeholder="0" min="0" step="0.5"></div><div class="fg" id="fg-ap"><label>Apogée</label><input type="text" id="f-ap" placeholder="2026 – 2038"></div></div>
@@ -651,10 +651,12 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);font-s
   <div class="stats-toolbar">
     <div class="stats-chip active" onclick="setStatFilter(this,'all')">Toute la cave</div>
     <div class="stats-chip" onclick="setStatFilter(this,'Rouge')">Rouge</div>
-    <div class="stats-chip" onclick="setStatFilter(this,'Blanc')">Blanc</div>
-    <div class="stats-chip" onclick="setStatFilter(this,'Pétillant')">Champagne</div>
-    <div class="stats-chip" onclick="setStatFilter(this,'Orange')">Orange</div>
-    <div class="stats-chip" onclick="setStatFilter(this,'Vin naturel / Nature')">Naturel</div>
+    <div class="stats-chip" onclick="setStatFilter(this,'Blanc sec')">Blanc sec</div>
+    <div class="stats-chip" onclick="setStatFilter(this,'Blanc moelleux')">Moelleux</div>
+    <div class="stats-chip" onclick="setStatFilter(this,'Blanc liquoreux')">Liquoreux</div>
+    <div class="stats-chip" onclick="setStatFilter(this,'Rosé')">Rosé</div>
+    <div class="stats-chip" onclick="setStatFilter(this,'Pétillant')">Pétillant</div>
+    <div class="stats-chip" onclick="setStatFilter(this,'Macération')">Macération</div>
   </div>
   <div class="pnl-summary" id="pnl-summary"></div>
   <div class="sgrid">
@@ -1058,7 +1060,7 @@ function openFreeDrinkModal(){
     nameRow.innerHTML='<div class="profile-fg full"><label>Nom du vin *</label><input type="text" id="drink-free-name" placeholder="Château Pétrus…" style="height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:Inter,sans-serif;outline:none;width:100%;box-sizing:border-box"></div>'
       +'<div class="profile-fg"><label>Appellation</label><input type="text" id="drink-free-app" placeholder="Pomerol AOC" style="height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:Inter,sans-serif;outline:none;width:100%;box-sizing:border-box"></div>'
       +'<div class="profile-fg"><label>Millésime</label><input type="number" id="drink-free-year" placeholder="2015" min="1900" max="2030" style="height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:Inter,sans-serif;outline:none;width:100%;box-sizing:border-box"></div>'
-      +'<div class="profile-fg"><label>Type</label><select id="drink-free-type" style="height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:Inter,sans-serif;outline:none"><option>Rouge</option><option>Blanc</option><option>Rosé</option><option>Pétillant</option><option>Orange</option><option>Vin naturel / Nature</option><option>Autre</option></select></div>'
+      +'<div class="profile-fg"><label>Type</label><select id="drink-free-type" style="height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:Inter,sans-serif;outline:none"><option>Rouge</option><option>Blanc sec</option><option>Blanc moelleux</option><option>Blanc liquoreux</option><option>Rosé</option><option>Pétillant</option><option>Macération</option><option>Autre</option></select></div>'
       +'<div class="profile-fg full"><label>Photo</label><div onclick="document.getElementById(\'drink-free-photo-inp\').click()" style="cursor:pointer;border:1.5px dashed var(--ink5);border-radius:var(--r);padding:10px;text-align:center;font-size:12px;color:var(--ink4)"><input type="file" id="drink-free-photo-inp" accept="image/*" style="display:none" onchange="handleFreeDrinkPhoto(this)"><span id="drink-free-photo-label">📷 Ajouter une photo</span></div></div>';
     document.getElementById('drink-modal').querySelector('.modal-box').insertBefore(nameRow,document.getElementById('drink-modal').querySelector('.profile-grid'));
   }
@@ -1584,17 +1586,16 @@ async function saveProfile(){
 
 const TC={
   'Rouge':{bar:'#8b1a2a',pill:'#fdf0f1',pt:'#6a1020'},
-  'Blanc':{bar:'#a8822a',pill:'#fdf8ed',pt:'#6a5010'},
+  'Blanc sec':{bar:'#a8822a',pill:'#fdf8ed',pt:'#6a5010'},
+  'Blanc moelleux':{bar:'#c4a030',pill:'#fef9e8',pt:'#7a6010'},
+  'Blanc liquoreux':{bar:'#c89030',pill:'#fefae0',pt:'#7a5800'},
   'Rosé':{bar:'#c0607a',pill:'#fdf0f4',pt:'#7a3050'},
   'Pétillant':{bar:'#c0a020',pill:'#fdf8e0',pt:'#6a5800'},
-  'Orange':{bar:'#c07820',pill:'#fdf3e0',pt:'#6a3c00'},
-  'Vin muté / Fortifié':{bar:'#7a3a18',pill:'#f8ede8',pt:'#4a2010'},
-  'Vin doux naturel':{bar:'#a07818',pill:'#fdf6e0',pt:'#5a4200'},
-  'Vin jaune / Oxydatif':{bar:'#8a9800',pill:'#f6f8d8',pt:'#3a4200'},
-  'Vin de paille / Passerillé':{bar:'#b07818',pill:'#fdf4d8',pt:'#5a3c00'},
-  'Vin naturel / Nature':{bar:'#3a7a3a',pill:'#eef7ee',pt:'#1a4a1a'},
-  'Vin biodynamique':{bar:'#286828',pill:'#eaf5ea',pt:'#184018'},
-  'Cidre / Poiré':{bar:'#5a8a28',pill:'#f0f7e8',pt:'#284a08'},
+  'Macération':{bar:'#c07820',pill:'#fdf3e0',pt:'#6a3c00'},
+  'Muté / Fortifié':{bar:'#7a3a18',pill:'#f8ede8',pt:'#4a2010'},
+  'Doux naturel':{bar:'#a07818',pill:'#fdf6e0',pt:'#5a4200'},
+  'Oxydatif':{bar:'#8a9800',pill:'#f6f8d8',pt:'#3a4200'},
+  'Passerillé':{bar:'#b07818',pill:'#fdf4d8',pt:'#5a3c00'},
   'Autre':{bar:'#6068a0',pill:'#eeeef8',pt:'#303068'},
 };
 function tc(t,k){return(TC[t]||TC['Autre'])[k]}
@@ -1763,7 +1764,7 @@ function toggleFilterPanel(){
   btn.classList.toggle('active',!open);
   if(!open)populateFilterDropdowns();
 }
-const TYPE_LABELS={'Rouge':'Rouge','Blanc':'Blanc','Rosé':'Rosé','Pétillant':'Champagne','Orange':'Orange','Vin muté / Fortifié':'Muté / Fortifié','Vin doux naturel':'Doux naturel','Vin jaune / Oxydatif':'Jaune / Oxydatif','Vin de paille / Passerillé':'Paille / Passerillé','Vin naturel / Nature':'Naturel / Nature','Vin biodynamique':'Biodynamique','Cidre / Poiré':'Cidre / Poiré','Autre':'Autre'};
+const TYPE_LABELS={'Rouge':'Rouge','Blanc sec':'Blanc sec','Blanc moelleux':'Blanc moelleux','Blanc liquoreux':'Blanc liquoreux','Rosé':'Rosé','Pétillant':'Pétillant','Macération':'Macération','Muté / Fortifié':'Muté / Fortifié','Doux naturel':'Doux naturel','Oxydatif':'Oxydatif','Passerillé':'Passerillé','Autre':'Autre'};
 const CERT_LABELS={'bio':'AB / Ecocert','demeter':'Demeter','biody':'Biodyvin','hve':'HVE','nature':'Vin Méthode Nature','vegan':'Vegan','terra':'Terra Vitis'};
 function _makeChip(val,key,activeArr,cnt,label){
   const esc=val.replace(/&/g,'&amp;').replace(/"/g,'&quot;');
@@ -1927,7 +1928,7 @@ function handlePhotoSelect(inp,prefix){
 }
 
 const AI_PROMPT=`Tu es un expert sommelier encyclopédiste. À partir du vin fourni, retourne UNIQUEMENT un objet JSON valide (sans markdown, sans explication) :
-{"name":"...","appellation":"...","type":"Rouge|Blanc|Rosé|Pétillant|Orange|Vin muté / Fortifié|Vin doux naturel|Vin jaune / Oxydatif|Vin naturel / Nature|Vin biodynamique","region":"...","country":"...","year":2015,"apogee":"2025-2035","notes_degustation":"5-8 mots-clés ex: minéral, fruits noirs, tannins soyeux","certs":["bio"],"critics":{"parker":{"score":96,"max":100}}}
+{"name":"...","appellation":"...","type":"Rouge|Blanc sec|Blanc moelleux|Blanc liquoreux|Rosé|Pétillant|Macération|Muté / Fortifié|Doux naturel|Oxydatif|Passerillé|Autre","region":"...","country":"...","year":2015,"apogee":"2025-2035","notes_degustation":"5-8 mots-clés ex: minéral, fruits noirs, tannins soyeux","certs":["bio"],"critics":{"parker":{"score":96,"max":100}}}
 
 RÈGLES STRICTES :
 - Ne JAMAIS inventer de notes critiques. Omets si pas certain à 100%. Si aucune certitude : "critics":{}
@@ -2589,7 +2590,7 @@ function renderStats(){
   const totT=Math.max(Object.values(byT).reduce((a,b)=>a+b,0),1);
   // Camembert
   const typeEntries=Object.entries(byT).sort((a,b)=>b[1]-a[1]);
-  const PIE_COLORS={'Rouge':'#6b1520','Blanc':'#c4a030','Rosé':'#e8a0a8','Pétillant':'#4a7c9e','Orange':'#c47830','Vin naturel / Nature':'#5a7840','Vin biodynamique':'#486838','Vin muté / Fortifié':'#7a4020','Vin doux naturel':'#c4902a','Vin jaune / Oxydatif':'#b8962a','Cidre / Poiré':'#7aaa50','Autre':'#888'};
+  const PIE_COLORS={'Rouge':'#6b1520','Blanc sec':'#c4a030','Blanc moelleux':'#d4b040','Blanc liquoreux':'#e0c050','Rosé':'#e8a0a8','Pétillant':'#4a7c9e','Macération':'#c47830','Muté / Fortifié':'#7a4020','Doux naturel':'#c4902a','Oxydatif':'#b8962a','Passerillé':'#b07818','Autre':'#888'};
   const getPieColor=(t,i)=>PIE_COLORS[t]||['#8b1a2a','#2a5a8b','#c47030','#2a7a3a','#7a3a8b','#5a7830'][i%6];
   window._pieData=typeEntries.map(([t,c],i)=>({t,c,color:getPieColor(t,i)}));
   window._pieTot=totT;
@@ -2619,7 +2620,7 @@ function renderWishes(){
   const grid=document.getElementById('wishlist');
   grid.innerHTML=wishes.map(w=>{
     // Couleur barre selon type (même logique que cave)
-    const typeColors={'Rouge':'#8b1a2a','Blanc':'#c4a030','Rosé':'#e8a0a8','Pétillant':'#4a7c9e','Orange':'#c47830'};
+    const typeColors={'Rouge':'#8b1a2a','Blanc sec':'#c4a030','Blanc moelleux':'#d4b040','Blanc liquoreux':'#e0c050','Rosé':'#e8a0a8','Pétillant':'#4a7c9e','Macération':'#c47830'};
     const barC=typeColors[w.type]||'#888';
     const pb=typeColors[w.type]||'#eee';
     const pt=w.type&&['Rouge','Pétillant'].includes(w.type)?'#fff':'#333';
@@ -3215,7 +3216,7 @@ window.onerror = function(){
       </div>
       <div class="fr fr4">
         <div class="fg"><label>Type</label>
-          <select id="wf-type"><option>Rouge</option><option>Blanc</option><option>Rosé</option><option>Pétillant</option><option>Orange</option><option>Vin muté / Fortifié</option><option>Vin doux naturel</option><option>Vin jaune / Oxydatif</option><option>Vin naturel / Nature</option><option>Vin biodynamique</option><option>Autre</option></select>
+          <select id="wf-type"><option>Rouge</option><option>Blanc sec</option><option>Blanc moelleux</option><option>Blanc liquoreux</option><option>Rosé</option><option>Pétillant</option><option>Macération</option><option>Muté / Fortifié</option><option>Doux naturel</option><option>Oxydatif</option><option>Passerillé</option><option>Autre</option></select>
         </div>
         <div class="fg"><label>Région</label><input type="text" id="wf-reg" placeholder="Bordeaux"></div>
         <div class="fg"><label>Pays</label><input type="text" id="wf-country" placeholder="France" list="country-list"></div>
