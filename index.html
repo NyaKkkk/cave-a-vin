@@ -435,7 +435,7 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
 .auth-slide{position:absolute;inset:0;display:flex;flex-direction:column;gap:20px;opacity:0;transition:opacity .65s ease;pointer-events:none;justify-content:center}
 .auth-slide.active{opacity:1;pointer-events:auto}
 .auth-slide-tag{font-size:11px;font-weight:600;color:#8b1a2a;letter-spacing:2px;text-transform:uppercase;background:rgba(139,26,42,.18);padding:4px 12px;border-radius:20px;align-self:flex-start}
-.auth-slide-icon{display:none}
+.auth-slide-icon{width:56px;height:56px;color:#c9a84c;flex-shrink:0}
 .auth-slide-title{font-family:'Cormorant Garamond',serif;font-size:48px;font-weight:600;color:#fff;line-height:1.15}
 .auth-slide-desc{font-size:16px;color:#b89098;line-height:1.7;max-width:340px}
 .auth-dots{display:flex;gap:8px;padding-top:40px}
@@ -603,10 +603,25 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
         <div class="auth-slide active">
           <div class="auth-slide-tag">Collection</div>
           <svg class="auth-slide-icon" viewBox="0 0 56 56" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M14 6h8v8c6 2.5 8 8 8 14v20a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V28c0-6 2-11.5 8-14V6Z"/>
-            <line x1="6" y1="34" x2="30" y2="34"/>
-            <path d="M34 10h7v6c4.5 2 6 6.5 6 12v18a2 2 0 0 1-2 2H34"/>
-            <line x1="34" y1="30" x2="47" y2="30"/>
+            <!-- Capsule -->
+            <path d="M24,4 L32,4 L32,9 Q28,11 24,9 Z"/>
+            <!-- Neck -->
+            <line x1="24" y1="9" x2="24" y2="16"/>
+            <line x1="32" y1="9" x2="32" y2="16"/>
+            <!-- Shoulders -->
+            <path d="M24,16 Q17,22 17,29"/>
+            <path d="M32,16 Q39,22 39,29"/>
+            <!-- Body -->
+            <line x1="17" y1="29" x2="17" y2="49"/>
+            <line x1="39" y1="29" x2="39" y2="49"/>
+            <!-- Base -->
+            <path d="M17,49 Q28,52 39,49"/>
+            <!-- Shoulder join -->
+            <path d="M17,29 Q28,27 39,29"/>
+            <!-- Label -->
+            <rect x="19" y="31" width="18" height="13" rx="1.5"/>
+            <line x1="22" y1="35" x2="34" y2="35"/>
+            <line x1="22" y1="38" x2="30" y2="38"/>
           </svg>
           <div class="auth-slide-title">Votre cave,<br>digitalisée</div>
           <div class="auth-slide-desc">Gérez votre stock, suivez vos millésimes et gardez un œil sur la valeur totale de votre collection.</div>
@@ -615,13 +630,19 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
         <div class="auth-slide">
           <div class="auth-slide-tag">Dégustation</div>
           <svg class="auth-slide-icon" viewBox="0 0 56 56" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M16 6h24l-4 18a12 12 0 0 1-24 0Z"/>
-            <line x1="28" y1="36" x2="28" y2="50"/>
-            <line x1="18" y1="50" x2="38" y2="50"/>
-            <line x1="12" y1="16" x2="44" y2="16"/>
-            <circle cx="44" cy="10" r="2" fill="currentColor" stroke="none"/>
-            <circle cx="48" cy="18" r="1.5" fill="currentColor" stroke="none"/>
-            <circle cx="40" cy="5"  r="1.5" fill="currentColor" stroke="none"/>
+            <!-- Bowl left curve -->
+            <path d="M15,4 C13,15 15,27 22,32 C24,34 26,36 28,36"/>
+            <!-- Bowl right curve -->
+            <path d="M41,4 C43,15 41,27 34,32 C32,34 30,36 28,36"/>
+            <!-- Rim -->
+            <line x1="15" y1="4" x2="41" y2="4"/>
+            <!-- Wine level -->
+            <path d="M19,22 Q28,26 37,22"/>
+            <!-- Stem -->
+            <line x1="28" y1="36" x2="28" y2="49"/>
+            <!-- Foot -->
+            <path d="M19,51 Q28,49 37,51"/>
+            <line x1="19" y1="51" x2="37" y2="51"/>
           </svg>
           <div class="auth-slide-title">Notes de<br>dégustation</div>
           <div class="auth-slide-desc">Enregistrez vos impressions, notez vos vins et retrouvez facilement vos coups de cœur.</div>
