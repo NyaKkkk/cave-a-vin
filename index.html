@@ -591,10 +591,11 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
 
     <!-- GAUCHE : diaporama -->
     <div class="auth-left">
-      <!-- Slide background illustrations -->
+      <!-- Slide background illustrations (ordre : cave, tonneau, cave particulier, vignoble) -->
       <img class="auth-bg-img active" src="u8377829582_dessin_noir_et_blanc_dune_grande_cave__vin_souter_0f107ff0-7915-4272-ab17-f054e3fcbf01_2.svg" alt="">
-      <img class="auth-bg-img" src="u8377829582_dessin_noir_et_blanc_dun_vignoble_bourguignon_--v_09c20008-6683-443b-a152-ddb97552f0aa_1.svg" alt="">
       <img class="auth-bg-img" src="u8377829582_fill_the_image_with_the_tonneau_--ar_11_--v_7_27ffba7d-eb2e-4605-ad04-502ad6f4d769_1.svg" alt="">
+      <img class="auth-bg-img" src="u8377829582_httpss.mj.runFnT1zUruwXY_je_veux_un_dessin_noir_e_74e1e656-ea64-4484-83be-c3edd1b2eeaf_1 (1).svg" alt="">
+      <img class="auth-bg-img" src="u8377829582_dessin_noir_et_blanc_dun_vignoble_bourguignon_--v_09c20008-6683-443b-a152-ddb97552f0aa_1.svg" alt="">
       <div class="auth-brand">CAVE</div>
       <div class="auth-brand-sub">à vin · Sommelier numérique</div>
       <div class="auth-slides-wrap">
@@ -941,7 +942,7 @@ let _authSlideIdx = 0, _authSlideTimer = null;
 function _renderAuthSlide(){
   document.querySelectorAll('.auth-slide').forEach((el,i)=>el.classList.toggle('active',i===_authSlideIdx));
   document.querySelectorAll('.auth-dot').forEach((el,i)=>el.classList.toggle('active',i===_authSlideIdx));
-  document.querySelectorAll('.auth-bg-img').forEach((el,i)=>el.classList.toggle('active',i===_authSlideIdx%3));
+  document.querySelectorAll('.auth-bg-img').forEach((el,i)=>el.classList.toggle('active',i===_authSlideIdx));
 }
 function _startAuthSlideshow(){
   clearInterval(_authSlideTimer);
