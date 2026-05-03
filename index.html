@@ -955,14 +955,35 @@ function _startAuthSlideshow(){
 }
 function _goAuthSlide(n){ _authSlideIdx=n; _renderAuthSlide(); _startAuthSlideshow(); }
 
+// ── HELPERS AUTH ──
+function _authError(code){
+  const map = {
+    'auth/invalid-email':            'Adresse email invalide.',
+    'auth/user-not-found':           'Aucun compte associé à cet email.',
+    'auth/wrong-password':           'Mot de passe incorrect.',
+    'auth/invalid-credential':       'Email ou mot de passe incorrect.',
+    'auth/email-already-in-use':     'Cette adresse email est déjà utilisée.',
+    'auth/weak-password':            'Mot de passe trop faible (6 caractères minimum).',
+    'auth/too-many-requests':        'Trop de tentatives. Réessayez dans quelques minutes.',
+    'auth/network-request-failed':   'Problème de connexion réseau.',
+    'auth/user-disabled':            'Ce compte a été désactivé.',
+  };
+  return map[code] || 'Une erreur est survenue. Veuillez réessayer.';
+}
+
 // ── HELPERS UI ──
 function _showScreen(screen){
   document.getElementById('loading-screen').style.display = screen==='loading' ? 'flex' : 'none';
   document.getElementById('auth-screen').style.display   = screen==='auth'    ? 'flex' : 'none';
   document.querySelector('.app').style.display           = screen==='app'     ? ''     : 'none';
   document.getElementById('user-info').style.display     = screen==='app'     ? 'flex' : 'none';
-  if(screen==='auth') _startAuthSlideshow();
-  else clearInterval(_authSlideTimer);
+  if(screen==='auth'){
+    const errEl = document.getElementById('auth-err');
+    const msgEl = document.getElementById('auth-msg');
+    if(errEl) errEl.textContent = '';
+    if(msgEl) msgEl.textContent = '';
+    _startAuthSlideshow();
+  } else clearInterval(_authSlideTimer);
 }
 
 // ── AUTH UI ──
@@ -987,7 +1008,7 @@ async function doLogin(){
   try{
     await firebase.auth().signInWithEmailAndPassword(email, pass);
   }catch(e){
-    errEl.textContent = e.message;
+    errEl.textContent = _authError(e.code);
   }
 }
 
@@ -1002,7 +1023,7 @@ async function doForgotPassword(){
     await firebase.auth().sendPasswordResetEmail(email);
     msgEl.textContent = 'Email de réinitialisation envoyé !';
   }catch(e){
-    errEl.textContent = e.message;
+    errEl.textContent = _authError(e.code);
   }
 }
 
@@ -1029,7 +1050,7 @@ async function doSignup(){
     errEl.textContent='';
     msgEl.textContent='Compte créé ! Bienvenue 🍷';
   }catch(e){
-    errEl.textContent = e.message;
+    errEl.textContent = _authError(e.code);
   }
 }
 
