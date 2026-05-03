@@ -1022,7 +1022,7 @@ async function doForgotPassword(){
   if(!auth){ errEl.textContent = 'Firebase en cours de chargement...'; return; }
   try{
     await firebase.auth().sendPasswordResetEmail(email);
-    msgEl.textContent = 'Email de réinitialisation envoyé !';
+    msgEl.textContent = 'Si un compte existe avec cet email, vous recevrez un lien de réinitialisation.';
   }catch(e){
     errEl.textContent = _authError(e.code);
   }
