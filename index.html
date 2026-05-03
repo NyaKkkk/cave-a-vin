@@ -605,25 +605,27 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
         <div class="auth-slide active">
           <div class="auth-slide-tag">Collection</div>
           <svg class="auth-slide-icon" viewBox="0 0 56 56" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <!-- Capsule -->
-            <path d="M24,4 L32,4 L32,9 Q28,11 24,9 Z"/>
-            <!-- Neck -->
-            <line x1="24" y1="9" x2="24" y2="16"/>
-            <line x1="32" y1="9" x2="32" y2="16"/>
-            <!-- Shoulders -->
-            <path d="M24,16 Q17,22 17,29"/>
-            <path d="M32,16 Q39,22 39,29"/>
-            <!-- Body -->
-            <line x1="17" y1="29" x2="17" y2="49"/>
-            <line x1="39" y1="29" x2="39" y2="49"/>
-            <!-- Base -->
-            <path d="M17,49 Q28,52 39,49"/>
-            <!-- Shoulder join -->
-            <path d="M17,29 Q28,27 39,29"/>
-            <!-- Label -->
-            <rect x="19" y="31" width="18" height="13" rx="1.5"/>
-            <line x1="22" y1="35" x2="34" y2="35"/>
-            <line x1="22" y1="38" x2="30" y2="38"/>
+            <!-- Bouchon arrondi -->
+            <rect x="24" y="2" width="8" height="7" rx="2.5"/>
+            <!-- Col -->
+            <line x1="24" y1="9" x2="24" y2="18"/>
+            <line x1="32" y1="9" x2="32" y2="18"/>
+            <!-- Bague capsule -->
+            <line x1="24" y1="15" x2="32" y2="15"/>
+            <!-- Épaules style Bordeaux -->
+            <path d="M24,18 C23,21 19,23 18,27"/>
+            <path d="M32,18 C33,21 37,23 38,27"/>
+            <!-- Corps -->
+            <line x1="18" y1="27" x2="18" y2="50"/>
+            <line x1="38" y1="27" x2="38" y2="50"/>
+            <!-- Fond bombé (punt) -->
+            <path d="M18,50 Q28,54 38,50"/>
+            <path d="M22,52 Q28,50 34,52" stroke-width="1"/>
+            <!-- Étiquette -->
+            <rect x="19" y="30" width="18" height="14" rx="1.5"/>
+            <line x1="22" y1="34" x2="34" y2="34"/>
+            <line x1="22" y1="37" x2="34" y2="37"/>
+            <line x1="22" y1="40" x2="29" y2="40"/>
           </svg>
           <div class="auth-slide-title">Votre cave, digitalisée</div>
           <div class="auth-slide-desc">Gérez votre stock, suivez vos millésimes et gardez un œil sur la valeur totale de votre collection.</div>
