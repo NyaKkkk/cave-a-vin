@@ -427,7 +427,7 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
 .auth-left{flex:1;background:#1c0a0d;display:flex;flex-direction:column;justify-content:center;padding:52px 48px;position:relative;overflow:hidden}
 .auth-left::before{content:'';position:absolute;top:-100px;right:-100px;width:360px;height:360px;border-radius:50%;background:rgba(139,26,42,.12);pointer-events:none}
 .auth-left::after{content:'';position:absolute;bottom:-80px;left:-80px;width:260px;height:260px;border-radius:50%;background:rgba(201,168,76,.07);pointer-events:none}
-.auth-cave-bg{position:absolute;inset:0;width:100%;height:100%;opacity:0.12;pointer-events:none}
+.auth-cave-bg{position:absolute;inset:0;width:100%;height:100%;opacity:0.12;pointer-events:none;object-fit:cover;filter:invert(1)}
 .auth-brand{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;color:#fff;letter-spacing:10px;margin-bottom:4px}
 .auth-brand-sub{font-size:10px;color:#7a4a52;letter-spacing:4px;text-transform:uppercase;margin-bottom:56px}
 .auth-slides-wrap{position:relative;flex:1;min-height:260px}
@@ -591,100 +591,7 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
     <!-- GAUCHE : diaporama -->
     <div class="auth-left">
       <!-- Cave illustration background -->
-      <svg class="auth-cave-bg" viewBox="0 0 500 580" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMax meet">
-        <!-- Stone arch outer edge -->
-        <path d="M60,580 L60,240 A190,190 0 0 1 440,240 L440,580" stroke="white" stroke-width="2.5"/>
-        <!-- Stone arch inner edge -->
-        <path d="M86,580 L86,255 A164,164 0 0 1 414,255 L414,580" stroke="white" stroke-width="1.5"/>
-        <!-- Voussoir joints (pierres de l'arche) -->
-        <line x1="63" y1="207" x2="89" y2="212" stroke="white" stroke-width="1"/>
-        <line x1="74" y1="169" x2="98" y2="179" stroke="white" stroke-width="1"/>
-        <line x1="116" y1="106" x2="135" y2="124" stroke="white" stroke-width="1"/>
-        <line x1="250" y1="50" x2="250" y2="76" stroke="white" stroke-width="1.5"/>
-        <line x1="384" y1="106" x2="365" y2="124" stroke="white" stroke-width="1"/>
-        <line x1="426" y1="169" x2="402" y2="179" stroke="white" stroke-width="1"/>
-        <line x1="437" y1="207" x2="411" y2="212" stroke="white" stroke-width="1"/>
-        <!-- Column stone joints (horizontal) -->
-        <line x1="60" y1="300" x2="86" y2="300" stroke="white" stroke-width="1"/>
-        <line x1="60" y1="350" x2="86" y2="350" stroke="white" stroke-width="1"/>
-        <line x1="60" y1="400" x2="86" y2="400" stroke="white" stroke-width="1"/>
-        <line x1="60" y1="450" x2="86" y2="450" stroke="white" stroke-width="1"/>
-        <line x1="60" y1="500" x2="86" y2="500" stroke="white" stroke-width="1"/>
-        <line x1="414" y1="300" x2="440" y2="300" stroke="white" stroke-width="1"/>
-        <line x1="414" y1="350" x2="440" y2="350" stroke="white" stroke-width="1"/>
-        <line x1="414" y1="400" x2="440" y2="400" stroke="white" stroke-width="1"/>
-        <line x1="414" y1="450" x2="440" y2="450" stroke="white" stroke-width="1"/>
-        <line x1="414" y1="500" x2="440" y2="500" stroke="white" stroke-width="1"/>
-        <!-- LEFT WINE RACK -->
-        <rect x="90" y="260" width="108" height="230" rx="2" stroke="white" stroke-width="1.5"/>
-        <line x1="90" y1="318" x2="198" y2="318" stroke="white" stroke-width="1"/>
-        <line x1="90" y1="376" x2="198" y2="376" stroke="white" stroke-width="1"/>
-        <line x1="90" y1="434" x2="198" y2="434" stroke="white" stroke-width="1"/>
-        <line x1="126" y1="260" x2="126" y2="490" stroke="white" stroke-width="1"/>
-        <line x1="162" y1="260" x2="162" y2="490" stroke="white" stroke-width="1"/>
-        <circle cx="108" cy="289" r="13" stroke="white" stroke-width="1"/>
-        <circle cx="144" cy="289" r="13" stroke="white" stroke-width="1"/>
-        <circle cx="180" cy="289" r="13" stroke="white" stroke-width="1"/>
-        <circle cx="108" cy="347" r="13" stroke="white" stroke-width="1"/>
-        <circle cx="144" cy="347" r="13" stroke="white" stroke-width="1"/>
-        <circle cx="180" cy="347" r="13" stroke="white" stroke-width="1"/>
-        <circle cx="108" cy="405" r="13" stroke="white" stroke-width="1"/>
-        <circle cx="144" cy="405" r="13" stroke="white" stroke-width="1"/>
-        <circle cx="180" cy="405" r="13" stroke="white" stroke-width="1"/>
-        <circle cx="108" cy="462" r="13" stroke="white" stroke-width="1"/>
-        <circle cx="144" cy="462" r="13" stroke="white" stroke-width="1"/>
-        <circle cx="180" cy="462" r="13" stroke="white" stroke-width="1"/>
-        <!-- RIGHT WINE RACK -->
-        <rect x="302" y="260" width="108" height="230" rx="2" stroke="white" stroke-width="1.5"/>
-        <line x1="302" y1="318" x2="410" y2="318" stroke="white" stroke-width="1"/>
-        <line x1="302" y1="376" x2="410" y2="376" stroke="white" stroke-width="1"/>
-        <line x1="302" y1="434" x2="410" y2="434" stroke="white" stroke-width="1"/>
-        <line x1="338" y1="260" x2="338" y2="490" stroke="white" stroke-width="1"/>
-        <line x1="374" y1="260" x2="374" y2="490" stroke="white" stroke-width="1"/>
-        <circle cx="320" cy="289" r="13" stroke="white" stroke-width="1"/>
-        <circle cx="356" cy="289" r="13" stroke="white" stroke-width="1"/>
-        <circle cx="392" cy="289" r="13" stroke="white" stroke-width="1"/>
-        <circle cx="320" cy="347" r="13" stroke="white" stroke-width="1"/>
-        <circle cx="356" cy="347" r="13" stroke="white" stroke-width="1"/>
-        <circle cx="392" cy="347" r="13" stroke="white" stroke-width="1"/>
-        <circle cx="320" cy="405" r="13" stroke="white" stroke-width="1"/>
-        <circle cx="356" cy="405" r="13" stroke="white" stroke-width="1"/>
-        <circle cx="392" cy="405" r="13" stroke="white" stroke-width="1"/>
-        <circle cx="320" cy="462" r="13" stroke="white" stroke-width="1"/>
-        <circle cx="356" cy="462" r="13" stroke="white" stroke-width="1"/>
-        <circle cx="392" cy="462" r="13" stroke="white" stroke-width="1"/>
-        <!-- LEFT BARREL -->
-        <path d="M194,395 Q170,432 194,470 L226,470 Q250,432 226,395 Z" stroke="white" stroke-width="1.5"/>
-        <ellipse cx="210" cy="395" rx="16" ry="5" stroke="white" stroke-width="1"/>
-        <ellipse cx="210" cy="470" rx="16" ry="5" stroke="white" stroke-width="1"/>
-        <path d="M195,413 Q210,406 225,413" stroke="white" stroke-width="1.5"/>
-        <path d="M195,452 Q210,459 225,452" stroke="white" stroke-width="1.5"/>
-        <!-- RIGHT BARREL -->
-        <path d="M274,400 Q250,437 274,475 L306,475 Q330,437 306,400 Z" stroke="white" stroke-width="1.5"/>
-        <ellipse cx="290" cy="400" rx="16" ry="5" stroke="white" stroke-width="1"/>
-        <ellipse cx="290" cy="475" rx="16" ry="5" stroke="white" stroke-width="1"/>
-        <path d="M275,418 Q290,411 305,418" stroke="white" stroke-width="1.5"/>
-        <path d="M275,457 Q290,464 305,457" stroke="white" stroke-width="1.5"/>
-        <!-- STONE FLOOR -->
-        <line x1="60" y1="510" x2="440" y2="510" stroke="white" stroke-width="1.5"/>
-        <line x1="60" y1="540" x2="440" y2="540" stroke="white" stroke-width="1"/>
-        <line x1="60" y1="568" x2="440" y2="568" stroke="white" stroke-width="0.8"/>
-        <line x1="148" y1="510" x2="148" y2="540" stroke="white" stroke-width="1"/>
-        <line x1="250" y1="510" x2="250" y2="540" stroke="white" stroke-width="1"/>
-        <line x1="352" y1="510" x2="352" y2="540" stroke="white" stroke-width="1"/>
-        <line x1="100" y1="540" x2="100" y2="568" stroke="white" stroke-width="0.8"/>
-        <line x1="200" y1="540" x2="200" y2="568" stroke="white" stroke-width="0.8"/>
-        <line x1="308" y1="540" x2="308" y2="568" stroke="white" stroke-width="0.8"/>
-        <line x1="400" y1="540" x2="400" y2="568" stroke="white" stroke-width="0.8"/>
-        <!-- HANGING LANTERN -->
-        <line x1="250" y1="0" x2="250" y2="50" stroke="white" stroke-width="1.5" stroke-dasharray="4,3"/>
-        <rect x="234" y="50" width="32" height="40" rx="4" stroke="white" stroke-width="1.5"/>
-        <line x1="250" y1="50" x2="250" y2="90" stroke="white" stroke-width="0.8"/>
-        <line x1="234" y1="70" x2="266" y2="70" stroke="white" stroke-width="0.8"/>
-        <path d="M238,50 L244,40 L256,40 L262,50" stroke="white" stroke-width="1.5" fill="none"/>
-        <path d="M234,90 L242,103 L258,103 L266,90" stroke="white" stroke-width="1.5" fill="none"/>
-        <line x1="250" y1="103" x2="250" y2="111" stroke="white" stroke-width="1.5"/>
-      </svg>
+      <img class="auth-cave-bg" src="u8377829582_dessin_noir_et_blanc_dune_grande_cave__vin_souter_0f107ff0-7915-4272-ab17-f054e3fcbf01_2.svg" alt="">
       <div class="auth-brand">CAVE</div>
       <div class="auth-brand-sub">à vin · Sommelier numérique</div>
       <div class="auth-slides-wrap">
