@@ -2953,37 +2953,56 @@ function exportPDF(){
   const date=new Date().toLocaleDateString('fr-FR',{year:'numeric',month:'long',day:'numeric'});
   const total=list.reduce((s,w)=>s+w.qty,0);
   const val=list.reduce((s,w)=>s+(w.buy||0)*w.qty,0);
+  const CERT_LABELS={'bio':'AB / Ecocert','demeter':'Demeter','biody':'Biodyvin','hve':'HVE','nature':'Vin Méthode Nature','raisonné':'Agriculture raisonnée','vegan':'Vegan','terra':'Terra Vitis','lutte':'Lutte intégrée'};
   const rows=list.map(w=>{
     const cv=w.cur||w.buy||0,bv=w.buy||0;
-    const delta=cv>0&&bv>0&&cv!==bv?(cv>bv?`<span style="color:#2d7a4f">+${Math.round((cv-bv)/bv*100)}%</span>`:`<span style="color:#c0392b">${Math.round((cv-bv)/bv*100)}%</span>`):'';
-    const scores=CRITICS.filter(c=>w[c.k]).map(c=>`${c.l} ${w[c.k]}`).join(' · ');
+    const delta=cv>0&&bv>0&&cv!==bv
+      ?(cv>bv?`<span class="pos">+${Math.round((cv-bv)/bv*100)}%</span>`:`<span class="neg">${Math.round((cv-bv)/bv*100)}%</span>`):'';
+    const scores=CRITICS.filter(c=>w[c.k]).map(c=>`<span class="score"><b>${c.l}</b> ${w[c.k]}</span>`).join('');
+    const certsFull=(w.certs||[]).map(c=>`<span class="cert">${CERT_LABELS[c]||c}</span>`).join('');
+    const imgCell=w.img_url?`<img src="${w.img_url}" alt="">`:'<div class="no-img">—</div>';
     return`<tr>
-      <td style="font-weight:600">${w.name}</td>
-      <td>${w.year||'NV'}</td>
-      <td>${w.type}</td>
-      <td>${w.country||''}${w.reg?'<br><small style="color:#7a4a52">'+w.reg+'</small>':''}</td>
-      <td style="text-align:center">${w.qty}</td>
-      <td>${bv>0?bv.toFixed(2)+' €':''}</td>
-      <td>${cv>0&&cv!==bv?cv.toFixed(2)+' € '+delta:''}</td>
-      <td style="font-size:10px;color:#7a4a52">${scores}</td>
-      <td style="font-size:10px;color:#7a4a52">${(w.certs||[]).join(', ')}</td>
+      <td class="td-img">${imgCell}</td>
+      <td><div class="wine-name">${w.name}</div><div class="wine-year">${w.year||'NV'}</div><div class="wine-type">${w.type}</div></td>
+      <td><div class="geo-country">${w.country||'—'}</div>${w.reg?`<div class="geo-label">Région</div><div class="geo-val">${w.reg}</div>`:''}<div class="geo-label">Appellation</div><div class="geo-val">${w.app||'—'}</div></td>
+      <td class="td-qty">${w.qty}</td>
+      <td><div class="price-main">${bv>0?bv.toFixed(2)+' €':'—'}</div>${cv>0&&cv!==bv?`<div class="price-cur">${cv.toFixed(2)+' € '}${delta}</div>`:''}</td>
+      <td>${scores}</td>
+      <td>${certsFull}</td>
     </tr>`;
   }).join('');
   const html=`<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8">
 <title>Cave à vin — Export</title>
 <style>
   *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:Georgia,serif;color:#1c0a0d;padding:28px 32px;font-size:11px}
-  h1{font-size:22px;font-weight:normal;letter-spacing:.3px;margin-bottom:4px}
-  .sub{font-size:11px;color:#7a4a52;margin-bottom:20px}
-  .kpis{display:flex;gap:32px;margin-bottom:20px;padding:12px 16px;background:#f7f0f2;border-radius:6px}
-  .kpi-val{font-size:18px;font-weight:700;color:#8b1a2a}
-  .kpi-lbl{font-size:10px;color:#b89098;text-transform:uppercase;letter-spacing:.8px;margin-top:2px}
-  table{width:100%;border-collapse:collapse;font-size:10.5px}
-  th{text-align:left;padding:6px 8px;font-size:9px;text-transform:uppercase;letter-spacing:.8px;color:#7a4a52;border-bottom:1.5px solid #e8d8dc;font-family:Arial,sans-serif;font-weight:600}
-  td{padding:6px 8px;border-bottom:1px solid #f7f0f2;vertical-align:top}
-  tr:hover td{background:#fdf8ed}
-  @media print{body{padding:12px}@page{margin:1.5cm}}
+  body{font-family:Georgia,serif;color:#1c0a0d;padding:24px 28px;font-size:11px}
+  h1{font-size:22px;font-weight:normal;letter-spacing:.3px;margin-bottom:3px}
+  .sub{font-size:11px;color:#7a4a52;margin-bottom:18px}
+  .kpis{display:flex;gap:28px;margin-bottom:18px;padding:11px 14px;background:#f7f0f2;border-radius:6px}
+  .kpi-val{font-size:17px;font-weight:700;color:#8b1a2a}
+  .kpi-lbl{font-size:9px;color:#b89098;text-transform:uppercase;letter-spacing:.8px;margin-top:2px}
+  table{width:100%;border-collapse:collapse;font-size:10px}
+  th{text-align:left;padding:5px 7px;font-size:8.5px;text-transform:uppercase;letter-spacing:.8px;color:#7a4a52;border-bottom:1.5px solid #e8d8dc;font-family:Arial,sans-serif;font-weight:600}
+  td{padding:7px 7px;border-bottom:1px solid #f7f0f2;vertical-align:middle}
+  tr:nth-child(even) td{background:#fdf8ed}
+  .td-img{width:52px;text-align:center}
+  .td-img img{width:44px;height:60px;object-fit:contain;border-radius:3px;display:block;margin:0 auto}
+  .no-img{width:44px;height:60px;display:flex;align-items:center;justify-content:center;color:#e8d8dc;font-size:16px;margin:0 auto}
+  .td-qty{text-align:center;font-weight:700;font-size:13px;color:#8b1a2a}
+  .wine-name{font-weight:700;font-size:11px;margin-bottom:2px}
+  .wine-year{font-size:13px;font-family:Georgia,serif;color:#8b1a2a;font-weight:400}
+  .wine-type{font-size:9px;color:#b89098;text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
+  .geo-country{font-weight:600;font-size:10.5px;margin-bottom:3px}
+  .geo-label{font-size:8px;text-transform:uppercase;letter-spacing:.6px;color:#b89098;margin-top:4px;margin-bottom:1px}
+  .geo-val{font-size:10px;color:#3d1a20}
+  .price-main{font-weight:600}
+  .price-cur{font-size:9.5px;color:#7a4a52;margin-top:2px}
+  .pos{color:#2d7a4f;font-weight:600}
+  .neg{color:#c0392b;font-weight:600}
+  .score{display:inline-block;background:#f7f0f2;border-radius:3px;padding:1px 5px;margin:2px 2px 0 0;font-size:9px;white-space:nowrap}
+  .score b{color:#8b1a2a}
+  .cert{display:inline-block;background:#f0f7f0;border:1px solid #c8e6c9;border-radius:3px;padding:1px 5px;margin:2px 2px 0 0;font-size:9px;color:#2d6a2d;white-space:nowrap}
+  @media print{body{padding:10px}@page{size:A4 landscape;margin:1.2cm}tr:nth-child(even) td{background:#fdf8ed!important}}
 </style></head><body>
 <h1>Cave à vin</h1>
 <div class="sub">Export du ${date}</div>
@@ -2993,13 +3012,13 @@ function exportPDF(){
   <div><div class="kpi-val">${val.toFixed(0)} €</div><div class="kpi-lbl">Valeur cave (achat)</div></div>
 </div>
 <table>
-  <thead><tr><th>Nom</th><th>Millésime</th><th>Type</th><th>Origine</th><th style="text-align:center">Qté</th><th>Achat</th><th>Actuel</th><th>Critiques</th><th>Certs</th></tr></thead>
+  <thead><tr><th></th><th>Vin</th><th>Origine</th><th style="text-align:center">Qté</th><th>Prix</th><th>Critiques</th><th>Certifications</th></tr></thead>
   <tbody>${rows}</tbody>
 </table>
-<div style="margin-top:20px;font-size:9px;color:#b89098;text-align:right">Généré par Cave à vin — ${date}</div>
+<div style="margin-top:16px;font-size:9px;color:#b89098;text-align:right">Généré par Cave à vin — ${date}</div>
 <script>window.onload=function(){window.print();}<\/script>
 </body></html>`;
-  const w=window.open('','_blank','width=900,height=700');
+  const w=window.open('','_blank','width=1000,height=750');
   if(w){w.document.write(html);w.document.close();}
 }
 
