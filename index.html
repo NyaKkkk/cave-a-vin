@@ -2417,8 +2417,14 @@ function initRangeSliders(){
   yMax.min=minY;yMax.max=maxY;yMax.value=advFilters.yearMax||maxY;
   const pMin=document.getElementById('f-filter-price-min');
   const pMax=document.getElementById('f-filter-price-max');
-  pMin.min=0;pMin.max=maxP;pMin.value=advFilters.priceMin||0;
-  pMax.min=0;pMax.max=maxP;pMax.value=advFilters.priceMax||maxP;
+  // Detect if price-max was at ceiling (no active upper filter) before updating bounds
+  const pMaxAtCeiling=!pMax.max||parseFloat(pMax.value)>=parseFloat(pMax.max);
+  pMin.min=0;pMin.max=maxP;
+  pMax.min=0;pMax.max=maxP;
+  pMin.value=advFilters.priceMin||0;
+  // If no active upper filter, move ceiling to new max; otherwise keep user's value
+  if(pMaxAtCeiling){pMax.value=maxP;advFilters.priceMax='';}
+  else{pMax.value=advFilters.priceMax||maxP;}
   updateRangeFill('year');updateRangeFill('price');
 }
 function onRangeInput(prefix){
@@ -2925,7 +2931,7 @@ function saveEdit(id){
   });
   const photoData=formPhotoData;formPhotoData=null;
   clearForm();closePanel('add-form');
-  renderWines();updateStats();
+  initRangeSliders();renderWines();updateStats();
   if(db){saveWineToDb(wines[idx]).then(()=>{
     if(photoData){
       uploadPhoto(wines[idx].id,photoData).then(url=>{
@@ -2964,7 +2970,7 @@ Object.entries(activeCritics).filter(([k,v])=>v.custom).forEach(([k,v])=>{custom
 if(Object.keys(customCritics).length) w.customCritics=customCritics;
   const photoData=formPhotoData;
   wines.push(w);
-  clearForm();closePanel('add-form');renderWines();updateStats();
+  clearForm();closePanel('add-form');initRangeSliders();renderWines();updateStats();
   if(db && currentUser){
     saveWineToDb(w).then(()=>{
       // w.id contient maintenant le vrai UUID Supabase
