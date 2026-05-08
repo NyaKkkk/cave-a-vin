@@ -52,19 +52,31 @@ body.private-mode .btn-privacy{color:var(--gold2)}
 body.private-mode .btn-privacy .eye-on{display:none}
 body.private-mode .btn-privacy .eye-off{display:block}
 body.private-mode #hs-val,
-body.private-mode #hs-pnl,
+body.private-mode #hs-pnl{color:transparent!important;background:rgba(255,255,255,.18)!important;border-radius:4px;user-select:none;transition:color .2s,background .2s}
 body.private-mode .wprice-val,
-body.private-mode .delta,
 body.private-mode .pnl-kpi-val,
 body.private-mode .vente-card-price,
-body.private-mode .vente-card-pnl-val{filter:blur(7px);user-select:none;transition:filter .2s}
-body:not(.private-mode) #hs-val,
-body:not(.private-mode) #hs-pnl,
-body:not(.private-mode) .wprice-val,
-body:not(.private-mode) .delta,
-body:not(.private-mode) .pnl-kpi-val,
-body:not(.private-mode) .vente-card-price,
-body:not(.private-mode) .vente-card-pnl-val{filter:none;transition:filter .2s}
+body.private-mode .vente-card-pnl-val{color:transparent!important;background:var(--ink5)!important;border-radius:4px;user-select:none;transition:color .2s,background .2s}
+body.private-mode .delta{color:transparent!important;background:var(--ink5)!important;transition:color .2s,background .2s}
+/* VIEW TOGGLE */
+.view-toggle{display:flex;gap:2px;flex-shrink:0;background:var(--ink6);border:1.5px solid var(--ink5);border-radius:var(--r);padding:2px}
+.vtbtn{width:32px;height:32px;border:none;border-radius:5px;background:none;cursor:pointer;color:var(--ink4);display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0}
+.vtbtn:hover{color:var(--ink)}
+.vtbtn.active{background:var(--surface);color:var(--ruby);box-shadow:0 1px 3px rgba(28,10,13,.1)}
+/* LIST MODE */
+.wlist.list-mode{grid-template-columns:1fr;gap:2px;grid-auto-rows:auto}
+.wlist.list-mode .wcard{flex-direction:row;align-items:stretch;border-radius:var(--r)}
+.wlist.list-mode .wcmain{flex:1;grid-template-columns:4px minmax(0,1fr);min-height:0}
+.wlist.list-mode .wimg-zone,.wlist.list-mode .wright{display:none}
+.wlist.list-mode .wbody{flex-direction:row;flex-wrap:nowrap;align-items:center;padding:9px 14px;gap:10px;border-left:none;overflow:hidden}
+.wlist.list-mode .wname{font-size:13px;width:180px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:0}
+.wlist.list-mode .wyear{width:40px;flex-shrink:0;font-size:12px}
+.wlist.list-mode .wmeta{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wlist.list-mode .wtags{flex-shrink:0}
+.wlist.list-mode .wprices{flex-shrink:0;margin-left:auto}
+.wlist.list-mode .wnotes,.wlist.list-mode .wine-location{display:none}
+.wlist.list-mode .wfooter{border-top:none;border-left:1px solid var(--ink5);padding:0 10px;flex-direction:column;justify-content:center;align-items:center;flex-shrink:0;gap:4px}
+.wlist.list-mode .wfooter .footer-actions{flex-direction:column;gap:3px}
 @media(max-width:560px){.header-stats{display:none}}
 
 /* NAV */
@@ -788,6 +800,14 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
 
 
   <div class="toolbar">
+    <div class="view-toggle">
+      <button class="vtbtn active" id="vt-grid" onclick="setView('grid')" title="Vue mosaïque">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      </button>
+      <button class="vtbtn" id="vt-list" onclick="setView('list')" title="Vue liste">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+      </button>
+    </div>
     <div class="search-wrap">
       <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
       <input class="search-inp" type="text" id="sinp" placeholder="Château, région, appellation…" oninput="renderWines()">
@@ -2120,11 +2140,18 @@ window.addEventListener('load',()=>{
   const k='';
   if(k)document.getElementById('api-key-input').value=k;
   if(localStorage.getItem('privateMode')==='1')document.body.classList.add('private-mode');
+  if(localStorage.getItem('wineView')==='list')setView('list');
 });
 
 function togglePrivacy(){
   const on=document.body.classList.toggle('private-mode');
   localStorage.setItem('privateMode',on?'1':'0');
+}
+function setView(v){
+  document.getElementById('wlist').classList.toggle('list-mode',v==='list');
+  document.getElementById('vt-grid').classList.toggle('active',v==='grid');
+  document.getElementById('vt-list').classList.toggle('active',v==='list');
+  localStorage.setItem('wineView',v);
 }
 
 function showTab(t){
