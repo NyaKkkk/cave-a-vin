@@ -44,6 +44,27 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);font-s
 .hstat-label{font-size:9px;color:var(--ink4);text-transform:uppercase;letter-spacing:1px;margin-top:1px}
 .hstat-sep{width:1px;height:26px;background:rgba(255,255,255,.08)}
 .pnl-pos{color:#7ecfa0}.pnl-neg{color:#f08080}.pnl-neu{color:var(--gold3)}
+/* PRIVATE MODE */
+.btn-privacy{width:34px;height:34px;background:none;border:none;cursor:pointer;color:rgba(255,255,255,.35);display:flex;align-items:center;justify-content:center;border-radius:6px;transition:color .2s,background .2s;flex-shrink:0}
+.btn-privacy:hover{color:var(--gold3);background:rgba(255,255,255,.07)}
+body.private-mode .btn-privacy{color:var(--gold2)}
+.btn-privacy .eye-off{display:none}
+body.private-mode .btn-privacy .eye-on{display:none}
+body.private-mode .btn-privacy .eye-off{display:block}
+body.private-mode #hs-val,
+body.private-mode #hs-pnl,
+body.private-mode .wprice-val,
+body.private-mode .delta,
+body.private-mode .pnl-kpi-val,
+body.private-mode .vente-card-price,
+body.private-mode .vente-card-pnl-val{filter:blur(7px);user-select:none;transition:filter .2s}
+body:not(.private-mode) #hs-val,
+body:not(.private-mode) #hs-pnl,
+body:not(.private-mode) .wprice-val,
+body:not(.private-mode) .delta,
+body:not(.private-mode) .pnl-kpi-val,
+body:not(.private-mode) .vente-card-price,
+body:not(.private-mode) .vente-card-pnl-val{filter:none;transition:filter .2s}
 @media(max-width:560px){.header-stats{display:none}}
 
 /* NAV */
@@ -724,6 +745,10 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
     <div class="hstat-sep"></div>
     <div class="hstat"><div class="hstat-val pnl-neu" id="hs-pnl">—</div><div class="hstat-label">+/- value</div></div>
   </div>
+  <button class="btn-privacy" id="btn-privacy" onclick="togglePrivacy()" title="Mode privé">
+    <svg class="eye-on" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+    <svg class="eye-off" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+  </button>
   <div class="user-menu-wrap" id="user-info" style="display:none">
     <button type="button" class="user-avatar-btn" id="user-avatar-btn" onclick="toggleUserMenu()">
       <span class="user-avatar-initials" id="user-avatar-initials">?</span>
@@ -2094,7 +2119,13 @@ function getApiKey(){ return ''; }
 window.addEventListener('load',()=>{
   const k='';
   if(k)document.getElementById('api-key-input').value=k;
+  if(localStorage.getItem('privateMode')==='1')document.body.classList.add('private-mode');
 });
+
+function togglePrivacy(){
+  const on=document.body.classList.toggle('private-mode');
+  localStorage.setItem('privateMode',on?'1':'0');
+}
 
 function showTab(t){
   const tabs=['cave','caves','stats','degustation','ventes','wish'];
