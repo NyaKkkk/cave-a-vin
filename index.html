@@ -90,6 +90,10 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
 .btn-filter:hover{border-color:var(--ink4);color:var(--ink)}
 .btn-filter.active{border-color:var(--ruby);color:var(--ruby);background:var(--surface)}
 .filter-badge{display:inline-flex;align-items:center;justify-content:center;min-width:16px;height:16px;background:var(--ruby);color:#fff;border-radius:8px;font-size:9px;font-weight:700;padding:0 3px}
+.export-menu{display:none;position:absolute;top:calc(100% + 6px);right:0;z-index:200;background:var(--surface);border:1.5px solid var(--ink5);border-radius:var(--r2);padding:6px;min-width:180px;box-shadow:0 4px 20px rgba(28,10,13,.12)}
+.export-menu.open{display:flex;flex-direction:column;gap:3px}
+.export-menu-item{display:flex;align-items:center;gap:8px;padding:0 10px;height:36px;border:none;border-radius:var(--r);background:none;font-family:'Inter',sans-serif;font-size:12px;font-weight:500;color:var(--ink3);cursor:pointer;transition:background .15s,color .15s;text-align:left;white-space:nowrap;width:100%}
+.export-menu-item:hover{background:var(--ink6);color:var(--ink)}
 /* FILTER SIDEBAR */
 .filter-overlay{position:fixed;top:clamp(54px,8vw,68px);left:0;right:0;bottom:0;background:rgba(28,10,13,.25);z-index:399;display:none}
 .filter-overlay.open{display:block}
@@ -775,6 +779,22 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
       Filtres <span class="filter-badge" id="filter-badge" style="display:none">0</span>
     </button>
+    <div class="export-wrap" style="position:relative;flex-shrink:0">
+      <button class="btn-filter" id="btn-export" onclick="toggleExportMenu(event)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Exporter
+      </button>
+      <div class="export-menu" id="export-menu">
+        <button class="export-menu-item" onclick="exportCSV()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg>
+          Exporter en CSV
+        </button>
+        <button class="export-menu-item" onclick="exportPDF()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          Exporter en PDF
+        </button>
+      </div>
+    </div>
     <button class="btn-add" onclick="openAddModal()">+ Ajouter un vin</button>
   </div>
 
@@ -2061,6 +2081,7 @@ let advFilters={countries:[],regions:[],certs:[],yearMin:'',yearMax:'',priceMin:
 let chartM=null,chartR=null,waiResult=null,wishPhotoB64=null,aiResult=null,currentPhotoB64=null;
 
 let wines=[];
+let caveWinesList=[];
 let caves=[];
 let _caveFormId=null;
 let cavePhotoData=null;
@@ -2884,6 +2905,104 @@ function addWish(){
 function chgQty(id,d){const w=wines.find(x=>x.id===id);if(w){w.qty=Math.max(0,w.qty+d);renderWines();updateStats();if(db)saveWineToDb(w);}}
 function delWine(id){wines=wines.filter(x=>x.id!==id);renderWines();updateStats();if(db)deleteWineFromDb(id);}
 function delWish(id){wishes=wishes.filter(x=>x.id!==id);renderWishes();if(db)deleteWishFromDb(id);}
+
+function toggleExportMenu(e){
+  e.stopPropagation();
+  const menu=document.getElementById('export-menu');
+  const btn=document.getElementById('btn-export');
+  const isOpen=menu.classList.contains('open');
+  menu.classList.toggle('open',!isOpen);
+  btn.classList.toggle('active',!isOpen);
+}
+document.addEventListener('click',function(e){
+  const wrap=e.target.closest('.export-wrap');
+  if(!wrap){
+    const menu=document.getElementById('export-menu');
+    const btn=document.getElementById('btn-export');
+    if(menu){menu.classList.remove('open');btn&&btn.classList.remove('active');}
+  }
+});
+
+function exportCSV(){
+  document.getElementById('export-menu').classList.remove('open');
+  document.getElementById('btn-export').classList.remove('active');
+  const list=caveWinesList.length?caveWinesList:wines;
+  const critics=CRITICS.map(c=>c.l);
+  const headers=['Nom','Type','Millésime','Pays','Région','Appellation','Contenant','Quantité','Prix achat (€)','Prix actuel (€)','Apogée','Certifications',...critics,'Notes'];
+  const esc=v=>{const s=String(v==null?'':v);return s.includes(',')||s.includes('"')||s.includes('\n')?'"'+s.replace(/"/g,'""')+'"':s;};
+  const rows=list.map(w=>[
+    w.name,w.type,w.year||'NV',w.country||'',w.reg||'',w.app||'',
+    w.cont||'',w.qty,w.buy||0,w.cur||w.buy||0,w.ap||'',
+    (w.certs||[]).join(' / '),
+    ...CRITICS.map(c=>w[c.k]||''),
+    (w.notes||'').replace(/\n/g,' ')
+  ].map(esc).join(','));
+  const csv='﻿'+[headers.join(','),...rows].join('\r\n');
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download='cave-a-vin-'+new Date().toISOString().slice(0,10)+'.csv';
+  document.body.appendChild(a);a.click();
+  setTimeout(()=>{document.body.removeChild(a);URL.revokeObjectURL(url);},200);
+}
+
+function exportPDF(){
+  document.getElementById('export-menu').classList.remove('open');
+  document.getElementById('btn-export').classList.remove('active');
+  const list=caveWinesList.length?caveWinesList:wines;
+  const date=new Date().toLocaleDateString('fr-FR',{year:'numeric',month:'long',day:'numeric'});
+  const total=list.reduce((s,w)=>s+w.qty,0);
+  const val=list.reduce((s,w)=>s+(w.buy||0)*w.qty,0);
+  const rows=list.map(w=>{
+    const cv=w.cur||w.buy||0,bv=w.buy||0;
+    const delta=cv>0&&bv>0&&cv!==bv?(cv>bv?`<span style="color:#2d7a4f">+${Math.round((cv-bv)/bv*100)}%</span>`:`<span style="color:#c0392b">${Math.round((cv-bv)/bv*100)}%</span>`):'';
+    const scores=CRITICS.filter(c=>w[c.k]).map(c=>`${c.l} ${w[c.k]}`).join(' · ');
+    return`<tr>
+      <td style="font-weight:600">${w.name}</td>
+      <td>${w.year||'NV'}</td>
+      <td>${w.type}</td>
+      <td>${w.country||''}${w.reg?'<br><small style="color:#7a4a52">'+w.reg+'</small>':''}</td>
+      <td style="text-align:center">${w.qty}</td>
+      <td>${bv>0?bv.toFixed(2)+' €':''}</td>
+      <td>${cv>0&&cv!==bv?cv.toFixed(2)+' € '+delta:''}</td>
+      <td style="font-size:10px;color:#7a4a52">${scores}</td>
+      <td style="font-size:10px;color:#7a4a52">${(w.certs||[]).join(', ')}</td>
+    </tr>`;
+  }).join('');
+  const html=`<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8">
+<title>Cave à vin — Export</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:Georgia,serif;color:#1c0a0d;padding:28px 32px;font-size:11px}
+  h1{font-size:22px;font-weight:normal;letter-spacing:.3px;margin-bottom:4px}
+  .sub{font-size:11px;color:#7a4a52;margin-bottom:20px}
+  .kpis{display:flex;gap:32px;margin-bottom:20px;padding:12px 16px;background:#f7f0f2;border-radius:6px}
+  .kpi-val{font-size:18px;font-weight:700;color:#8b1a2a}
+  .kpi-lbl{font-size:10px;color:#b89098;text-transform:uppercase;letter-spacing:.8px;margin-top:2px}
+  table{width:100%;border-collapse:collapse;font-size:10.5px}
+  th{text-align:left;padding:6px 8px;font-size:9px;text-transform:uppercase;letter-spacing:.8px;color:#7a4a52;border-bottom:1.5px solid #e8d8dc;font-family:Arial,sans-serif;font-weight:600}
+  td{padding:6px 8px;border-bottom:1px solid #f7f0f2;vertical-align:top}
+  tr:hover td{background:#fdf8ed}
+  @media print{body{padding:12px}@page{margin:1.5cm}}
+</style></head><body>
+<h1>Cave à vin</h1>
+<div class="sub">Export du ${date}</div>
+<div class="kpis">
+  <div><div class="kpi-val">${list.length}</div><div class="kpi-lbl">Références</div></div>
+  <div><div class="kpi-val">${total}</div><div class="kpi-lbl">Bouteilles</div></div>
+  <div><div class="kpi-val">${val.toFixed(0)} €</div><div class="kpi-lbl">Valeur cave (achat)</div></div>
+</div>
+<table>
+  <thead><tr><th>Nom</th><th>Millésime</th><th>Type</th><th>Origine</th><th style="text-align:center">Qté</th><th>Achat</th><th>Actuel</th><th>Critiques</th><th>Certs</th></tr></thead>
+  <tbody>${rows}</tbody>
+</table>
+<div style="margin-top:20px;font-size:9px;color:#b89098;text-align:right">Généré par Cave à vin — ${date}</div>
+<script>window.onload=function(){window.print();}<\/script>
+</body></html>`;
+  const w=window.open('','_blank','width=900,height=700');
+  if(w){w.document.write(html);w.document.close();}
+}
+
 function togWish(id){const w=wishes.find(x=>x.id===id);if(w){w.done=!w.done;renderWishes();if(db)saveWishToDb(w);}}
 function trigImg(id){document.getElementById('ii-'+id).click()}
 let formPhotoData=null;
@@ -2942,6 +3061,7 @@ function renderWines(){
     if(so==='pnl')return(b.cur-b.buy)*b.qty-(a.cur-a.buy)*a.qty;
     return 0;
   });
+  caveWinesList=list;
   const el=document.getElementById('wlist');
   if(!list.length){el.innerHTML='<div style="grid-column:1/-1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 20px;color:var(--ink4);text-align:center;min-height:300px"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" style="opacity:.3;margin-bottom:14px"><path d="M6 3h12l2 7H4L6 3z"/><path d="M4 10c0 6 4 10 8 10s8-4 8-10"/></svg><div style="font-size:15px;font-weight:600;color:var(--ink3);margin-bottom:6px">Aucun vin dans cette sélection</div><div style="font-size:13px">Ajoutez votre premier vin avec le bouton ci-dessus</div></div>';return}
   el.innerHTML=list.map(w=>{
