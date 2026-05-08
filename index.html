@@ -3011,8 +3011,7 @@ function exportPDF(){
   .score b{color:#8b1a2a}
   .cert{display:inline-block;background:#f0f7f0;border:1px solid #c8e6c9;border-radius:3px;padding:1px 5px;margin:2px 2px 0 0;font-size:9px;color:#2d6a2d;white-space:nowrap}
   .footer{margin-top:16px;font-size:9px;color:#b89098;text-align:right}
-  @page{size:A4 landscape;margin:0}
-  @media print{body{padding:1.2cm}tr:nth-child(even) td{background:#fdf8ed!important}}
+  @media print{@page{size:A4 landscape;margin:1.2cm}tr:nth-child(even) td{background:#fdf8ed!important}}
 </style></head><body>
 <div class="doc-header">
   <div class="kpis">
