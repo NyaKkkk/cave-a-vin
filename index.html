@@ -58,6 +58,13 @@ body.private-mode .pnl-kpi-val,
 body.private-mode .vente-card-price,
 body.private-mode .vente-card-pnl-val{filter:blur(7px);color:var(--ink4)!important;display:inline-block;min-width:64px;max-width:64px;overflow:hidden;user-select:none;transition:filter .2s,color .2s}
 body.private-mode .delta{filter:blur(7px);color:var(--ink4)!important;background:var(--ink5)!important;display:inline-flex;min-width:48px;max-width:48px;overflow:hidden;user-select:none;transition:filter .2s,color .2s,background .2s}
+/* NV TOGGLE + IDEALWINE */
+.nv-toggle{display:inline-flex;align-items:center;gap:4px;font-weight:600;font-size:10px;color:var(--ink4);cursor:pointer;letter-spacing:.3px;user-select:none}
+.nv-toggle input{accent-color:var(--ruby);cursor:pointer;margin:0}
+.nv-toggle:has(input:checked) span{color:var(--ruby)}
+.fg input:disabled{background:var(--ink6);color:var(--ink4);cursor:not-allowed}
+.idealwine-btn{background:none;border:none;font-family:'Inter',sans-serif;font-size:9px;font-weight:600;color:var(--gold);cursor:pointer;padding:0;letter-spacing:.3px;opacity:.8;transition:opacity .15s;white-space:nowrap}
+.idealwine-btn:hover{opacity:1}
 /* VIEW TOGGLE */
 .view-toggle{display:flex;gap:2px;flex-shrink:0;background:var(--ink6);border:1.5px solid var(--ink5);border-radius:var(--r);padding:2px}
 .vtbtn{width:32px;height:32px;border:none;border-radius:5px;background:none;cursor:pointer;color:var(--ink4);display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0}
@@ -857,10 +864,10 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
     </div>
     <div class="fsec"><div class="fsec-label">Identité</div>
       <div class="fr fr2"><div class="fg" id="fg-name"><label>Nom *</label><input type="text" id="f-name" placeholder="Château Margaux"></div><div class="fg" id="fg-app"><label>Appellation</label><input type="text" id="f-app" placeholder="Margaux AOC"></div></div>
-      <div class="fr fr4"><div class="fg" id="fg-type"><label>Type *</label><select id="f-type"><option>Rouge</option><option>Blanc sec</option><option>Blanc moelleux</option><option>Blanc liquoreux</option><option>Rosé</option><option>Pétillant</option><option>Macération</option><option>Muté / Fortifié</option><option>Doux naturel</option><option>Oxydatif</option><option>Passerillé</option><option>Autre</option></select></div><div class="fg" id="fg-reg"><label>Région</label><input type="text" id="f-reg" placeholder="Bordeaux"></div><div class="fg"><label>Pays</label><input type="text" id="f-country" placeholder="France, Italie..." list="country-list"><datalist id="country-list"><option value="France"><option value="Italie"><option value="Espagne"><option value="Portugal"><option value="Allemagne"><option value="Autriche"><option value="USA"><option value="Argentine"><option value="Chili"><option value="Australie"><option value="Afrique du Sud"><option value="Nouvelle-Zélande"><option value="Hongrie"><option value="Grèce"><option value="Liban"></datalist></div><div class="fg" id="fg-year"><label>Millésime</label><input type="number" id="f-year" placeholder="2019" min="1900" max="2030"></div></div>
+      <div class="fr fr4"><div class="fg" id="fg-type"><label>Type *</label><select id="f-type"><option>Rouge</option><option>Blanc sec</option><option>Blanc moelleux</option><option>Blanc liquoreux</option><option>Rosé</option><option>Pétillant</option><option>Macération</option><option>Muté / Fortifié</option><option>Doux naturel</option><option>Oxydatif</option><option>Passerillé</option><option>Autre</option></select></div><div class="fg" id="fg-reg"><label>Région</label><input type="text" id="f-reg" placeholder="Bordeaux"></div><div class="fg"><label>Pays</label><input type="text" id="f-country" placeholder="France, Italie..." list="country-list"><datalist id="country-list"><option value="France"><option value="Italie"><option value="Espagne"><option value="Portugal"><option value="Allemagne"><option value="Autriche"><option value="USA"><option value="Argentine"><option value="Chili"><option value="Australie"><option value="Afrique du Sud"><option value="Nouvelle-Zélande"><option value="Hongrie"><option value="Grèce"><option value="Liban"></datalist></div><div class="fg" id="fg-year"><label style="display:flex;justify-content:space-between;align-items:center">Millésime<label class="nv-toggle"><input type="checkbox" id="f-nv" onchange="toggleNV('f-year','f-nv')"><span>NV</span></label></label><input type="number" id="f-year" placeholder="2019" min="1900" max="2030"></div></div>
     </div>
     <div class="fsec"><div class="fsec-label">Stock & prix</div>
-      <div class="fr fr4"><div class="fg"><label>Quantité</label><input type="number" id="f-qty" value="1" min="0"></div><div class="fg"><label>Contenance</label><select id="f-cont"><option value="">—</option><option value="18.7cl">18.7 cl (Piccolo)</option><option value="37.5cl">37.5 cl (Demi)</option><option value="50cl">50 cl</option><option value="75cl" selected>75 cl (Standard)</option><option value="1L">1 L</option><option value="1.5L">1.5 L (Magnum)</option><option value="3L">3 L (Double Magnum)</option><option value="4.5L">4.5 L (Jéroboam)</option><option value="6L">6 L (Impériale)</option><option value="9L">9 L (Salmanazar)</option><option value="12L">12 L (Balthazar)</option><option value="15L">15 L (Nabuchodonosor)</option></select></div><div class="fg"><label>Prix achat (€)</label><input type="number" id="f-buy" placeholder="0" min="0" step="0.5"></div><div class="fg"><label>Prix actuel (€)</label><input type="number" id="f-cur" placeholder="0" min="0" step="0.5"></div><div class="fg" id="fg-ap"><label>Apogée</label><input type="text" id="f-ap" placeholder="2026 – 2038"></div></div>
+      <div class="fr fr4"><div class="fg"><label>Quantité</label><input type="number" id="f-qty" value="1" min="0"></div><div class="fg"><label>Contenance</label><select id="f-cont"><option value="">—</option><option value="18.7cl">18.7 cl (Piccolo)</option><option value="37.5cl">37.5 cl (Demi)</option><option value="50cl">50 cl</option><option value="75cl" selected>75 cl (Standard)</option><option value="1L">1 L</option><option value="1.5L">1.5 L (Magnum)</option><option value="3L">3 L (Double Magnum)</option><option value="4.5L">4.5 L (Jéroboam)</option><option value="6L">6 L (Impériale)</option><option value="9L">9 L (Salmanazar)</option><option value="12L">12 L (Balthazar)</option><option value="15L">15 L (Nabuchodonosor)</option></select></div><div class="fg"><label>Prix achat (€)</label><input type="number" id="f-buy" placeholder="0" min="0" step="0.5"></div><div class="fg"><label style="display:flex;justify-content:space-between;align-items:center">Prix actuel (€)<button type="button" class="idealwine-btn" onclick="openIdealWine()" title="Rechercher la cote sur IdealWine">↗ IdealWine</button></label><input type="number" id="f-cur" placeholder="0" min="0" step="0.5"></div><div class="fg" id="fg-ap"><label>Apogée</label><input type="text" id="f-ap" placeholder="2026 – 2038"></div></div>
     </div>
     <div class="fsec"><div class="fsec-label">Notes critiques <span style="font-size:10px;color:var(--ink4);font-weight:400">(ajoutez les critiques que vous souhaitez)</span></div>
       <!-- Critiques prédéfinis -->
@@ -2147,6 +2154,20 @@ function togglePrivacy(){
   const on=document.body.classList.toggle('private-mode');
   localStorage.setItem('privateMode',on?'1':'0');
 }
+function toggleNV(yearId,nvId){
+  const yr=document.getElementById(yearId);
+  const nv=document.getElementById(nvId);
+  if(!yr||!nv)return;
+  yr.disabled=nv.checked;
+  if(nv.checked)yr.value='';
+}
+function openIdealWine(){
+  const name=(document.getElementById('f-name')||document.getElementById('wf-name'))?.value.trim();
+  if(!name)return;
+  const year=document.getElementById('f-year')?.value||document.getElementById('wf-year')?.value||'';
+  const q=encodeURIComponent(name+(year?' '+year:''));
+  window.open('https://www.idealwine.com/fr/recherche-vins-en-vente.jsp?q='+q,'_blank');
+}
 function setView(v){
   document.getElementById('wlist').classList.toggle('list-mode',v==='list');
   document.getElementById('vt-grid').classList.toggle('active',v==='grid');
@@ -2844,6 +2865,7 @@ function editWine(id){
   const ft=document.getElementById('f-type');if(ft)ft.value=w.type||'Rouge';
   sv(document.getElementById('f-reg'),w.reg);
   sv(document.getElementById('f-year'),w.year);
+  const fnv=document.getElementById('f-nv');if(fnv){fnv.checked=!w.year;document.getElementById('f-year').disabled=!w.year;}
   sv(document.getElementById('f-qty'),w.qty);
   sv(document.getElementById('f-buy'),w.buy);
   sv(document.getElementById('f-cur'),w.cur);
@@ -2925,6 +2947,7 @@ function clearForm(){
   document.getElementById('add-form').dataset.editId='';
   formCerts=[];
   document.querySelectorAll('#cert-checkboxes input[type=checkbox]').forEach(cb=>cb.checked=false);
+  const fnv=document.getElementById('f-nv');if(fnv){fnv.checked=false;document.getElementById('f-year').disabled=false;}
 }
 function addWine(){
   const n=document.getElementById('f-name').value.trim();if(!n)return;
@@ -3372,6 +3395,7 @@ function editWish(id){
   setV('wf-reg', w.reg||'');
   setV('wf-country', w.country||'');
   setV('wf-year', w.year||'');
+  const wnv=document.getElementById('wf-nv');if(wnv){wnv.checked=!w.year;document.getElementById('wf-year').disabled=!w.year;}
   setV('wf-note', w.note||'');
   if(w.type){const sel=document.getElementById('wf-type');if(sel)sel.value=w.type;}
   // Changer le bouton pour "Enregistrer"
@@ -3471,6 +3495,7 @@ function closeWishManualModal(){
   wishFormPhotoData=null;
   const inner=document.getElementById('wish-photo-inner');
   if(inner) inner.innerHTML=`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span style="font-size:12px;color:var(--ink4)">Cliquer pour ajouter une photo</span>`;
+  const wnv=document.getElementById('wf-nv');if(wnv){wnv.checked=false;document.getElementById('wf-year').disabled=false;}
 }
 
 function resetWishAI(){
@@ -3907,7 +3932,7 @@ window.onerror = function(){
         </div>
         <div class="fg"><label>Région</label><input type="text" id="wf-reg" placeholder="Bordeaux"></div>
         <div class="fg"><label>Pays</label><input type="text" id="wf-country" placeholder="France" list="country-list"></div>
-        <div class="fg"><label>Millésime</label><input type="number" id="wf-year" placeholder="2019" min="1900" max="2030"></div>
+        <div class="fg"><label style="display:flex;justify-content:space-between;align-items:center">Millésime<label class="nv-toggle"><input type="checkbox" id="wf-nv" onchange="toggleNV('wf-year','wf-nv')"><span>NV</span></label></label><input type="number" id="wf-year" placeholder="2019" min="1900" max="2030"></div>
       </div>
     </div>
     <div class="fsec"><div class="fsec-label">Note personnelle</div>
