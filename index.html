@@ -38,6 +38,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);font-s
 .header-monogram span:first-child{font-size:14px}
 .header-title{font-family:'Cormorant Garamond',serif;font-size:clamp(16px,3vw,21px);font-weight:600;color:#fff;letter-spacing:.3px}
 .header-sub{font-size:9px;color:var(--ink4);letter-spacing:1.5px;text-transform:uppercase;margin-top:1px}
+.header-right{display:flex;align-items:center;gap:clamp(8px,2vw,16px);margin-left:auto}
 .header-stats{display:flex;gap:clamp(12px,3vw,28px);align-items:center}
 .hstat{text-align:right}
 .hstat-val{font-family:'Cormorant Garamond',serif;font-size:clamp(14px,2.5vw,19px);font-weight:600;color:var(--gold3);line-height:1}
@@ -84,7 +85,7 @@ body.private-mode .delta{filter:blur(7px);color:var(--ink4)!important;background
 .wlist.list-mode .wnotes,.wlist.list-mode .wine-location{display:none}
 .wlist.list-mode .wfooter{border-top:none;border-left:1px solid var(--ink5);padding:0 10px;flex-direction:column;justify-content:center;align-items:center;flex-shrink:0;gap:4px}
 .wlist.list-mode .wfooter .footer-actions{flex-direction:column;gap:3px}
-@media(max-width:560px){.header-stats{display:none}}
+@media(max-width:560px){.header-stats{display:none}.btn-privacy{display:none}}
 
 /* NAV */
 .nav{background:var(--surface);border-bottom:1px solid var(--ink5);padding:0 clamp(16px,4vw,36px);display:flex;overflow-x:auto;position:sticky;top:clamp(54px,8vw,68px);z-index:149}
@@ -755,19 +756,20 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
     <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjUwNSAxNTAgMzM0IDQ5NiI+PGcgZmlsbD0iI2M5YTg0YyI+PHBhdGggZD0iTTUxMy45IDUwNi40IGMwIC05OSAwLjMgLTEyMi4yIDEuNSAtMTMyLjkgNC44IC00MC45IDIwLjYgLTcyLjggNTAuNCAtMTAxLjMgMTEuMyAtMTAuOSAyMi42IC0xOC43IDM2LjYgLTI1LjggMTEuOSAtNS44IDI5LjcgLTEyIDM1LjEgLTEyIGw0LjMgMCAwIDkuMSAwIDkgLTYuOSAyLjMgYy00OCAxNS44IC04NC40IDU0LjUgLTk3IDEwMy4yIC01LjUgMjEuMSAtNS42IDI0LjMgLTUuNiAxNDEuNyBsMCAxMDguNCAzNi45IDAgMzYuOSAwIDAgLTY2LjkgYzAgLTM3LjggMC40IC02Ny4zIDAuOSAtNjcuNiAwLjUgLTAuMyA2LjEgLTEuOSAxMi42IC0zLjYgMjEuMyAtNS41IDM2LjMgLTEyLjYgNTIgLTI0LjMgMTcgLTEyLjggMjkuNCAtMjcuNSAzOC43IC00NiAxMy42IC0yNy4yIDExLjEgLTQ0LjkgLTEwIC03MC4xIC04LjYgLTEwLjIgLTEzLjkgLTE5LjMgLTE3IC0yOC43IC0xLjUgLTQuOCAtMS44IC0xMC42IC0yLjMgLTQxLjEgLTAuMyAtMzEuMiAtMC4yIC0zNS44IDEuMiAtMzcuOSAyIC0zIDIgLTcuNCAwIC05LjQgLTEuMSAtMS4yIC0zLjcgLTEuNiAtMTAuMSAtMS42IC03LjcgMCAtOC43IDAuMiAtMTAuMSAyLjMgLTIgMi45IC0yIDQuNiAtMC4xIDguNCAyLjQgNC40IDIuMyA2Ni43IC0wLjEgNzYuMyAtMi42IDEwLjYgLTcuOCAyMC41IC0xNS44IDI5LjYgLTEyLjYgMTQuNSAtMTguMiAyNS43IC0yMC40IDM5LjggLTAuNyA0LjUgLTEuMSAyNS4xIC0xLjEgNTIuOSBsMCA0NS42IC0zLjggMC43IGMtMi4xIDAuNCAtNi4xIDAuOCAtOSAwLjggbC01LjEgMC4xIDAgLTUzLjIgYzAgLTUxLjkgMC4xIC01My40IDIuMyAtNjEuOSAzLjMgLTEyLjUgOS4yIC0yMy42IDE4LjIgLTM0LjMgMTYuMiAtMTkuMSAxNy45IC0yNC4yIDE4LjYgLTU2LjQgMC41IC0yMS42IDAuNCAtMjQuMSAtMS4zIC0yOC43IC0xLjUgLTMuOCAtMS45IC03LjYgLTEuOCAtMTUuOCAwIC0xMi42IDEuNCAtMTYuOCA3LjIgLTIxLjEgMy44IC0zIDQgLTMgMjAuMyAtMy4zIDEwIC0wLjMgMTcuOSAwIDIwLjIgMC43IDQuNiAxLjQgOS42IDYuOSAxMS4xIDEyLjEgMS42IDUuOCAxLjQgMjEuMiAtMC40IDI1LjYgLTIuMyA1LjMgLTIuMyA0OS41IDAgNTguMSAyLjUgOS40IDcuMSAxNy43IDE0LjIgMjUuOCAxMC45IDEyLjIgMTUgMTkgMTkuMiAzMS42IDIgNi4yIDIuNCA5IDIuNCAyMy40IDAgMTQuMyAtMC4zIDE3LjMgLTIuNCAyNC4xIC01LjggMTguNSAtMTcuNyAzNy45IC0zMi4zIDUyLjcgLTIwLjIgMjAuNCAtMzkuOCAzMS4zIC03NC4zIDQxLjQgbC0yLjYgMC44IC0wLjMgNTkuNSAtMC4yIDU5LjYgNDQuMSAwIGMyOC4zIDAgNDQuNyAtMC40IDQ2LjEgLTEgNS4xIC0yLjggNSAtMC43IDUgLTkzIGwwIC04NiA1LjcgLTEwLjMgYzUuNSAtOS44IDUuOSAtMTAuMiA5LjIgLTEwLjIgbDMuNSAwIDAgOTkuMSBjMCA2Ny41IC0wLjQgMTAwLjMgLTEuMSAxMDMuMSAtMS43IDYuNCAtNS43IDExLjUgLTExLjUgMTQuMyBsLTUuMiAyLjYgLTEwMy4yIDAgLTEwMy4yIDAgMCAtMTIwLjF6Ii8+CjxwYXRoIGQ9Ik03MzMuOSA2MjMuNyBjMCAtMS42IDEuNCAtNS43IDMuMyAtOS4yIGwzLjQgLTYuNCAzNS42IDAgMzUuNiAwIC0wLjQgLTExNC45IC0wLjMgLTExNSAtMi40IC0xMC4yIGMtOS4zIC00MS4xIC0zMS4xIC03NC41IC02Mi41IC05NS41IC05LjEgLTYuMSAtMjUuOCAtMTQuMiAtMzUuMiAtMTcuMiBsLTguOCAtMi43IDAgLTkuMSAwIC05LjEgNC4xIDAgYzUuOCAwIDIyLjIgNS40IDM1LjMgMTEuOCAzNi42IDE3LjYgNjYuNSA1Mi40IDc5LjcgOTIuOCAzLjQgMTAuNCA2LjMgMjQuOCA3LjcgMzYuOSAwLjcgNi40IDEuMSA1MS45IDEuMSAxMzAuMyBsMCAxMjAuMyAtNDguMSAwIC00OC4xIDAgMCAtMi44eiIvPjwvZz48L3N2Zz4=" style="width:36px;height:36px;" alt="logo">
     <div><div class="header-title">Cave à Vin</div><div class="header-sub">Sommelier numérique</div></div>
   </div>
-  <div class="header-stats">
-    <div class="hstat"><div class="hstat-val" id="hs-bot">0</div><div class="hstat-label">Bouteilles</div></div>
-    <div class="hstat-sep"></div>
-    <div class="hstat"><div class="hstat-val" id="hs-ref">0</div><div class="hstat-label">Références</div></div>
-    <div class="hstat-sep"></div>
-    <div class="hstat"><div class="hstat-val" id="hs-val">—</div><div class="hstat-label">Valeur</div></div>
-    <div class="hstat-sep"></div>
-    <div class="hstat"><div class="hstat-val pnl-neu" id="hs-pnl">—</div><div class="hstat-label">+/- value</div></div>
-  </div>
-  <button class="btn-privacy" id="btn-privacy" onclick="togglePrivacy()" title="Mode privé">
-    <svg class="eye-on" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-    <svg class="eye-off" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
-  </button>
+  <div class="header-right">
+    <div class="header-stats">
+      <div class="hstat"><div class="hstat-val" id="hs-bot">0</div><div class="hstat-label">Bouteilles</div></div>
+      <div class="hstat-sep"></div>
+      <div class="hstat"><div class="hstat-val" id="hs-ref">0</div><div class="hstat-label">Références</div></div>
+      <div class="hstat-sep"></div>
+      <div class="hstat"><div class="hstat-val" id="hs-val">—</div><div class="hstat-label">Valeur</div></div>
+      <div class="hstat-sep"></div>
+      <div class="hstat"><div class="hstat-val pnl-neu" id="hs-pnl">—</div><div class="hstat-label">+/- value</div></div>
+    </div>
+    <button class="btn-privacy" id="btn-privacy" onclick="togglePrivacy()" title="Mode privé">
+      <svg class="eye-on" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+      <svg class="eye-off" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+    </button>
   <div class="user-menu-wrap" id="user-info" style="display:none">
     <button type="button" class="user-avatar-btn" id="user-avatar-btn" onclick="toggleUserMenu()">
       <span class="user-avatar-initials" id="user-avatar-initials">?</span>
@@ -788,6 +790,7 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
         Déconnexion
       </button>
     </div>
+  </div>
   </div>
 </div>
 
@@ -3197,7 +3200,7 @@ function renderWines(){
         ${imgHTML}
         <div class="wbody">
           <div class="wname">${w.name}</div>
-          ${w.year?`<div class="wyear">${w.year}</div>`:''}
+          <div class="wyear">${w.year||'NV'}</div>
           <div class="wmeta">${w.country?`<span class="wmeta-country">${w.country}</span><span class="wmeta-dot"></span>`:''} ${w.reg?`<span class="wmeta-reg">${w.reg}</span>`:''}${w.reg&&w.app?`<span class="wmeta-dot"></span>`:''}${w.app?`<span class="wmeta-txt">${w.app}</span>`:''}${w.cont?`<span class="wmeta-dot"></span><span class="wmeta-txt">${w.cont}</span>`:''}</div>
           <div class="wtags"><span class="tpill" style="background:${pb};color:${pt}">${shortType}</span>${w.ap?`<div class="apbadge">⏳ ${w.ap}</div>`:''}</div>
           ${pH}
