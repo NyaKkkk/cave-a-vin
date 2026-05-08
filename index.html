@@ -52,12 +52,12 @@ body.private-mode .btn-privacy{color:var(--gold2)}
 body.private-mode .btn-privacy .eye-on{display:none}
 body.private-mode .btn-privacy .eye-off{display:block}
 body.private-mode #hs-val,
-body.private-mode #hs-pnl{color:transparent!important;background:rgba(255,255,255,.18)!important;border-radius:4px;user-select:none;transition:color .2s,background .2s}
+body.private-mode #hs-pnl{filter:blur(7px);color:rgba(255,255,255,.35)!important;display:inline-block;min-width:52px;max-width:52px;overflow:hidden;user-select:none;transition:filter .2s,color .2s}
 body.private-mode .wprice-val,
 body.private-mode .pnl-kpi-val,
 body.private-mode .vente-card-price,
-body.private-mode .vente-card-pnl-val{color:transparent!important;background:var(--ink5)!important;border-radius:4px;user-select:none;transition:color .2s,background .2s}
-body.private-mode .delta{color:transparent!important;background:var(--ink5)!important;transition:color .2s,background .2s}
+body.private-mode .vente-card-pnl-val{filter:blur(7px);color:var(--ink4)!important;display:inline-block;min-width:64px;max-width:64px;overflow:hidden;user-select:none;transition:filter .2s,color .2s}
+body.private-mode .delta{filter:blur(7px);color:var(--ink4)!important;background:var(--ink5)!important;display:inline-flex;min-width:48px;max-width:48px;overflow:hidden;user-select:none;transition:filter .2s,color .2s,background .2s}
 /* VIEW TOGGLE */
 .view-toggle{display:flex;gap:2px;flex-shrink:0;background:var(--ink6);border:1.5px solid var(--ink5);border-radius:var(--r);padding:2px}
 .vtbtn{width:32px;height:32px;border:none;border-radius:5px;background:none;cursor:pointer;color:var(--ink4);display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0}
