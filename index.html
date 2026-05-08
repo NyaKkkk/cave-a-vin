@@ -2981,11 +2981,9 @@ function exportPDF(){
 <style>
   *{box-sizing:border-box;margin:0;padding:0}
   body{font-family:Georgia,serif;color:#1c0a0d;padding:24px 28px;font-size:11px}
-  .doc-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:18px}
-  .doc-title{text-align:right}
-  .doc-title h1{font-size:22px;font-weight:normal;letter-spacing:.3px;margin-bottom:3px}
-  .doc-title .sub{font-size:11px;color:#7a4a52}
-  .kpis{display:flex;gap:28px;padding:11px 14px;background:#f7f0f2;border-radius:6px}
+  h1{font-size:22px;font-weight:normal;letter-spacing:.3px;margin-bottom:3px}
+  .sub{font-size:11px;color:#7a4a52;margin-bottom:18px}
+  .kpis{display:flex;gap:28px;margin-bottom:18px;padding:11px 14px;background:#f7f0f2;border-radius:6px}
   .kpi-val{font-size:17px;font-weight:700;color:#8b1a2a}
   .kpi-lbl{font-size:9px;color:#b89098;text-transform:uppercase;letter-spacing:.8px;margin-top:2px}
   table{width:100%;border-collapse:collapse;font-size:10px;margin-top:18px}
@@ -3013,17 +3011,13 @@ function exportPDF(){
   .footer{margin-top:16px;font-size:9px;color:#b89098;text-align:right}
   @media print{@page{size:A4 landscape;margin:1.2cm}tr:nth-child(even) td{background:#fdf8ed!important}}
 </style></head><body>
-<div class="doc-header">
-  <div class="kpis">
-    <div><div class="kpi-val">${list.length}</div><div class="kpi-lbl">Références</div></div>
-    <div><div class="kpi-val">${total}</div><div class="kpi-lbl">Bouteilles</div></div>
-    <div><div class="kpi-val">${val.toFixed(0)} €</div><div class="kpi-lbl">Valeur achat</div></div>
-    <div><div class="kpi-val">${valEst.toFixed(0)} €</div><div class="kpi-lbl">Estimation</div></div>
-  </div>
-  <div class="doc-title">
-    <h1>Cave à vin — Export</h1>
-    <div class="sub">${date}</div>
-  </div>
+<h1>Cave à vin</h1>
+<div class="sub">Export du ${date}</div>
+<div class="kpis">
+  <div><div class="kpi-val">${list.length}</div><div class="kpi-lbl">Références</div></div>
+  <div><div class="kpi-val">${total}</div><div class="kpi-lbl">Bouteilles</div></div>
+  <div><div class="kpi-val">${val.toFixed(0)} €</div><div class="kpi-lbl">Valeur achat</div></div>
+  <div><div class="kpi-val">${valEst.toFixed(0)} €</div><div class="kpi-lbl">Estimation</div></div>
 </div>
 <table>
   <thead><tr><th></th><th>Vin</th><th>Origine</th><th style="text-align:center">Qté</th><th style="text-align:right">Prix d'achat</th><th style="text-align:right">Estimation</th><th>Critiques</th><th>Certifications</th></tr></thead>
