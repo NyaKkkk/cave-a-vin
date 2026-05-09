@@ -979,7 +979,13 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
 
 <div id="tab-ventes" style="display:none">
   <div class="tab-header">
-    <h2 class="tab-title">Mes ventes</h2>
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+      <h2 class="tab-title">Mes ventes</h2>
+      <button onclick="openAnnonceModal()" style="display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 14px;background:var(--surface);border:1.5px solid var(--ink5);border-radius:var(--r);font-family:Inter,sans-serif;font-size:11px;font-weight:600;color:var(--ink3);cursor:pointer;transition:border-color .2s,color .2s" onmouseover="this.style.borderColor='var(--ink3)';this.style.color='var(--ink)'" onmouseout="this.style.borderColor='var(--ink5)';this.style.color='var(--ink3)'">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        Générer annonce
+      </button>
+    </div>
     <div id="ventes-stats" style="display:flex;gap:16px;margin-top:8px"></div>
   </div>
   <div id="ventes-list" style="display:flex;flex-direction:column;gap:10px"></div>
@@ -1802,6 +1808,44 @@ function renderVentes(){
       </div>
     </div>`;
     }).join('');
+}
+
+// ── ANNONCE VENTE ──
+function openAnnonceModal(){
+  const toSell = ventes.filter(v=>(v.status||'a_vendre')!=='vendu');
+  let text = '';
+  if(!toSell.length){
+    text = 'Aucun vin à vendre actuellement.';
+  } else {
+    const p = userProfile;
+    const seller = [p.firstname, p.lastname].filter(Boolean).join(' ');
+    text += '🍷 Vente de vins — cave particulière\n';
+    if(seller) text += `Vendeur : ${seller}\n`;
+    text += '\n';
+    toSell.forEach(v=>{
+      const name = v.wineName + (v.wineYear ? ' ' + v.wineYear : '');
+      const app  = v.wineApp ? ` (${v.wineApp})` : '';
+      const qty  = v.qty > 1 ? `${v.qty} bouteilles` : '1 bouteille';
+      text += `• ${name}${app} — ${qty} — ${v.price} €/btl\n`;
+    });
+    const total = toSell.reduce((a,v)=>a+v.qty,0);
+    text += `\n${total} bouteille${total>1?'s':''} au total.\n`;
+    text += '\nPrix ferme. Remise en main propre ou envoi soigné possible.\nN\'hésitez pas à me contacter pour plus d\'informations.';
+  }
+  document.getElementById('annonce-text').value = text;
+  document.getElementById('annonce-copy-btn').textContent = 'Copier';
+  document.getElementById('annonce-modal').classList.add('open');
+}
+function closeAnnonceModal(){
+  document.getElementById('annonce-modal').classList.remove('open');
+}
+function copyAnnonce(){
+  const ta = document.getElementById('annonce-text');
+  navigator.clipboard.writeText(ta.value).then(()=>{
+    const btn = document.getElementById('annonce-copy-btn');
+    btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Copié !';
+    setTimeout(()=>{btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copier';},2000);
+  });
 }
 
 // ── PROFIL UTILISATEUR ──
@@ -4208,5 +4252,25 @@ window.onerror = function(){
   </div>
 </div>
 <div id="edit-backdrop" onclick="closePanel('add-form')"></div>
+
+<!-- MODAL ANNONCE -->
+<div class="modal-overlay" id="annonce-modal" onclick="if(event.target===this)closeAnnonceModal()">
+  <div class="modal-box" style="max-width:520px">
+    <button class="modal-close" onclick="closeAnnonceModal()">✕</button>
+    <div class="modal-title" style="display:flex;align-items:center;gap:8px">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      Texte d'annonce
+    </div>
+    <div style="font-size:12px;color:var(--ink4);margin-bottom:14px">Vins avec statut <b>À vendre</b> ou <b>En cours</b> — copiez et collez sur LeBonCoin, Facebook, etc.</div>
+    <textarea id="annonce-text" readonly style="width:100%;height:260px;padding:14px;border:1.5px solid var(--ink5);border-radius:var(--r);font-family:'Inter',sans-serif;font-size:13px;line-height:1.7;color:var(--ink);background:var(--ink6);resize:none;outline:none"></textarea>
+    <div style="display:flex;gap:10px;margin-top:14px;align-items:center">
+      <button onclick="copyAnnonce()" id="annonce-copy-btn" style="flex:1;height:40px;background:var(--ruby);border:none;border-radius:var(--r);font-family:Inter,sans-serif;font-size:13px;font-weight:600;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        Copier
+      </button>
+      <button onclick="closeAnnonceModal()" style="height:40px;padding:0 18px;background:var(--surface);border:1.5px solid var(--ink5);border-radius:var(--r);font-family:Inter,sans-serif;font-size:13px;color:var(--ink3);cursor:pointer">Fermer</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
