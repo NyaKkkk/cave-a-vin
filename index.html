@@ -2132,7 +2132,7 @@ function clearCritics(){
 }
 const VALID_TYPES=Object.keys(TC);
 let activeTypes=[],statFilter='all';
-let advFilters={countries:[],regions:[],certs:[],yearMin:'',yearMax:'',priceMin:'',priceMax:'',qtyMin:'',includeNV:true};
+let advFilters={countries:[],regions:[],certs:[],caves:[],yearMin:'',yearMax:'',priceMin:'',priceMax:'',qtyMin:'',includeNV:true};
 let chartM=null,chartR=null,waiResult=null,wishPhotoB64=null,aiResult=null,currentPhotoB64=null;
 
 let wines=[];
@@ -2383,6 +2383,21 @@ function populateFilterDropdowns(){
   certWrap.innerHTML=allCerts.length
     ?allCerts.map(cert=>_makeChip(cert,'certs',advFilters.certs,wines.filter(w=>(w.certs||[]).includes(cert)).length,CERT_LABELS[cert]||cert)).join('')
     :'<span class="fchip-dyn-empty">Aucune certification enregistrée</span>';
+  // Cave chips
+  const caveWrap=document.getElementById('filter-cave-chips');
+  if(caveWrap){
+    const assignedCaveIds=[...new Set(wines.map(w=>w.caveId).filter(Boolean))];
+    const presentCaves=caves.filter(c=>assignedCaveIds.includes(c.id)).sort((a,b)=>a.name.localeCompare(b.name));
+    const hasUnassigned=wines.some(w=>!w.caveId);
+    let html='';
+    if(presentCaves.length){
+      html+=presentCaves.map(c=>_makeChip(c.id,'caves',advFilters.caves,wines.filter(w=>w.caveId===c.id).length,c.name)).join('');
+    }
+    if(hasUnassigned){
+      html+=_makeChip('__none__','caves',advFilters.caves,wines.filter(w=>!w.caveId).length,'Non assigné');
+    }
+    caveWrap.innerHTML=html||'<span class="fchip-dyn-empty">Aucun vin dans une cave</span>';
+  }
   initRangeSliders();
 }
 function toggleMultiChipEl(el){
@@ -2473,6 +2488,7 @@ function updateFilterBadge(){
   if(advFilters.countries.length)count++;
   if(advFilters.regions.length)count++;
   if(advFilters.certs.length)count++;
+  if(advFilters.caves.length)count++;
   if(advFilters.qtyMin)count++;
   if(!advFilters.includeNV)count++;
   if(yMin&&yMax&&(parseFloat(yMin.value)>parseFloat(yMin.min)||parseFloat(yMax.value)<parseFloat(yMax.max)))count++;
@@ -2483,7 +2499,7 @@ function updateFilterBadge(){
 }
 function resetFilters(){
   activeTypes=[];
-  advFilters={countries:[],regions:[],certs:[],yearMin:'',yearMax:'',priceMin:'',priceMax:'',qtyMin:'',includeNV:true};
+  advFilters={countries:[],regions:[],certs:[],caves:[],yearMin:'',yearMax:'',priceMin:'',priceMax:'',qtyMin:'',includeNV:true};
   populateFilterDropdowns();
   const qEl=document.getElementById('f-filter-qty-min');if(qEl)qEl.value='';
   const nvEl=document.getElementById('f-filter-include-nv');if(nvEl)nvEl.checked=true;
@@ -3150,6 +3166,10 @@ function renderWines(){
     if(advFilters.countries.length&&!advFilters.countries.includes(w.country))return false;
     if(advFilters.regions.length&&!advFilters.regions.includes(w.reg))return false;
     if(advFilters.certs.length&&!advFilters.certs.some(cert=>(w.certs||[]).some(wc=>wc.toLowerCase().includes(cert))))return false;
+    if(advFilters.caves.length){
+      const wCave=w.caveId||'__none__';
+      if(!advFilters.caves.includes(wCave))return false;
+    }
     if(advFilters.qtyMin&&(w.qty||0)<Number(advFilters.qtyMin))return false;
     const yMinEl=document.getElementById('f-filter-year-min');
     const yMaxEl=document.getElementById('f-filter-year-max');
@@ -4140,6 +4160,14 @@ window.onerror = function(){
       <div class="filter-section-label">Certification</div>
       <div class="filter-type-chips" id="filter-cert-chips">
         <span class="fchip-dyn-empty">Aucune certification enregistrée</span>
+      </div>
+    </div>
+
+    <!-- CAVE -->
+    <div class="filter-section">
+      <div class="filter-section-label">Cave</div>
+      <div class="fchip-dyn-wrap" id="filter-cave-chips">
+        <span class="fchip-dyn-empty">Aucune cave enregistrée</span>
       </div>
     </div>
 
