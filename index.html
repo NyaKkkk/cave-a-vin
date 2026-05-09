@@ -1819,14 +1819,14 @@ function openAnnonceModal(){
   } else {
     const p = userProfile;
     const seller = [p.firstname, p.lastname].filter(Boolean).join(' ');
-    text += '🍷 Vente de vins — cave particulière\n';
+    text += '🍷 Vente de vins - cave particulière\n';
     if(seller) text += `Vendeur : ${seller}\n`;
     text += '\n';
     toSell.forEach(v=>{
       const name = v.wineName + (v.wineYear ? ' ' + v.wineYear : '');
       const app  = v.wineApp ? ` (${v.wineApp})` : '';
       const qty  = v.qty > 1 ? `${v.qty} bouteilles` : '1 bouteille';
-      text += `• ${name}${app} — ${qty} — ${v.price} €/btl\n`;
+      text += `• ${name}${app} - ${qty} - ${v.price} €/btl\n`;
     });
     const total = toSell.reduce((a,v)=>a+v.qty,0);
     text += `\n${total} bouteille${total>1?'s':''} au total.\n`;
