@@ -1181,8 +1181,16 @@ async function doLogout(){
         if(user){
           currentUser = user;
           _showScreen('app');
-          await db.enableNetwork().catch(()=>{});
-          await Promise.all([loadFromFirebase(), loadUserProfile(user.uid), loadDegVentes()]);
+          for(let i=0; i<4; i++){
+            try{
+              await db.enableNetwork().catch(()=>{});
+              await Promise.all([loadFromFirebase(), loadUserProfile(user.uid), loadDegVentes()]);
+              break;
+            }catch(e){
+              if(i===3) console.error('Chargement données échoué:', e);
+              else await new Promise(r=>setTimeout(r, 1000*(i+1)));
+            }
+          }
         } else {
           currentUser = null;
           wines=[]; wishes=[];
@@ -1230,27 +1238,18 @@ async function doLogout(){
 })();
 
 // ── CHARGEMENT DONNÉES ──
-async function loadFromFirebase(attempt=0){
+async function loadFromFirebase(){
   if(!db||!currentUser) return;
-  try{
-    const [wSnap, whSnap, cSnap] = await Promise.all([
-      db.collection('users').doc(currentUser.uid).collection('wines').orderBy('createdAt','asc').get(),
-      db.collection('users').doc(currentUser.uid).collection('wishes').orderBy('createdAt','asc').get(),
-      db.collection('users').doc(currentUser.uid).collection('caves').orderBy('createdAt','asc').get()
-    ]);
-    wines  = wSnap.docs.map(d=>({id:d.id, ...d.data()}));
-    wishes = whSnap.docs.map(d=>({id:d.id, ...d.data()}));
-    caves  = cSnap.docs.map(d=>({id:d.id, ...d.data()}));
-    activeTypes = []; // reset filtre
-    populateFilterDropdowns(); renderWines(); updateStats(); renderWishes();
-  }catch(e){
-    if(attempt < 3){
-      await db.enableNetwork().catch(()=>{});
-      await new Promise(r=>setTimeout(r, 1000 * (attempt + 1)));
-      return loadFromFirebase(attempt + 1);
-    }
-    console.error('loadFromFirebase:', e);
-  }
+  const [wSnap, whSnap, cSnap] = await Promise.all([
+    db.collection('users').doc(currentUser.uid).collection('wines').orderBy('createdAt','asc').get(),
+    db.collection('users').doc(currentUser.uid).collection('wishes').orderBy('createdAt','asc').get(),
+    db.collection('users').doc(currentUser.uid).collection('caves').orderBy('createdAt','asc').get()
+  ]);
+  wines  = wSnap.docs.map(d=>({id:d.id, ...d.data()}));
+  wishes = whSnap.docs.map(d=>({id:d.id, ...d.data()}));
+  caves  = cSnap.docs.map(d=>({id:d.id, ...d.data()}));
+  activeTypes = [];
+  populateFilterDropdowns(); renderWines(); updateStats(); renderWishes();
 }
 
 // ── CRUD ──
@@ -1885,13 +1884,8 @@ function copyAnnonce(){
 let userProfile = {};
 
 async function loadUserProfile(uid){
-  try{
-    const doc = await db.collection('users').doc(uid).get();
-    if(doc.exists){
-      userProfile = doc.data();
-      updateUserMenu();
-    }
-  }catch(e){ console.error('loadUserProfile:', e); }
+  const doc = await db.collection('users').doc(uid).get();
+  if(doc.exists){ userProfile = doc.data(); updateUserMenu(); }
 }
 
 function updateUserMenu(){
