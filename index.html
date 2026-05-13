@@ -1174,6 +1174,7 @@ async function doLogout(){
       firebase.initializeApp(firebaseConfig);
       auth = firebase.auth();
       db   = firebase.firestore();
+      db.settings({ experimentalAutoDetectLongPolling: true, merge: true });
 
       auth.onAuthStateChanged(async(user)=>{
         document.getElementById('loading-screen').style.display='none';
@@ -1229,7 +1230,7 @@ async function doLogout(){
 })();
 
 // ── CHARGEMENT DONNÉES ──
-async function loadFromFirebase(){
+async function loadFromFirebase(attempt=0){
   if(!db||!currentUser) return;
   try{
     const [wSnap, whSnap, cSnap] = await Promise.all([
@@ -1242,7 +1243,14 @@ async function loadFromFirebase(){
     caves  = cSnap.docs.map(d=>({id:d.id, ...d.data()}));
     activeTypes = []; // reset filtre
     populateFilterDropdowns(); renderWines(); updateStats(); renderWishes();
-  }catch(e){ console.error('loadFromFirebase:', e); }
+  }catch(e){
+    if(attempt < 3){
+      await db.enableNetwork().catch(()=>{});
+      await new Promise(r=>setTimeout(r, 1000 * (attempt + 1)));
+      return loadFromFirebase(attempt + 1);
+    }
+    console.error('loadFromFirebase:', e);
+  }
 }
 
 // ── CRUD ──
