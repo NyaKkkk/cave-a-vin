@@ -1180,6 +1180,7 @@ async function doLogout(){
         if(user){
           currentUser = user;
           _showScreen('app');
+          await db.enableNetwork().catch(()=>{});
           await Promise.all([loadFromFirebase(), loadUserProfile(user.uid), loadDegVentes()]);
         } else {
           currentUser = null;
