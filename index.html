@@ -57,7 +57,7 @@ body{font-family:"Montserrat",sans-serif;background:var(--bg);color:var(--ink);f
 .header-right{display:flex;align-items:center;gap:clamp(8px,2vw,16px);margin-left:auto}
 .header-stats{display:flex;gap:clamp(12px,3vw,28px);align-items:center}
 .hstat{text-align:right}
-.hstat-val{font-family:'Cormorant Garamond',serif;font-size:clamp(14px,2.5vw,19px);font-weight:600;color:var(--gold3);line-height:1}
+.hstat-val{font-family:'Cormorant Garamond',serif;font-size:clamp(16px,2.5vw,22px);font-weight:600;color:var(--gold3);line-height:1}
 .hstat-label{font-size:10px;color:var(--chrome-muted);text-transform:uppercase;letter-spacing:.8px;margin-top:1px}
 .hstat-sep{width:1px;height:26px;background:rgba(255,255,255,.08)}
 .pnl-pos{color:#7ecfa0}.pnl-neg{color:#f08080}.pnl-neu{color:var(--gold3)}
@@ -99,8 +99,9 @@ body.private-mode .delta{filter:blur(7px);color:var(--ink4)!important;background
 .wlist.list-mode .wcmain{flex:1;grid-template-columns:minmax(0,1fr);min-height:0}
 .wlist.list-mode .wimg-zone,.wlist.list-mode .wright{display:none}
 .wlist.list-mode .wbody{flex-direction:row;flex-wrap:nowrap;align-items:center;padding:9px 14px;gap:10px;border-left:none;overflow:hidden}
+.wlist.list-mode .whead{display:contents}
 .wlist.list-mode .wname{font-size:13px;width:180px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:0}
-.wlist.list-mode .wyear{width:40px;flex-shrink:0;font-size:12px}
+.wlist.list-mode .wyear{width:40px;flex-shrink:0;font-size:13px;font-weight:600;opacity:1;letter-spacing:.5px}
 .wlist.list-mode .wmeta{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .wlist.list-mode .wtags{flex-shrink:0}
 .wlist.list-mode .wprices{flex-shrink:0;margin-left:auto}
@@ -113,7 +114,7 @@ body.private-mode .delta{filter:blur(7px);color:var(--ink4)!important;background
 .nav{background:var(--surface);border-bottom:1px solid var(--ink5);padding:0 clamp(16px,4vw,36px);display:flex;overflow-x:auto;position:sticky;top:clamp(54px,8vw,68px);z-index:149}
 .nav::-webkit-scrollbar{display:none}
 .ntab{padding:13px 18px;font-size:11px;font-weight:500;color:var(--ink4);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap;letter-spacing:.7px;text-transform:uppercase}
-.ntab:hover{color:var(--ink2)}.ntab.active{color:var(--ruby);border-bottom-color:var(--ruby)}
+.ntab:hover{color:var(--ink2)}.ntab.active{color:var(--ruby);border-bottom-color:var(--ruby);background:rgba(139,26,42,.05);border-radius:6px 6px 0 0}
 
 .content{padding:clamp(14px,3vw,26px) clamp(16px,4vw,36px)}
 
@@ -325,8 +326,10 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
 .photo-upload-zone:hover{border-color:var(--gold2);background:var(--gold4)}
 .photo-upload-inner{display:flex;flex-direction:column;align-items:center;gap:8px}
 .photo-upload-preview{width:60px;height:100px;object-fit:contain;display:block;border-radius:4px}
-.wbody{padding:10px 12px;display:flex;flex-direction:column;justify-content:center;gap:3px;border-left:1px solid var(--ink5);min-width:0;overflow:hidden}
-.wname{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:600;color:var(--ink);overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.wbody{padding:14px 18px;display:flex;flex-direction:column;justify-content:center;gap:6px;border-left:1px solid var(--ink5);min-width:0;overflow:hidden}
+.whead{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:1px}
+.wname{font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:600;color:var(--ink);overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;flex:1;line-height:1.2}
+.wyear{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:300;color:var(--ink4);letter-spacing:1px;line-height:1;flex-shrink:0;opacity:.7}
 .wmeta{display:flex;gap:4px;flex-wrap:wrap;align-items:center}
 .wmeta-country{font-size:10px;font-weight:600;color:var(--ink4);background:var(--ink6);padding:1px 5px;border-radius:3px}
 .wmeta-reg{font-size:11px;font-weight:600;color:var(--ruby)}
@@ -357,7 +360,7 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
 .wprices{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .wprice-item{display:flex;flex-direction:column}
 .wprice-lbl{font-size:10px;font-weight:600;color:var(--ink4);letter-spacing:.1px}
-.wprice-val{font-size:12px;font-weight:600;color:var(--ink2)}
+.wprice-val{font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:600;color:var(--ink2)}
 .wpc-pos{color:#2a7a2a}.wpc-neg{color:var(--ruby)}.wpc-neu{color:var(--gold)}
 .delta{font-size:10px;font-weight:600;padding:2px 7px;border-radius:4px}
 .dp{background:#edf7ed;color:#1a5a1a}.dn{background:#fff0f0;color:#8b1a1a}.dne{background:var(--gold4);color:var(--gold)}
@@ -405,7 +408,7 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
 .pnl-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
 @media(max-width:480px){.pnl-summary{grid-template-columns:1fr}}
 .pnl-kpi{background:var(--ink6);border-radius:var(--r);padding:10px 12px}
-.pnl-kpi-val{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--ink);line-height:1}
+.pnl-kpi-val{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:600;color:var(--ink);line-height:1}
 .pnl-kpi-lbl{font-size:11px;color:var(--ink4);text-transform:uppercase;letter-spacing:.4px;margin-top:3px}
 .pkv-pos{color:#2a7a2a}.pkv-neg{color:var(--ruby)}.pkv-neu{color:var(--gold)}
 
@@ -3359,8 +3362,10 @@ function renderWines(){
       <div class="wcmain">
         ${imgHTML}
         <div class="wbody">
-          <div class="wname">${esc(w.name)}</div>
-          <div class="wyear">${w.year?esc(w.year):'NV'}</div>
+          <div class="whead">
+            <div class="wname">${esc(w.name)}</div>
+            <div class="wyear">${w.year?esc(w.year):'NV'}</div>
+          </div>
           <div class="wmeta">${w.country?`<span class="wmeta-country">${esc(w.country)}</span><span class="wmeta-dot"></span>`:''} ${w.reg?`<span class="wmeta-reg">${esc(w.reg)}</span>`:''}${w.reg&&w.app?`<span class="wmeta-dot"></span>`:''}${w.app?`<span class="wmeta-txt">${esc(w.app)}</span>`:''}${w.cont?`<span class="wmeta-dot"></span><span class="wmeta-txt">${esc(w.cont)}</span>`:''}</div>
           <div class="wtags"><span class="tpill" style="background:${pb};color:${pt}">${esc(shortType)}</span>${w.ap?`<div class="apbadge">⏳ ${esc(w.ap)}</div>`:''}</div>
           ${pH}
@@ -3506,8 +3511,10 @@ function renderWishes(){
       <div class="wcmain">
         ${imgHTML}
         <div class="wbody">
-          <div class="wname" style="${w.done?'text-decoration:line-through':''}">${esc(w.name)}</div>
-          ${w.year?`<div class="wyear">${esc(w.year)}</div>`:''}
+          <div class="whead">
+            <div class="wname" style="${w.done?'text-decoration:line-through':''}">${esc(w.name)}</div>
+            ${w.year?`<div class="wyear">${esc(w.year)}</div>`:''}
+          </div>
           <div class="wmeta">${w.country?`<span class="wmeta-country">${esc(w.country)}</span><span class="wmeta-dot"></span>`:''} ${w.reg?`<span class="wmeta-reg">${esc(w.reg)}</span>`:''}${w.reg&&w.app?`<span class="wmeta-dot"></span>`:''}${w.app?`<span class="wmeta-txt">${esc(w.app)}</span>`:''}</div>
           <div class="wtags"><span class="tpill" style="background:${pb};color:${pt}">${esc(shortType)}</span></div>
           ${w.note?`<div class="wnotes">${esc(w.note)}</div>`:''}
