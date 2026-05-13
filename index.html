@@ -1188,8 +1188,14 @@ async function doLogout(){
         }
       });
 
-      window.addEventListener('online', ()=>{
-        if(db) db.enableNetwork().catch(()=>{});
+      window.addEventListener('online', async ()=>{
+        if(!db) return;
+        try{
+          await db.enableNetwork();
+          if(currentUser){
+            await Promise.all([loadFromFirebase(), loadUserProfile(currentUser.uid), loadDegVentes()]);
+          }
+        }catch(e){ console.error('reconnect:', e); }
       });
 
     }catch(e){
