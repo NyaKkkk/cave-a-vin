@@ -1188,6 +1188,10 @@ async function doLogout(){
         }
       });
 
+      window.addEventListener('online', ()=>{
+        if(db) db.enableNetwork().catch(()=>{});
+      });
+
     }catch(e){
       console.error('Firebase init error:', e);
       _showScreen('auth');
