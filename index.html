@@ -398,7 +398,7 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
 .delbtn{width:28px;height:28px;border-radius:6px;border:1.5px solid transparent;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;position:relative}
 .delbtn svg{width:13px;height:13px;stroke:var(--ink5);fill:none;stroke-width:2;stroke-linecap:round;transition:stroke .2s}
 .delbtn:hover{border-color:#fcc;background:#fff5f5}.delbtn:hover svg{stroke:var(--ruby)}
-.editbtn{height:34px;padding:0 10px;border-radius:6px;border:1.5px solid var(--ink5);background:var(--surface);cursor:pointer;font-size:11px;font-weight:600;color:var(--ink3);font-family:var(--font-body);transition:all .2s;display:flex;align-items:center;gap:4px}
+.editbtn{height:44px;padding:0 10px;border-radius:6px;border:1.5px solid var(--ink5);background:var(--surface);cursor:pointer;font-size:11px;font-weight:600;color:var(--ink3);font-family:var(--font-body);transition:all .2s;display:flex;align-items:center;gap:4px}
 .editbtn:hover{border-color:var(--gold2);color:var(--gold);background:var(--gold4)}
 .wfooter{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-top:1px solid var(--ink5);gap:8px}
 .footer-actions{display:flex;gap:6px;align-items:center}
@@ -929,7 +929,7 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--ruby);outline-offse
       <svg class="eye-off" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
     </button>
   <div class="user-menu-wrap" id="user-info" style="display:none">
-    <button type="button" class="user-avatar-btn" id="user-avatar-btn" onclick="toggleUserMenu()">
+    <button type="button" class="user-avatar-btn" id="user-avatar-btn" onclick="toggleUserMenu()" aria-expanded="false" aria-controls="user-dropdown" aria-label="Menu utilisateur">
       <span class="user-avatar-initials" id="user-avatar-initials">?</span>
     </button>
     <div class="user-dropdown" id="user-dropdown">
@@ -995,7 +995,7 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--ruby);outline-offse
       Filtres <span class="filter-badge" id="filter-badge" style="display:none">0</span>
     </button>
     <div class="export-wrap" style="position:relative;flex-shrink:0">
-      <button class="btn-filter" id="btn-export" onclick="toggleExportMenu(event)">
+      <button class="btn-filter" id="btn-export" onclick="toggleExportMenu(event)" aria-expanded="false" aria-controls="export-menu">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
         Exporter
       </button>
@@ -1780,7 +1780,7 @@ function renderDegustations(){
         <div style="flex:1"></div>
         <div style="width:1px;background:var(--ink5);margin:0 14px;flex-shrink:0"></div>
         <div style="flex-shrink:0;display:flex;align-items:center">
-          <button type="button" onclick="deleteDegustation('${d.id}')" title="Supprimer" class="delbtn" style="width:28px;height:28px;padding:0"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg></button>
+          <button type="button" onclick="deleteDegustation('${d.id}')" title="Supprimer" aria-label="Supprimer" class="delbtn" style="width:28px;height:28px;padding:0"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg></button>
         </div>
       </div>
     </div>`;
@@ -2074,13 +2074,16 @@ function updateUserMenu(){
 
 function toggleUserMenu(){
   const dd = document.getElementById('user-dropdown');
+  const btn = document.getElementById('user-avatar-btn');
   dd.classList.toggle('open');
+  btn.setAttribute('aria-expanded', String(dd.classList.contains('open')));
   // Fermer au clic ailleurs
   setTimeout(()=>{
     document.addEventListener('click', function closeDD(e){
       if(!document.getElementById('user-dropdown').contains(e.target) &&
          !document.getElementById('user-avatar-btn').contains(e.target)){
         document.getElementById('user-dropdown').classList.remove('open');
+        document.getElementById('user-avatar-btn').setAttribute('aria-expanded','false');
         document.removeEventListener('click', closeDD);
       }
     });
@@ -3279,19 +3282,20 @@ function toggleExportMenu(e){
   const isOpen=menu.classList.contains('open');
   menu.classList.toggle('open',!isOpen);
   btn.classList.toggle('active',!isOpen);
+  btn.setAttribute('aria-expanded',String(!isOpen));
 }
 document.addEventListener('click',function(e){
   const wrap=e.target.closest('.export-wrap');
   if(!wrap){
     const menu=document.getElementById('export-menu');
     const btn=document.getElementById('btn-export');
-    if(menu){menu.classList.remove('open');btn&&btn.classList.remove('active');}
+    if(menu){menu.classList.remove('open');btn&&btn.classList.remove('active');btn&&btn.setAttribute('aria-expanded','false');}
   }
 });
 
 function exportCSV(){
   document.getElementById('export-menu').classList.remove('open');
-  document.getElementById('btn-export').classList.remove('active');
+  const _eb1=document.getElementById('btn-export');if(_eb1){_eb1.classList.remove('active');_eb1.setAttribute('aria-expanded','false');}
   const list=caveWinesList.length?caveWinesList:wines;
   const critics=CRITICS.map(c=>c.l);
   const headers=['Nom','Type','Millésime','Pays','Région','Appellation','Contenant','Quantité','Prix achat (€)','Prix actuel (€)','Apogée','Certifications',...critics,'Notes'];
@@ -3314,7 +3318,7 @@ function exportCSV(){
 
 function exportPDF(){
   document.getElementById('export-menu').classList.remove('open');
-  document.getElementById('btn-export').classList.remove('active');
+  const _eb2=document.getElementById('btn-export');if(_eb2){_eb2.classList.remove('active');_eb2.setAttribute('aria-expanded','false');}
   const list=caveWinesList.length?caveWinesList:wines;
   const date=new Date().toLocaleDateString('fr-FR',{year:'numeric',month:'long',day:'numeric'});
   const total=list.reduce((s,w)=>s+w.qty,0);
@@ -3502,9 +3506,9 @@ function renderWines(){
       </div>
       <div class="wfooter">
         <div class="qctrl">
-          <button class="qbtn" onclick="chgQty('${w.id}',-1)">−</button>
+          <button class="qbtn" aria-label="Diminuer la quantité" onclick="chgQty('${w.id}',-1)">−</button>
           <span class="qval">${w.qty}</span>
-          <button class="qbtn" onclick="chgQty('${w.id}',+1)">+</button>
+          <button class="qbtn" aria-label="Augmenter la quantité" onclick="chgQty('${w.id}',+1)">+</button>
         </div>
         <div class="footer-actions">
           <button class="editbtn" onclick="editWine('${w.id}')"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Modifier</button>
@@ -3944,6 +3948,7 @@ function togglePw(id, btn){
   const shown = inp.type === 'text';
   inp.type = shown ? 'password' : 'text';
   btn.classList.toggle('shown', !shown);
+  btn.setAttribute('aria-label', shown ? 'Afficher le mot de passe' : 'Masquer le mot de passe');
 }
 
 // ── THEME TOGGLE ──
