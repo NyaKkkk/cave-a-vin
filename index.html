@@ -3,10 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Application de gestion de cave à vin">
+<meta name="description" content="Gérez votre cave à vin : inventaire, dégustations, statistiques, wishlist et suivi de valeur — votre sommelier numérique personnel.">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjUwNSAxNTAgMzM0IDQ5NiI+PGcgZmlsbD0iIzdhMWEyYSI+PHBhdGggZD0iTTUxMy45IDUwNi40IGMwIC05OSAwLjMgLTEyMi4yIDEuNSAtMTMyLjkgNC44IC00MC45IDIwLjYgLTcyLjggNTAuNCAtMTAxLjMgMTEuMyAtMTAuOSAyMi42IC0xOC43IDM2LjYgLTI1LjggMTEuOSAtNS44IDI5LjcgLTEyIDM1LjEgLTEyIGw0LjMgMCAwIDkuMSAwIDkgLTYuOSAyLjMgYy00OCAxNS44IC04NC40IDU0LjUgLTk3IDEwMy4yIC01LjUgMjEuMSAtNS42IDI0LjMgLTUuNiAxNDEuNyBsMCAxMDguNCAzNi45IDAgMzYuOSAwIDAgLTY2LjkgYzAgLTM3LjggMC40IC02Ny4zIDAuOSAtNjcuNiAwLjUgLTAuMyA2LjEgLTEuOSAxMi42IC0zLjYgMjEuMyAtNS41IDM2LjMgLTEyLjYgNTIgLTI0LjMgMTcgLTEyLjggMjkuNCAtMjcuNSAzOC43IC00NiAxMy42IC0yNy4yIDExLjEgLTQ0LjkgLTEwIC03MC4xIC04LjYgLTEwLjIgLTEzLjkgLTE5LjMgLTE3IC0yOC43IC0xLjUgLTQuOCAtMS44IC0xMC42IC0yLjMgLTQxLjEgLTAuMyAtMzEuMiAtMC4yIC0zNS44IDEuMiAtMzcuOSAyIC0zIDIgLTcuNCAwIC05LjQgLTEuMSAtMS4yIC0zLjcgLTEuNiAtMTAuMSAtMS42IC03LjcgMCAtOC43IDAuMiAtMTAuMSAyLjMgLTIgMi45IC0yIDQuNiAtMC4xIDguNCAyLjQgNC40IDIuMyA2Ni43IC0wLjEgNzYuMyAtMi42IDEwLjYgLTcuOCAyMC41IC0xNS44IDI5LjYgLTEyLjYgMTQuNSAtMTguMiAyNS43IC0yMC40IDM5LjggLTAuNyA0LjUgLTEuMSAyNS4xIC0xLjEgNTIuOSBsMCA0NS42IC0zLjggMC43IGMtMi4xIDAuNCAtNi4xIDAuOCAtOSAwLjggbC01LjEgMC4xIDAgLTUzLjIgYzAgLTUxLjkgMC4xIC01My40IDIuMyAtNjEuOSAzLjMgLTEyLjUgOS4yIC0yMy42IDE4LjIgLTM0LjMgMTYuMiAtMTkuMSAxNy45IC0yNC4yIDE4LjYgLTU2LjQgMC41IC0yMS42IDAuNCAtMjQuMSAtMS4zIC0yOC43IC0xLjUgLTMuOCAtMS45IC03LjYgLTEuOCAtMTUuOCAwIC0xMi42IDEuNCAtMTYuOCA3LjIgLTIxLjEgMy44IC0zIDQgLTMgMjAuMyAtMy4zIDEwIC0wLjMgMTcuOSAwIDIwLjIgMC43IDQuNiAxLjQgOS42IDYuOSAxMS4xIDEyLjEgMS42IDUuOCAxLjQgMjEuMiAtMC40IDI1LjYgLTIuMyA1LjMgLTIuMyA0OS41IDAgNTguMSAyLjUgOS40IDcuMSAxNy43IDE0LjIgMjUuOCAxMC45IDEyLjIgMTUgMTkgMTkuMiAzMS42IDIgNi4yIDIuNCA5IDIuNCAyMy40IDAgMTQuMyAtMC4zIDE3LjMgLTIuNCAyNC4xIC01LjggMTguNSAtMTcuNyAzNy45IC0zMi4zIDUyLjcgLTIwLjIgMjAuNCAtMzkuOCAzMS4zIC03NC4zIDQxLjQgbC0yLjYgMC44IC0wLjMgNTkuNSAtMC4yIDU5LjYgNDQuMSAwIGMyOC4zIDAgNDQuNyAtMC40IDQ2LjEgLTEgNS4xIC0yLjggNSAtMC43IDUgLTkzIGwwIC04NiA1LjcgLTEwLjMgYzUuNSAtOS44IDUuOSAtMTAuMiA5LjIgLTEwLjIgbDMuNSAwIDAgOTkuMSBjMCA2Ny41IC0wLjQgMTAwLjMgLTEuMSAxMDMuMSAtMS43IDYuNCAtNS43IDExLjUgLTExLjUgMTQuMyBsLTUuMiAyLjYgLTEwMy4yIDAgLTEwMy4yIDAgMCAtMTIwLjF6Ii8+CjxwYXRoIGQ9Ik03MzMuOSA2MjMuNyBjMCAtMS42IDEuNCAtNS43IDMuMyAtOS4yIGwzLjQgLTYuNCAzNS42IDAgMzUuNiAwIC0wLjQgLTExNC45IC0wLjMgLTExNSAtMi40IC0xMC4yIGMtOS4zIC00MS4xIC0zMS4xIC03NC41IC02Mi41IC05NS41IC05LjEgLTYuMSAtMjUuOCAtMTQuMiAtMzUuMiAtMTcuMiBsLTguOCAtMi43IDAgLTkuMSAwIC05LjEgNC4xIDAgYzUuOCAwIDIyLjIgNS40IDM1LjMgMTEuOCAzNi42IDE3LjYgNjYuNSA1Mi40IDc5LjcgOTIuOCAzLjQgMTAuNCA2LjMgMjQuOCA3LjcgMzYuOSAwLjcgNi40IDEuMSA1MS45IDEuMSAxMzAuMyBsMCAxMjAuMyAtNDguMSAwIC00OC4xIDAgMCAtMi44eiIvPjwvZz48L3N2Zz4=">
 <title>Cave à Vin — Sommelier numérique</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <script>
 // Chargement asynchrone de Chart.js - ne bloque pas le rendu
@@ -34,6 +35,25 @@ window.addEventListener('DOMContentLoaded', function() {
   --chrome-bg:#1a090d;--chrome-muted:rgba(255,255,255,.42);
   /* Radii */
   --r:8px;--r2:12px;--r3:20px;
+  /* Layout heights — modifier ici plutôt qu'en 6 endroits */
+  --header-h:clamp(54px,8vw,68px);--nav-h:43px;--topbar-h:52px;
+  --sticky-top:calc(var(--header-h) + var(--nav-h));
+  /* Status — texte sur surface claire */
+  --clr-pos:#2a7a2a;--clr-pos-bg:#edf7ed;--clr-pos-border:#90d090;
+  /* Status — texte sur surface sombre (header chrome) */
+  --clr-pos-header:#7ecfa0;--clr-neg-header:#f08080;
+  /* Négatif doux (delta badges) */
+  --clr-neg-bg:#fff0f0;--clr-neg-text:#8b1a1a;
+  /* Warning */
+  --clr-warn:#b8860b;--clr-warn-bg:#fff8e6;--clr-warn-border:#f0d080;
+  /* Info */
+  --clr-info:#1a5ab8;--clr-info-bg:#e8f0ff;--clr-info-border:#a0c0f0;
+  /* Z-index layers */
+  --z-dropdown:100;--z-sticky:148;--z-nav:149;--z-header:150;
+  --z-topbar:190;--z-sb-overlay:199;--z-sidebar:200;
+  --z-filter-overlay:399;--z-filter:400;
+  --z-modal-bg:498;--z-modal:499;--z-dialog:500;--z-ai:510;
+  --z-crop:601;--z-loader:999;--z-auth:1000;--z-toast:9999;--z-skip:10000;
 }
 [data-theme="dark"]{
   --ink:#ece0dc;--ink2:#d0c0bc;--ink3:#a89090;--ink4:#a08888;
@@ -41,13 +61,18 @@ window.addEventListener('DOMContentLoaded', function() {
   --gold:#ddb84c;--gold2:#c8a040;--gold3:#eeda70;--gold4:#28200c;
   --ruby:#e04c70;--ruby2:#ec5c7c;
   --surface:#1c1018;--bg:#130c10;
+  /* Status dark mode */
+  --clr-pos:#7ecfa0;--clr-pos-bg:rgba(42,122,42,.15);--clr-pos-border:rgba(42,122,42,.3);
+  --clr-neg-bg:rgba(139,26,42,.15);--clr-neg-text:#f08080;
+  --clr-warn:#e8c060;--clr-warn-bg:rgba(184,134,11,.15);--clr-warn-border:rgba(184,134,11,.3);
+  --clr-info:#80a8f0;--clr-info-bg:rgba(26,90,184,.15);--clr-info-border:rgba(26,90,184,.3);
 }
 html,body{width:100%;min-height:100vh}
 body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--ink);font-size:14px}
 .app{width:100%;margin:0 auto;padding:0 0 60px}
 
 /* HEADER */
-.header{background:var(--chrome-bg);padding:0 clamp(16px,4vw,36px);display:flex;align-items:center;justify-content:space-between;height:clamp(54px,8vw,68px);gap:16px;position:sticky;top:0;z-index:150}
+.header{background:var(--chrome-bg);padding:0 clamp(16px,4vw,36px);display:flex;align-items:center;justify-content:space-between;height:var(--header-h);gap:16px;position:sticky;top:0;z-index:var(--z-header)}
 .header-brand{display:flex;align-items:center;gap:10px;flex-shrink:0}
 .header-monogram{width:36px;height:36px;border:1.5px solid rgba(201,168,76,.5);border-radius:4px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:1px}
 .header-monogram span{font-family:'Cormorant Garamond',serif;font-size:11px;color:var(--gold3);line-height:1;letter-spacing:1px;font-weight:600}
@@ -60,7 +85,7 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--ink);font
 .hstat-val{font-family:'Cormorant Garamond',serif;font-size:clamp(14px,2.5vw,19px);font-weight:600;color:var(--gold3);line-height:1}
 .hstat-label{font-size:10px;color:var(--chrome-muted);text-transform:uppercase;letter-spacing:.8px;margin-top:1px}
 .hstat-sep{width:1px;height:26px;background:rgba(255,255,255,.08)}
-.pnl-pos{color:#7ecfa0}.pnl-neg{color:#f08080}.pnl-neu{color:var(--gold3)}
+.pnl-pos{color:var(--clr-pos-header)}.pnl-neg{color:var(--clr-neg-header)}.pnl-neu{color:var(--gold3)}
 /* PRIVATE MODE */
 .btn-privacy{width:34px;height:34px;background:none;border:none;cursor:pointer;color:rgba(255,255,255,.35);display:flex;align-items:center;justify-content:center;border-radius:6px;transition:color .2s,background .2s;flex-shrink:0}
 .btn-privacy:hover{color:var(--gold3);background:rgba(255,255,255,.07)}
@@ -110,19 +135,20 @@ body.private-mode .delta{filter:blur(7px);color:var(--ink4)!important;background
 @media(max-width:560px){.header-stats{display:none}.btn-privacy{display:none}}
 
 /* NAV */
-.nav{background:var(--surface);border-bottom:1px solid var(--ink5);padding:0 clamp(16px,4vw,36px);display:flex;overflow-x:auto;position:sticky;top:clamp(54px,8vw,68px);z-index:149}
+.nav{background:var(--surface);border-bottom:1px solid var(--ink5);padding:0 clamp(16px,4vw,36px);display:flex;overflow-x:auto;position:sticky;top:var(--header-h);z-index:var(--z-nav)}
 .nav::-webkit-scrollbar{display:none}
 .ntab{padding:13px 18px;font-size:11px;font-weight:600;color:var(--ink4);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap;letter-spacing:.5px;text-transform:uppercase}
 .ntab:hover{color:var(--ink2)}.ntab.active{color:var(--ruby);border-bottom-color:var(--ruby)}
+button.ntab{background:none;border-width:0 0 2px;border-style:solid;border-color:transparent;font-family:"DM Sans",sans-serif}
 
 .content{padding:clamp(14px,3vw,26px) clamp(16px,4vw,36px)}
 
 /* TOOLBAR */
-.toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;position:sticky;top:calc(clamp(54px,8vw,68px) + 43px);z-index:148;background:var(--bg);padding-top:10px;padding-bottom:10px;margin-left:calc(-1 * clamp(16px,4vw,36px));margin-right:calc(-1 * clamp(16px,4vw,36px));padding-left:clamp(16px,4vw,36px);padding-right:clamp(16px,4vw,36px)}
+.toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;position:sticky;top:var(--sticky-top);z-index:var(--z-sticky);background:var(--bg);padding-top:10px;padding-bottom:10px;margin-left:calc(-1 * clamp(16px,4vw,36px));margin-right:calc(-1 * clamp(16px,4vw,36px));padding-left:clamp(16px,4vw,36px);padding-right:clamp(16px,4vw,36px)}
 /* EDIT MODAL */
-#edit-backdrop{display:none;position:fixed;inset:0;background:rgba(28,10,13,.45);z-index:498}
+#edit-backdrop{display:none;position:fixed;inset:0;background:rgba(28,10,13,.45);z-index:var(--z-modal-bg)}
 #edit-backdrop.open{display:block}
-body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50%;transform:translateX(-50%);z-index:499;max-width:840px;width:calc(100% - 40px);max-height:calc(100vh - clamp(70px,9vw,90px) - 20px);overflow-y:auto;margin:0;box-shadow:0 8px 40px rgba(28,10,13,.25)}
+body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50%;transform:translateX(-50%);z-index:var(--z-modal);max-width:840px;width:calc(100% - 40px);max-height:calc(100vh - clamp(70px,9vw,90px) - 20px);overflow-y:auto;margin:0;box-shadow:0 8px 40px rgba(28,10,13,.25)}
 .search-wrap{position:relative;flex:1;min-width:160px;display:flex;align-items:center}
 .search-wrap svg{position:absolute;left:11px;width:15px;height:15px;stroke:var(--ink4);fill:none;stroke-width:2;stroke-linecap:round;pointer-events:none}
 .search-inp{width:100%;height:40px;padding-left:36px;padding-right:12px;padding-top:0;padding-bottom:0;border:1.5px solid var(--ink5);border-radius:var(--r);background:var(--surface);font-family:"DM Sans",sans-serif;font-size:13px;color:var(--ink);outline:none;transition:border-color .2s}
@@ -146,7 +172,7 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
 .more-btn{height:32px;padding:0 13px;border:1.5px solid var(--ink5);border-radius:var(--r3);background:var(--surface);font-family:"DM Sans",sans-serif;font-size:11px;font-weight:500;color:var(--ink3);cursor:pointer;transition:all .2s;white-space:nowrap;display:inline-flex;align-items:center;gap:5px}
 .more-btn:hover{border-color:var(--ink4);color:var(--ink)}
 .more-btn.open,.more-btn.active{border-color:var(--ink);background:var(--ink6);color:var(--ink)}
-.more-dropdown{display:none;position:absolute;top:calc(100% + 6px);left:0;z-index:100;background:var(--surface);border:1.5px solid var(--ink5);border-radius:var(--r2);padding:8px;min-width:220px;box-shadow:0 4px 20px rgba(28,10,13,.12)}
+.more-dropdown{display:none;position:absolute;top:calc(100% + 6px);left:0;z-index:var(--z-dropdown);background:var(--surface);border:1.5px solid var(--ink5);border-radius:var(--r2);padding:8px;min-width:220px;box-shadow:0 4px 20px rgba(28,10,13,.12)}
 .more-dropdown.open{display:flex;flex-direction:column;gap:4px}
 .more-dropdown .chip{width:100%;justify-content:flex-start;border-radius:var(--r);height:34px}
 
@@ -156,14 +182,14 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
 .btn-filter:active{transform:scale(.98)}
 .btn-filter.active{border-color:var(--ruby);color:var(--ruby);background:var(--surface)}
 .filter-badge{display:inline-flex;align-items:center;justify-content:center;min-width:16px;height:16px;background:var(--ruby);color:#fff;border-radius:8px;font-size:10px;font-weight:700;padding:0 3px}
-.export-menu{display:none;position:absolute;top:calc(100% + 6px);right:0;z-index:200;background:var(--surface);border:1.5px solid var(--ink5);border-radius:var(--r2);padding:6px;min-width:180px;box-shadow:0 4px 20px rgba(28,10,13,.12)}
+.export-menu{display:none;position:absolute;top:calc(100% + 6px);right:0;z-index:var(--z-sidebar);background:var(--surface);border:1.5px solid var(--ink5);border-radius:var(--r2);padding:6px;min-width:180px;box-shadow:0 4px 20px rgba(28,10,13,.12)}
 .export-menu.open{display:flex;flex-direction:column;gap:3px}
 .export-menu-item{display:flex;align-items:center;gap:8px;padding:0 10px;height:36px;border:none;border-radius:var(--r);background:none;font-family:"DM Sans",sans-serif;font-size:12px;font-weight:500;color:var(--ink3);cursor:pointer;transition:background .15s,color .15s;text-align:left;white-space:nowrap;width:100%}
 .export-menu-item:hover{background:var(--ink6);color:var(--ink)}
 /* FILTER SIDEBAR */
-.filter-overlay{position:fixed;top:clamp(54px,8vw,68px);left:0;right:0;bottom:0;background:rgba(28,10,13,.25);z-index:399;display:none}
+.filter-overlay{position:fixed;top:var(--header-h);left:0;right:0;bottom:0;background:rgba(28,10,13,.25);z-index:var(--z-filter-overlay);display:none}
 .filter-overlay.open{display:block}
-.filter-sidebar{position:fixed;top:clamp(54px,8vw,68px);left:-360px;width:320px;height:calc(100vh - clamp(54px,8vw,68px));background:var(--surface);border-right:1.5px solid var(--ink5);z-index:400;transition:left .3s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;box-shadow:8px 0 24px rgba(28,10,13,.1)}
+.filter-sidebar{position:fixed;top:var(--header-h);left:-360px;width:320px;height:calc(100vh - var(--header-h));background:var(--surface);border-right:1.5px solid var(--ink5);z-index:var(--z-filter);transition:left .3s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;box-shadow:8px 0 24px rgba(28,10,13,.1)}
 .filter-sidebar.open{left:0}
 .filter-sidebar-header{display:flex;align-items:center;justify-content:space-between;padding:20px 20px 16px;border-bottom:1px solid var(--ink5);flex-shrink:0}
 .filter-sidebar-title{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--ink)}
@@ -190,9 +216,9 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
 .cave-btn-edit:hover{border-color:var(--ink3);color:var(--ink)}
 .cave-btn-del{background:var(--surface);border:1.5px solid var(--ink5);color:var(--ink4)}
 .cave-btn-del:hover{border-color:var(--ruby2);color:var(--ruby2)}
-#cave-form-backdrop{display:none;position:fixed;inset:0;background:rgba(28,10,13,.45);z-index:498}
+#cave-form-backdrop{display:none;position:fixed;inset:0;background:rgba(28,10,13,.45);z-index:var(--z-modal-bg)}
 #cave-form-backdrop.open{display:block}
-#cave-form-modal{display:none;position:fixed;top:clamp(70px,9vw,90px);left:50%;transform:translateX(-50%);z-index:499;max-width:520px;width:calc(100% - 40px);max-height:calc(100vh - clamp(70px,9vw,90px) - 20px);overflow-y:auto;background:var(--surface);border:1.5px solid var(--ink5);border-radius:var(--r2);padding:22px;box-shadow:0 8px 40px rgba(28,10,13,.25)}
+#cave-form-modal{display:none;position:fixed;top:clamp(70px,9vw,90px);left:50%;transform:translateX(-50%);z-index:var(--z-modal);max-width:520px;width:calc(100% - 40px);max-height:calc(100vh - clamp(70px,9vw,90px) - 20px);overflow-y:auto;background:var(--surface);border:1.5px solid var(--ink5);border-radius:var(--r2);padding:22px;box-shadow:0 8px 40px rgba(28,10,13,.25)}
 #cave-form-modal.open{display:block}
 .wine-location{font-size:11px;color:var(--ink4);display:inline-flex;align-items:center;gap:3px;margin-top:2px}
 .filter-section{display:flex;flex-direction:column;gap:10px}
@@ -305,13 +331,12 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
 .btn-ghost,.bcan{height:44px;padding:0 14px;background:none;color:var(--ink4);border:1.5px solid var(--ink5);border-radius:var(--r);font-family:"DM Sans",sans-serif;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:border-color .18s,color .18s}
 .btn-ghost:hover,.bcan:hover{border-color:var(--ink4);color:var(--ink3)}
 
-/* WINE CARDS — grille 2 colonnes sur desktop, 1 sur mobile */
-.wlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(480px,1fr));gap:10px;grid-auto-rows:1fr}
+/* WINE CARDS — 1 col mobile, 2 col laptop, 3 col wide */
+.wlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:10px;grid-auto-rows:1fr}
 @media(max-width:700px){.wlist{grid-template-columns:1fr;grid-auto-rows:auto}}
-.wcard{background:var(--surface);border:1px solid var(--ink5);border-radius:var(--r2);overflow:hidden;transition:box-shadow .2s,border-color .2s;display:flex;flex-direction:column}
-.wcard:hover{border-color:var(--ink4);box-shadow:0 4px 16px rgba(28,10,13,.07)}
-.wcmain{display:grid;grid-template-columns:4px auto minmax(0,1fr);align-items:stretch;flex:1}
-.tbar{width:4px;align-self:stretch;flex-shrink:0}
+.wcard{background:var(--surface);border:1px solid var(--ink5);border-top:3px solid var(--wtype-clr,var(--ink5));border-radius:var(--r2);overflow:hidden;transition:box-shadow .2s,border-color .2s;display:flex;flex-direction:column}
+.wcard:hover{border-color:var(--ink4);border-top-color:var(--wtype-clr,var(--ink4));box-shadow:0 4px 16px rgba(28,10,13,.07)}
+.wcmain{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:stretch;flex:1}
 .wimg-zone{display:flex;flex-shrink:0;background:#fff;gap:1px}
 .wscores-col{width:52px;display:flex;flex-direction:column;gap:3px;padding:8px 0 8px 16px;flex-shrink:0;align-self:flex-start}
 .wbottle-col{width:112px;min-height:200px;display:flex;align-items:center;justify-content:center;flex-shrink:0;padding:8px 0}
@@ -337,7 +362,7 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
 .wyear{font-family:'Cormorant Garamond',serif;font-size:14px;font-weight:600;color:var(--ink);letter-spacing:1px;line-height:1.2}
 .tpill{font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;white-space:nowrap}
 .wtags{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
-.apbadge{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:600;color:#2a6a2a;background:#edf7ed;border-radius:4px;padding:2px 7px}
+.apbadge{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:600;color:var(--clr-pos);background:var(--clr-pos-bg);border-radius:4px;padding:2px 7px}
 /* CERTIFICATIONS VITICULTURE */
 .cert-badge{display:block;width:28px;height:28px;background:rgba(255,255,255,0.92);border-radius:4px;padding:1px;cursor:default}
 .cert-badge:hover{transform:scale(1.06)}
@@ -359,15 +384,15 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
 .wprice-item{display:flex;flex-direction:column}
 .wprice-lbl{font-size:10px;font-weight:600;color:var(--ink4);letter-spacing:.1px}
 .wprice-val{font-size:12px;font-weight:600;color:var(--ink2)}
-.wpc-pos{color:#2a7a2a}.wpc-neg{color:var(--ruby)}.wpc-neu{color:var(--gold)}
+.wpc-pos{color:var(--clr-pos)}.wpc-neg{color:var(--ruby)}.wpc-neu{color:var(--gold)}
 .delta{font-size:10px;font-weight:600;padding:2px 7px;border-radius:4px}
-.dp{background:#edf7ed;color:#1a5a1a}.dn{background:#fff0f0;color:#8b1a1a}.dne{background:var(--gold4);color:var(--gold)}
+.dp{background:var(--clr-pos-bg);color:var(--clr-pos)}.dn{background:var(--clr-neg-bg);color:var(--clr-neg-text)}.dne{background:var(--gold4);color:var(--gold)}
 .wnotes{font-size:11px;color:var(--ink4);font-style:italic;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
 .wright{display:none}
 .qctrl{display:flex;align-items:center;gap:6px}
 .qbtn{width:28px;height:28px;border-radius:6px;border:1.5px solid var(--ink5);background:var(--surface);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;color:var(--ink3);transition:all .15s;font-family:"DM Sans",sans-serif;font-weight:500}
 .qbtn:hover{background:var(--ink);color:#fff;border-color:var(--ink)}
-.qval{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;color:var(--ink);min-width:26px;text-align:center}
+.qval{font-family:"DM Sans",sans-serif;font-size:18px;font-weight:600;color:var(--ink);min-width:26px;text-align:center}
 .delbtn{width:28px;height:28px;border-radius:6px;border:1.5px solid transparent;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
 .delbtn svg{width:13px;height:13px;stroke:var(--ink5);fill:none;stroke-width:2;stroke-linecap:round;transition:stroke .2s}
 .delbtn:hover{border-color:#fcc;background:#fff5f5}.delbtn:hover svg{stroke:var(--ruby)}
@@ -375,8 +400,8 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
 .editbtn:hover{border-color:var(--gold2);color:var(--gold);background:var(--gold4)}
 .wfooter{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-top:1px solid var(--ink5);gap:8px}
 .footer-actions{display:flex;gap:6px;align-items:center}
-/* Reveal actions on hover — desktop uniquement */
-@media(hover:hover){
+/* Reveal actions on hover — vrai pointeur uniquement (exclut touch) */
+@media(hover:hover) and (pointer:fine){
   .wcard .footer-actions{opacity:0;transition:opacity .2s ease}
   .wcard:hover .footer-actions{opacity:1}
   .wcard .wfooter{background:var(--surface)}
@@ -408,7 +433,7 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
 .pnl-kpi{background:var(--ink6);border-radius:var(--r);padding:10px 12px}
 .pnl-kpi-val{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--ink);line-height:1}
 .pnl-kpi-lbl{font-size:11px;color:var(--ink4);text-transform:uppercase;letter-spacing:.4px;margin-top:3px}
-.pkv-pos{color:#2a7a2a}.pkv-neg{color:var(--ruby)}.pkv-neu{color:var(--gold)}
+.pkv-pos{color:var(--clr-pos)}.pkv-neg{color:var(--ruby)}.pkv-neu{color:var(--gold)}
 
 /* WISHLIST */
 .wish-shdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px}
@@ -434,13 +459,14 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
 .api-hint{font-size:10px;color:var(--ink4);width:100%}
 
 /* AUTH */
-.auth-screen{position:fixed;inset:0;background:var(--chrome-bg);display:flex;align-items:center;justify-content:center;z-index:1000;flex-direction:column;gap:24px}
+.auth-screen{position:fixed;inset:0;background:var(--chrome-bg);display:flex;align-items:center;justify-content:center;z-index:var(--z-auth);flex-direction:column;gap:24px}
 .auth-box{background:var(--surface);border-radius:var(--r2);padding:40px;width:100%;max-width:420px;box-shadow:0 8px 40px rgba(0,0,0,.3)}
 .auth-logo{text-align:center;margin-bottom:28px}
 .auth-logo-title{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:300;color:#fff;letter-spacing:8px}
 .auth-logo-sub{font-size:10px;color:var(--ink4);letter-spacing:4px;text-transform:uppercase;margin-top:4px}
 .auth-tabs{display:flex;border-bottom:1px solid var(--ink5);margin-bottom:24px}
 .auth-tab{flex:1;padding:10px;text-align:center;font-size:13px;font-weight:500;color:var(--ink4);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s}
+button.auth-tab{background:none;border-width:0 0 2px;border-style:solid;border-color:transparent;font-family:"DM Sans",sans-serif;width:100%}
 .auth-tab.active{color:var(--ruby);border-bottom-color:var(--ruby)}
 .auth-field{margin-bottom:14px}
 .auth-field label{display:block;font-size:11px;font-weight:500;color:var(--ink4);text-transform:none;letter-spacing:0;margin-bottom:5px}
@@ -449,14 +475,14 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
 .auth-btn{width:100%;height:44px;background:var(--ruby);color:#fff;border:none;border-radius:var(--r);font-family:"DM Sans",sans-serif;font-size:13px;font-weight:600;cursor:pointer;margin-top:8px;transition:background .2s}
 .auth-btn:hover{background:var(--ruby2)}
 .auth-err{font-size:12px;color:var(--ruby);margin-top:10px;text-align:center;min-height:18px}
-.auth-msg{font-size:12px;color:#2a7a2a;margin-top:10px;text-align:center;min-height:18px}
+.auth-msg{font-size:12px;color:var(--clr-pos);margin-top:10px;text-align:center;min-height:18px}
 /* USER MENU */
 .user-menu-wrap{position:relative}
 .user-avatar-btn{width:36px;height:36px;border-radius:50%;border:2px solid rgba(201,168,76,.4);background:rgba(201,168,76,.15);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;overflow:hidden}
 .user-avatar-btn:hover{border-color:var(--gold2);background:rgba(201,168,76,.25)}
 .user-avatar-btn img{width:100%;height:100%;object-fit:cover;border-radius:50%}
 .user-avatar-initials{font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:600;color:var(--gold2)}
-.user-dropdown{position:absolute;top:calc(100% + 10px);right:0;background:var(--surface);border:1px solid var(--ink5);border-radius:var(--r2);box-shadow:0 8px 32px rgba(0,0,0,.15);width:220px;z-index:200;display:none;overflow:hidden}
+.user-dropdown{position:absolute;top:calc(100% + 10px);right:0;background:var(--surface);border:1px solid var(--ink5);border-radius:var(--r2);box-shadow:0 8px 32px rgba(0,0,0,.15);width:220px;z-index:var(--z-sidebar);display:none;overflow:hidden}
 .user-dropdown.open{display:block}
 .user-dropdown-header{padding:14px 16px;border-bottom:1px solid var(--ink5);background:var(--ink6)}
 .user-dropdown-name{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:600;color:var(--ink)}
@@ -470,7 +496,7 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
 .user-dropdown-item.danger:hover{background:#fff5f5}
 
 /* MODAL PROFIL */
-.modal-overlay{position:fixed;inset:0;background:rgba(28,10,13,.5);z-index:500;display:none;align-items:center;justify-content:center;backdrop-filter:blur(2px)}
+.modal-overlay{position:fixed;inset:0;background:rgba(28,10,13,.5);z-index:var(--z-dialog);display:none;align-items:center;justify-content:center;backdrop-filter:blur(2px)}
 .modal-overlay.open{display:flex}
 .modal-box{background:var(--surface);border-radius:var(--r2);padding:32px;width:100%;max-width:480px;box-shadow:0 16px 48px rgba(0,0,0,.2);position:relative;max-height:90vh;overflow-y:auto}
 .modal-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--ink);margin-bottom:24px}
@@ -491,7 +517,7 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
 .profile-save-btn{width:100%;height:40px;background:var(--ruby);color:#fff;border:none;border-radius:var(--r);font-family:"DM Sans",sans-serif;font-size:13px;font-weight:600;cursor:pointer;margin-top:20px;transition:background .2s}
 .profile-save-btn:hover{background:#6d1420}
 /* CROP PHOTO */
-#photo-crop-modal{position:fixed;inset:0;background:rgba(28,10,13,.82);z-index:601;display:none;align-items:center;justify-content:center}
+#photo-crop-modal{position:fixed;inset:0;background:rgba(28,10,13,.82);z-index:var(--z-crop);display:none;align-items:center;justify-content:center}
 #photo-crop-modal.open{display:flex}
 .crop-modal-box{background:var(--surface);border-radius:var(--r2);padding:24px;display:flex;flex-direction:column;align-items:center;gap:16px;box-shadow:0 8px 40px rgba(0,0,0,.4)}
 .crop-modal-title{font-size:15px;font-weight:600;color:var(--ink);align-self:flex-start}
@@ -531,12 +557,12 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
 .auth-right{flex:1;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:40px;overflow-y:auto}
 .auth-form-card{width:100%;max-width:380px;background:#fff;border-radius:16px;padding:40px;box-shadow:0 4px 32px rgba(28,10,13,.09)}
 @media(max-width:720px){.auth-left{display:none}.auth-right{flex:1;background:#1c0a0d}.auth-form-card{box-shadow:0 4px 24px rgba(0,0,0,.3)}}
-.loading-screen{position:fixed;inset:0;background:var(--ink);display:flex;align-items:center;justify-content:center;z-index:999;flex-direction:column;gap:16px}
+.loading-screen{position:fixed;inset:0;background:var(--ink);display:flex;align-items:center;justify-content:center;z-index:var(--z-loader);flex-direction:column;gap:16px}
 .loading-spinner{width:32px;height:32px;border:2px solid rgba(201,168,76,.3);border-top-color:var(--gold2);border-radius:50%;animation:spin .7s linear infinite}
 .loading-text{font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--gold3);letter-spacing:2px}
 
 /* ── MODAL CHOIX AJOUT ── */
-.add-choice-modal{position:fixed;inset:0;background:rgba(28,10,13,.6);z-index:500;display:none;align-items:center;justify-content:center;backdrop-filter:blur(3px)}
+.add-choice-modal{position:fixed;inset:0;background:rgba(28,10,13,.6);z-index:var(--z-dialog);display:none;align-items:center;justify-content:center;backdrop-filter:blur(3px)}
 .add-choice-modal.open{display:flex}
 .add-choice-box{background:var(--surface);border-radius:16px;padding:32px;max-width:400px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.25)}
 .add-choice-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--ink);margin-bottom:6px;text-align:center}
@@ -549,7 +575,7 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
 .add-choice-btn-label{font-size:14px;font-weight:600;color:var(--ink);font-family:"DM Sans",sans-serif}
 .add-choice-btn-hint{font-size:11px;color:var(--ink4)}
 /* ── MODAL IA ── */
-.ai-modal{position:fixed;inset:0;background:rgba(28,10,13,.6);z-index:510;display:none;align-items:center;justify-content:center;backdrop-filter:blur(3px)}
+.ai-modal{position:fixed;inset:0;background:rgba(28,10,13,.6);z-index:var(--z-ai);display:none;align-items:center;justify-content:center;backdrop-filter:blur(3px)}
 .ai-modal.open{display:flex}
 .ai-modal-box{background:var(--surface);border-radius:16px;padding:28px;max-width:480px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.25);position:relative}
 .ai-modal-title{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--ink);margin-bottom:20px;display:flex;align-items:center;gap:8px}
@@ -586,7 +612,7 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
 .winebtn{height:28px;padding:0 8px;border-radius:6px;border:1.5px solid var(--ink5);background:var(--surface);cursor:pointer;font-size:13px;transition:all .2s;display:inline-flex;align-items:center;justify-content:center}
 .winebtn:hover{transform:scale(1.1)}
 .wine-drink:hover{border-color:var(--ruby)!important;color:var(--ruby)!important}
-.wine-sell:hover{border-color:#b8860b!important;color:#b8860b!important}
+.wine-sell:hover{border-color:var(--clr-warn)!important;color:var(--clr-warn)!important}
 
 /* ── CARTES DÉGUSTATION ── */
 .deg-card{background:var(--surface);border:1px solid var(--ink5);border-radius:var(--r2);padding:16px 28px;display:flex;gap:18px;align-items:center;margin-bottom:4px}
@@ -612,12 +638,12 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
 .vente-card-pnl{text-align:right}
 .vente-card-price{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:700;color:var(--ink)}
 .vente-card-pnl-val{font-size:13px;font-weight:600;margin-top:2px}
-.vente-pnl-pos{color:#2a7a2a}
+.vente-pnl-pos{color:var(--clr-pos)}
 .vente-pnl-neg{color:var(--ruby)}
 .vente-status{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:3px 9px;border-radius:10px;margin-top:6px}
-.vente-status-a_vendre{background:#fff8e6;color:#b8860b;border:1px solid #f0d080}
-.vente-status-en_cours{background:#e8f0ff;color:#1a5ab8;border:1px solid #a0c0f0}
-.vente-status-vendu{background:#e8f8e8;color:#2a7a2a;border:1px solid #90d090}
+.vente-status-a_vendre{background:var(--clr-warn-bg);color:var(--clr-warn);border:1px solid var(--clr-warn-border)}
+.vente-status-en_cours{background:var(--clr-info-bg);color:var(--clr-info);border:1px solid var(--clr-info-border)}
+.vente-status-vendu{background:var(--clr-pos-bg);color:var(--clr-pos);border:1px solid var(--clr-pos-border)}
 
 /* ── TAB HEADER ── */
 .tab-header{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px}
@@ -662,7 +688,7 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
 }
 
 /* ── TOASTS ── */
-#toast-wrap{position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+#toast-wrap{position:fixed;bottom:24px;right:24px;z-index:var(--z-toast);display:flex;flex-direction:column;gap:8px;pointer-events:none}
 .toast{padding:12px 16px;border-radius:var(--r);font-size:13px;font-weight:500;font-family:"DM Sans",sans-serif;display:flex;align-items:center;gap:10px;min-width:240px;max-width:360px;box-shadow:0 4px 20px rgba(0,0,0,.18);pointer-events:auto;animation:toast-in .25s ease-out;backdrop-filter:blur(4px)}
 @keyframes toast-in{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:none}}
 .toast.removing{animation:toast-out .2s ease-in forwards}
@@ -676,6 +702,9 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
 /* ── ACCESSIBILITÉ ── */
 :focus-visible{outline:2px solid var(--ruby);outline-offset:2px;border-radius:3px}
 button:focus-visible,a:focus-visible{outline:2px solid var(--ruby);outline-offset:3px}
+.skip-link{position:absolute;top:-999px;left:16px;z-index:var(--z-skip);padding:10px 18px;background:var(--ruby);color:#fff;font-family:"DM Sans",sans-serif;font-size:13px;font-weight:600;border-radius:0 0 var(--r) var(--r);text-decoration:none;transition:top .15s}
+.skip-link:focus{top:0}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 }
@@ -689,9 +718,52 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--ruby);outline-offse
 .pw-toggle.shown .icon-eye-on{display:none}
 .pw-toggle.shown .icon-eye-off{display:block}
 
+/* ── SIDEBAR LAYOUT ── */
+.sidebar{position:fixed;top:0;left:0;width:220px;height:100vh;background:var(--chrome-bg);display:flex;flex-direction:column;z-index:var(--z-sidebar);border-right:1px solid rgba(255,255,255,.06);overflow:hidden}
+.sb-brand{padding:22px 18px 18px;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;gap:10px;flex-shrink:0}
+.sb-brand-title{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:600;color:#fff;letter-spacing:.3px;line-height:1.2}
+.sb-brand-sub{font-size:9px;color:rgba(255,255,255,.32);letter-spacing:1.5px;text-transform:uppercase;margin-top:2px}
+.sb-nav{flex:1;overflow-y:auto;padding:10px 10px;display:flex;flex-direction:column;gap:2px}
+.sb-nav::-webkit-scrollbar{display:none}
+.sb-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:7px;font-size:12px;font-weight:500;color:rgba(255,255,255,.45);cursor:pointer;transition:color .15s,background .15s;border:1px solid transparent;user-select:none}
+.sb-item:hover{color:rgba(255,255,255,.82);background:rgba(255,255,255,.05)}
+.sb-item.active{color:#fff;background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.07)}
+.sb-item svg{width:15px;height:15px;flex-shrink:0;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.sb-stats{padding:14px 16px;border-top:1px solid rgba(255,255,255,.07);display:grid;grid-template-columns:1fr 1fr;gap:10px 8px;flex-shrink:0}
+.sb-stat{display:flex;flex-direction:column;gap:2px}
+.sb-stat-val{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:600;color:var(--gold3);line-height:1}
+.sb-stat-lbl{font-size:9px;color:rgba(255,255,255,.28);text-transform:uppercase;letter-spacing:.8px;margin-top:1px}
+.sb-footer{padding:10px 12px;border-top:1px solid rgba(255,255,255,.07);display:flex;align-items:center;gap:4px;flex-shrink:0}
+.sb-footer .btn-theme-toggle,.sb-footer .btn-privacy{width:30px;height:30px}
+.sb-user{margin-left:auto}
+.sb-footer .user-dropdown{top:auto;bottom:calc(100% + 8px);right:0;width:220px}
+
+/* MAIN WRAP */
+.main-wrap{margin-left:220px;display:flex;flex-direction:column;min-height:100vh}
+
+/* MOBILE TOPBAR */
+.mobile-topbar{display:none;position:sticky;top:0;z-index:var(--z-topbar);height:52px;background:var(--chrome-bg);align-items:center;padding:0 16px;gap:12px;border-bottom:1px solid rgba(255,255,255,.07);flex-shrink:0}
+.mobile-topbar-title{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:600;color:#fff;letter-spacing:.3px}
+.burger-btn{width:36px;height:36px;background:none;border:none;cursor:pointer;color:rgba(255,255,255,.65);display:flex;align-items:center;justify-content:center;border-radius:6px;transition:background .15s;flex-shrink:0}
+.burger-btn:hover{background:rgba(255,255,255,.07)}
+.sb-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:var(--z-sb-overlay)}
+.sb-overlay.open{display:block}
+
+@media(max-width:760px){
+  .sidebar{left:-220px;transition:left .26s cubic-bezier(.4,0,.2,1)}
+  .sidebar.open{left:0}
+  .main-wrap{margin-left:0}
+  .mobile-topbar{display:flex}
+  .toolbar{top:var(--topbar-h)}
+  .filter-overlay,.filter-sidebar{top:var(--topbar-h)}
+  .filter-sidebar{height:calc(100vh - var(--topbar-h))}
+}
+
 </style>
 </head>
 <body>
+
+<a class="skip-link" href="#main-content">Aller au contenu principal</a>
 
 <!-- LOADING -->
 <div id="loading-screen" style="position:fixed;inset:0;background:var(--chrome-bg);display:flex;align-items:center;justify-content:center;z-index:9999;flex-direction:column;gap:16px">
@@ -788,25 +860,29 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--ruby);outline-offse
           <div style="font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:600;color:var(--ink);line-height:1.2">Bienvenue</div>
           <div style="font-size:13px;color:var(--ink4);margin-top:6px">Connectez-vous à votre cave à vin</div>
         </div>
-        <div class="auth-tabs">
-          <div id="tab-login" class="auth-tab active" onclick="switchAuthTab('login')">Connexion</div>
-          <div id="tab-signup" class="auth-tab" onclick="switchAuthTab('signup')">Inscription</div>
+        <div class="auth-tabs" role="tablist">
+          <button type="button" id="tab-login" class="auth-tab active" role="tab" aria-selected="true" onclick="switchAuthTab('login')">Connexion</button>
+          <button type="button" id="tab-signup" class="auth-tab" role="tab" aria-selected="false" onclick="switchAuthTab('signup')">Inscription</button>
         </div>
-        <div id="auth-login">
-          <div class="auth-field"><label>Email</label><input type="email" id="login-email" placeholder="votre@email.com"></div>
-          <div class="auth-field" style="margin-bottom:6px"><label>Mot de passe</label><div class="pw-wrap"><input type="password" id="login-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"><button type="button" class="pw-toggle" onclick="togglePw('login-pass',this)" tabindex="-1" aria-label="Afficher le mot de passe"><svg class="icon-eye-on" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg><svg class="icon-eye-off" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg></button></div></div>
-          <div style="text-align:right;margin-bottom:16px"><span onclick="doForgotPassword()" style="font-size:12px;color:var(--ruby);cursor:pointer;text-decoration:underline;font-family:"DM Sans",sans-serif">Mot de passe oublié ?</span></div>
-          <button class="auth-btn" onclick="doLogin()">Se connecter</button>
+        <div id="auth-login" role="tabpanel" aria-labelledby="tab-login">
+          <form onsubmit="doLogin();return false;" novalidate>
+          <div class="auth-field"><label for="login-email">Email</label><input type="email" id="login-email" placeholder="votre@email.com" autocomplete="email"></div>
+          <div class="auth-field" style="margin-bottom:6px"><label for="login-pass">Mot de passe</label><div class="pw-wrap"><input type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password"><button type="button" class="pw-toggle" onclick="togglePw('login-pass',this)" tabindex="-1" aria-label="Afficher le mot de passe"><svg class="icon-eye-on" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg><svg class="icon-eye-off" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg></button></div></div>
+          <div style="text-align:right;margin-bottom:16px"><button type="button" onclick="doForgotPassword()" style="font-size:12px;color:var(--ruby);cursor:pointer;text-decoration:underline;font-family:'DM Sans',sans-serif;background:none;border:none;padding:0">Mot de passe oublié ?</button></div>
+          <button type="submit" class="auth-btn">Se connecter</button>
+          </form>
         </div>
-        <div id="auth-signup" style="display:none">
+        <div id="auth-signup" role="tabpanel" aria-labelledby="tab-signup" style="display:none">
+          <form onsubmit="doSignup();return false;" novalidate>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
-            <div class="auth-field" style="margin-bottom:0"><label>Prénom</label><input type="text" id="signup-firstname" placeholder="Thomas"></div>
-            <div class="auth-field" style="margin-bottom:0"><label>Nom</label><input type="text" id="signup-lastname" placeholder="Dupont"></div>
+            <div class="auth-field" style="margin-bottom:0"><label for="signup-firstname">Prénom</label><input type="text" id="signup-firstname" placeholder="Thomas" autocomplete="given-name"></div>
+            <div class="auth-field" style="margin-bottom:0"><label for="signup-lastname">Nom</label><input type="text" id="signup-lastname" placeholder="Dupont" autocomplete="family-name"></div>
           </div>
-          <div class="auth-field"><label>Nom de la cave</label><input type="text" id="signup-cave" placeholder="Cave de Thomas"></div>
-          <div class="auth-field"><label>Email</label><input type="email" id="signup-email" placeholder="votre@email.com"></div>
-          <div class="auth-field"><label>Mot de passe</label><div class="pw-wrap"><input type="password" id="signup-pass" placeholder="Min. 6 caractères" onkeydown="if(event.key==='Enter')doSignup()"><button type="button" class="pw-toggle" onclick="togglePw('signup-pass',this)" tabindex="-1" aria-label="Afficher le mot de passe"><svg class="icon-eye-on" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg><svg class="icon-eye-off" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg></button></div></div>
-          <button class="auth-btn" onclick="doSignup()">Créer mon compte</button>
+          <div class="auth-field"><label for="signup-cave">Nom de la cave</label><input type="text" id="signup-cave" placeholder="Cave de Thomas" autocomplete="off"></div>
+          <div class="auth-field"><label for="signup-email">Email</label><input type="email" id="signup-email" placeholder="votre@email.com" autocomplete="email"></div>
+          <div class="auth-field"><label for="signup-pass">Mot de passe</label><div class="pw-wrap"><input type="password" id="signup-pass" placeholder="Min. 6 caractères" autocomplete="new-password"><button type="button" class="pw-toggle" onclick="togglePw('signup-pass',this)" tabindex="-1" aria-label="Afficher le mot de passe"><svg class="icon-eye-on" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg><svg class="icon-eye-off" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg></button></div></div>
+          <button type="submit" class="auth-btn">Créer mon compte</button>
+          </form>
         </div>
         <div id="auth-err" class="auth-err"></div>
         <div id="auth-msg" class="auth-msg"></div>
@@ -818,7 +894,7 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--ruby);outline-offse
 
 <div class="app" style="display:none">
 
-<div class="header">
+<header class="header">
   <div class="header-brand">
     <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjUwNSAxNTAgMzM0IDQ5NiI+PGcgZmlsbD0iI2M5YTg0YyI+PHBhdGggZD0iTTUxMy45IDUwNi40IGMwIC05OSAwLjMgLTEyMi4yIDEuNSAtMTMyLjkgNC44IC00MC45IDIwLjYgLTcyLjggNTAuNCAtMTAxLjMgMTEuMyAtMTAuOSAyMi42IC0xOC43IDM2LjYgLTI1LjggMTEuOSAtNS44IDI5LjcgLTEyIDM1LjEgLTEyIGw0LjMgMCAwIDkuMSAwIDkgLTYuOSAyLjMgYy00OCAxNS44IC04NC40IDU0LjUgLTk3IDEwMy4yIC01LjUgMjEuMSAtNS42IDI0LjMgLTUuNiAxNDEuNyBsMCAxMDguNCAzNi45IDAgMzYuOSAwIDAgLTY2LjkgYzAgLTM3LjggMC40IC02Ny4zIDAuOSAtNjcuNiAwLjUgLTAuMyA2LjEgLTEuOSAxMi42IC0zLjYgMjEuMyAtNS41IDM2LjMgLTEyLjYgNTIgLTI0LjMgMTcgLTEyLjggMjkuNCAtMjcuNSAzOC43IC00NiAxMy42IC0yNy4yIDExLjEgLTQ0LjkgLTEwIC03MC4xIC04LjYgLTEwLjIgLTEzLjkgLTE5LjMgLTE3IC0yOC43IC0xLjUgLTQuOCAtMS44IC0xMC42IC0yLjMgLTQxLjEgLTAuMyAtMzEuMiAtMC4yIC0zNS44IDEuMiAtMzcuOSAyIC0zIDIgLTcuNCAwIC05LjQgLTEuMSAtMS4yIC0zLjcgLTEuNiAtMTAuMSAtMS42IC03LjcgMCAtOC43IDAuMiAtMTAuMSAyLjMgLTIgMi45IC0yIDQuNiAtMC4xIDguNCAyLjQgNC40IDIuMyA2Ni43IC0wLjEgNzYuMyAtMi42IDEwLjYgLTcuOCAyMC41IC0xNS44IDI5LjYgLTEyLjYgMTQuNSAtMTguMiAyNS43IC0yMC40IDM5LjggLTAuNyA0LjUgLTEuMSAyNS4xIC0xLjEgNTIuOSBsMCA0NS42IC0zLjggMC43IGMtMi4xIDAuNCAtNi4xIDAuOCAtOSAwLjggbC01LjEgMC4xIDAgLTUzLjIgYzAgLTUxLjkgMC4xIC01My40IDIuMyAtNjEuOSAzLjMgLTEyLjUgOS4yIC0yMy42IDE4LjIgLTM0LjMgMTYuMiAtMTkuMSAxNy45IC0yNC4yIDE4LjYgLTU2LjQgMC41IC0yMS42IDAuNCAtMjQuMSAtMS4zIC0yOC43IC0xLjUgLTMuOCAtMS45IC03LjYgLTEuOCAtMTUuOCAwIC0xMi42IDEuNCAtMTYuOCA3LjIgLTIxLjEgMy44IC0zIDQgLTMgMjAuMyAtMy4zIDEwIC0wLjMgMTcuOSAwIDIwLjIgMC43IDQuNiAxLjQgOS42IDYuOSAxMS4xIDEyLjEgMS42IDUuOCAxLjQgMjEuMiAtMC40IDI1LjYgLTIuMyA1LjMgLTIuMyA0OS41IDAgNTguMSAyLjUgOS40IDcuMSAxNy43IDE0LjIgMjUuOCAxMC45IDEyLjIgMTUgMTkgMTkuMiAzMS42IDIgNi4yIDIuNCA5IDIuNCAyMy40IDAgMTQuMyAtMC4zIDE3LjMgLTIuNCAyNC4xIC01LjggMTguNSAtMTcuNyAzNy45IC0zMi4zIDUyLjcgLTIwLjIgMjAuNCAtMzkuOCAzMS4zIC03NC4zIDQxLjQgbC0yLjYgMC44IC0wLjMgNTkuNSAtMC4yIDU5LjYgNDQuMSAwIGMyOC4zIDAgNDQuNyAtMC40IDQ2LjEgLTEgNS4xIC0yLjggNSAtMC43IDUgLTkzIGwwIC04NiA1LjcgLTEwLjMgYzUuNSAtOS44IDUuOSAtMTAuMiA5LjIgLTEwLjIgbDMuNSAwIDAgOTkuMSBjMCA2Ny41IC0wLjQgMTAwLjMgLTEuMSAxMDMuMSAtMS43IDYuNCAtNS43IDExLjUgLTExLjUgMTQuMyBsLTUuMiAyLjYgLTEwMy4yIDAgLTEwMy4yIDAgMCAtMTIwLjF6Ii8+CjxwYXRoIGQ9Ik03MzMuOSA2MjMuNyBjMCAtMS42IDEuNCAtNS43IDMuMyAtOS4yIGwzLjQgLTYuNCAzNS42IDAgMzUuNiAwIC0wLjQgLTExNC45IC0wLjMgLTExNSAtMi40IC0xMC4yIGMtOS4zIC00MS4xIC0zMS4xIC03NC41IC02Mi41IC05NS41IC05LjEgLTYuMSAtMjUuOCAtMTQuMiAtMzUuMiAtMTcuMiBsLTguOCAtMi43IDAgLTkuMSAwIC05LjEgNC4xIDAgYzUuOCAwIDIyLjIgNS40IDM1LjMgMTEuOCAzNi42IDE3LjYgNjYuNSA1Mi40IDc5LjcgOTIuOCAzLjQgMTAuNCA2LjMgMjQuOCA3LjcgMzYuOSAwLjcgNi40IDEuMSA1MS45IDEuMSAxMzAuMyBsMCAxMjAuMyAtNDguMSAwIC00OC4xIDAgMCAtMi44eiIvPjwvZz48L3N2Zz4=" style="width:36px;height:36px;" alt="logo">
     <div><div class="header-title">Cave à Vin</div><div class="header-sub">Sommelier numérique</div></div>
@@ -863,36 +939,38 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--ruby);outline-offse
     </div>
   </div>
   </div>
-</div>
+</header>
 
-<div class="nav">
-  <div class="ntab active" onclick="showTab('cave')">Mes vins</div>
-  <div class="ntab" onclick="showTab('caves')">Cave</div>
-  <div class="ntab" onclick="showTab('stats')">Statistiques</div>
-  <div class="ntab" onclick="showTab('degustation')">Dégustations</div>
-  <div class="ntab" onclick="showTab('ventes')">Ventes</div>
-  <div class="ntab" onclick="showTab('wish')">Souhaits</div>
-</div>
+<nav class="nav" aria-label="Navigation principale" role="tablist">
+  <button class="ntab active" role="tab" id="ntab-cave" aria-selected="true" aria-controls="tab-cave" onclick="showTab('cave')">Mes vins</button>
+  <button class="ntab" role="tab" id="ntab-caves" aria-selected="false" aria-controls="tab-caves" onclick="showTab('caves')">Cave</button>
+  <button class="ntab" role="tab" id="ntab-stats" aria-selected="false" aria-controls="tab-stats" onclick="showTab('stats')">Statistiques</button>
+  <button class="ntab" role="tab" id="ntab-degustation" aria-selected="false" aria-controls="tab-degustation" onclick="showTab('degustation')">Dégustations</button>
+  <button class="ntab" role="tab" id="ntab-ventes" aria-selected="false" aria-controls="tab-ventes" onclick="showTab('ventes')">Ventes</button>
+  <button class="ntab" role="tab" id="ntab-wish" aria-selected="false" aria-controls="tab-wish" onclick="showTab('wish')">Souhaits</button>
+</nav>
 
-<div class="content">
+<main class="content" id="main-content">
 
 <!-- CAVE -->
-<div id="tab-cave">
+<div id="tab-cave" role="tabpanel" aria-labelledby="ntab-cave" tabindex="0">
 
 
   <div class="toolbar">
     <div class="view-toggle">
-      <button class="vtbtn active" id="vt-grid" onclick="setView('grid')" title="Vue mosaïque">
+      <button class="vtbtn active" id="vt-grid" onclick="setView('grid')" aria-label="Vue mosaïque" title="Vue mosaïque">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
       </button>
-      <button class="vtbtn" id="vt-list" onclick="setView('list')" title="Vue liste">
+      <button class="vtbtn" id="vt-list" onclick="setView('list')" aria-label="Vue liste" title="Vue liste">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
       </button>
     </div>
     <div class="search-wrap">
-      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-      <input class="search-inp" type="text" id="sinp" placeholder="Château, région, appellation…" oninput="renderWines()">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <label class="sr-only" for="sinp">Rechercher un vin</label>
+      <input class="search-inp" type="search" id="sinp" placeholder="Château, région, appellation…" oninput="renderWines()">
     </div>
+    <label class="sr-only" for="fsort">Trier les vins</label>
     <select class="sort-select" id="fsort" onchange="renderWines()">
       <option value="name">Trier : A – Z</option>
       <option value="year">Trier : Millésime</option>
@@ -937,11 +1015,11 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--ruby);outline-offse
       </div>
     </div>
     <div class="fsec"><div class="fsec-label">Identité</div>
-      <div class="fr fr2"><div class="fg" id="fg-name"><label>Nom *</label><input type="text" id="f-name" placeholder="Château Margaux"></div><div class="fg" id="fg-app"><label>Appellation</label><input type="text" id="f-app" placeholder="Margaux AOC"></div></div>
-      <div class="fr fr4"><div class="fg" id="fg-type"><label>Type *</label><select id="f-type"><option>Rouge</option><option>Blanc sec</option><option>Blanc moelleux</option><option>Blanc liquoreux</option><option>Rosé</option><option>Pétillant</option><option>Macération</option><option>Muté / Fortifié</option><option>Doux naturel</option><option>Oxydatif</option><option>Passerillé</option><option>Autre</option></select></div><div class="fg" id="fg-reg"><label>Région</label><input type="text" id="f-reg" placeholder="Bordeaux"></div><div class="fg"><label>Pays</label><input type="text" id="f-country" placeholder="France, Italie..." list="country-list"><datalist id="country-list"><option value="France"><option value="Italie"><option value="Espagne"><option value="Portugal"><option value="Allemagne"><option value="Autriche"><option value="USA"><option value="Argentine"><option value="Chili"><option value="Australie"><option value="Afrique du Sud"><option value="Nouvelle-Zélande"><option value="Hongrie"><option value="Grèce"><option value="Liban"></datalist></div><div class="fg" id="fg-year"><label style="display:flex;justify-content:space-between;align-items:center">Millésime<label class="nv-toggle"><input type="checkbox" id="f-nv" onchange="toggleNV('f-year','f-nv')"><span>NV</span></label></label><input type="number" id="f-year" placeholder="2019" min="1900" max="2030"></div></div>
+      <div class="fr fr2"><div class="fg" id="fg-name"><label for="f-name">Nom *</label><input type="text" id="f-name" placeholder="Château Margaux"></div><div class="fg" id="fg-app"><label for="f-app">Appellation</label><input type="text" id="f-app" placeholder="Margaux AOC"></div></div>
+      <div class="fr fr4"><div class="fg" id="fg-type"><label for="f-type">Type *</label><select id="f-type"><option>Rouge</option><option>Blanc sec</option><option>Blanc moelleux</option><option>Blanc liquoreux</option><option>Rosé</option><option>Pétillant</option><option>Macération</option><option>Muté / Fortifié</option><option>Doux naturel</option><option>Oxydatif</option><option>Passerillé</option><option>Autre</option></select></div><div class="fg" id="fg-reg"><label for="f-reg">Région</label><input type="text" id="f-reg" placeholder="Bordeaux"></div><div class="fg"><label for="f-country">Pays</label><input type="text" id="f-country" placeholder="France, Italie..." list="country-list"><datalist id="country-list"><option value="France"><option value="Italie"><option value="Espagne"><option value="Portugal"><option value="Allemagne"><option value="Autriche"><option value="USA"><option value="Argentine"><option value="Chili"><option value="Australie"><option value="Afrique du Sud"><option value="Nouvelle-Zélande"><option value="Hongrie"><option value="Grèce"><option value="Liban"></datalist></div><div class="fg" id="fg-year"><label for="f-year" style="display:flex;justify-content:space-between;align-items:center">Millésime<label class="nv-toggle"><input type="checkbox" id="f-nv" onchange="toggleNV('f-year','f-nv')"><span>NV</span></label></label><input type="number" id="f-year" placeholder="2019" min="1900" max="2030"></div></div>
     </div>
     <div class="fsec"><div class="fsec-label">Stock & prix</div>
-      <div class="fr fr4"><div class="fg"><label>Quantité</label><input type="number" id="f-qty" value="1" min="0"></div><div class="fg"><label>Contenance</label><select id="f-cont"><option value="">—</option><option value="18.7cl">18.7 cl (Piccolo)</option><option value="37.5cl">37.5 cl (Demi)</option><option value="50cl">50 cl</option><option value="75cl" selected>75 cl (Standard)</option><option value="1L">1 L</option><option value="1.5L">1.5 L (Magnum)</option><option value="3L">3 L (Double Magnum)</option><option value="4.5L">4.5 L (Jéroboam)</option><option value="6L">6 L (Impériale)</option><option value="9L">9 L (Salmanazar)</option><option value="12L">12 L (Balthazar)</option><option value="15L">15 L (Nabuchodonosor)</option></select></div><div class="fg"><label>Prix achat (€)</label><input type="number" id="f-buy" placeholder="0" min="0" step="0.5"></div><div class="fg"><label style="display:flex;justify-content:space-between;align-items:center">Prix actuel (€)<button type="button" class="idealwine-btn" onclick="openIdealWine()" title="Rechercher la cote sur IdealWine">↗ IdealWine</button></label><input type="number" id="f-cur" placeholder="0" min="0" step="0.5"></div><div class="fg" id="fg-ap"><label>Apogée</label><input type="text" id="f-ap" placeholder="2026 – 2038"></div></div>
+      <div class="fr fr4"><div class="fg"><label for="f-qty">Quantité</label><input type="number" id="f-qty" value="1" min="0"></div><div class="fg"><label for="f-cont">Contenance</label><select id="f-cont"><option value="">—</option><option value="18.7cl">18.7 cl (Piccolo)</option><option value="37.5cl">37.5 cl (Demi)</option><option value="50cl">50 cl</option><option value="75cl" selected>75 cl (Standard)</option><option value="1L">1 L</option><option value="1.5L">1.5 L (Magnum)</option><option value="3L">3 L (Double Magnum)</option><option value="4.5L">4.5 L (Jéroboam)</option><option value="6L">6 L (Impériale)</option><option value="9L">9 L (Salmanazar)</option><option value="12L">12 L (Balthazar)</option><option value="15L">15 L (Nabuchodonosor)</option></select></div><div class="fg"><label for="f-buy">Prix achat (€)</label><input type="number" id="f-buy" placeholder="0" min="0" step="0.5"></div><div class="fg"><label for="f-cur" style="display:flex;justify-content:space-between;align-items:center">Prix actuel (€)<button type="button" class="idealwine-btn" onclick="openIdealWine()" title="Rechercher la cote sur IdealWine">↗ IdealWine</button></label><input type="number" id="f-cur" placeholder="0" min="0" step="0.5"></div><div class="fg" id="fg-ap"><label for="f-ap">Apogée</label><input type="text" id="f-ap" placeholder="2026 – 2038"></div></div>
     </div>
     <div class="fsec"><div class="fsec-label">Notes critiques <span style="font-size:10px;color:var(--ink4);font-weight:400">(ajoutez les critiques que vous souhaitez)</span></div>
       <!-- Critiques prédéfinis -->
@@ -981,18 +1059,18 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--ruby);outline-offse
     </div>
     <div class="fsec"><div class="fsec-label">Emplacement</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-        <div class="fg"><label>Cave</label><select id="f-cave" style="width:100%;height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:"DM Sans",sans-serif;outline:none;color:var(--ink);background:var(--surface)"><option value="">— Aucune —</option></select></div>
-        <div class="fg"><label>Clayette</label><input type="text" id="f-clayette" placeholder="ex: A3, 2" style="width:100%;height:38px;padding:0 12px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:"DM Sans",sans-serif;outline:none;color:var(--ink)"></div>
+        <div class="fg"><label for="f-cave">Cave</label><select id="f-cave" style="width:100%;height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:"DM Sans",sans-serif;outline:none;color:var(--ink);background:var(--surface)"><option value="">— Aucune —</option></select></div>
+        <div class="fg"><label for="f-clayette">Clayette</label><input type="text" id="f-clayette" placeholder="ex: A3, 2" style="width:100%;height:38px;padding:0 12px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:"DM Sans",sans-serif;outline:none;color:var(--ink)"></div>
       </div>
     </div>
-    <div class="fsec"><div class="fsec-label">Notes personnelles</div><div class="fg"><textarea id="f-notes" placeholder="Arômes, bouche, finale…"></textarea></div></div>
+    <div class="fsec"><div class="fsec-label"><label for="f-notes">Notes personnelles</label></div><div class="fg"><textarea id="f-notes" placeholder="Arômes, bouche, finale…"></textarea></div></div>
     <div class="factions"><button class="bsub" onclick="addWine()">Ajouter à la cave</button><button class="bcan" onclick="closePanel('add-form')">Annuler</button></div>
   </div>
 
   <div class="wlist" id="wlist"></div>
 </div>
 
-<div id="tab-caves" style="display:none">
+<div id="tab-caves" role="tabpanel" aria-labelledby="ntab-caves" tabindex="0" style="display:none">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
     <div style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--ink)">Mes caves</div>
     <button class="btn-add" onclick="openCaveForm()">+ Ajouter une cave</button>
@@ -1001,7 +1079,7 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--ruby);outline-offse
 </div>
 
 <!-- STATS -->
-<div id="tab-stats" style="display:none">
+<div id="tab-stats" role="tabpanel" aria-labelledby="ntab-stats" tabindex="0" style="display:none">
   <div class="stats-toolbar">
     <div class="stats-chip active" onclick="setStatFilter(this,'all')">Toute la cave</div>
     <div class="stats-chip" onclick="setStatFilter(this,'Rouge')">Rouge</div>
@@ -1032,7 +1110,7 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--ruby);outline-offse
 </div>
 
 <!-- WISH -->
-<div id="tab-degustation" style="display:none">
+<div id="tab-degustation" role="tabpanel" aria-labelledby="ntab-degustation" tabindex="0" style="display:none">
   <div class="tab-header">
     <h2 class="tab-title">Mes dégustations</h2>
     <div style="display:flex;align-items:center;gap:10px">
@@ -1048,7 +1126,7 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--ruby);outline-offse
   </div>
 </div>
 
-<div id="tab-ventes" style="display:none">
+<div id="tab-ventes" role="tabpanel" aria-labelledby="ntab-ventes" tabindex="0" style="display:none">
   <div class="tab-header">
     <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
       <h2 class="tab-title">Mes ventes</h2>
@@ -1067,7 +1145,7 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--ruby);outline-offse
   </div>
 </div>
 
-<div id="tab-wish" style="display:none">
+<div id="tab-wish" role="tabpanel" aria-labelledby="ntab-wish" tabindex="0" style="display:none">
   <div class="wish-shdr">
     <span class="wish-label" id="wcnt">0 vin souhaité</span>
     <button class="btn-add" id="wish-add-btn" onclick="openAddWishModal()">+ Ajouter un souhait</button>
@@ -1076,7 +1154,7 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--ruby);outline-offse
   <div id="wishlist" class="wlist"></div>
 </div>
 
-</div><!-- /content -->
+</main><!-- /content -->
 </div><!-- /app -->
 
 <script>
@@ -1141,14 +1219,14 @@ function _showScreen(screen){
 
 // ── AUTH UI ──
 function switchAuthTab(tab){
-  document.getElementById('tab-login').style.borderBottomColor  = tab==='login' ? '#8b1a2a':'transparent';
-  document.getElementById('tab-login').style.color              = tab==='login' ? '#8b1a2a':'#7a5565';
-  document.getElementById('tab-signup').style.borderBottomColor = tab==='signup'? '#8b1a2a':'transparent';
-  document.getElementById('tab-signup').style.color             = tab==='signup'? '#8b1a2a':'#7a5565';
-  document.getElementById('auth-login').style.display  = tab==='login'  ? '' : 'none';
-  document.getElementById('auth-signup').style.display = tab==='signup' ? '' : 'none';
-  document.getElementById('auth-err').textContent = '';
-  document.getElementById('auth-msg').textContent = '';
+  ['login','signup'].forEach(t=>{
+    const btn=document.getElementById('tab-'+t);
+    btn.classList.toggle('active',t===tab);
+    btn.setAttribute('aria-selected',t===tab?'true':'false');
+    document.getElementById('auth-'+t).style.display=t===tab?'':'none';
+  });
+  document.getElementById('auth-err').textContent='';
+  document.getElementById('auth-msg').textContent='';
 }
 
 async function doLogin(){
@@ -1229,6 +1307,20 @@ async function doLogout(){
   function onAllLoaded(){
     try{
       firebase.initializeApp(firebaseConfig);
+
+      // ── APP CHECK (reCAPTCHA v3) ──
+      // Remplacer RECAPTCHA_SITE_KEY par la clé obtenue sur console.firebase.google.com
+      // > App Check > Enregistrer > reCAPTCHA v3
+      const RECAPTCHA_SITE_KEY = '';
+      if(RECAPTCHA_SITE_KEY){
+        firebase.appCheck().activate(
+          new firebase.appCheck.ReCaptchaV3Provider(RECAPTCHA_SITE_KEY),
+          true // auto-refresh token
+        );
+      } else {
+        console.warn('[App Check] Clé reCAPTCHA non configurée — protection désactivée.');
+      }
+
       auth = firebase.auth();
       db   = firebase.firestore();
       db.settings({ experimentalAutoDetectLongPolling: true, merge: true });
@@ -1281,10 +1373,11 @@ async function doLogout(){
     });
   }
 
-  // Charger les 3 scripts en séquence
+  // Charger les 4 scripts en séquence (app-check en dernier)
   loadScript(scripts[0])
     .then(()=>loadScript(scripts[1]))
     .then(()=>loadScript(scripts[2]))
+    .then(()=>loadScript(scripts[3]))
     .then(onAllLoaded)
     .catch(e=>{
       console.error('Impossible de charger Firebase:', e);
@@ -1862,7 +1955,7 @@ function renderVentes(){
   stats.innerHTML = [
     ['Bouteilles vendues', totalBtl],
     ['Revenus totaux', Math.round(totalRev)+'€'],
-    ['Plus-value', (totalPnl>=0?'+':'')+Math.round(totalPnl)+'€', totalPnl>=0?'#2a7a2a':'var(--ruby)']
+    ['Plus-value', (totalPnl>=0?'+':'')+Math.round(totalPnl)+'€', totalPnl>=0?'var(--clr-pos)':'var(--ruby)']
   ].map(([l,v,c])=>`<div style="background:var(--surface);border:1px solid var(--ink5);border-radius:8px;padding:10px 16px;text-align:center"><div style="font-size:10px;color:var(--ink4);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">${l}</div><div style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:700;color:${c||'var(--ink)'}">${v}</div></div>`).join('');
 
   list.innerHTML = ventes.map(v=>{
@@ -2311,7 +2404,9 @@ function setView(v){
 function showTab(t){
   const tabs=['cave','caves','stats','degustation','ventes','wish'];
   tabs.forEach((n,i)=>{
-    document.querySelectorAll('.ntab')[i].classList.toggle('active',n===t);
+    const btn=document.querySelectorAll('.ntab')[i];
+    btn.classList.toggle('active',n===t);
+    btn.setAttribute('aria-selected',n===t?'true':'false');
     document.getElementById('tab-'+n).style.display=n===t?'':'none';
   });
   if(t==='stats')renderStats();
@@ -2321,6 +2416,28 @@ function showTab(t){
   if(t==='cave'){ activeTypes=[]; renderWines(); }
   if(t==='caves')renderCaves();
 }
+// Navigation flèches gauche/droite sur le tablist (ARIA tablist pattern)
+document.addEventListener('DOMContentLoaded',function(){
+  const navEl=document.querySelector('nav[role="tablist"]');
+  if(!navEl)return;
+  navEl.addEventListener('keydown',function(e){
+    const tabsOrder=['cave','caves','stats','degustation','ventes','wish'];
+    const btns=Array.from(document.querySelectorAll('.ntab'));
+    const cur=btns.findIndex(b=>b.getAttribute('aria-selected')==='true');
+    if(e.key==='ArrowRight'||e.key==='ArrowLeft'){
+      e.preventDefault();
+      const next=e.key==='ArrowRight'?(cur+1)%btns.length:(cur-1+btns.length)%btns.length;
+      showTab(tabsOrder[next]);
+      btns[next].focus();
+    } else if(e.key==='Home'){
+      e.preventDefault();
+      showTab(tabsOrder[0]);btns[0].focus();
+    } else if(e.key==='End'){
+      e.preventDefault();
+      showTab(tabsOrder[btns.length-1]);btns[btns.length-1].focus();
+    }
+  });
+});
 function togglePanel(id){
   const p=document.getElementById(id);
   const was=p.classList.contains('visible');
@@ -2834,10 +2951,10 @@ function parseAIResult(text){
       const certHtml=certs.map(c=>{
         const logo=CERT_LOGOS[c];
         const name=certNames[c]||c;
-        if(logo) return '<div style="display:flex;flex-direction:column;align-items:center;gap:3px"><img src="'+logo+'" alt="'+name+'" style="width:36px;height:36px;object-fit:contain;mix-blend-mode:multiply"><span style="font-size:9px;color:#2a7a2a;font-weight:600;text-align:center">'+name+'</span></div>';
-        return '<span style="background:#2a7a2a;color:#fff;border-radius:4px;padding:2px 8px;font-size:11px;font-weight:600">'+name+'</span>';
+        if(logo) return '<div style="display:flex;flex-direction:column;align-items:center;gap:3px"><img src="'+logo+'" alt="'+name+'" style="width:36px;height:36px;object-fit:contain;mix-blend-mode:multiply"><span style="font-size:9px;color:var(--clr-pos);font-weight:600;text-align:center">'+name+'</span></div>';
+        return '<span style="background:var(--clr-pos);color:#fff;border-radius:4px;padding:2px 8px;font-size:11px;font-weight:600">'+name+'</span>';
       }).join('');
-      h+='<div class="ai-field-item ai-field-full" style="background:#f0f8f0;border:1px solid #c8e8c8"><label style="color:#2a7a2a">Certifications trouvées</label><div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:8px;align-items:center">'+certHtml+'</div></div>';
+      h+='<div class="ai-field-item ai-field-full" style="background:var(--clr-pos-bg);border:1px solid var(--clr-pos-border)"><label style="color:var(--clr-pos)">Certifications trouvées</label><div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:8px;align-items:center">'+certHtml+'</div></div>';
     }
     // Notes critiques
     const critics=json.critics||{};
@@ -3355,10 +3472,9 @@ function renderWines(){
     if(bv>0&&cv>0&&cv!==bv)pH+=`<span class="delta ${dC}">${sign}${pct}% · ${sign}${dt} €</span>`;
     pH+='</div>';
     const shortType=w.type.length>22?w.type.split('/')[0].trim():w.type;
-    return`<div class="wcard">
+    return`<div class="wcard" style="--wtype-clr:${barC}">
 
       <div class="wcmain">
-        <div class="tbar" style="background:${barC}"></div>
         ${imgHTML}
         <div class="wbody">
           <div class="wname">${esc(w.name)}</div>
@@ -3460,7 +3576,7 @@ function renderStats(){
   const byR={};fw.forEach(w=>{if(!w.reg)return;if(!byR[w.reg])byR[w.reg]={buy:0,cur:0};byR[w.reg].buy+=w.qty*w.buy;byR[w.reg].cur+=w.qty*(w.cur||w.buy);});
   const rE=Object.entries(byR).map(([r,d])=>({r,pnl:Math.round(d.cur-d.buy),pct:d.buy>0?Math.round((d.cur-d.buy)/d.buy*100):0})).sort((a,b)=>b.pnl-a.pnl);
   const maxP=Math.max(...rE.map(x=>Math.abs(x.pnl)),1);
-  document.getElementById('st-reg-pnl').innerHTML=rE.map(({r,pnl,pct})=>`<div class="rbar"><span class="rname">${esc(r)}</span><div class="btrack"><div class="bfill" style="width:${Math.round(Math.abs(pnl)/maxP*100)}%;background:${pnl>=0?'#2a7a2a':'#8b1a2a'}"></div></div><span class="bcnt" style="color:${pnl>=0?'#2a7a2a':'#8b1a2a'}">${pnl>=0?'+':''}${pnl}€</span></div>`).join('')||'<span style="font-size:12px;color:var(--ink4)">—</span>';
+  document.getElementById('st-reg-pnl').innerHTML=rE.map(({r,pnl,pct})=>`<div class="rbar"><span class="rname">${esc(r)}</span><div class="btrack"><div class="bfill" style="width:${Math.round(Math.abs(pnl)/maxP*100)}%;background:${pnl>=0?'var(--clr-pos)':'var(--ruby)'}"></div></div><span class="bcnt" style="color:${pnl>=0?'var(--clr-pos)':'var(--ruby)'}">${pnl>=0?'+':''}${pnl}€</span></div>`).join('')||'<span style="font-size:12px;color:var(--ink4)">—</span>';
   const byT={};fw.forEach(w=>{byT[w.type]=(byT[w.type]||0)+w.qty;});
   const totT=Math.max(Object.values(byT).reduce((a,b)=>a+b,0),1);
   // Camembert
@@ -3474,7 +3590,7 @@ function renderStats(){
     `<div style="display:flex;align-items:center;gap:6px"><div style="width:10px;height:10px;border-radius:2px;background:${color};flex-shrink:0"></div><span style="font-size:11px;color:var(--ink3)">${esc(t)} <span style="color:var(--ink4)">${c} (${Math.round(c/totT*100)}%)</span></span></div>`
   ).join('');
   const top5=[...fw].map(w=>({...w,pnl:(w.cur-w.buy)*w.qty})).sort((a,b)=>b.pnl-a.pnl).slice(0,5);
-  document.getElementById('st-top').innerHTML=top5.map(w=>`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="font-size:12px;color:var(--ink3);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:60%">${esc(w.name)}</span><span style="font-size:12px;font-weight:600;color:${w.pnl>=0?'#2a7a2a':'var(--ruby)'}">${w.pnl>=0?'+':''}${Math.round(w.pnl)} €</span></div>`).join('')||'—';
+  document.getElementById('st-top').innerHTML=top5.map(w=>`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="font-size:12px;color:var(--ink3);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:60%">${esc(w.name)}</span><span style="font-size:12px;font-weight:600;color:${w.pnl>=0?'var(--clr-pos)':'var(--ruby)'}">${w.pnl>=0?'+':''}${Math.round(w.pnl)} €</span></div>`).join('')||'—';
   const byY={};fw.filter(w=>w.year).forEach(w=>{if(!byY[w.year])byY[w.year]={buy:0,cur:0};byY[w.year].buy+=w.qty*w.buy;byY[w.year].cur+=w.qty*(w.cur||w.buy);});
   const years=Object.keys(byY).sort();const pnlY=years.map(y=>Math.round(byY[y].cur-byY[y].buy));
   if(chartM)chartM.destroy();
@@ -3504,9 +3620,8 @@ function renderWishes(){
     const imgHTML=w.img_url
       ?`<div class="wimg-zone"><div class="wscores-col"></div><div class="wbottle-col"><img src="${w.img_url}" alt="${w.name}"></div><div class="wcerts-col"></div></div>`
       :`<div class="wimg-zone"><div class="wscores-col"></div><div class="wbottle-col"><div class="wimg-placeholder"><div class="wimg-placeholder-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div></div></div><div class="wcerts-col"></div></div>`;
-    return`<div class="wcard" style="${w.done?'opacity:.5':''}">
+    return`<div class="wcard" style="--wtype-clr:${barC}${w.done?';opacity:.5':''}">
       <div class="wcmain">
-        <div class="tbar" style="background:${barC}"></div>
         ${imgHTML}
         <div class="wbody">
           <div class="wname" style="${w.done?'text-decoration:line-through':''}">${esc(w.name)}</div>
