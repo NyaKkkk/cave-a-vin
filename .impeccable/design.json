@@ -1,0 +1,240 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-05-16T00:00:00.000Z",
+  "title": "Design System: Cave à Vin",
+  "extensions": {
+    "colorMeta": {
+      "vieux-bordeaux": {
+        "role": "primary",
+        "displayName": "Vieux Bordeaux",
+        "canonical": "#8b1a2a",
+        "tonalRamp": ["#220406", "#440c10", "#661218", "#8b1a2a", "#a02030", "#c04c5c", "#da8a94", "#f4d4d8"]
+      },
+      "vieux-bordeaux-profond": {
+        "role": "primary-hover",
+        "displayName": "Vieux Bordeaux Profond",
+        "canonical": "#a02030",
+        "tonalRamp": ["#280508", "#500e14", "#78141e", "#a02030", "#b83048", "#cc6070", "#df9aa0", "#f5dce0"]
+      },
+      "paille-de-riesling": {
+        "role": "secondary",
+        "displayName": "Paille de Riesling",
+        "canonical": "#7a5c10",
+        "tonalRamp": ["#150e01", "#2a1a03", "#4e3208", "#7a5c10", "#96720e", "#b89828", "#d4bc58", "#f0e2a8"]
+      },
+      "paille-de-riesling-pale": {
+        "role": "secondary-light",
+        "displayName": "Paille de Riesling Pâle",
+        "canonical": "#e8d070",
+        "tonalRamp": ["#1a1400", "#342802", "#584404", "#7a5c10", "#a07c18", "#c4a030", "#e8d070", "#faf4d0"]
+      },
+      "cave-profonde": {
+        "role": "neutral-ink",
+        "displayName": "Cave Profonde",
+        "canonical": "#1a090d",
+        "tonalRamp": ["#1a090d", "#38181f", "#5c3040", "#6e404e", "#b89098", "#dcc8ce", "#f3ecee", "#fffcfa"]
+      },
+      "lin-de-cave": {
+        "role": "neutral-surface",
+        "displayName": "Lin de Cave",
+        "canonical": "#fffcfa",
+        "tonalRamp": ["#1a090d", "#2e1420", "#5c3040", "#8b5060", "#c09098", "#dcc8ce", "#f3ecee", "#fffcfa"]
+      },
+      "fond-de-cave": {
+        "role": "neutral-bg",
+        "displayName": "Fond de Cave",
+        "canonical": "#f7f0ec",
+        "tonalRamp": ["#1c100c", "#382018", "#5c3828", "#7a5040", "#b09080", "#d8c8c0", "#f0e8e0", "#f7f0ec"]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Noms de vins uniquement. Jamais dans les labels, boutons, ou données UI."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Titres de sections, modales, panneaux."
+      },
+      "body": {
+        "displayName": "Corps",
+        "purpose": "Tout le texte d'interface. Max 65–75ch pour la prose."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Onglets nav, en-têtes de colonnes, catégories. Uppercase + letter-spacing."
+      }
+    },
+    "shadows": [
+      {
+        "name": "card-hover",
+        "value": "0 4px 16px rgba(28,10,13,.07)",
+        "purpose": "Signale l'interactivité d'une carte au survol. Invisible au repos."
+      },
+      {
+        "name": "dropdown",
+        "value": "0 4px 20px rgba(28,10,13,.12)",
+        "purpose": "Menus flottants de premier niveau, sélecteurs, tooltips."
+      },
+      {
+        "name": "sidebar",
+        "value": "8px 0 24px rgba(28,10,13,.1)",
+        "purpose": "Panneau glissant latéral. Directionnelle pour ancrer le mouvement depuis la gauche."
+      },
+      {
+        "name": "modal",
+        "value": "0 8px 40px rgba(28,10,13,.25)",
+        "purpose": "Modales et overlays prioritaires. L'ombre la plus prononcée du système."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-standard",
+        "value": "cubic-bezier(.4,0,.2,1)",
+        "purpose": "Transitions de panneaux (sidebar filtre, modales)."
+      },
+      {
+        "name": "duration-micro",
+        "value": "150ms",
+        "purpose": "Transitions d'états hover rapides (couleurs, bordures)."
+      },
+      {
+        "name": "duration-standard",
+        "value": "180ms",
+        "purpose": "Transitions de boutons (background, transform)."
+      },
+      {
+        "name": "duration-medium",
+        "value": "250ms",
+        "purpose": "Entrée du toast (translateX + opacity)."
+      },
+      {
+        "name": "duration-slow",
+        "value": "300ms",
+        "purpose": "Slide-in de la sidebar filtre."
+      }
+    ],
+    "breakpoints": [
+      { "name": "mobile", "value": "640px", "purpose": "Mobile portrait." },
+      { "name": "tablet", "value": "768px", "purpose": "Tablettes et petits laptops." },
+      { "name": "wide", "value": "1280px", "purpose": "Grille 3 colonnes et max-width 1400px pour le contenu." }
+    ]
+  },
+  "components": [
+    {
+      "name": "Bouton Primaire",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Action principale. Ajouter, enregistrer, confirmer.",
+      "html": "<button class=\"ds-btn-primary\">Ajouter un vin</button>",
+      "css": ".ds-btn-primary { background: #8b1a2a; color: #fffcfa; height: 44px; padding: 0 20px; border: none; border-radius: 8px; font-family: \"DM Sans\", system-ui, sans-serif; font-size: 0.9375rem; font-weight: 500; cursor: pointer; transition: background .18s, transform .1s; } .ds-btn-primary:hover { background: #a02030; } .ds-btn-primary:active { transform: scale(0.98); } .ds-btn-primary:focus-visible { outline: 2px solid #8b1a2a; outline-offset: 2px; }"
+    },
+    {
+      "name": "Bouton Ghost",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Action secondaire ou annulation dans les formulaires.",
+      "html": "<button class=\"ds-btn-ghost\">Annuler</button>",
+      "css": ".ds-btn-ghost { background: transparent; color: #1a090d; height: 44px; padding: 0 16px; border: 1px solid #dcc8ce; border-radius: 8px; font-family: \"DM Sans\", system-ui, sans-serif; font-size: 0.9375rem; font-weight: 400; cursor: pointer; transition: background .18s, border-color .18s; } .ds-btn-ghost:hover { background: #f3ecee; border-color: #b89098; } .ds-btn-ghost:focus-visible { outline: 2px solid #8b1a2a; outline-offset: 2px; }"
+    },
+    {
+      "name": "Chip Filtre",
+      "kind": "chip",
+      "refersTo": "chip",
+      "description": "Sélection de catégories (région, type, appellation).",
+      "html": "<div class=\"ds-chips\"><button class=\"ds-chip\">Bordeaux</button><button class=\"ds-chip ds-chip--selected\">Bourgogne</button><button class=\"ds-chip\">Rhône</button></div>",
+      "css": ".ds-chips { display: flex; gap: 6px; flex-wrap: wrap; } .ds-chip { background: #f3ecee; color: #6e404e; height: 32px; padding: 0 12px; border: 1px solid #dcc8ce; border-radius: 20px; font-family: \"DM Sans\", system-ui, sans-serif; font-size: 0.8125rem; font-weight: 500; cursor: pointer; transition: background .15s, color .15s, border-color .15s; } .ds-chip:hover { background: #dcc8ce; } .ds-chip--selected { background: #8b1a2a; color: #fffcfa; border-color: #8b1a2a; } .ds-chip--selected:hover { background: #a02030; border-color: #a02030; } .ds-chip:focus-visible { outline: 2px solid #8b1a2a; outline-offset: 2px; }"
+    },
+    {
+      "name": "Onglets Navigation",
+      "kind": "nav",
+      "refersTo": "button-ghost",
+      "description": "Navigation principale entre les sections de la cave.",
+      "html": "<nav class=\"ds-tab-nav\" role=\"tablist\"><button class=\"ds-ntab\" role=\"tab\" aria-selected=\"false\">Cave</button><button class=\"ds-ntab ds-ntab--active\" role=\"tab\" aria-selected=\"true\">Statistiques</button><button class=\"ds-ntab\" role=\"tab\" aria-selected=\"false\">Dégustations</button></nav>",
+      "css": ".ds-tab-nav { display: flex; gap: 4px; border-bottom: 1px solid #dcc8ce; } .ds-ntab { background: transparent; color: #6e404e; padding: 10px 12px 9px; border: none; border-bottom: 2px solid transparent; margin-bottom: -1px; font-family: \"DM Sans\", system-ui, sans-serif; font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; cursor: pointer; transition: color .15s, border-color .15s; } .ds-ntab:hover { color: #38181f; } .ds-ntab--active { color: #8b1a2a; border-bottom-color: #8b1a2a; } .ds-ntab:focus-visible { outline: 2px solid #8b1a2a; outline-offset: 2px; }"
+    },
+    {
+      "name": "Carte Vin",
+      "kind": "card",
+      "refersTo": "button-primary",
+      "description": "Composant signature. Nom dominant en Cormorant Garamond, classification par bordure supérieure.",
+      "html": "<div class=\"ds-wcard\" style=\"--wtype-clr: #8b1a2a\"><div class=\"ds-wcard__body\"><span class=\"ds-wcard__cat\">Bourgogne AOC</span><p class=\"ds-wcard__name\">Gevrey-Chambertin</p><span class=\"ds-wcard__vintage\">2019</span></div><div class=\"ds-wcard__footer\"><div class=\"ds-qctrl\"><button class=\"ds-qbtn\" aria-label=\"Diminuer\">−</button><span class=\"ds-qval\">6</span><button class=\"ds-qbtn\" aria-label=\"Augmenter\">+</button></div></div></div>",
+      "css": ".ds-wcard { background: #fffcfa; border: 1px solid #dcc8ce; border-top: 3px solid var(--wtype-clr, #8b1a2a); border-radius: 12px; overflow: hidden; transition: box-shadow .18s; } .ds-wcard:hover { box-shadow: 0 4px 16px rgba(28,10,13,.07); } .ds-wcard__body { padding: 12px 14px 8px; } .ds-wcard__cat { display: block; font-family: \"DM Sans\", system-ui, sans-serif; font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: #6e404e; } .ds-wcard__name { font-family: \"Cormorant Garamond\", Georgia, serif; font-size: 1.5rem; font-weight: 600; line-height: 1.1; color: #1a090d; margin: 4px 0 2px; } .ds-wcard__vintage { font-family: \"DM Sans\", system-ui, sans-serif; font-size: 0.875rem; font-weight: 500; color: #5c3040; } .ds-wcard__footer { padding: 8px 14px 12px; border-top: 1px solid #f3ecee; display: flex; align-items: center; } .ds-qctrl { display: flex; align-items: center; gap: 8px; } .ds-qbtn { width: 28px; height: 28px; border: 1px solid #dcc8ce; border-radius: 6px; background: #fffcfa; color: #38181f; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background .15s; } .ds-qbtn:hover { background: #f3ecee; } .ds-qval { font-family: \"DM Sans\", system-ui, sans-serif; font-size: 0.9375rem; font-weight: 600; color: #1a090d; min-width: 20px; text-align: center; }"
+    },
+    {
+      "name": "Champ de Saisie",
+      "kind": "input",
+      "refersTo": "button-ghost",
+      "description": "Champ texte standard pour les formulaires d'ajout et d'édition de vin.",
+      "html": "<div class=\"ds-field\"><label class=\"ds-label\" for=\"ds-input-ex\">Appellation</label><input class=\"ds-input\" id=\"ds-input-ex\" type=\"text\" placeholder=\"ex. Bourgogne AOC\" /></div>",
+      "css": ".ds-field { display: flex; flex-direction: column; gap: 6px; } .ds-label { font-family: \"DM Sans\", system-ui, sans-serif; font-size: 0.8125rem; font-weight: 600; color: #38181f; letter-spacing: 0.01em; } .ds-input { height: 44px; padding: 0 12px; border: 1px solid #dcc8ce; border-radius: 8px; background: #fffcfa; font-family: \"DM Sans\", system-ui, sans-serif; font-size: 0.9375rem; color: #1a090d; outline: none; transition: border-color .15s; } .ds-input::placeholder { color: #b89098; } .ds-input:hover { border-color: #b89098; } .ds-input:focus { border-color: #8b1a2a; box-shadow: 0 0 0 2px rgba(139,26,42,.1); }"
+    },
+    {
+      "name": "Toast Notification",
+      "kind": "custom",
+      "refersTo": "button-primary",
+      "description": "Feedback transitoire pour les actions (ajout, suppression, erreur). Apparaît en bas à droite.",
+      "html": "<div class=\"ds-toast ds-toast--success\" role=\"status\" aria-live=\"polite\"><span class=\"ds-toast__icon\">✓</span><span class=\"ds-toast__msg\">Vin ajouté avec succès.</span></div>",
+      "css": ".ds-toast { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-radius: 8px; background: rgba(255,252,250,.92); backdrop-filter: blur(4px); border: 1px solid #dcc8ce; box-shadow: 0 4px 20px rgba(28,10,13,.12); font-family: \"DM Sans\", system-ui, sans-serif; font-size: 0.875rem; color: #1a090d; animation: ds-toast-in .25s ease-out; } .ds-toast--success { border-color: #90d090; } .ds-toast--error { border-color: #f08080; } .ds-toast--warn { border-color: #f0d080; } .ds-toast__icon { font-size: 1rem; } .ds-toast--success .ds-toast__icon { color: #2a7a2a; } .ds-toast--error .ds-toast__icon { color: #8b1a1a; } @keyframes ds-toast-in { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: none; } }"
+    }
+  ],
+  "narrative": {
+    "northStar": "Le Grand Caviste",
+    "overview": "Cave à Vin porte l'autorité tranquille d'un grand caviste indépendant : quelqu'un qui connaît chaque bouteille sans avoir besoin de le démontrer. L'interface ne cherche pas à séduire — elle organise. Chaque décision visuelle procède du même principe directeur : le vin est la star, l'interface son serviteur silencieux.\n\nLe système tient une tension délibérée entre densité et grâce. Des collectionneurs sérieux ont besoin de voir beaucoup d'informations en peu d'espace ; ils méritent de le faire dans un environnement qui ressemble à une cave particulière, pas à un tableau Excel habillé en SaaS. La densité ne justifie pas la laideur. La sobriété ne justifie pas la froideur.\n\nCe que le système refuse catégoriquement : le bling ostentatoire des apps grand public (Vivino, CellarTracker), les copies génériques SaaS qui empilent des composants Tailwind UI ou shadcn, et tout ornement visuel qui détourne l'attention du contenu.",
+    "keyCharacteristics": [
+      "Palette bichrome : Vieux Bordeaux (accent d'action) + Paille de Riesling (or sommelière, sidebar)",
+      "Typographie bipolaire : Cormorant Garamond pour les noms de vins, DM Sans pour tout le reste",
+      "Ombres à rôle sémantique : présentes et discrètes, elles signalent le statut de l'élément",
+      "Chrome sombre permanent pour la sidebar : un fond de cave, pas un panneau SaaS",
+      "Composants raffinés mais fonctionnels : du caractère perceptible, zéro ornement parasite"
+    ],
+    "rules": [
+      {
+        "name": "La Règle de l'Accent Unique",
+        "body": "Vieux Bordeaux apparaît sur ≤10% d'un écran donné. Il signale l'action et l'identité ; sa rareté est le point. Si tout est rouge, rien ne l'est.",
+        "section": "colors"
+      },
+      {
+        "name": "La Règle des Neutres Teintés",
+        "body": "Aucun #000 ni #fff dans le système. Chaque neutre est teinté vers Cave Profonde. Le blanc est Lin de Cave. Le noir est Cave Profonde. Les neutres purs trahissent une origine générique.",
+        "section": "colors"
+      },
+      {
+        "name": "La Règle des Deux Voix",
+        "body": "Cormorant Garamond est le vin ; DM Sans est la cave. Ne jamais les inverser. Pas de Cormorant dans les boutons, labels, ou données. Pas de DM Sans là où le nom d'un vin est la lecture primaire.",
+        "section": "typography"
+      },
+      {
+        "name": "La Règle de l'Ombre Teintée",
+        "body": "Toutes les ombres utilisent rgba(28,10,13, ...) — jamais rgba(0,0,0, ...). La teinte Cave Profonde garde l'élévation cohérente avec la palette. Une ombre grise indique une origine générique.",
+        "section": "elevation"
+      },
+      {
+        "name": "La Règle de l'Élévation Sémantique",
+        "body": "L'intensité d'ombre correspond à la priorité UI : hover carte < dropdown < sidebar < modale. La profondeur d'ombre indique à l'utilisateur où diriger son attention.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Utiliser Vieux Bordeaux (#8b1a2a) uniquement pour les actions primaires, les états actifs, et les indicateurs de classification.",
+      "Utiliser Cormorant Garamond exclusivement pour les noms de vins et les titres display.",
+      "Teinter toutes les ombres avec rgba(28,10,13, ...) — jamais rgba(0,0,0, ...).",
+      "Utiliser la bordure supérieure (3px solid type-color) comme unique signal accent sur les cartes vin.",
+      "Maintenir 44px de cible tactile minimum sur tous les éléments interactifs.",
+      "Maintenir l'état ARIA complet (aria-expanded, aria-selected, aria-live) sur toutes les régions interactives.",
+      "Conserver la sidebar toujours sombre (fond #1a090d), indépendamment du thème de page."
+    ],
+    "donts": [
+      "N'utiliser border-left ou border-right supérieur à 1px comme accent coloré. La stripe latérale est interdite.",
+      "N'utiliser du texte en dégradé (background-clip: text avec un fond gradient). Jamais.",
+      "Ne pas créer des grilles de cartes identiques (même icône + titre + texte, répété).",
+      "Ne pas animer pour décorer. Animer uniquement les changements d'état.",
+      "N'utiliser Cormorant Garamond dans les labels UI, boutons, éléments de navigation, ou données.",
+      "N'utiliser du #000 pur ou du #fff pur. Tout neutre est teinté vers Cave Profonde.",
+      "Ne pas ressembler à Vivino, CellarTracker, ou une app grand public d'œnologie.",
+      "Ne pas ressembler à un SaaS générique (Tailwind UI, shadcn defaults).",
+      "Ne pas être trop chargé ou bling. Chaque élément visuel justifie sa présence par sa fonction.",
+      "N'utiliser du glassmorphism décoratif. Le toast utilise backdrop-filter:blur(4px) fonctionnel — c'est le plafond du système."
+    ]
+  }
+}
