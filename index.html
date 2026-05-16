@@ -48,6 +48,8 @@ window.addEventListener('DOMContentLoaded', function() {
   --clr-warn:#b8860b;--clr-warn-bg:#fff8e6;--clr-warn-border:#f0d080;
   /* Info */
   --clr-info:#1a5ab8;--clr-info-bg:#e8f0ff;--clr-info-border:#a0c0f0;
+  /* Typography tokens */
+  --font-display:'Cormorant Garamond',serif;--font-body:"DM Sans",sans-serif;
   /* Z-index layers */
   --z-dropdown:100;--z-sticky:148;--z-nav:149;--z-header:150;
   --z-topbar:190;--z-sb-overlay:199;--z-sidebar:200;
@@ -68,21 +70,21 @@ window.addEventListener('DOMContentLoaded', function() {
   --clr-info:#80a8f0;--clr-info-bg:rgba(26,90,184,.15);--clr-info-border:rgba(26,90,184,.3);
 }
 html,body{width:100%;min-height:100vh}
-body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--ink);font-size:14px}
+body{font-family:var(--font-body);background:var(--bg);color:var(--ink);font-size:14px}
 .app{width:100%;margin:0 auto;padding:0 0 60px}
 
 /* HEADER */
 .header{background:var(--chrome-bg);padding:0 clamp(16px,4vw,36px);display:flex;align-items:center;justify-content:space-between;height:var(--header-h);gap:16px;position:sticky;top:0;z-index:var(--z-header)}
 .header-brand{display:flex;align-items:center;gap:10px;flex-shrink:0}
 .header-monogram{width:36px;height:36px;border:1.5px solid rgba(201,168,76,.5);border-radius:4px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:1px}
-.header-monogram span{font-family:'Cormorant Garamond',serif;font-size:11px;color:var(--gold3);line-height:1;letter-spacing:1px;font-weight:600}
+.header-monogram span{font-family:var(--font-display);font-size:11px;color:var(--gold3);line-height:1;letter-spacing:1px;font-weight:600}
 .header-monogram span:first-child{font-size:14px}
-.header-title{font-family:'Cormorant Garamond',serif;font-size:clamp(16px,3vw,21px);font-weight:600;color:#fff;letter-spacing:.3px}
+.header-title{font-family:var(--font-display);font-size:clamp(16px,3vw,21px);font-weight:600;color:#fff;letter-spacing:.3px}
 .header-sub{font-size:10px;color:var(--chrome-muted);letter-spacing:1.5px;text-transform:uppercase;margin-top:1px}
 .header-right{display:flex;align-items:center;gap:clamp(8px,2vw,16px);margin-left:auto}
 .header-stats{display:flex;gap:clamp(12px,3vw,28px);align-items:center}
 .hstat{text-align:right}
-.hstat-val{font-family:'Cormorant Garamond',serif;font-size:clamp(14px,2.5vw,19px);font-weight:600;color:var(--gold3);line-height:1}
+.hstat-val{font-family:var(--font-display);font-size:clamp(14px,2.5vw,19px);font-weight:600;color:var(--gold3);line-height:1}
 .hstat-label{font-size:10px;color:var(--chrome-muted);text-transform:uppercase;letter-spacing:.8px;margin-top:1px}
 .hstat-sep{width:1px;height:26px;background:rgba(255,255,255,.08)}
 .pnl-pos{color:var(--clr-pos-header)}.pnl-neg{color:var(--clr-neg-header)}.pnl-neu{color:var(--gold3)}
@@ -111,7 +113,7 @@ body.private-mode .delta{filter:blur(7px);color:var(--ink4)!important;background
 .nv-toggle input{accent-color:var(--ruby);cursor:pointer;margin:0}
 .nv-toggle:has(input:checked) span{color:var(--ruby)}
 .fg input:disabled{background:var(--ink6);color:var(--ink4);cursor:not-allowed}
-.idealwine-btn{background:none;border:none;font-family:"DM Sans",sans-serif;font-size:10px;font-weight:600;color:var(--gold);cursor:pointer;padding:0;letter-spacing:.3px;opacity:.9;transition:opacity .15s;white-space:nowrap}
+.idealwine-btn{background:none;border:none;font-family:var(--font-body);font-size:10px;font-weight:600;color:var(--gold);cursor:pointer;padding:0;letter-spacing:.3px;opacity:.9;transition:opacity .15s;white-space:nowrap}
 .idealwine-btn:hover{opacity:1}
 /* VIEW TOGGLE */
 .view-toggle{display:flex;gap:1px;flex-shrink:0}
@@ -139,7 +141,7 @@ body.private-mode .delta{filter:blur(7px);color:var(--ink4)!important;background
 .nav::-webkit-scrollbar{display:none}
 .ntab{padding:13px 18px;font-size:11px;font-weight:600;color:var(--ink4);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap;letter-spacing:.5px;text-transform:uppercase}
 .ntab:hover{color:var(--ink2)}.ntab.active{color:var(--ruby);border-bottom-color:var(--ruby)}
-button.ntab{background:none;border-width:0 0 2px;border-style:solid;border-color:transparent;font-family:"DM Sans",sans-serif}
+button.ntab{background:none;border-width:0 0 2px;border-style:solid;border-color:transparent;font-family:var(--font-body)}
 
 .content{padding:clamp(14px,3vw,26px) clamp(16px,4vw,36px)}
 
@@ -151,25 +153,25 @@ button.ntab{background:none;border-width:0 0 2px;border-style:solid;border-color
 body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50%;transform:translateX(-50%);z-index:var(--z-modal);max-width:840px;width:calc(100% - 40px);max-height:calc(100vh - clamp(70px,9vw,90px) - 20px);overflow-y:auto;margin:0;box-shadow:0 8px 40px rgba(28,10,13,.25)}
 .search-wrap{position:relative;flex:1;min-width:160px;display:flex;align-items:center}
 .search-wrap svg{position:absolute;left:11px;width:15px;height:15px;stroke:var(--ink4);fill:none;stroke-width:2;stroke-linecap:round;pointer-events:none}
-.search-inp{width:100%;height:40px;padding-left:36px;padding-right:12px;padding-top:0;padding-bottom:0;border:1.5px solid var(--ink5);border-radius:var(--r);background:var(--surface);font-family:"DM Sans",sans-serif;font-size:13px;color:var(--ink);outline:none;transition:border-color .2s}
+.search-inp{width:100%;height:40px;padding-left:36px;padding-right:12px;padding-top:0;padding-bottom:0;border:1.5px solid var(--ink5);border-radius:var(--r);background:var(--surface);font-family:var(--font-body);font-size:13px;color:var(--ink);outline:none;transition:border-color .2s}
 .search-inp:focus{border-color:var(--gold2)}
 .search-inp::placeholder{color:var(--ink4);font-size:13px}
-.sort-select{height:40px;padding:0 28px 0 11px;border:1.5px solid var(--ink5);border-radius:var(--r);background:var(--surface);font-family:"DM Sans",sans-serif;font-size:12px;color:var(--ink3);outline:none;cursor:pointer;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23b89098' stroke-width='1.5' stroke-linecap='round' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 9px center;flex-shrink:0}
+.sort-select{height:40px;padding:0 28px 0 11px;border:1.5px solid var(--ink5);border-radius:var(--r);background:var(--surface);font-family:var(--font-body);font-size:12px;color:var(--ink3);outline:none;cursor:pointer;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23b89098' stroke-width='1.5' stroke-linecap='round' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 9px center;flex-shrink:0}
 .sort-select:focus{border-color:var(--gold2);outline:none}
-.btn-ia{height:44px;padding:0 14px;background:var(--gold4);border:1.5px solid var(--gold2);border-radius:var(--r);font-family:"DM Sans",sans-serif;font-size:12px;font-weight:600;color:var(--gold);cursor:pointer;transition:background .18s,color .18s,transform .1s;display:flex;align-items:center;gap:5px;white-space:nowrap;flex-shrink:0}
+.btn-ia{height:44px;padding:0 14px;background:var(--gold4);border:1.5px solid var(--gold2);border-radius:var(--r);font-family:var(--font-body);font-size:12px;font-weight:600;color:var(--gold);cursor:pointer;transition:background .18s,color .18s,transform .1s;display:flex;align-items:center;gap:5px;white-space:nowrap;flex-shrink:0}
 .btn-ia:hover{background:var(--gold2);color:#fff}
 .btn-ia:active{transform:scale(.98)}
-.btn-add{height:44px;padding:0 16px;background:var(--ruby);border:none;border-radius:var(--r);font-family:"DM Sans",sans-serif;font-size:12px;font-weight:600;color:#fff;cursor:pointer;transition:background .18s,transform .1s;display:flex;align-items:center;gap:5px;white-space:nowrap;flex-shrink:0}
+.btn-add{height:44px;padding:0 16px;background:var(--ruby);border:none;border-radius:var(--r);font-family:var(--font-body);font-size:12px;font-weight:600;color:#fff;cursor:pointer;transition:background .18s,transform .1s;display:flex;align-items:center;gap:5px;white-space:nowrap;flex-shrink:0}
 .btn-add:hover{background:var(--ruby2)}
 .btn-add:active{transform:scale(.98)}
 
 /* CHIPS */
 .chips-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;align-items:center}
-.chip{height:32px;padding:0 13px;border:1.5px solid var(--ink5);border-radius:var(--r3);background:var(--surface);font-family:"DM Sans",sans-serif;font-size:11px;font-weight:500;color:var(--ink3);cursor:pointer;transition:all .2s;white-space:nowrap;display:inline-flex;align-items:center}
+.chip{height:32px;padding:0 13px;border:1.5px solid var(--ink5);border-radius:var(--r3);background:var(--surface);font-family:var(--font-body);font-size:11px;font-weight:500;color:var(--ink3);cursor:pointer;transition:all .2s;white-space:nowrap;display:inline-flex;align-items:center}
 .chip:hover{border-color:var(--ink4);color:var(--ink)}
 .chip.active{background:var(--ink);border-color:var(--ink);color:#fff}
 .more-wrap{position:relative;display:inline-flex}
-.more-btn{height:32px;padding:0 13px;border:1.5px solid var(--ink5);border-radius:var(--r3);background:var(--surface);font-family:"DM Sans",sans-serif;font-size:11px;font-weight:500;color:var(--ink3);cursor:pointer;transition:all .2s;white-space:nowrap;display:inline-flex;align-items:center;gap:5px}
+.more-btn{height:32px;padding:0 13px;border:1.5px solid var(--ink5);border-radius:var(--r3);background:var(--surface);font-family:var(--font-body);font-size:11px;font-weight:500;color:var(--ink3);cursor:pointer;transition:all .2s;white-space:nowrap;display:inline-flex;align-items:center;gap:5px}
 .more-btn:hover{border-color:var(--ink4);color:var(--ink)}
 .more-btn.open,.more-btn.active{border-color:var(--ink);background:var(--ink6);color:var(--ink)}
 .more-dropdown{display:none;position:absolute;top:calc(100% + 6px);left:0;z-index:var(--z-dropdown);background:var(--surface);border:1.5px solid var(--ink5);border-radius:var(--r2);padding:8px;min-width:220px;box-shadow:0 4px 20px rgba(28,10,13,.12)}
@@ -177,14 +179,14 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
 .more-dropdown .chip{width:100%;justify-content:flex-start;border-radius:var(--r);height:34px}
 
 /* FILTER BUTTON */
-.btn-filter{height:40px;padding:0 14px;background:var(--surface);border:1.5px solid var(--ink5);border-radius:var(--r);font-family:"DM Sans",sans-serif;font-size:12px;font-weight:600;color:var(--ink3);cursor:pointer;transition:border-color .18s,color .18s,transform .1s;display:flex;align-items:center;gap:6px;white-space:nowrap;flex-shrink:0}
+.btn-filter{height:40px;padding:0 14px;background:var(--surface);border:1.5px solid var(--ink5);border-radius:var(--r);font-family:var(--font-body);font-size:12px;font-weight:600;color:var(--ink3);cursor:pointer;transition:border-color .18s,color .18s,transform .1s;display:flex;align-items:center;gap:6px;white-space:nowrap;flex-shrink:0}
 .btn-filter:hover{border-color:var(--ink4);color:var(--ink)}
 .btn-filter:active{transform:scale(.98)}
 .btn-filter.active{border-color:var(--ruby);color:var(--ruby);background:var(--surface)}
 .filter-badge{display:inline-flex;align-items:center;justify-content:center;min-width:16px;height:16px;background:var(--ruby);color:#fff;border-radius:8px;font-size:10px;font-weight:700;padding:0 3px}
 .export-menu{display:none;position:absolute;top:calc(100% + 6px);right:0;z-index:var(--z-sidebar);background:var(--surface);border:1.5px solid var(--ink5);border-radius:var(--r2);padding:6px;min-width:180px;box-shadow:0 4px 20px rgba(28,10,13,.12)}
 .export-menu.open{display:flex;flex-direction:column;gap:3px}
-.export-menu-item{display:flex;align-items:center;gap:8px;padding:0 10px;height:36px;border:none;border-radius:var(--r);background:none;font-family:"DM Sans",sans-serif;font-size:12px;font-weight:500;color:var(--ink3);cursor:pointer;transition:background .15s,color .15s;text-align:left;white-space:nowrap;width:100%}
+.export-menu-item{display:flex;align-items:center;gap:8px;padding:0 10px;height:36px;border:none;border-radius:var(--r);background:none;font-family:var(--font-body);font-size:12px;font-weight:500;color:var(--ink3);cursor:pointer;transition:background .15s,color .15s;text-align:left;white-space:nowrap;width:100%}
 .export-menu-item:hover{background:var(--ink6);color:var(--ink)}
 /* FILTER SIDEBAR */
 .filter-overlay{position:fixed;top:var(--header-h);left:0;right:0;bottom:0;background:rgba(28,10,13,.25);z-index:var(--z-filter-overlay);display:none}
@@ -192,7 +194,7 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
 .filter-sidebar{position:fixed;top:var(--header-h);left:-360px;width:320px;height:calc(100vh - var(--header-h));background:var(--surface);border-right:1.5px solid var(--ink5);z-index:var(--z-filter);transition:left .3s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;box-shadow:8px 0 24px rgba(28,10,13,.1)}
 .filter-sidebar.open{left:0}
 .filter-sidebar-header{display:flex;align-items:center;justify-content:space-between;padding:20px 20px 16px;border-bottom:1px solid var(--ink5);flex-shrink:0}
-.filter-sidebar-title{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--ink)}
+.filter-sidebar-title{font-family:var(--font-display);font-size:20px;font-weight:600;color:var(--ink)}
 .filter-sidebar-close{width:30px;height:30px;border-radius:50%;border:1px solid var(--ink5);background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--ink4);font-size:16px;transition:all .2s;line-height:1}
 .filter-sidebar-close:hover{background:var(--ink6);color:var(--ink)}
 .filter-sidebar-body{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:22px}
@@ -204,14 +206,14 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
 .cave-card-img{width:100%;height:200px;object-fit:contain;display:block;background:var(--ink6)}
 .cave-card-placeholder{width:100%;height:200px;background:var(--ink6);display:flex;align-items:center;justify-content:center;color:var(--ink5)}
 .cave-card-body{padding:14px 16px;display:flex;flex-direction:column;gap:8px;flex:1}
-.cave-card-name{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;color:var(--ink)}
+.cave-card-name{font-family:var(--font-display);font-size:18px;font-weight:600;color:var(--ink)}
 .cave-card-desc{font-size:12px;color:var(--ink3);line-height:1.5;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
 .cave-card-meta{display:flex;gap:14px;font-size:11px;color:var(--ink4);font-weight:500;flex-wrap:wrap}
 .cave-gauge-track{height:8px;background:var(--ink5);border-radius:4px;overflow:hidden;margin-bottom:3px}
 .cave-gauge-fill{height:100%;width:100%;border-radius:4px;transform-origin:left;transition:transform .4s}
 .cave-gauge-label{font-size:11px;color:var(--ink4);display:flex;justify-content:space-between}
 .cave-card-actions{display:flex;gap:8px;margin-top:4px}
-.cave-btn{height:30px;padding:0 12px;border-radius:var(--r);font-family:"DM Sans",sans-serif;font-size:11px;font-weight:600;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:4px}
+.cave-btn{height:30px;padding:0 12px;border-radius:var(--r);font-family:var(--font-body);font-size:11px;font-weight:600;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:4px}
 .cave-btn-edit{background:var(--surface);border:1.5px solid var(--ink5);color:var(--ink3)}
 .cave-btn-edit:hover{border-color:var(--ink3);color:var(--ink)}
 .cave-btn-del{background:var(--surface);border:1.5px solid var(--ink5);color:var(--ink4)}
@@ -224,7 +226,7 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
 .filter-section{display:flex;flex-direction:column;gap:10px}
 .filter-section-label{font-size:11px;font-weight:600;color:var(--ink4);text-transform:uppercase;letter-spacing:.8px;padding-bottom:8px;border-bottom:1px solid var(--ink5)}
 .filter-type-chips{display:flex;flex-wrap:wrap;gap:5px}
-.fchip{height:28px;padding:0 11px;border:1.5px solid var(--ink5);border-radius:var(--r3);background:var(--surface);font-family:"DM Sans",sans-serif;font-size:11px;font-weight:500;color:var(--ink3);cursor:pointer;transition:all .15s;white-space:nowrap;display:inline-flex;align-items:center}
+.fchip{height:28px;padding:0 11px;border:1.5px solid var(--ink5);border-radius:var(--r3);background:var(--surface);font-family:var(--font-body);font-size:11px;font-weight:500;color:var(--ink3);cursor:pointer;transition:all .15s;white-space:nowrap;display:inline-flex;align-items:center}
 .fchip:hover{border-color:var(--ink4);color:var(--ink)}
 .fchip.active{background:var(--ink);border-color:var(--ink);color:#fff}
 .chip-count{display:inline-flex;align-items:center;justify-content:center;min-width:15px;height:15px;background:rgba(0,0,0,.1);border-radius:8px;font-size:10px;font-weight:700;margin-left:4px;padding:0 3px;line-height:1}
@@ -244,7 +246,7 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
 .toggle-sw input:checked+.toggle-sw-sl:before{transform:translateX(16px)}
 .filter-field{display:flex;flex-direction:column;gap:5px}
 .filter-field label{font-size:11px;font-weight:600;color:var(--ink4);text-transform:uppercase;letter-spacing:.5px}
-.filter-field select,.filter-field input[type=number]{height:36px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);background:var(--surface);font-family:"DM Sans",sans-serif;font-size:12px;color:var(--ink);outline:none;transition:border .2s;width:100%}
+.filter-field select,.filter-field input[type=number]{height:36px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);background:var(--surface);font-family:var(--font-body);font-size:12px;color:var(--ink);outline:none;transition:border .2s;width:100%}
 .filter-field select{appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23b89098' stroke-width='1.5' stroke-linecap='round' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 9px center}
 .filter-field select:focus,.filter-field input[type=number]:focus{border-color:var(--gold2)}
 /* RANGE SLIDER */
@@ -257,21 +259,21 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
 .range-slider-track input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--surface);border:2px solid var(--ruby);cursor:pointer;pointer-events:auto;box-shadow:0 1px 6px rgba(139,26,42,.2);border-color:var(--ruby)}
 .range-slider-track input[type=range]::-moz-range-track{background:none}
 .range-slider-vals{display:flex;justify-content:space-between}
-.range-val-input{flex:0 0 auto;width:52px;height:auto;background:transparent;border:1px solid transparent;border-radius:4px;font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:600;color:var(--ink2);text-align:center;outline:none;padding:1px 4px;cursor:default;transition:border-color .15s,background .15s;-moz-appearance:textfield}
+.range-val-input{flex:0 0 auto;width:52px;height:auto;background:transparent;border:1px solid transparent;border-radius:4px;font-family:var(--font-display);font-size:15px;font-weight:600;color:var(--ink2);text-align:center;outline:none;padding:1px 4px;cursor:default;transition:border-color .15s,background .15s;-moz-appearance:textfield}
 .range-val-input::-webkit-inner-spin-button,.range-val-input::-webkit-outer-spin-button{-webkit-appearance:none}
 .range-val-input:hover{border-color:var(--ink5);cursor:text}
 .range-val-input:focus{border-color:var(--gold2);background:var(--gold4);cursor:text}
 /* FILTER SIDEBAR FOOTER */
 .filter-sidebar-footer{padding:16px 20px;border-top:1px solid var(--ink5);flex-shrink:0;display:flex;flex-direction:column;gap:8px}
 .filter-sidebar-count{font-size:11px;color:var(--ink4);text-align:center;font-style:italic;min-height:16px}
-.filter-sidebar-reset{height:36px;width:100%;background:none;border:1.5px solid var(--ink5);border-radius:var(--r);font-family:"DM Sans",sans-serif;font-size:12px;font-weight:600;color:var(--ink4);cursor:pointer;transition:all .2s}
+.filter-sidebar-reset{height:36px;width:100%;background:none;border:1.5px solid var(--ink5);border-radius:var(--r);font-family:var(--font-body);font-size:12px;font-weight:600;color:var(--ink4);cursor:pointer;transition:all .2s}
 .filter-sidebar-reset:hover{border-color:var(--ink4);color:var(--ink3)}
 
 /* PANELS */
 .panel{background:var(--surface);border:1.5px solid var(--ink5);border-radius:var(--r2);padding:clamp(14px,3vw,22px);margin-bottom:14px;display:none}
 .panel.visible{display:block}
-.panel-title{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;color:var(--ink);margin-bottom:14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.badge-ia{font-family:"DM Sans",sans-serif;font-size:10px;font-weight:600;background:var(--gold4);color:var(--gold);border:1px solid var(--gold3);border-radius:4px;padding:2px 7px}
+.panel-title{font-family:var(--font-display);font-size:18px;font-weight:600;color:var(--ink);margin-bottom:14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.badge-ia{font-family:var(--font-body);font-size:10px;font-weight:600;background:var(--gold4);color:var(--gold);border:1px solid var(--gold3);border-radius:4px;padding:2px 7px}
 
 /* IMPORT */
 .import-modes{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
@@ -282,7 +284,7 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
 .imode-sub{font-size:10px;color:var(--ink4);margin-top:2px}
 .import-text-area,.import-photo-area{display:none}.import-text-area.visible,.import-photo-area.visible{display:block}
 .ti-row{display:flex;gap:8px;flex-wrap:wrap}
-.ti{flex:1;min-width:140px;height:40px;padding:0 12px;border:1.5px solid var(--ink5);border-radius:var(--r);font-family:"DM Sans",sans-serif;font-size:13px;color:var(--ink);outline:none;transition:border .2s}
+.ti{flex:1;min-width:140px;height:40px;padding:0 12px;border:1.5px solid var(--ink5);border-radius:var(--r);font-family:var(--font-body);font-size:13px;color:var(--ink);outline:none;transition:border .2s}
 .ti:focus{border-color:var(--gold2)}.ti::placeholder{color:var(--ink4)}
 .ti-hint{font-size:11px;color:var(--ink4);margin-top:6px}
 .photo-drop{border:2px dashed var(--ink5);border-radius:var(--r);padding:clamp(20px,5vw,32px) 16px;text-align:center;cursor:pointer;transition:all .2s}
@@ -311,7 +313,7 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
 .fsec-label::after{content:'';flex:1;height:1px;background:var(--ink5)}
 .fg{display:flex;flex-direction:column;gap:4px}
 .fg label{font-size:11px;font-weight:500;color:var(--ink4);text-transform:none;letter-spacing:0}
-.fg input,.fg select,.fg textarea{height:38px;padding:0 11px;border:1.5px solid var(--ink5);border-radius:var(--r);background:var(--surface);font-family:"DM Sans",sans-serif;font-size:13px;color:var(--ink);outline:none;transition:border .2s;width:100%}
+.fg input,.fg select,.fg textarea{height:38px;padding:0 11px;border:1.5px solid var(--ink5);border-radius:var(--r);background:var(--surface);font-family:var(--font-body);font-size:13px;color:var(--ink);outline:none;transition:border .2s;width:100%}
 .fg textarea{height:auto;min-height:52px;padding:9px 11px;resize:vertical;line-height:1.5}
 .fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--gold2)}
 .fg.aif input,.fg.aif select{border-color:var(--gold2);background:var(--gold4)}
@@ -322,13 +324,13 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
 .fr4{grid-template-columns:repeat(auto-fit,minmax(110px,1fr))}
 .factions{display:flex;gap:10px;flex-wrap:wrap;padding-top:4px}
 /* ── SYSTÈME BOUTONS CANONIQUE (3 variantes) ── */
-.btn-primary,.bsub{height:44px;padding:0 18px;background:var(--ruby);color:#fff;border:none;border-radius:var(--r);font-family:"DM Sans",sans-serif;font-size:13px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:background .18s,transform .1s}
+.btn-primary,.bsub{height:44px;padding:0 18px;background:var(--ruby);color:#fff;border:none;border-radius:var(--r);font-family:var(--font-body);font-size:13px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:background .18s,transform .1s}
 .btn-primary:hover,.bsub:hover{background:var(--ruby2)}
 .btn-primary:active,.bsub:active{transform:scale(.98)}
-.btn-secondary{height:44px;padding:0 16px;background:var(--surface);border:1.5px solid var(--ink5);border-radius:var(--r);font-family:"DM Sans",sans-serif;font-size:12px;font-weight:600;color:var(--ink3);cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:border-color .18s,color .18s,transform .1s;white-space:nowrap;flex-shrink:0}
+.btn-secondary{height:44px;padding:0 16px;background:var(--surface);border:1.5px solid var(--ink5);border-radius:var(--r);font-family:var(--font-body);font-size:12px;font-weight:600;color:var(--ink3);cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:border-color .18s,color .18s,transform .1s;white-space:nowrap;flex-shrink:0}
 .btn-secondary:hover{border-color:var(--ink4);color:var(--ink)}
 .btn-secondary:active{transform:scale(.98)}
-.btn-ghost,.bcan{height:44px;padding:0 14px;background:none;color:var(--ink4);border:1.5px solid var(--ink5);border-radius:var(--r);font-family:"DM Sans",sans-serif;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:border-color .18s,color .18s}
+.btn-ghost,.bcan{height:44px;padding:0 14px;background:none;color:var(--ink4);border:1.5px solid var(--ink5);border-radius:var(--r);font-family:var(--font-body);font-size:13px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:border-color .18s,color .18s}
 .btn-ghost:hover,.bcan:hover{border-color:var(--ink4);color:var(--ink3)}
 
 /* WINE CARDS — 1 col mobile, 2 col laptop, 3 col wide */
@@ -352,14 +354,14 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
 .photo-upload-inner{display:flex;flex-direction:column;align-items:center;gap:8px}
 .photo-upload-preview{width:60px;height:100px;object-fit:contain;display:block;border-radius:4px}
 .wbody{padding:10px 12px;display:flex;flex-direction:column;justify-content:center;gap:3px;border-left:1px solid var(--ink5);min-width:0;overflow:hidden}
-.wname{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:600;color:var(--ink);overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.wname{font-family:var(--font-display);font-size:17px;font-weight:600;color:var(--ink);overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
 .wmeta{display:flex;gap:4px;flex-wrap:wrap;align-items:center}
 .wmeta-country{font-size:10px;font-weight:600;color:var(--ink4);background:var(--ink6);padding:1px 5px;border-radius:3px}
 .wmeta-reg{font-size:11px;font-weight:600;color:var(--ruby)}
 .wmeta-dot{width:3px;height:3px;border-radius:50%;background:var(--ink5);flex-shrink:0}
 .wmeta-txt{font-size:11px;color:var(--ink4)}
-.wmeta-year{font-family:'Cormorant Garamond',serif;font-size:13px;font-weight:600;color:var(--ink2);letter-spacing:.5px}
-.wyear{font-family:'Cormorant Garamond',serif;font-size:14px;font-weight:600;color:var(--ink);letter-spacing:1px;line-height:1.2}
+.wmeta-year{font-family:var(--font-display);font-size:13px;font-weight:600;color:var(--ink2);letter-spacing:.5px}
+.wyear{font-family:var(--font-display);font-size:14px;font-weight:600;color:var(--ink);letter-spacing:1px;line-height:1.2}
 .tpill{font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;white-space:nowrap}
 .wtags{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
 .apbadge{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:600;color:var(--clr-pos);background:var(--clr-pos-bg);border-radius:4px;padding:2px 7px}
@@ -367,14 +369,14 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
 .cert-badge{display:block;width:28px;height:28px;background:rgba(255,255,255,0.92);border-radius:4px;padding:1px;cursor:default}
 .cert-badge:hover{transform:scale(1.06)}
 .cert-badge img{width:100%;height:100%;object-fit:contain;display:block}
-.cb-raisonné,.cb-lutte{background:none;border:none;font-size:10px;font-weight:700;color:var(--ink3);width:88px;height:auto;padding:0;font-family:"DM Sans",sans-serif;text-align:center;line-height:1.2}
-.critic-tag{display:inline-flex;align-items:center;justify-content:center;height:26px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r3);font-size:11px;font-weight:600;color:var(--ink3);cursor:pointer;transition:all .2s;font-family:"DM Sans",sans-serif;background:var(--surface)}
+.cb-raisonné,.cb-lutte{background:none;border:none;font-size:10px;font-weight:700;color:var(--ink3);width:88px;height:auto;padding:0;font-family:var(--font-body);text-align:center;line-height:1.2}
+.critic-tag{display:inline-flex;align-items:center;justify-content:center;height:26px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r3);font-size:11px;font-weight:600;color:var(--ink3);cursor:pointer;transition:all .2s;font-family:var(--font-body);background:var(--surface)}
 .critic-tag:hover{border-color:var(--ruby);color:var(--ruby)}
 .critic-tag-custom{border-style:dashed;color:var(--ink4)}
 .critic-tag-custom:hover{border-color:var(--gold);color:var(--gold)}
 .critic-active-chip{display:inline-flex;align-items:center;gap:6px;background:var(--ink6);border:1.5px solid var(--ink5);border-radius:var(--r);padding:4px 8px}
 .critic-active-chip label{font-size:10px;font-weight:600;color:var(--ink3);white-space:nowrap}
-.critic-active-chip input{width:60px;height:24px;border:1px solid var(--ink5);border-radius:4px;font-size:12px;text-align:center;font-family:"DM Sans",sans-serif;color:var(--ink);background:var(--surface);outline:none}
+.critic-active-chip input{width:60px;height:24px;border:1px solid var(--ink5);border-radius:4px;font-size:12px;text-align:center;font-family:var(--font-body);color:var(--ink);background:var(--surface);outline:none}
 .critic-active-chip .critic-remove{width:16px;height:16px;border-radius:50%;border:none;background:var(--ink5);color:var(--ink4);font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;padding:0;transition:all .2s}
 .critic-active-chip .critic-remove:hover{background:var(--ruby);color:#fff}
 
@@ -390,16 +392,21 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
 .wnotes{font-size:11px;color:var(--ink4);font-style:italic;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
 .wright{display:none}
 .qctrl{display:flex;align-items:center;gap:6px}
-.qbtn{width:28px;height:28px;border-radius:6px;border:1.5px solid var(--ink5);background:var(--surface);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;color:var(--ink3);transition:all .15s;font-family:"DM Sans",sans-serif;font-weight:500}
+.qbtn{width:28px;height:28px;border-radius:6px;border:1.5px solid var(--ink5);background:var(--surface);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;color:var(--ink3);transition:all .15s;font-family:var(--font-body);font-weight:500}
 .qbtn:hover{background:var(--ink);color:#fff;border-color:var(--ink)}
-.qval{font-family:"DM Sans",sans-serif;font-size:18px;font-weight:600;color:var(--ink);min-width:26px;text-align:center}
-.delbtn{width:28px;height:28px;border-radius:6px;border:1.5px solid transparent;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.qval{font-family:var(--font-body);font-size:18px;font-weight:600;color:var(--ink);min-width:26px;text-align:center}
+.delbtn{width:28px;height:28px;border-radius:6px;border:1.5px solid transparent;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;position:relative}
 .delbtn svg{width:13px;height:13px;stroke:var(--ink5);fill:none;stroke-width:2;stroke-linecap:round;transition:stroke .2s}
 .delbtn:hover{border-color:#fcc;background:#fff5f5}.delbtn:hover svg{stroke:var(--ruby)}
-.editbtn{height:28px;padding:0 10px;border-radius:6px;border:1.5px solid var(--ink5);background:var(--surface);cursor:pointer;font-size:11px;font-weight:600;color:var(--ink3);font-family:"DM Sans",sans-serif;transition:all .2s;display:flex;align-items:center;gap:4px}
+.editbtn{height:34px;padding:0 10px;border-radius:6px;border:1.5px solid var(--ink5);background:var(--surface);cursor:pointer;font-size:11px;font-weight:600;color:var(--ink3);font-family:var(--font-body);transition:all .2s;display:flex;align-items:center;gap:4px}
 .editbtn:hover{border-color:var(--gold2);color:var(--gold);background:var(--gold4)}
 .wfooter{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-top:1px solid var(--ink5);gap:8px}
 .footer-actions{display:flex;gap:6px;align-items:center}
+/* Touch hit areas — extend to 44px on coarse pointer without changing visual size */
+@media(pointer:coarse){
+  .qbtn,.delbtn{position:relative}
+  .qbtn::after,.delbtn::after{content:'';position:absolute;inset:-8px}
+}
 /* Reveal actions on hover — vrai pointeur uniquement (exclut touch) */
 @media(hover:hover) and (pointer:fine){
   .wcard .footer-actions{opacity:0;transition:opacity .2s ease}
@@ -408,14 +415,14 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
 }
 .empty{text-align:center;padding:64px 24px 48px;color:var(--ink4);display:flex;flex-direction:column;align-items:center;gap:12px}
 .empty-icon{width:56px;height:56px;opacity:.25;color:var(--ink3)}
-.empty-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--ink3);font-style:italic}
+.empty-title{font-family:var(--font-display);font-size:22px;font-weight:600;color:var(--ink3);font-style:italic}
 .empty-sub{font-size:13px;color:var(--ink4);max-width:300px;line-height:1.6}
-.empty-cta{height:38px;padding:0 20px;background:var(--ruby);color:#fff;border:none;border-radius:var(--r);font-family:"DM Sans",sans-serif;font-size:13px;font-weight:600;cursor:pointer;margin-top:4px;transition:background .18s}
+.empty-cta{height:38px;padding:0 20px;background:var(--ruby);color:#fff;border:none;border-radius:var(--r);font-family:var(--font-body);font-size:13px;font-weight:600;cursor:pointer;margin-top:4px;transition:background .18s}
 .empty-cta:hover{background:var(--ruby2)}
 
 /* STATS */
 .stats-toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
-.stats-chip{height:30px;padding:0 12px;border:1.5px solid var(--ink5);border-radius:var(--r3);background:var(--surface);font-family:"DM Sans",sans-serif;font-size:11px;font-weight:500;color:var(--ink3);cursor:pointer;transition:all .2s;white-space:nowrap;display:inline-flex;align-items:center;justify-content:center}
+.stats-chip{height:30px;padding:0 12px;border:1.5px solid var(--ink5);border-radius:var(--r3);background:var(--surface);font-family:var(--font-body);font-size:11px;font-weight:500;color:var(--ink3);cursor:pointer;transition:all .2s;white-space:nowrap;display:inline-flex;align-items:center;justify-content:center}
 .stats-chip:hover{border-color:var(--ink4)}.stats-chip.active{background:var(--ink);border-color:var(--ink);color:#fff}
 .sgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
 .scard{background:var(--surface);border:1px solid var(--ink5);border-radius:var(--r2);padding:clamp(14px,3vw,20px)}
@@ -431,7 +438,7 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
 .pnl-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
 @media(max-width:480px){.pnl-summary{grid-template-columns:1fr}}
 .pnl-kpi{background:var(--ink6);border-radius:var(--r);padding:10px 12px}
-.pnl-kpi-val{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--ink);line-height:1}
+.pnl-kpi-val{font-family:var(--font-display);font-size:20px;font-weight:600;color:var(--ink);line-height:1}
 .pnl-kpi-lbl{font-size:11px;color:var(--ink4);text-transform:uppercase;letter-spacing:.4px;margin-top:3px}
 .pkv-pos{color:var(--clr-pos)}.pkv-neg{color:var(--ruby)}.pkv-neu{color:var(--gold)}
 
@@ -444,7 +451,7 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
 .wchk svg{width:10px;height:10px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;display:none}
 .wchk.chk{background:var(--ruby);border-color:var(--ruby)}.wchk.chk svg{display:block}
 .winfo{flex:1;min-width:0}
-.winfo h3{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.winfo h3{font-family:var(--font-display);font-size:17px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .winfo p{font-size:11px;color:var(--ink4);margin-top:1px}
 .wdel{width:28px;height:28px;background:none;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;border-radius:6px;transition:background .2s;flex-shrink:0}
 .wdel svg{width:13px;height:13px;stroke:var(--ink5);fill:none;stroke-width:2;stroke-linecap:round;transition:stroke .2s}
@@ -453,26 +460,26 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
 /* API KEY */
 .api-section{background:var(--gold4);border:1px solid var(--gold3);border-radius:var(--r);padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .api-section label{font-size:11px;font-weight:600;color:var(--gold);text-transform:uppercase;letter-spacing:.5px;white-space:nowrap}
-.api-input{flex:1;min-width:200px;height:36px;padding:0 10px;border:1.5px solid var(--gold3);border-radius:var(--r);font-family:"DM Sans",sans-serif;font-size:12px;color:var(--ink);outline:none;background:var(--surface)}
+.api-input{flex:1;min-width:200px;height:36px;padding:0 10px;border:1.5px solid var(--gold3);border-radius:var(--r);font-family:var(--font-body);font-size:12px;color:var(--ink);outline:none;background:var(--surface)}
 .api-input:focus{border-color:var(--gold2)}
-.api-save{height:36px;padding:0 14px;background:var(--gold);color:#fff;border:none;border-radius:var(--r);font-family:"DM Sans",sans-serif;font-size:12px;font-weight:600;cursor:pointer}
+.api-save{height:36px;padding:0 14px;background:var(--gold);color:#fff;border:none;border-radius:var(--r);font-family:var(--font-body);font-size:12px;font-weight:600;cursor:pointer}
 .api-hint{font-size:10px;color:var(--ink4);width:100%}
 
 /* AUTH */
 .auth-screen{position:fixed;inset:0;background:var(--chrome-bg);display:flex;align-items:center;justify-content:center;z-index:var(--z-auth);flex-direction:column;gap:24px}
 .auth-box{background:var(--surface);border-radius:var(--r2);padding:40px;width:100%;max-width:420px;box-shadow:0 8px 40px rgba(0,0,0,.3)}
 .auth-logo{text-align:center;margin-bottom:28px}
-.auth-logo-title{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:300;color:#fff;letter-spacing:8px}
+.auth-logo-title{font-family:var(--font-display);font-size:36px;font-weight:300;color:#fff;letter-spacing:8px}
 .auth-logo-sub{font-size:10px;color:var(--ink4);letter-spacing:4px;text-transform:uppercase;margin-top:4px}
 .auth-tabs{display:flex;border-bottom:1px solid var(--ink5);margin-bottom:24px}
 .auth-tab{flex:1;padding:10px;text-align:center;font-size:13px;font-weight:500;color:var(--ink4);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s}
-button.auth-tab{background:none;border-width:0 0 2px;border-style:solid;border-color:transparent;font-family:"DM Sans",sans-serif;width:100%}
+button.auth-tab{background:none;border-width:0 0 2px;border-style:solid;border-color:transparent;font-family:var(--font-body);width:100%}
 .auth-tab.active{color:var(--ruby);border-bottom-color:var(--ruby)}
 .auth-field{margin-bottom:14px}
 .auth-field label{display:block;font-size:11px;font-weight:500;color:var(--ink4);text-transform:none;letter-spacing:0;margin-bottom:5px}
-.auth-field input{width:100%;height:40px;padding:0 12px;border:1.5px solid var(--ink5);border-radius:var(--r);font-family:"DM Sans",sans-serif;font-size:13px;color:var(--ink);outline:none;transition:border .2s}
+.auth-field input{width:100%;height:40px;padding:0 12px;border:1.5px solid var(--ink5);border-radius:var(--r);font-family:var(--font-body);font-size:13px;color:var(--ink);outline:none;transition:border .2s}
 .auth-field input:focus{border-color:var(--ruby)}
-.auth-btn{width:100%;height:44px;background:var(--ruby);color:#fff;border:none;border-radius:var(--r);font-family:"DM Sans",sans-serif;font-size:13px;font-weight:600;cursor:pointer;margin-top:8px;transition:background .2s}
+.auth-btn{width:100%;height:44px;background:var(--ruby);color:#fff;border:none;border-radius:var(--r);font-family:var(--font-body);font-size:13px;font-weight:600;cursor:pointer;margin-top:8px;transition:background .2s}
 .auth-btn:hover{background:var(--ruby2)}
 .auth-err{font-size:12px;color:var(--ruby);margin-top:10px;text-align:center;min-height:18px}
 .auth-msg{font-size:12px;color:var(--clr-pos);margin-top:10px;text-align:center;min-height:18px}
@@ -481,14 +488,14 @@ button.auth-tab{background:none;border-width:0 0 2px;border-style:solid;border-c
 .user-avatar-btn{width:36px;height:36px;border-radius:50%;border:2px solid rgba(201,168,76,.4);background:rgba(201,168,76,.15);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;overflow:hidden}
 .user-avatar-btn:hover{border-color:var(--gold2);background:rgba(201,168,76,.25)}
 .user-avatar-btn img{width:100%;height:100%;object-fit:cover;border-radius:50%}
-.user-avatar-initials{font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:600;color:var(--gold2)}
+.user-avatar-initials{font-family:var(--font-display);font-size:15px;font-weight:600;color:var(--gold2)}
 .user-dropdown{position:absolute;top:calc(100% + 10px);right:0;background:var(--surface);border:1px solid var(--ink5);border-radius:var(--r2);box-shadow:0 8px 32px rgba(0,0,0,.15);width:220px;z-index:var(--z-sidebar);display:none;overflow:hidden}
 .user-dropdown.open{display:block}
 .user-dropdown-header{padding:14px 16px;border-bottom:1px solid var(--ink5);background:var(--ink6)}
-.user-dropdown-name{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:600;color:var(--ink)}
+.user-dropdown-name{font-family:var(--font-display);font-size:16px;font-weight:600;color:var(--ink)}
 .user-dropdown-email{font-size:11px;color:var(--ink4);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .user-dropdown-cave{font-size:11px;color:var(--gold);margin-top:2px;font-style:italic}
-.user-dropdown-item{display:flex;align-items:center;gap:10px;padding:10px 16px;font-size:13px;color:var(--ink3);cursor:pointer;transition:background .15s;border:none;background:none;width:100%;text-align:left;font-family:"DM Sans",sans-serif}
+.user-dropdown-item{display:flex;align-items:center;gap:10px;padding:10px 16px;font-size:13px;color:var(--ink3);cursor:pointer;transition:background .15s;border:none;background:none;width:100%;text-align:left;font-family:var(--font-body)}
 .user-dropdown-item:hover{background:var(--ink6);color:var(--ink)}
 .user-dropdown-item svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;flex-shrink:0}
 .user-dropdown-sep{height:1px;background:var(--ink5);margin:4px 0}
@@ -499,22 +506,22 @@ button.auth-tab{background:none;border-width:0 0 2px;border-style:solid;border-c
 .modal-overlay{position:fixed;inset:0;background:rgba(28,10,13,.5);z-index:var(--z-dialog);display:none;align-items:center;justify-content:center;backdrop-filter:blur(2px)}
 .modal-overlay.open{display:flex}
 .modal-box{background:var(--surface);border-radius:var(--r2);padding:32px;width:100%;max-width:480px;box-shadow:0 16px 48px rgba(0,0,0,.2);position:relative;max-height:90vh;overflow-y:auto}
-.modal-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--ink);margin-bottom:24px}
+.modal-title{font-family:var(--font-display);font-size:22px;font-weight:600;color:var(--ink);margin-bottom:24px}
 .modal-close{position:absolute;top:16px;right:16px;width:28px;height:28px;border-radius:50%;border:1px solid var(--ink5);background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--ink4);font-size:16px;transition:all .2s}
 .modal-close:hover{background:var(--ink6);color:var(--ink)}
 .modal-avatar{display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:24px}
 .modal-avatar-preview{width:80px;height:80px;border-radius:50%;border:3px solid var(--ink5);overflow:hidden;display:flex;align-items:center;justify-content:center;background:var(--ink6);cursor:pointer;transition:all .2s}
 .modal-avatar-preview:hover{border-color:var(--gold2)}
 .modal-avatar-preview img{width:100%;height:100%;object-fit:cover}
-.modal-avatar-initials-big{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:600;color:var(--ink4)}
+.modal-avatar-initials-big{font-family:var(--font-display);font-size:32px;font-weight:600;color:var(--ink4)}
 .modal-avatar-hint{font-size:11px;color:var(--ink4);cursor:pointer}
 .profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .profile-fg{display:flex;flex-direction:column;gap:5px}
 .profile-fg.full{grid-column:1/-1}
 .profile-fg label{font-size:11px;font-weight:500;color:var(--ink4);text-transform:none;letter-spacing:0}
-.profile-fg input,.profile-fg select{height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-family:"DM Sans",sans-serif;font-size:13px;color:var(--ink);outline:none;transition:border .2s;background:var(--surface)}
+.profile-fg input,.profile-fg select{height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-family:var(--font-body);font-size:13px;color:var(--ink);outline:none;transition:border .2s;background:var(--surface)}
 .profile-fg input:focus,.profile-fg select:focus{border-color:var(--ruby)}
-.profile-save-btn{width:100%;height:40px;background:var(--ruby);color:#fff;border:none;border-radius:var(--r);font-family:"DM Sans",sans-serif;font-size:13px;font-weight:600;cursor:pointer;margin-top:20px;transition:background .2s}
+.profile-save-btn{width:100%;height:40px;background:var(--ruby);color:#fff;border:none;border-radius:var(--r);font-family:var(--font-body);font-size:13px;font-weight:600;cursor:pointer;margin-top:20px;transition:background .2s}
 .profile-save-btn:hover{background:#6d1420}
 /* CROP PHOTO */
 #photo-crop-modal{position:fixed;inset:0;background:rgba(28,10,13,.82);z-index:var(--z-crop);display:none;align-items:center;justify-content:center}
@@ -530,7 +537,7 @@ button.auth-tab{background:none;border-width:0 0 2px;border-style:solid;border-c
 .crop-zoom-row label{font-size:12px;color:var(--ink3);white-space:nowrap}
 .crop-zoom-row input[type=range]{flex:1;accent-color:var(--ruby)}
 .crop-btn-row{display:flex;gap:10px;width:300px}
-.crop-btn-row button{flex:1;height:38px;border-radius:var(--r);font-size:13px;font-weight:500;cursor:pointer;border:1.5px solid var(--ink5);font-family:"DM Sans",sans-serif}
+.crop-btn-row button{flex:1;height:38px;border-radius:var(--r);font-size:13px;font-weight:500;cursor:pointer;border:1.5px solid var(--ink5);font-family:var(--font-body)}
 .crop-btn-confirm{background:var(--ruby);color:#fff;border-color:var(--ruby)!important}
 .crop-btn-cancel{background:var(--surface);color:var(--ink)}
 /* AUTH SPLIT */
@@ -540,7 +547,7 @@ button.auth-tab{background:none;border-width:0 0 2px;border-style:solid;border-c
 .auth-left::after{content:'';position:absolute;bottom:-80px;left:-80px;width:260px;height:260px;border-radius:50%;background:rgba(201,168,76,.07);pointer-events:none}
 .auth-bg-img{position:absolute;top:0;left:0;width:100%;height:100vh;opacity:0;pointer-events:none;object-fit:cover;filter:grayscale(1) invert(1);transition:opacity .65s ease}
 .auth-bg-img.active{opacity:0.18}
-.auth-brand{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:300;color:#fff;letter-spacing:10px;margin-bottom:4px}
+.auth-brand{font-family:var(--font-display);font-size:30px;font-weight:300;color:#fff;letter-spacing:10px;margin-bottom:4px}
 .auth-brand-sub{font-size:11px;color:rgba(255,255,255,.4);letter-spacing:4px;text-transform:uppercase;margin-bottom:56px}
 .auth-slides-wrap{position:relative;flex:1;min-height:260px}
 .auth-slide{position:absolute;inset:0;display:grid;grid-template-columns:auto 1fr;gap:12px 20px;align-items:center;align-content:center;opacity:0;transition:opacity .65s ease;pointer-events:none}
@@ -549,7 +556,7 @@ button.auth-tab{background:none;border-width:0 0 2px;border-style:solid;border-c
 .auth-slide.active{opacity:1;pointer-events:auto}
 .auth-slide-tag{font-size:11px;font-weight:700;color:rgba(255,255,255,.75);letter-spacing:2px;text-transform:uppercase;background:rgba(255,255,255,.1);padding:4px 12px;border-radius:20px;justify-self:start}
 .auth-slide-icon{width:56px;height:56px;color:#c9a84c;flex-shrink:0}
-.auth-slide-title{font-family:'Cormorant Garamond',serif;font-size:48px;font-weight:600;color:#fff;line-height:1.15}
+.auth-slide-title{font-family:var(--font-display);font-size:48px;font-weight:600;color:#fff;line-height:1.15}
 .auth-slide-desc{font-size:16px;color:rgba(255,255,255,.55);line-height:1.7;max-width:340px}
 .auth-dots{display:flex;gap:8px;padding-top:40px}
 .auth-dot{width:6px;height:6px;border-radius:3px;background:rgba(201,168,76,.25);cursor:pointer;transition:all .4s}
@@ -559,32 +566,32 @@ button.auth-tab{background:none;border-width:0 0 2px;border-style:solid;border-c
 @media(max-width:720px){.auth-left{display:none}.auth-right{flex:1;background:#1c0a0d}.auth-form-card{box-shadow:0 4px 24px rgba(0,0,0,.3)}}
 .loading-screen{position:fixed;inset:0;background:var(--ink);display:flex;align-items:center;justify-content:center;z-index:var(--z-loader);flex-direction:column;gap:16px}
 .loading-spinner{width:32px;height:32px;border:2px solid rgba(201,168,76,.3);border-top-color:var(--gold2);border-radius:50%;animation:spin .7s linear infinite}
-.loading-text{font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--gold3);letter-spacing:2px}
+.loading-text{font-family:var(--font-display);font-size:16px;color:var(--gold3);letter-spacing:2px}
 
 /* ── MODAL CHOIX AJOUT ── */
 .add-choice-modal{position:fixed;inset:0;background:rgba(28,10,13,.6);z-index:var(--z-dialog);display:none;align-items:center;justify-content:center;backdrop-filter:blur(3px)}
 .add-choice-modal.open{display:flex}
 .add-choice-box{background:var(--surface);border-radius:16px;padding:32px;max-width:400px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.25)}
-.add-choice-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--ink);margin-bottom:6px;text-align:center}
+.add-choice-title{font-family:var(--font-display);font-size:22px;font-weight:600;color:var(--ink);margin-bottom:6px;text-align:center}
 .add-choice-sub{font-size:12px;color:var(--ink4);text-align:center;margin-bottom:24px}
 .add-choice-options{display:flex;flex-direction:column;gap:10px}
 .add-choice-btn{display:flex;align-items:center;gap:14px;padding:16px 18px;border:1.5px solid var(--ink5);border-radius:12px;background:var(--surface);cursor:pointer;transition:all .2s;text-align:left;width:100%}
 .add-choice-btn:hover{border-color:var(--ruby);background:#fff8f8;transform:translateX(3px)}
 .add-choice-btn-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
 .add-choice-btn-text{display:flex;flex-direction:column;gap:2px}
-.add-choice-btn-label{font-size:14px;font-weight:600;color:var(--ink);font-family:"DM Sans",sans-serif}
+.add-choice-btn-label{font-size:14px;font-weight:600;color:var(--ink);font-family:var(--font-body)}
 .add-choice-btn-hint{font-size:11px;color:var(--ink4)}
 /* ── MODAL IA ── */
 .ai-modal{position:fixed;inset:0;background:rgba(28,10,13,.6);z-index:var(--z-ai);display:none;align-items:center;justify-content:center;backdrop-filter:blur(3px)}
 .ai-modal.open{display:flex}
 .ai-modal-box{background:var(--surface);border-radius:16px;padding:28px;max-width:480px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.25);position:relative}
-.ai-modal-title{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--ink);margin-bottom:20px;display:flex;align-items:center;gap:8px}
+.ai-modal-title{font-family:var(--font-display);font-size:20px;font-weight:600;color:var(--ink);margin-bottom:20px;display:flex;align-items:center;gap:8px}
 .ai-modal-close{position:absolute;top:16px;right:16px;width:28px;height:28px;border-radius:50%;border:1px solid var(--ink5);background:none;cursor:pointer;font-size:14px;color:var(--ink4);display:flex;align-items:center;justify-content:center;transition:all .2s}
 .ai-modal-close:hover{background:var(--ink6)}
 .ai-modal-input-row{display:flex;gap:8px;margin-bottom:12px}
-.ai-modal-input{flex:1;height:42px;padding:0 14px;border:1.5px solid var(--ink5);border-radius:8px;font-size:13px;font-family:"DM Sans",sans-serif;color:var(--ink);outline:none;transition:border .2s}
+.ai-modal-input{flex:1;height:42px;padding:0 14px;border:1.5px solid var(--ink5);border-radius:8px;font-size:13px;font-family:var(--font-body);color:var(--ink);outline:none;transition:border .2s}
 .ai-modal-input:focus{border-color:var(--ruby)}
-.ai-modal-analyze-btn{height:42px;padding:0 18px;background:var(--ruby);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:"DM Sans",sans-serif;white-space:nowrap;transition:background .2s}
+.ai-modal-analyze-btn{height:42px;padding:0 18px;background:var(--ruby);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font-body);white-space:nowrap;transition:background .2s}
 .ai-modal-analyze-btn:hover{background:var(--ruby2)}
 .ai-photo-drop{border:2px dashed var(--ink5);border-radius:10px;padding:28px;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:12px}
 .ai-photo-drop:hover{border-color:var(--ruby);background:#fff8f8}
@@ -601,9 +608,9 @@ button.auth-tab{background:none;border-width:0 0 2px;border-style:solid;border-c
 .ai-field-item span.empty{color:var(--ink5);font-style:italic}
 .ai-field-full{grid-column:1/-1}
 .ai-result-actions{display:flex;gap:8px;margin-top:14px}
-.ai-import-btn{flex:1;height:38px;background:var(--ruby);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:"DM Sans",sans-serif;transition:background .2s}
+.ai-import-btn{flex:1;height:38px;background:var(--ruby);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font-body);transition:background .2s}
 .ai-import-btn:hover{background:var(--ruby2)}
-.ai-retry-btn{height:38px;padding:0 14px;border:1.5px solid var(--ink5);background:none;border-radius:8px;font-size:13px;color:var(--ink4);cursor:pointer;font-family:"DM Sans",sans-serif;transition:all .2s}
+.ai-retry-btn{height:38px;padding:0 14px;border:1.5px solid var(--ink5);background:none;border-radius:8px;font-size:13px;color:var(--ink4);cursor:pointer;font-family:var(--font-body);transition:all .2s}
 .ai-retry-btn:hover{border-color:var(--ink3);color:var(--ink)}
 .ai-err-msg{color:var(--ruby);font-size:12px;padding:8px;text-align:center;display:none}
 .ai-err-msg.visible{display:block}
@@ -617,10 +624,10 @@ button.auth-tab{background:none;border-width:0 0 2px;border-style:solid;border-c
 /* ── CARTES DÉGUSTATION ── */
 .deg-card{background:var(--surface);border:1px solid var(--ink5);border-radius:var(--r2);padding:16px 28px;display:flex;gap:18px;align-items:center;margin-bottom:4px}
 .deg-card-body{flex:1}
-.deg-card-name{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:600;color:var(--ink);margin-bottom:3px}
+.deg-card-name{font-family:var(--font-display);font-size:16px;font-weight:600;color:var(--ink);margin-bottom:3px}
 .deg-card-meta{font-size:11px;color:var(--ink4);margin-bottom:8px}
 .deg-card-note{display:inline-flex;align-items:center;gap:6px;background:var(--ink6);border-radius:6px;padding:4px 10px;margin-bottom:8px}
-.deg-card-note-val{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:700;color:var(--ruby)}
+.deg-card-note-val{font-family:var(--font-display);font-size:18px;font-weight:700;color:var(--ruby)}
 .deg-card-note-max{font-size:11px;color:var(--ink4)}
 .deg-card-comment{font-size:12px;color:var(--ink3);line-height:1.5;font-style:italic}
 .deg-card-tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
@@ -632,11 +639,11 @@ button.auth-tab{background:none;border-width:0 0 2px;border-style:solid;border-c
 
 /* ── CARTES VENTES ── */
 .vente-card{background:var(--surface);border:1px solid var(--ink5);border-radius:var(--r2);padding:16px 28px;display:grid;grid-template-columns:auto auto 1fr;gap:20px;align-items:center;margin-bottom:4px}
-.vente-card-name{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:600;color:var(--ink)}
+.vente-card-name{font-family:var(--font-display);font-size:19px;font-weight:600;color:var(--ink)}
 .vente-card-meta{font-size:12px;color:var(--ink4);margin-top:3px}
 .vente-card-platform{display:inline-block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;background:var(--ink6);color:var(--ink3);padding:2px 8px;border-radius:10px;margin-top:6px}
 .vente-card-pnl{text-align:right}
-.vente-card-price{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:700;color:var(--ink)}
+.vente-card-price{font-family:var(--font-display);font-size:26px;font-weight:700;color:var(--ink)}
 .vente-card-pnl-val{font-size:13px;font-weight:600;margin-top:2px}
 .vente-pnl-pos{color:var(--clr-pos)}
 .vente-pnl-neg{color:var(--ruby)}
@@ -647,7 +654,7 @@ button.auth-tab{background:none;border-width:0 0 2px;border-style:solid;border-c
 
 /* ── TAB HEADER ── */
 .tab-header{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px}
-.tab-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--ink);margin:0}
+.tab-title{font-family:var(--font-display);font-size:22px;font-weight:600;color:var(--ink);margin:0}
 
 /* ── MOBILE ── */
 @media(max-width:560px){
@@ -689,7 +696,7 @@ button.auth-tab{background:none;border-width:0 0 2px;border-style:solid;border-c
 
 /* ── TOASTS ── */
 #toast-wrap{position:fixed;bottom:24px;right:24px;z-index:var(--z-toast);display:flex;flex-direction:column;gap:8px;pointer-events:none}
-.toast{padding:12px 16px;border-radius:var(--r);font-size:13px;font-weight:500;font-family:"DM Sans",sans-serif;display:flex;align-items:center;gap:10px;min-width:240px;max-width:360px;box-shadow:0 4px 20px rgba(0,0,0,.18);pointer-events:auto;animation:toast-in .25s ease-out;backdrop-filter:blur(4px)}
+.toast{padding:12px 16px;border-radius:var(--r);font-size:13px;font-weight:500;font-family:var(--font-body);display:flex;align-items:center;gap:10px;min-width:240px;max-width:360px;box-shadow:0 4px 20px rgba(0,0,0,.18);pointer-events:auto;animation:toast-in .25s ease-out;backdrop-filter:blur(4px)}
 @keyframes toast-in{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:none}}
 .toast.removing{animation:toast-out .2s ease-in forwards}
 @keyframes toast-out{to{opacity:0;transform:translateX(20px)}}
@@ -702,7 +709,7 @@ button.auth-tab{background:none;border-width:0 0 2px;border-style:solid;border-c
 /* ── ACCESSIBILITÉ ── */
 :focus-visible{outline:2px solid var(--ruby);outline-offset:2px;border-radius:3px}
 button:focus-visible,a:focus-visible{outline:2px solid var(--ruby);outline-offset:3px}
-.skip-link{position:absolute;top:-999px;left:16px;z-index:var(--z-skip);padding:10px 18px;background:var(--ruby);color:#fff;font-family:"DM Sans",sans-serif;font-size:13px;font-weight:600;border-radius:0 0 var(--r) var(--r);text-decoration:none;transition:top .15s}
+.skip-link{position:absolute;top:-999px;left:16px;z-index:var(--z-skip);padding:10px 18px;background:var(--ruby);color:#fff;font-family:var(--font-body);font-size:13px;font-weight:600;border-radius:0 0 var(--r) var(--r);text-decoration:none;transition:top .15s}
 .skip-link:focus{top:0}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 @media(prefers-reduced-motion:reduce){
@@ -721,7 +728,7 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--ruby);outline-offse
 /* ── SIDEBAR LAYOUT ── */
 .sidebar{position:fixed;top:0;left:0;width:220px;height:100vh;background:var(--chrome-bg);display:flex;flex-direction:column;z-index:var(--z-sidebar);border-right:1px solid rgba(255,255,255,.06);overflow:hidden}
 .sb-brand{padding:22px 18px 18px;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;gap:10px;flex-shrink:0}
-.sb-brand-title{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:600;color:#fff;letter-spacing:.3px;line-height:1.2}
+.sb-brand-title{font-family:var(--font-display);font-size:17px;font-weight:600;color:#fff;letter-spacing:.3px;line-height:1.2}
 .sb-brand-sub{font-size:9px;color:rgba(255,255,255,.32);letter-spacing:1.5px;text-transform:uppercase;margin-top:2px}
 .sb-nav{flex:1;overflow-y:auto;padding:10px 10px;display:flex;flex-direction:column;gap:2px}
 .sb-nav::-webkit-scrollbar{display:none}
@@ -731,7 +738,7 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--ruby);outline-offse
 .sb-item svg{width:15px;height:15px;flex-shrink:0;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .sb-stats{padding:14px 16px;border-top:1px solid rgba(255,255,255,.07);display:grid;grid-template-columns:1fr 1fr;gap:10px 8px;flex-shrink:0}
 .sb-stat{display:flex;flex-direction:column;gap:2px}
-.sb-stat-val{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:600;color:var(--gold3);line-height:1}
+.sb-stat-val{font-family:var(--font-display);font-size:16px;font-weight:600;color:var(--gold3);line-height:1}
 .sb-stat-lbl{font-size:9px;color:rgba(255,255,255,.28);text-transform:uppercase;letter-spacing:.8px;margin-top:1px}
 .sb-footer{padding:10px 12px;border-top:1px solid rgba(255,255,255,.07);display:flex;align-items:center;gap:4px;flex-shrink:0}
 .sb-footer .btn-theme-toggle,.sb-footer .btn-privacy{width:30px;height:30px}
@@ -743,7 +750,7 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--ruby);outline-offse
 
 /* MOBILE TOPBAR */
 .mobile-topbar{display:none;position:sticky;top:0;z-index:var(--z-topbar);height:52px;background:var(--chrome-bg);align-items:center;padding:0 16px;gap:12px;border-bottom:1px solid rgba(255,255,255,.07);flex-shrink:0}
-.mobile-topbar-title{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:600;color:#fff;letter-spacing:.3px}
+.mobile-topbar-title{font-family:var(--font-display);font-size:17px;font-weight:600;color:#fff;letter-spacing:.3px}
 .burger-btn{width:36px;height:36px;background:none;border:none;cursor:pointer;color:rgba(255,255,255,.65);display:flex;align-items:center;justify-content:center;border-radius:6px;transition:background .15s;flex-shrink:0}
 .burger-btn:hover{background:rgba(255,255,255,.07)}
 .sb-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:var(--z-sb-overlay)}
@@ -758,6 +765,10 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--ruby);outline-offse
   .filter-overlay,.filter-sidebar{top:var(--topbar-h)}
   .filter-sidebar{height:calc(100vh - var(--topbar-h))}
 }
+@media(min-width:1280px){
+  .wlist{grid-template-columns:repeat(3,1fr)}
+  .content{max-width:1400px;margin-left:auto;margin-right:auto;padding-left:clamp(16px,3vw,40px);padding-right:clamp(16px,3vw,40px)}
+}
 
 </style>
 </head>
@@ -768,7 +779,7 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--ruby);outline-offse
 <!-- LOADING -->
 <div id="loading-screen" style="position:fixed;inset:0;background:var(--chrome-bg);display:flex;align-items:center;justify-content:center;z-index:9999;flex-direction:column;gap:16px">
   <div style="width:32px;height:32px;border:2px solid rgba(201,168,76,.3);border-top-color:#c9a84c;border-radius:50%;animation:spin .7s linear infinite"></div>
-  <div style="font-family:'Cormorant Garamond',serif;font-size:16px;color:#f0d98a;letter-spacing:2px">CAVE À VIN</div>
+  <div style="font-family:var(--font-display);font-size:16px;color:#f0d98a;letter-spacing:2px">CAVE À VIN</div>
 </div>
 
 <!-- AUTH -->
@@ -857,7 +868,7 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--ruby);outline-offse
     <div class="auth-right">
       <div class="auth-form-card">
         <div style="margin-bottom:28px">
-          <div style="font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:600;color:var(--ink);line-height:1.2">Bienvenue</div>
+          <div style="font-family:var(--font-display);font-size:30px;font-weight:600;color:var(--ink);line-height:1.2">Bienvenue</div>
           <div style="font-size:13px;color:var(--ink4);margin-top:6px">Connectez-vous à votre cave à vin</div>
         </div>
         <div class="auth-tabs" role="tablist">
@@ -868,7 +879,7 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--ruby);outline-offse
           <form onsubmit="doLogin();return false;" novalidate>
           <div class="auth-field"><label for="login-email">Email</label><input type="email" id="login-email" placeholder="votre@email.com" autocomplete="email"></div>
           <div class="auth-field" style="margin-bottom:6px"><label for="login-pass">Mot de passe</label><div class="pw-wrap"><input type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password"><button type="button" class="pw-toggle" onclick="togglePw('login-pass',this)" tabindex="-1" aria-label="Afficher le mot de passe"><svg class="icon-eye-on" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg><svg class="icon-eye-off" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg></button></div></div>
-          <div style="text-align:right;margin-bottom:16px"><button type="button" onclick="doForgotPassword()" style="font-size:12px;color:var(--ruby);cursor:pointer;text-decoration:underline;font-family:'DM Sans',sans-serif;background:none;border:none;padding:0">Mot de passe oublié ?</button></div>
+          <div style="text-align:right;margin-bottom:16px"><button type="button" onclick="doForgotPassword()" style="font-size:12px;color:var(--ruby);cursor:pointer;text-decoration:underline;font-family:var(--font-body);background:none;border:none;padding:0">Mot de passe oublié ?</button></div>
           <button type="submit" class="auth-btn">Se connecter</button>
           </form>
         </div>
@@ -1059,8 +1070,8 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--ruby);outline-offse
     </div>
     <div class="fsec"><div class="fsec-label">Emplacement</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-        <div class="fg"><label for="f-cave">Cave</label><select id="f-cave" style="width:100%;height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:"DM Sans",sans-serif;outline:none;color:var(--ink);background:var(--surface)"><option value="">— Aucune —</option></select></div>
-        <div class="fg"><label for="f-clayette">Clayette</label><input type="text" id="f-clayette" placeholder="ex: A3, 2" style="width:100%;height:38px;padding:0 12px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:"DM Sans",sans-serif;outline:none;color:var(--ink)"></div>
+        <div class="fg"><label for="f-cave">Cave</label><select id="f-cave" style="width:100%;height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:var(--font-body);outline:none;color:var(--ink);background:var(--surface)"><option value="">— Aucune —</option></select></div>
+        <div class="fg"><label for="f-clayette">Clayette</label><input type="text" id="f-clayette" placeholder="ex: A3, 2" style="width:100%;height:38px;padding:0 12px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:var(--font-body);outline:none;color:var(--ink)"></div>
       </div>
     </div>
     <div class="fsec"><div class="fsec-label"><label for="f-notes">Notes personnelles</label></div><div class="fg"><textarea id="f-notes" placeholder="Arômes, bouche, finale…"></textarea></div></div>
@@ -1072,7 +1083,7 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--ruby);outline-offse
 
 <div id="tab-caves" role="tabpanel" aria-labelledby="ntab-caves" tabindex="0" style="display:none">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
-    <div style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--ink)">Mes caves</div>
+    <div style="font-family:var(--font-display);font-size:22px;font-weight:600;color:var(--ink)">Mes caves</div>
     <button class="btn-add" onclick="openCaveForm()">+ Ajouter une cave</button>
   </div>
   <div class="caves-grid" id="caves-list"></div>
@@ -1098,7 +1109,7 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--ruby);outline-offse
   <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
     <div style="position:relative;flex-shrink:0">
       <canvas id="chart-type" width="180" height="180" style="display:block;cursor:pointer" onmousemove="pieHover(event)" onmouseleave="pieUnhover()"></canvas>
-      <div id="pie-tooltip" style="display:none;position:absolute;background:rgba(28,10,13,.88);color:#fff;font-size:11px;font-family:"DM Sans",sans-serif;padding:5px 9px;border-radius:6px;pointer-events:none;z-index:10;white-space:nowrap"></div>
+      <div id="pie-tooltip" style="display:none;position:absolute;background:rgba(28,10,13,.88);color:#fff;font-size:11px;font-family:var(--font-body);padding:5px 9px;border-radius:6px;pointer-events:none;z-index:10;white-space:nowrap"></div>
     </div>
     <div id="st-type" style="display:flex;flex-direction:column;gap:5px"></div>
   </div>
@@ -1558,7 +1569,7 @@ async function editDegNote(id, el){
   const step=scale===20?0.5:scale===5?0.1:1;
   const inp=document.createElement('input');
   inp.type='number';inp.value=d.note||0;inp.min=0;inp.max=scale;inp.step=step;
-  inp.style.cssText='width:60px;border:none;border-bottom:1.5px solid var(--ruby);font-family:"Cormorant Garamond",serif;font-size:28px;font-weight:700;color:var(--ruby);text-align:center;background:transparent;outline:none';
+  inp.style.cssText='width:60px;border:none;border-bottom:1.5px solid var(--ruby);font-family:var(--font-display);font-size:28px;font-weight:700;color:var(--ruby);text-align:center;background:transparent;outline:none';
   el.innerHTML='';el.appendChild(inp);
   inp.focus();
   const save=async()=>{
@@ -1583,10 +1594,10 @@ function openFreeDrinkModal(){
     nameRow.id='drink-free-name-row';
     nameRow.className='profile-grid';
     nameRow.style.marginBottom='12px';
-    nameRow.innerHTML='<div class="profile-fg full"><label>Nom du vin *</label><input type="text" id="drink-free-name" placeholder="Château Pétrus…" style="height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:"DM Sans",sans-serif;outline:none;width:100%;box-sizing:border-box"></div>'
-      +'<div class="profile-fg"><label>Appellation</label><input type="text" id="drink-free-app" placeholder="Pomerol AOC" style="height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:"DM Sans",sans-serif;outline:none;width:100%;box-sizing:border-box"></div>'
-      +'<div class="profile-fg"><label>Millésime</label><input type="number" id="drink-free-year" placeholder="2015" min="1900" max="2030" style="height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:"DM Sans",sans-serif;outline:none;width:100%;box-sizing:border-box"></div>'
-      +'<div class="profile-fg"><label>Type</label><select id="drink-free-type" style="height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:"DM Sans",sans-serif;outline:none"><option>Rouge</option><option>Blanc sec</option><option>Blanc moelleux</option><option>Blanc liquoreux</option><option>Rosé</option><option>Pétillant</option><option>Macération</option><option>Autre</option></select></div>'
+    nameRow.innerHTML='<div class="profile-fg full"><label>Nom du vin *</label><input type="text" id="drink-free-name" placeholder="Château Pétrus…" style="height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:var(--font-body);outline:none;width:100%;box-sizing:border-box"></div>'
+      +'<div class="profile-fg"><label>Appellation</label><input type="text" id="drink-free-app" placeholder="Pomerol AOC" style="height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:var(--font-body);outline:none;width:100%;box-sizing:border-box"></div>'
+      +'<div class="profile-fg"><label>Millésime</label><input type="number" id="drink-free-year" placeholder="2015" min="1900" max="2030" style="height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:var(--font-body);outline:none;width:100%;box-sizing:border-box"></div>'
+      +'<div class="profile-fg"><label>Type</label><select id="drink-free-type" style="height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:var(--font-body);outline:none"><option>Rouge</option><option>Blanc sec</option><option>Blanc moelleux</option><option>Blanc liquoreux</option><option>Rosé</option><option>Pétillant</option><option>Macération</option><option>Autre</option></select></div>'
       +'<div class="profile-fg full"><label>Photo</label><div onclick="document.getElementById(\'drink-free-photo-inp\').click()" style="cursor:pointer;border:1.5px dashed var(--ink5);border-radius:var(--r);padding:10px;text-align:center;font-size:12px;color:var(--ink4)"><input type="file" id="drink-free-photo-inp" accept="image/*" style="display:none" onchange="handleFreeDrinkPhoto(this)"><span id="drink-free-photo-label">📷 Ajouter une photo</span></div></div>';
     document.getElementById('drink-modal').querySelector('.modal-box').insertBefore(nameRow,document.getElementById('drink-modal').querySelector('.profile-grid'));
   }
@@ -1754,7 +1765,7 @@ function renderDegustations(){
     return `<div class="deg-card">
       ${wineImg?`<div style="width:52px;flex-shrink:0;display:flex;align-items:center;justify-content:center"><img src="${wineImg}" style="max-width:52px;max-height:88px;width:auto;height:auto;object-fit:contain;border-radius:4px"></div>`:`<div style="font-size:24px;flex-shrink:0;text-align:center;width:52px">🍷</div>`}
       <div style="flex-shrink:0;text-align:center;min-width:52px;border-left:1px solid var(--ink5);border-right:1px solid var(--ink5);padding:0 12px;margin:0 4px;cursor:pointer" onclick="editDegNote('${d.id}',this)" title="Cliquer pour modifier la note">
-        ${d.note>0?`<div style="font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:700;color:var(--ruby);line-height:1">${d.note}</div><div style="font-size:10px;color:var(--ink4);margin-top:2px">/${d.noteMax||100}</div>`:`<div style="font-size:20px;color:var(--ink5)">+ note</div>`}
+        ${d.note>0?`<div style="font-family:var(--font-display);font-size:34px;font-weight:700;color:var(--ruby);line-height:1">${d.note}</div><div style="font-size:10px;color:var(--ink4);margin-top:2px">/${d.noteMax||100}</div>`:`<div style="font-size:20px;color:var(--ink5)">+ note</div>`}
       </div>
       <div style="display:flex;gap:0;align-items:stretch;flex:1;min-width:0">
         <div class="deg-card-body" style="flex:none">
@@ -1800,7 +1811,7 @@ async function editVenteNotes(id, el){
   const ta = document.createElement('textarea');
   ta.value = v.notes||'';
   ta.placeholder = 'Ajouter une note…';
-  ta.style.cssText = 'width:220px;padding:0;border:none;border-bottom:1.5px solid var(--ruby);font-size:13px;font-family:"DM Sans",sans-serif;outline:none;resize:none;box-sizing:border-box;font-style:italic;color:var(--ink3);background:transparent;line-height:1.5;min-height:24px';
+  ta.style.cssText = 'width:220px;padding:0;border:none;border-bottom:1.5px solid var(--ruby);font-size:13px;font-family:var(--font-body);outline:none;resize:none;box-sizing:border-box;font-style:italic;color:var(--ink3);background:transparent;line-height:1.5;min-height:24px';
   ta.rows = 1;
   ta.oninput = function(){ this.style.height="auto"; this.style.height=this.scrollHeight+"px"; };
   target.innerHTML = "";
@@ -1824,7 +1835,7 @@ async function editVentePlatform(id){
   const badge = event.target.closest('.vente-card-platform');
   if(!badge) return;
   const sel = document.createElement('select');
-  sel.style.cssText = 'height:24px;padding:0 6px;border:1px solid var(--ink5);border-radius:6px;font-size:11px;font-family:"DM Sans",sans-serif;outline:none;cursor:pointer';
+  sel.style.cssText = 'height:24px;padding:0 6px;border:1px solid var(--ink5);border-radius:6px;font-size:11px;font-family:var(--font-body);outline:none;cursor:pointer';
   platforms.forEach(p=>{
     const opt = document.createElement('option');
     opt.value=p; opt.textContent=p;
@@ -1878,7 +1889,7 @@ async function editDegOccasion(id, el){
   if(!d) return;
   const occLabels={perso:'Personnel',repas:'Repas en famille',amis:'Entre amis',resto:'Restaurant',degustation:'Dégustation',evenement:'Événement'};
   const sel = document.createElement('select');
-  sel.style.cssText = 'border:none;border-bottom:1.5px solid var(--ruby);font-size:11px;font-family:"DM Sans",sans-serif;outline:none;cursor:pointer;background:transparent;color:var(--ink3);padding:0';
+  sel.style.cssText = 'border:none;border-bottom:1.5px solid var(--ruby);font-size:11px;font-family:var(--font-body);outline:none;cursor:pointer;background:transparent;color:var(--ink3);padding:0';
   Object.entries(occLabels).forEach(([k,v])=>{
     const opt = document.createElement('option');
     opt.value=k; opt.textContent=v;
@@ -1904,7 +1915,7 @@ async function editDegComment(id, el){
   const ta = document.createElement('textarea');
   ta.value = d.comment||'';
   ta.placeholder = 'Ajouter un commentaire…';
-  ta.style.cssText = 'width:100%;padding:0;border:none;border-bottom:1.5px solid var(--ruby);font-size:13px;font-family:"DM Sans",sans-serif;outline:none;resize:none;box-sizing:border-box;font-style:italic;color:var(--ink3);background:transparent;line-height:1.5;min-height:24px';
+  ta.style.cssText = 'width:100%;padding:0;border:none;border-bottom:1.5px solid var(--ruby);font-size:13px;font-family:var(--font-body);outline:none;resize:none;box-sizing:border-box;font-style:italic;color:var(--ink3);background:transparent;line-height:1.5;min-height:24px';
   ta.rows = 1;
   ta.oninput = function(){ this.style.height='auto'; this.style.height=this.scrollHeight+'px'; };
   el.replaceWith(ta);
@@ -1956,7 +1967,7 @@ function renderVentes(){
     ['Bouteilles vendues', totalBtl],
     ['Revenus totaux', Math.round(totalRev)+'€'],
     ['Plus-value', (totalPnl>=0?'+':'')+Math.round(totalPnl)+'€', totalPnl>=0?'var(--clr-pos)':'var(--ruby)']
-  ].map(([l,v,c])=>`<div style="background:var(--surface);border:1px solid var(--ink5);border-radius:8px;padding:10px 16px;text-align:center"><div style="font-size:10px;color:var(--ink4);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">${l}</div><div style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:700;color:${c||'var(--ink)'}">${v}</div></div>`).join('');
+  ].map(([l,v,c])=>`<div style="background:var(--surface);border:1px solid var(--ink5);border-radius:8px;padding:10px 16px;text-align:center"><div style="font-size:10px;color:var(--ink4);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">${l}</div><div style="font-family:var(--font-display);font-size:20px;font-weight:700;color:${c||'var(--ink)'}">${v}</div></div>`).join('');
 
   list.innerHTML = ventes.map(v=>{
     const pnl = v.pnl||0;
@@ -1974,8 +1985,8 @@ function renderVentes(){
             <span onclick="editVentePlatform('${v.id}')" class="vente-card-platform" style="cursor:pointer" title="Cliquer pour modifier">${esc(v.platform)} ✎</span>
           </div>
           <div style="display:flex;align-items:center;gap:6px;margin-top:8px;flex-wrap:wrap">
-            <button type="button" onclick="undoVente('${v.id}')" title="Remettre en cave" style="display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border:1px solid var(--ink5);border-radius:6px;background:none;cursor:pointer;color:var(--ink4);font-family:"DM Sans",sans-serif;font-size:11px">↩ Cave</button>
-            <button type="button" onclick="deleteVente('${v.id}')" title="Supprimer de l'historique" style="display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border:1px solid var(--ink5);border-radius:6px;background:none;cursor:pointer;color:var(--ink4);font-family:"DM Sans",sans-serif;font-size:11px"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg> Supprimer</button>
+            <button type="button" onclick="undoVente('${v.id}')" title="Remettre en cave" style="display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border:1px solid var(--ink5);border-radius:6px;background:none;cursor:pointer;color:var(--ink4);font-family:var(--font-body);font-size:11px">↩ Cave</button>
+            <button type="button" onclick="deleteVente('${v.id}')" title="Supprimer de l'historique" style="display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border:1px solid var(--ink5);border-radius:6px;background:none;cursor:pointer;color:var(--ink4);font-family:var(--font-body);font-size:11px"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg> Supprimer</button>
           </div>
         </div>
         <div style="width:1px;background:var(--ink5);margin:0 14px;flex-shrink:0"></div>
@@ -2276,19 +2287,19 @@ function addCustomCritic(){
   form.innerHTML = `
     <div style="display:flex;flex-direction:column;gap:3px">
       <label style="font-size:10px;font-weight:600;color:var(--ink4);text-transform:uppercase;letter-spacing:.5px">Critique</label>
-      <input id="custom-critic-name" type="text" placeholder="RVF, Tim Atkin..." style="width:130px;height:30px;padding:0 8px;border:1.5px solid var(--ink5);border-radius:6px;font-size:12px;font-family:"DM Sans",sans-serif;outline:none">
+      <input id="custom-critic-name" type="text" placeholder="RVF, Tim Atkin..." style="width:130px;height:30px;padding:0 8px;border:1.5px solid var(--ink5);border-radius:6px;font-size:12px;font-family:var(--font-body);outline:none">
     </div>
     <div style="display:flex;flex-direction:column;gap:3px">
       <label style="font-size:10px;font-weight:600;color:var(--ink4);text-transform:uppercase;letter-spacing:.5px">Noté sur</label>
-      <select id="custom-critic-max" style="width:80px;height:30px;padding:0 6px;border:1.5px solid var(--ink5);border-radius:6px;font-size:12px;font-family:"DM Sans",sans-serif;outline:none">
+      <select id="custom-critic-max" style="width:80px;height:30px;padding:0 6px;border:1.5px solid var(--ink5);border-radius:6px;font-size:12px;font-family:var(--font-body);outline:none">
         <option value="100">100</option>
         <option value="20">20</option>
         <option value="10">10</option>
         <option value="5">5</option>
       </select>
     </div>
-    <button type="button" onclick="confirmCustomCritic()" style="height:30px;padding:0 12px;background:var(--ruby);color:#fff;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:"DM Sans",sans-serif;margin-top:14px">Ajouter</button>
-    <button type="button" onclick="document.getElementById('custom-critic-form').remove()" style="height:30px;padding:0 10px;background:none;border:1.5px solid var(--ink5);border-radius:6px;font-size:12px;color:var(--ink4);cursor:pointer;font-family:"DM Sans",sans-serif;margin-top:14px">Annuler</button>
+    <button type="button" onclick="confirmCustomCritic()" style="height:30px;padding:0 12px;background:var(--ruby);color:#fff;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font-body);margin-top:14px">Ajouter</button>
+    <button type="button" onclick="document.getElementById('custom-critic-form').remove()" style="height:30px;padding:0 10px;background:none;border:1.5px solid var(--ink5);border-radius:6px;font-size:12px;color:var(--ink4);cursor:pointer;font-family:var(--font-body);margin-top:14px">Annuler</button>
   `;
   document.getElementById('critics-active').after(form);
 }
@@ -2409,6 +2420,8 @@ function showTab(t){
     btn.setAttribute('aria-selected',n===t?'true':'false');
     document.getElementById('tab-'+n).style.display=n===t?'':'none';
   });
+  const activePanel=document.getElementById('tab-'+t);
+  if(activePanel)activePanel.focus();
   if(t==='stats')renderStats();
   if(t==='wish')renderWishes();
   if(t==='degustation')renderDegustations();
@@ -3460,7 +3473,7 @@ function renderWines(){
     const scoresHTML=buildScores(w);
     const certsHTML=buildCertBadges(w.certs||[]);
     const imgHTML=hasImg
-      ?`<div class="wimg-zone"><div class="wscores-col">${scoresHTML}</div><div class="wbottle-col"><img src="${w.img_url}" alt=""></div><div class="wcerts-col">${certsHTML}</div></div>`
+      ?`<div class="wimg-zone"><div class="wscores-col">${scoresHTML}</div><div class="wbottle-col"><img src="${w.img_url}" alt="${esc(w.name)}" loading="lazy"></div><div class="wcerts-col">${certsHTML}</div></div>`
       :`<div class="wimg-zone"><div class="wscores-col">${scoresHTML}</div><div class="wbottle-col"><div class="wimg-placeholder"><div class="wimg-placeholder-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#b89098" stroke-width="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div><small style="font-size:9px;color:#b89098;line-height:1.3">—</small></div></div><div class="wcerts-col">${certsHTML}</div></div>`;
     const bv=w.buy||0,cv=w.cur||w.buy||0,delta=cv-bv,dt=Math.round(delta*w.qty),pct=bv>0?Math.round(delta/bv*100):0;
     const pC=delta>0?'wpc-pos':delta<0?'wpc-neg':'wpc-neu';
@@ -3497,7 +3510,7 @@ function renderWines(){
           <button class="editbtn" onclick="editWine('${w.id}')"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Modifier</button>
           <button class="editbtn wine-drink" onclick="openDrinkModal('${w.id}')"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 22h8M12 11v11M5 2h14l-3 9a5 5 0 0 1-8 0Z"/></svg> Boire</button>
           <button class="editbtn wine-sell" onclick="openSellModal('${w.id}')"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 1 0 0 7h5a3.5 3.5 0 1 1 0 7H6"/></svg> Vendre</button>
-          <button class="delbtn" onclick="confirmDelete('${w.id}')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg></button>
+          <button class="delbtn" aria-label="Supprimer" onclick="confirmDelete('${w.id}')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg></button>
         </div>
       </div>
     </div>`;
@@ -3618,7 +3631,7 @@ function renderWishes(){
     const shortType=(w.type||'Rouge').length>22?(w.type||'Rouge').split('/')[0].trim():(w.type||'Rouge');
     // Image
     const imgHTML=w.img_url
-      ?`<div class="wimg-zone"><div class="wscores-col"></div><div class="wbottle-col"><img src="${w.img_url}" alt="${w.name}"></div><div class="wcerts-col"></div></div>`
+      ?`<div class="wimg-zone"><div class="wscores-col"></div><div class="wbottle-col"><img src="${w.img_url}" alt="${esc(w.name)}" loading="lazy"></div><div class="wcerts-col"></div></div>`
       :`<div class="wimg-zone"><div class="wscores-col"></div><div class="wbottle-col"><div class="wimg-placeholder"><div class="wimg-placeholder-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div></div></div><div class="wcerts-col"></div></div>`;
     return`<div class="wcard" style="--wtype-clr:${barC}${w.done?';opacity:.5':''}">
       <div class="wcmain">
@@ -3637,7 +3650,7 @@ function renderWishes(){
         <div class="footer-actions">
           <button class="editbtn" onclick="editWish('${w.id}')"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Modifier</button>
           <button class="editbtn" onclick="openWishToCave('${w.id}')" style="border-color:var(--ruby);color:var(--ruby)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg> En cave</button>
-          <button class="delbtn" onclick="confirmDelWish('${w.id}')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg></button>
+          <button class="delbtn" aria-label="Supprimer" onclick="confirmDelWish('${w.id}')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg></button>
         </div>
       </div>
     </div>`;
@@ -3655,7 +3668,7 @@ function showToast(msg, duration=3000){
   if(!toast){
     toast=document.createElement('div');
     toast.id='app-toast';
-    toast.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(28,10,13,.9);color:#fff;padding:10px 20px;border-radius:8px;font-size:13px;font-family:"DM Sans",sans-serif;z-index:9999;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap';
+    toast.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(28,10,13,.9);color:#fff;padding:10px 20px;border-radius:8px;font-size:13px;font-family:var(--font-body);z-index:9999;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap';
     document.body.appendChild(toast);
   }
   toast.textContent=msg;
@@ -4047,11 +4060,11 @@ function removeToast(t){
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0">
         <div style="display:flex;flex-direction:column;gap:4px">
           <label style="font-size:10px;font-weight:600;color:var(--ink4);text-transform:uppercase;letter-spacing:.5px">Bouteilles</label>
-          <input type="number" id="ai-qty" value="1" min="1" max="999" style="height:36px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:8px;font-size:13px;font-family:"DM Sans",sans-serif;outline:none;text-align:center">
+          <input type="number" id="ai-qty" value="1" min="1" max="999" style="height:36px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:8px;font-size:13px;font-family:var(--font-body);outline:none;text-align:center">
         </div>
         <div style="display:flex;flex-direction:column;gap:4px">
           <label style="font-size:10px;font-weight:600;color:var(--ink4);text-transform:uppercase;letter-spacing:.5px">Prix d'achat (€)</label>
-          <input type="number" id="ai-buy" placeholder="0" min="0" step="0.5" style="height:36px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:8px;font-size:13px;font-family:"DM Sans",sans-serif;outline:none;text-align:center">
+          <input type="number" id="ai-buy" placeholder="0" min="0" step="0.5" style="height:36px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:8px;font-size:13px;font-family:var(--font-body);outline:none;text-align:center">
         </div>
       </div>
       <input type="hidden" id="ai-cur" value="0">
@@ -4072,8 +4085,8 @@ function removeToast(t){
     <div class="modal-title" style="text-align:center">Supprimer ce vin ?</div>
     <div style="font-size:13px;color:var(--ink4);margin-bottom:24px" id="confirm-del-name"></div>
     <div style="display:flex;gap:10px">
-      <button type="button" onclick="closeConfirmDel()" style="flex:1;height:40px;border:1.5px solid var(--ink5);background:none;border-radius:8px;font-size:13px;cursor:pointer;font-family:"DM Sans",sans-serif;color:var(--ink3)">Annuler</button>
-      <button type="button" onclick="execDelete()" style="flex:1;height:40px;background:var(--ruby);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:"DM Sans",sans-serif">Supprimer</button>
+      <button type="button" onclick="closeConfirmDel()" style="flex:1;height:40px;border:1.5px solid var(--ink5);background:none;border-radius:8px;font-size:13px;cursor:pointer;font-family:var(--font-body);color:var(--ink3)">Annuler</button>
+      <button type="button" onclick="execDelete()" style="flex:1;height:40px;background:var(--ruby);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font-body)">Supprimer</button>
     </div>
   </div>
 </div>
@@ -4088,23 +4101,23 @@ function removeToast(t){
     <div class="profile-grid">
       <div class="profile-fg">
         <label>Nombre de bouteilles bues</label>
-        <input type="number" id="drink-qty" value="1" min="1" style="height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:"DM Sans",sans-serif;outline:none">
+        <input type="number" id="drink-qty" value="1" min="1" style="height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:var(--font-body);outline:none">
       </div>
       <div class="profile-fg">
         <label>Date</label>
-        <input type="date" id="drink-date" style="height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:"DM Sans",sans-serif;outline:none">
+        <input type="date" id="drink-date" style="height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:var(--font-body);outline:none">
       </div>
       <div class="profile-fg full">
         <label id="drink-note-label">Ma note /100</label>
         <div style="display:flex;align-items:center;gap:12px">
           <input type="range" id="drink-note-range" min="0" max="100" step="1" value="0" oninput="updateDrinkNote(this.value)" style="flex:1">
-          <span id="drink-note-val" style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;color:var(--ruby);min-width:42px;text-align:center">0</span>
+          <span id="drink-note-val" style="font-family:var(--font-display);font-size:22px;font-weight:700;color:var(--ruby);min-width:42px;text-align:center">0</span>
           <span id="drink-note-scale-label" style="font-size:12px;color:var(--ink4)">/100</span>
         </div>
       </div>
       <div class="profile-fg full">
         <label>Occasion</label>
-        <select id="drink-occasion" style="height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:"DM Sans",sans-serif;outline:none">
+        <select id="drink-occasion" style="height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:var(--font-body);outline:none">
           <option value="perso">Personnel</option>
           <option value="repas">Repas en famille</option>
           <option value="amis">Entre amis</option>
@@ -4115,7 +4128,7 @@ function removeToast(t){
       </div>
       <div class="profile-fg full">
         <label>Commentaire de dégustation</label>
-        <textarea id="drink-comment" placeholder="Arômes, bouche, finale…" rows="3" style="padding:8px 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:"DM Sans",sans-serif;outline:none;resize:vertical;width:100%;box-sizing:border-box"></textarea>
+        <textarea id="drink-comment" placeholder="Arômes, bouche, finale…" rows="3" style="padding:8px 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:var(--font-body);outline:none;resize:vertical;width:100%;box-sizing:border-box"></textarea>
       </div>
     </div>
     <button class="profile-save-btn" onclick="saveDrink()">Enregistrer la dégustation</button>
@@ -4132,19 +4145,19 @@ function removeToast(t){
     <div class="profile-grid">
       <div class="profile-fg">
         <label>Nombre de bouteilles vendues</label>
-        <input type="number" id="sell-qty" value="1" min="1" style="height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:"DM Sans",sans-serif;outline:none">
+        <input type="number" id="sell-qty" value="1" min="1" style="height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:var(--font-body);outline:none">
       </div>
       <div class="profile-fg">
         <label>Date de vente</label>
-        <input type="date" id="sell-date" style="height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:"DM Sans",sans-serif;outline:none">
+        <input type="date" id="sell-date" style="height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:var(--font-body);outline:none">
       </div>
       <div class="profile-fg">
         <label>Prix de vente (€/bouteille)</label>
-        <input type="number" id="sell-price" placeholder="0" min="0" step="0.5" style="height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:"DM Sans",sans-serif;outline:none">
+        <input type="number" id="sell-price" placeholder="0" min="0" step="0.5" style="height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:var(--font-body);outline:none">
       </div>
       <div class="profile-fg">
         <label>Plateforme</label>
-        <select id="sell-platform" style="height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:"DM Sans",sans-serif;outline:none">
+        <select id="sell-platform" style="height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:var(--font-body);outline:none">
           <option value="iDealwine">iDealwine</option>
           <option value="Drouot">Drouot</option>
           <option value="Millésima">Millésima</option>
@@ -4156,7 +4169,7 @@ function removeToast(t){
       </div>
       <div class="profile-fg full">
         <label>Statut</label>
-        <select id="sell-status" style="height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:"DM Sans",sans-serif;outline:none">
+        <select id="sell-status" style="height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:var(--font-body);outline:none">
           <option value="a_vendre">À mettre en vente</option>
           <option value="en_cours">En cours de vente</option>
           <option value="vendu">Vendu</option>
@@ -4164,7 +4177,7 @@ function removeToast(t){
       </div>
       <div class="profile-fg full">
         <label>Notes (acheteur, conditions…)</label>
-        <textarea id="sell-notes" placeholder="Optionnel…" rows="2" style="padding:8px 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:"DM Sans",sans-serif;outline:none;resize:vertical;width:100%;box-sizing:border-box"></textarea>
+        <textarea id="sell-notes" placeholder="Optionnel…" rows="2" style="padding:8px 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:var(--font-body);outline:none;resize:vertical;width:100%;box-sizing:border-box"></textarea>
       </div>
     </div>
     <button class="profile-save-btn" onclick="saveSell()">Enregistrer la vente</button>
@@ -4261,7 +4274,7 @@ function removeToast(t){
       </div>
     </div>
     <div class="fsec"><div class="fsec-label">Note personnelle</div>
-      <textarea id="wf-note" placeholder="Vu chez un ami, grande année, budget max…" rows="2" style="width:100%;padding:8px 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:"DM Sans",sans-serif;outline:none;resize:vertical;box-sizing:border-box"></textarea>
+      <textarea id="wf-note" placeholder="Vu chez un ami, grande année, budget max…" rows="2" style="width:100%;padding:8px 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:var(--font-body);outline:none;resize:vertical;box-sizing:border-box"></textarea>
     </div>
     <div class="fsec"><div class="fsec-label">Photo</div>
       <div class="photo-upload-zone" id="wish-photo-zone" onclick="document.getElementById('wf-photo').click()" style="cursor:pointer">
@@ -4287,10 +4300,10 @@ function removeToast(t){
     <div style="font-size:14px;font-weight:600;color:var(--ink3);margin-bottom:16px" id="wish-to-cave-name"></div>
     <div class="profile-grid">
       <div class="profile-fg"><label>Nombre de bouteilles</label>
-        <input type="number" id="wtc-qty" value="1" min="1" style="height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:"DM Sans",sans-serif;outline:none;width:100%;box-sizing:border-box">
+        <input type="number" id="wtc-qty" value="1" min="1" style="height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:var(--font-body);outline:none;width:100%;box-sizing:border-box">
       </div>
       <div class="profile-fg"><label>Prix d'achat (€/btl)</label>
-        <input type="number" id="wtc-price" placeholder="0" min="0" step="0.5" style="height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:"DM Sans",sans-serif;outline:none;width:100%;box-sizing:border-box">
+        <input type="number" id="wtc-price" placeholder="0" min="0" step="0.5" style="height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:var(--font-body);outline:none;width:100%;box-sizing:border-box">
       </div>
     </div>
     <button class="profile-save-btn" onclick="confirmWishToCave()">Ajouter à la cave</button>
@@ -4477,7 +4490,7 @@ function removeToast(t){
 <div id="cave-form-backdrop" onclick="closeCaveForm()"></div>
 <div id="cave-form-modal">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
-    <div style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--ink)" id="cave-form-title">Nouvelle cave</div>
+    <div style="font-family:var(--font-display);font-size:20px;font-weight:600;color:var(--ink)" id="cave-form-title">Nouvelle cave</div>
     <button onclick="closeCaveForm()" style="width:30px;height:30px;border-radius:50%;border:1px solid var(--ink5);background:none;cursor:pointer;font-size:16px;color:var(--ink4);display:flex;align-items:center;justify-content:center">✕</button>
   </div>
   <div class="fsec" style="margin-bottom:14px">
@@ -4491,16 +4504,16 @@ function removeToast(t){
     <input type="file" id="cave-photo-input" accept="image/*" style="display:none" onchange="handleCavePhoto(this)">
   </div>
   <div style="display:flex;flex-direction:column;gap:12px">
-    <div class="fg"><label style="display:block;font-size:10px;font-weight:600;color:var(--ink4);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px">Nom *</label><input type="text" id="cf-name" placeholder="Cave garage" style="width:100%;height:38px;padding:0 12px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:"DM Sans",sans-serif;outline:none;color:var(--ink)"></div>
+    <div class="fg"><label style="display:block;font-size:10px;font-weight:600;color:var(--ink4);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px">Nom *</label><input type="text" id="cf-name" placeholder="Cave garage" style="width:100%;height:38px;padding:0 12px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:var(--font-body);outline:none;color:var(--ink)"></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-      <div class="fg"><label style="display:block;font-size:10px;font-weight:600;color:var(--ink4);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px">Capacité (bouteilles)</label><input type="number" id="cf-capacity" placeholder="200" min="1" style="width:100%;height:38px;padding:0 12px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:"DM Sans",sans-serif;outline:none;color:var(--ink)"></div>
-      <div class="fg"><label style="display:block;font-size:10px;font-weight:600;color:var(--ink4);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px">Nombre de clayettes</label><input type="number" id="cf-clayettes" placeholder="10" min="1" style="width:100%;height:38px;padding:0 12px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:"DM Sans",sans-serif;outline:none;color:var(--ink)"></div>
+      <div class="fg"><label style="display:block;font-size:10px;font-weight:600;color:var(--ink4);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px">Capacité (bouteilles)</label><input type="number" id="cf-capacity" placeholder="200" min="1" style="width:100%;height:38px;padding:0 12px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:var(--font-body);outline:none;color:var(--ink)"></div>
+      <div class="fg"><label style="display:block;font-size:10px;font-weight:600;color:var(--ink4);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px">Nombre de clayettes</label><input type="number" id="cf-clayettes" placeholder="10" min="1" style="width:100%;height:38px;padding:0 12px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:var(--font-body);outline:none;color:var(--ink)"></div>
     </div>
-    <div class="fg"><label style="display:block;font-size:10px;font-weight:600;color:var(--ink4);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px">Description</label><textarea id="cf-desc" placeholder="Cave enterrée, température 12°C..." style="width:100%;height:72px;padding:8px 12px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:"DM Sans",sans-serif;outline:none;color:var(--ink);resize:vertical"></textarea></div>
+    <div class="fg"><label style="display:block;font-size:10px;font-weight:600;color:var(--ink4);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px">Description</label><textarea id="cf-desc" placeholder="Cave enterrée, température 12°C..." style="width:100%;height:72px;padding:8px 12px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:var(--font-body);outline:none;color:var(--ink);resize:vertical"></textarea></div>
   </div>
   <div style="display:flex;gap:10px;margin-top:18px">
-    <button onclick="saveCave()" style="flex:1;height:40px;background:var(--ruby);border:none;border-radius:var(--r);font-family:"DM Sans",sans-serif;font-size:13px;font-weight:600;color:#fff;cursor:pointer" id="cf-submit">Enregistrer</button>
-    <button onclick="closeCaveForm()" style="height:40px;padding:0 18px;background:var(--surface);border:1.5px solid var(--ink5);border-radius:var(--r);font-family:"DM Sans",sans-serif;font-size:13px;color:var(--ink3);cursor:pointer">Annuler</button>
+    <button onclick="saveCave()" style="flex:1;height:40px;background:var(--ruby);border:none;border-radius:var(--r);font-family:var(--font-body);font-size:13px;font-weight:600;color:#fff;cursor:pointer" id="cf-submit">Enregistrer</button>
+    <button onclick="closeCaveForm()" style="height:40px;padding:0 18px;background:var(--surface);border:1.5px solid var(--ink5);border-radius:var(--r);font-family:var(--font-body);font-size:13px;color:var(--ink3);cursor:pointer">Annuler</button>
   </div>
 </div>
 <div id="edit-backdrop" onclick="closePanel('add-form')"></div>
@@ -4514,17 +4527,17 @@ function removeToast(t){
       Texte d'annonce
     </div>
     <div style="font-size:12px;color:var(--ink4);margin-bottom:14px">Vins avec statut <b>À vendre</b> ou <b>En cours</b> — copiez et collez sur LeBonCoin, Facebook, etc.</div>
-    <textarea id="annonce-text" readonly style="width:100%;height:260px;padding:14px;border:1.5px solid var(--ink5);border-radius:var(--r);font-family:"DM Sans",sans-serif;font-size:13px;line-height:1.7;color:var(--ink);background:var(--ink6);resize:none;outline:none"></textarea>
+    <textarea id="annonce-text" readonly style="width:100%;height:260px;padding:14px;border:1.5px solid var(--ink5);border-radius:var(--r);font-family:var(--font-body);font-size:13px;line-height:1.7;color:var(--ink);background:var(--ink6);resize:none;outline:none"></textarea>
     <div style="display:flex;gap:10px;margin-top:14px;align-items:center">
-      <button onclick="copyAnnonce()" id="annonce-copy-btn" style="flex:1;height:40px;background:var(--ruby);border:none;border-radius:var(--r);font-family:"DM Sans",sans-serif;font-size:13px;font-weight:600;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px">
+      <button onclick="copyAnnonce()" id="annonce-copy-btn" style="flex:1;height:40px;background:var(--ruby);border:none;border-radius:var(--r);font-family:var(--font-body);font-size:13px;font-weight:600;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
         Copier
       </button>
-      <button onclick="closeAnnonceModal()" style="height:40px;padding:0 18px;background:var(--surface);border:1.5px solid var(--ink5);border-radius:var(--r);font-family:"DM Sans",sans-serif;font-size:13px;color:var(--ink3);cursor:pointer">Fermer</button>
+      <button onclick="closeAnnonceModal()" style="height:40px;padding:0 18px;background:var(--surface);border:1.5px solid var(--ink5);border-radius:var(--r);font-family:var(--font-body);font-size:13px;color:var(--ink3);cursor:pointer">Fermer</button>
     </div>
   </div>
 </div>
 
-<div id="toast-wrap"></div>
+<div id="toast-wrap" aria-live="polite" aria-atomic="true" role="status"></div>
 </body>
 </html>
