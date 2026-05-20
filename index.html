@@ -125,28 +125,28 @@ body.private-mode .delta{filter:blur(7px);color:var(--ink4)!important;background
 .wlist.list-mode{grid-template-columns:1fr;gap:2px;grid-auto-rows:auto}
 .wlist.list-mode .wcard{flex-direction:row;align-items:stretch;border-radius:var(--r)}
 .wlist.list-mode .wcmain{flex:1;display:flex;flex-direction:row;align-items:stretch;min-width:0}
-/* Zone image : même archi que grille (scores | bouteille | certifs) */
-.wlist.list-mode .wimg-zone{width:148px;flex-shrink:0;flex-direction:row;align-items:center;justify-content:center;padding:6px 0;gap:0;background:rgba(255,255,255,.025)}
-.wlist.list-mode .wscores-col{display:flex;width:36px;padding:0 0 0 8px;flex-direction:column;gap:3px;align-self:center;flex-shrink:0}
-.wlist.list-mode .wbottle-col{width:72px;min-height:unset;height:auto;padding:4px 0;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+/* Zone image : scores haut→bas | bouteille | certifs bas→haut */
+.wlist.list-mode .wimg-zone{width:148px;flex-shrink:0;flex-direction:row;align-items:stretch;padding:0;gap:0;background:rgba(255,255,255,.025)}
+.wlist.list-mode .wscores-col{display:flex;width:36px;padding:8px 0 8px 8px;flex-direction:column;gap:3px;align-self:flex-start;flex-shrink:0}
+.wlist.list-mode .wbottle-col{flex:1;min-height:unset;height:auto;padding:6px 4px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .wlist.list-mode .wbottle-col img{width:60px;height:100px;object-fit:contain}
 .wlist.list-mode .wimg-placeholder{min-height:100px;width:60px;padding:6px;border-radius:4px}
-.wlist.list-mode .wcerts-col{display:flex;flex-direction:column;width:32px;padding:0 6px 0 4px;gap:4px;align-self:center;justify-content:center;margin:0;flex-shrink:0}
+.wlist.list-mode .wcerts-col{display:flex;flex-direction:column-reverse;width:32px;padding:0 6px 8px 4px;gap:4px;align-self:flex-end;margin:0;flex-shrink:0}
 .wlist.list-mode .cert-badge{width:20px;height:20px;border-radius:3px}
-/* Corps : grille 3 colonnes [nom+pill | région+notes | prix] */
+/* Corps : grille 3 colonnes [nom+pill | région+notes+cave | prix] */
 .wbody-top{display:contents}
-.wlist.list-mode .wbody{display:grid;grid-template-columns:minmax(180px,280px) 1fr auto;grid-template-rows:1fr auto auto 1fr;border-left:1px solid var(--ink5);overflow:hidden;flex:1;padding:0}
-/* Col 1 — occupe toutes les lignes, centré verticalement */
-.wlist.list-mode .wbody-top{grid-column:1;grid-row:1/5;display:flex;flex-direction:row;flex-wrap:wrap;align-items:center;align-content:center;gap:4px 8px;padding:10px 16px;align-self:stretch;border-right:1px solid var(--ink5)}
-.wlist.list-mode .wname{width:100%;font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:0;display:block;-webkit-line-clamp:unset;-webkit-box-orient:unset}
-.wlist.list-mode .wyear{font-size:12px;color:var(--ink3);flex-shrink:0}
+.wlist.list-mode .wbody{display:grid;grid-template-columns:minmax(180px,280px) 1fr auto;grid-template-rows:auto auto auto;align-content:center;border-left:1px solid var(--ink5);overflow:hidden;flex:1;padding:0}
+/* Col 1 — s'étire sur les 3 lignes, contenu centré */
+.wlist.list-mode .wbody-top{grid-column:1;grid-row:1/4;display:flex;flex-direction:row;flex-wrap:wrap;align-items:center;align-content:center;gap:4px 8px;padding:10px 18px;align-self:stretch;border-right:1px solid var(--ink5)}
+.wlist.list-mode .wname{width:100%;font-size:16px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:0;display:block;-webkit-line-clamp:unset;-webkit-box-orient:unset}
+.wlist.list-mode .wyear{font-size:13px;color:var(--ink3);flex-shrink:0}
 .wlist.list-mode .wtags{flex-shrink:0;flex-wrap:nowrap}
-/* Col 2 — lignes 2-3 pour centrer verticalement le bloc de texte */
-.wlist.list-mode .wmeta{grid-column:2;grid-row:2;display:flex;flex-wrap:nowrap;overflow:hidden;align-items:center;padding:0 18px 3px}
-.wlist.list-mode .wnotes{grid-column:2;grid-row:3;display:block;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink4);padding:3px 18px 0}
-.wlist.list-mode .wine-location{grid-column:2;grid-row:3;display:none}
-/* Col 3 — prix sur toutes les lignes, centré */
-.wlist.list-mode .wprices{grid-column:3;grid-row:1/5;align-self:center;display:flex;flex-direction:column;gap:3px;align-items:flex-end;padding:10px 18px;border-left:1px solid var(--ink5);min-width:130px;flex-shrink:0;flex-wrap:nowrap}
+/* Col 2 — 3 lignes centrées verticalement par align-content:center sur la grille */
+.wlist.list-mode .wmeta{grid-column:2;grid-row:1;display:flex;flex-wrap:nowrap;overflow:hidden;align-items:center;padding:0 20px 3px;font-size:13px}
+.wlist.list-mode .wnotes{grid-column:2;grid-row:2;display:block;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink4);padding:3px 20px}
+.wlist.list-mode .wine-location{grid-column:2;grid-row:3;display:flex;font-size:11px;padding:3px 20px 0}
+/* Col 3 — prix centrés sur toutes les lignes */
+.wlist.list-mode .wprices{grid-column:3;grid-row:1/4;align-self:center;display:flex;flex-direction:column;gap:3px;align-items:flex-end;padding:10px 18px;border-left:1px solid var(--ink5);min-width:130px;flex-shrink:0;flex-wrap:nowrap}
 .wlist.list-mode .wprices .wprice-item{flex-direction:row;gap:6px;align-items:baseline}
 /* Footer vertical : qté + actions */
 .wlist.list-mode .wright{display:none}
