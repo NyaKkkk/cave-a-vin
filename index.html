@@ -248,6 +248,31 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
 .cave-btn-edit:hover{border-color:var(--ink3);color:var(--ink)}
 .cave-btn-del{background:var(--surface);border:1.5px solid var(--ink5);color:var(--ink4)}
 .cave-btn-del:hover{border-color:var(--ruby2);color:var(--ruby2)}
+.cave-btn-view{background:var(--ruby);border:1.5px solid var(--ruby2);color:#fff;flex:1;justify-content:center}
+.cave-btn-view:hover{background:var(--ruby2)}
+/* Cave detail view */
+#cave-detail{display:none}
+#cave-detail.visible{display:block}
+.cave-detail-back{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--ink4);cursor:pointer;border:none;background:none;padding:0;margin-bottom:18px;transition:color .15s;font-family:var(--font-body)}
+.cave-detail-back:hover{color:var(--ink)}
+.cave-detail-hero{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:16px;flex-wrap:wrap}
+.cave-detail-title{font-family:var(--font-display);font-size:22px;font-weight:600;color:var(--ink)}
+.cave-detail-meta{font-size:12px;color:var(--ink4);margin-top:3px}
+.clayette-group{margin-bottom:6px;border:1px solid var(--ink5);border-radius:var(--r2);overflow:hidden}
+.clayette-heading{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:var(--ink6);font-size:12px;font-weight:600;color:var(--ink3)}
+.clayette-heading-name{display:flex;align-items:center;gap:7px}
+.clayette-heading-count{font-size:11px;font-weight:500;color:var(--ink4)}
+.clayette-empty{padding:10px 14px;font-size:12px;color:var(--ink5);font-style:italic}
+.cave-wine-row{display:flex;align-items:center;gap:12px;padding:7px 14px;border-top:1px solid var(--ink6);transition:background .15s}
+.cave-wine-row:hover{background:rgba(255,255,255,.025)}
+.cave-wine-thumb{width:30px;height:50px;object-fit:contain;flex-shrink:0}
+.cave-wine-thumb-placeholder{width:30px;height:50px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:var(--ink6);border-radius:4px}
+.cave-wine-info{flex:1;min-width:0}
+.cave-wine-name{font-size:13px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cave-wine-sub{font-size:11px;color:var(--ink4);margin-top:1px}
+.cave-wine-qty{flex-shrink:0;font-size:12px;font-weight:600;color:var(--ink3);background:var(--ink6);border-radius:20px;padding:2px 9px;white-space:nowrap}
+.cave-wine-edit{flex-shrink:0;width:28px;height:28px;display:flex;align-items:center;justify-content:center;border:1px solid var(--ink5);border-radius:6px;background:none;cursor:pointer;color:var(--ink4);transition:all .15s}
+.cave-wine-edit:hover{border-color:var(--ink3);color:var(--ink)}
 #cave-form-backdrop{display:none;position:fixed;inset:0;background:rgba(28,10,13,.45);z-index:var(--z-modal-bg)}
 #cave-form-backdrop.open{display:block}
 #cave-form-modal{display:none;position:fixed;top:clamp(70px,9vw,90px);left:50%;transform:translateX(-50%);z-index:var(--z-modal);max-width:520px;width:calc(100% - 40px);max-height:calc(100vh - clamp(70px,9vw,90px) - 20px);overflow-y:auto;background:var(--surface);border:1.5px solid var(--ink5);border-radius:var(--r2);padding:22px;box-shadow:0 8px 40px rgba(28,10,13,.25)}
@@ -1133,8 +1158,8 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--ruby);outline-offse
     </div>
     <div class="fsec"><div class="fsec-label">Emplacement</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-        <div class="fg"><label for="f-cave">Cave</label><select id="f-cave" style="width:100%;height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:var(--font-body);outline:none;color:var(--ink);background:var(--surface)"><option value="">— Aucune —</option></select></div>
-        <div class="fg"><label for="f-clayette">Clayette</label><input type="text" id="f-clayette" placeholder="ex: A3, 2" style="width:100%;height:38px;padding:0 12px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:var(--font-body);outline:none;color:var(--ink)"></div>
+        <div class="fg"><label for="f-cave">Cave</label><select id="f-cave" onchange="populateClayetteSelect(this.value,'')" style="width:100%;height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:var(--font-body);outline:none;color:var(--ink);background:var(--surface)"><option value="">— Aucune —</option></select></div>
+        <div class="fg"><label for="f-clayette">Clayette</label><select id="f-clayette" disabled style="width:100%;height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:var(--font-body);outline:none;color:var(--ink);background:var(--surface);appearance:none;-webkit-appearance:none;background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23b89098' stroke-width='1.5' stroke-linecap='round' fill='none'/%3E%3C/svg%3E&quot;);background-repeat:no-repeat;background-position:right 9px center"><option value="">— Choisir une cave d'abord —</option></select></div>
       </div>
     </div>
     <div class="fsec"><div class="fsec-label"><label for="f-notes">Notes personnelles</label></div><div class="fg"><textarea id="f-notes" placeholder="Arômes, bouche, finale…"></textarea></div></div>
@@ -1145,11 +1170,14 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--ruby);outline-offse
 </div>
 
 <div id="tab-caves" role="tabpanel" aria-labelledby="ntab-caves" tabindex="0" style="display:none">
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
-    <div style="font-family:var(--font-display);font-size:22px;font-weight:600;color:var(--ink)">Mes caves</div>
-    <button class="btn-add" onclick="openCaveForm()">+ Ajouter une cave</button>
+  <div id="caves-overview">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+      <div style="font-family:var(--font-display);font-size:22px;font-weight:600;color:var(--ink)">Mes caves</div>
+      <button class="btn-add" onclick="openCaveForm()">+ Ajouter une cave</button>
+    </div>
+    <div class="caves-grid" id="caves-list"></div>
   </div>
-  <div class="caves-grid" id="caves-list"></div>
+  <div id="cave-detail"></div>
 </div>
 
 <!-- STATS -->
@@ -2594,8 +2622,9 @@ function renderCaves(){
         </div>
         ${cap>0?`<div><div class="cave-gauge-track"><div class="cave-gauge-fill" style="transform:scaleX(${(pct/100).toFixed(3)});background:${fillColor}"></div></div><div class="cave-gauge-label"><span>${pct}% occupé</span><span>${cap-occupied} places libres</span></div></div>`:''}
         <div class="cave-card-actions">
-          <button class="cave-btn cave-btn-edit" onclick="editCave('${cave.id}')"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Modifier</button>
-          <button class="cave-btn cave-btn-del" onclick="deleteCave('${cave.id}')"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg> Supprimer</button>
+          <button class="cave-btn cave-btn-view" onclick="openCaveDetail('${cave.id}')"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 22h8M12 11v11"/><path d="M5 2h14l-3 9a5 5 0 0 1-8 0Z"/></svg> Voir les vins</button>
+          <button class="cave-btn cave-btn-edit" onclick="editCave('${cave.id}')"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+          <button class="cave-btn cave-btn-del" onclick="deleteCave('${cave.id}')"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button>
         </div>
       </div>
     </div>`;
@@ -2677,6 +2706,78 @@ function populateCaveSelect(selectedId){
   sel.innerHTML='<option value="">— Aucune —</option>'+caves.map(c=>`<option value="${c.id}"${c.id===selectedId?' selected':''}>${esc(c.name)}</option>`).join('');
 }
 
+function populateClayetteSelect(caveId,selectedVal){
+  const sel=document.getElementById('f-clayette');
+  if(!sel)return;
+  if(!caveId){
+    sel.innerHTML="<option value=''>— Choisir une cave d'abord —</option>";
+    sel.disabled=true;
+    return;
+  }
+  const cave=caves.find(c=>c.id===caveId);
+  const n=cave&&cave.clayettes?parseInt(cave.clayettes):12;
+  sel.disabled=false;
+  let html="<option value=''>— Non assigné —</option>";
+  for(let i=1;i<=n;i++){html+=`<option value="${i}"${String(selectedVal)===String(i)?' selected':''}>Clayette ${i}</option>`;}
+  sel.innerHTML=html;
+  if(selectedVal)sel.value=String(selectedVal);
+}
+
+function openCaveDetail(caveId){
+  if(!caves.find(c=>c.id===caveId))return;
+  document.getElementById('caves-overview').style.display='none';
+  const det=document.getElementById('cave-detail');
+  det.classList.add('visible');
+  renderCaveDetail(caveId);
+}
+
+function closeCaveDetail(){
+  document.getElementById('caves-overview').style.display='';
+  document.getElementById('cave-detail').classList.remove('visible');
+}
+
+function renderCaveDetail(caveId){
+  const cave=caves.find(c=>c.id===caveId);
+  if(!cave)return;
+  const det=document.getElementById('cave-detail');
+  const caveWines=wines.filter(w=>w.caveId===caveId);
+  const occupied=caveWines.reduce((s,w)=>s+(w.qty||0),0);
+  const cap=cave.capacity||0;
+  const pct=cap>0?Math.min(100,Math.round(occupied/cap*100)):0;
+  const fillColor=pct<70?'#4a9a4a':pct<90?'#c07820':'#8b1a2a';
+  const n=cave.clayettes?parseInt(cave.clayettes):0;
+  const groups={};const unassigned=[];
+  caveWines.forEach(w=>{
+    if(w.clayette){if(!groups[w.clayette])groups[w.clayette]=[];groups[w.clayette].push(w);}
+    else unassigned.push(w);
+  });
+  const knownKeys=n>0?Array.from({length:n},(_,i)=>String(i+1)):Object.keys(groups).sort();
+  let sectionsHTML='';
+  knownKeys.forEach(k=>{
+    const ws=groups[k]||[];
+    const qty=ws.reduce((s,w)=>s+(w.qty||0),0);
+    sectionsHTML+=`<div class="clayette-group"><div class="clayette-heading"><div class="clayette-heading-name"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="4" rx="1"/><rect x="2" y="10" width="20" height="4" rx="1"/><rect x="2" y="17" width="20" height="4" rx="1"/></svg>Clayette ${k}</div><div class="clayette-heading-count">${ws.length===0?'vide':`${ws.length} référence${ws.length>1?'s':''} · ${qty} bouteille${qty>1?'s':''}`}</div></div>${ws.length===0?'<div class="clayette-empty">Aucun vin sur cette clayette</div>':ws.map(w=>_caveWineRowHTML(w)).join('')}</div>`;
+  });
+  Object.keys(groups).filter(k=>!knownKeys.includes(k)).forEach(k=>{
+    const ws=groups[k];const qty=ws.reduce((s,w)=>s+(w.qty||0),0);
+    sectionsHTML+=`<div class="clayette-group"><div class="clayette-heading"><div class="clayette-heading-name">${esc(k)}</div><div class="clayette-heading-count">${ws.length} référence${ws.length>1?'s':''} · ${qty} bouteille${qty>1?'s':''}</div></div>${ws.map(w=>_caveWineRowHTML(w)).join('')}</div>`;
+  });
+  if(unassigned.length){
+    const qty=unassigned.reduce((s,w)=>s+(w.qty||0),0);
+    sectionsHTML+=`<div class="clayette-group"><div class="clayette-heading"><div class="clayette-heading-name" style="color:var(--ink4)">Non assigné</div><div class="clayette-heading-count">${unassigned.length} référence${unassigned.length>1?'s':''} · ${qty} bouteille${qty>1?'s':''}</div></div>${unassigned.map(w=>_caveWineRowHTML(w)).join('')}</div>`;
+  }
+  if(!sectionsHTML)sectionsHTML=`<div style="padding:48px 20px;text-align:center;color:var(--ink4)"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" style="opacity:.3;margin-bottom:10px;display:block;margin-left:auto;margin-right:auto"><path d="M8 22h8M12 11v11"/><path d="M5 2h14l-3 9a5 5 0 0 1-8 0Z"/></svg><div style="font-size:14px;font-weight:600;color:var(--ink3);margin-bottom:4px">Cave vide</div><div style="font-size:12px">Assignez des vins à cette cave depuis la fiche d'un vin</div></div>`;
+  const gaugeHTML=cap>0?`<div style="margin-bottom:20px"><div class="cave-gauge-track"><div class="cave-gauge-fill" style="transform:scaleX(${(pct/100).toFixed(3)});background:${fillColor}"></div></div><div class="cave-gauge-label"><span>${occupied} / ${cap} bouteilles · ${pct}% occupé</span><span>${cap-occupied} place${(cap-occupied)!==1?'s':''} libre${(cap-occupied)!==1?'s':''}</span></div></div>`:'';
+  det.innerHTML=`<button class="cave-detail-back" onclick="closeCaveDetail()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>Mes caves</button><div class="cave-detail-hero"><div><div class="cave-detail-title">${esc(cave.name)}</div><div class="cave-detail-meta">${n?`${n} clayette${n>1?'s':''}`:''} ${n&&cap?' · ':''} ${cap?`${cap} bouteilles max`:''}</div></div><button class="cave-btn cave-btn-edit" onclick="editCave('${cave.id}')"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Modifier la cave</button></div>${gaugeHTML}<div>${sectionsHTML}</div>`;
+}
+
+function _caveWineRowHTML(w){
+  const TYPE_CLR={Rouge:'#8b1a2a',Blanc:'#c5a84a','Blanc sec':'#c5a84a','Blanc moelleux':'#d4a820','Blanc liquoreux':'#d4a820','Rosé':'#e87070','Pétillant':'#7ab8d0','Macération':'#c08060'};
+  const clr=TYPE_CLR[w.type]||'#8b1a2a';
+  const imgHTML=w.img_url?`<img class="cave-wine-thumb" src="${w.img_url}" alt="">`:
+    `<div class="cave-wine-thumb-placeholder"><svg width="10" height="18" viewBox="0 0 10 18" fill="none" stroke="${clr}" stroke-width="1.5" stroke-linecap="round"><path d="M3 17V9L1 5V2.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5V5L7 9v8"/><path d="M1 7h8"/></svg></div>`;
+  return`<div class="cave-wine-row">${imgHTML}<div class="cave-wine-info"><div class="cave-wine-name">${esc(w.name)}${w.year?` <span style="font-weight:400;color:var(--ink4)">${w.year}</span>`:''}</div><div class="cave-wine-sub">${w.type?esc(w.type):''}${w.reg?` · ${esc(w.reg)}`:''}</div></div><div class="cave-wine-qty">×${w.qty||1}</div><button class="cave-wine-edit" onclick="editWine('${w.id}')" title="Modifier"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></div>`;
+}
 
 function setSidebarTypeEl(el){setSidebarType(el,el.dataset.type);}
 function setSidebarType(el,type){
@@ -3264,7 +3365,7 @@ function editWine(id){
   sv(document.getElementById('f-ap'),w.ap);const fc=document.getElementById('f-cont');if(fc)fc.value=w.cont||'';const fct=document.getElementById('f-country');if(fct)fct.value=w.country||'France';
   sv(document.getElementById('f-notes'),w.notes);
   populateCaveSelect(w.caveId||'');
-  sv(document.getElementById('f-clayette'),w.clayette||'');
+  populateClayetteSelect(w.caveId||'', w.clayette||'');
   const cm={parker:'f-parker',suckling:'f-suckling',decanter:'f-decanter',vinous:'f-vinous',bettane:'f-bettane',jancis:'f-jancis',ws:'f-ws',bh:'f-bh'};
   Object.entries(cm).forEach(([k,fid])=>{const el=document.getElementById(fid);if(el)el.value=w[k]!=null?w[k]:'';});
   if(w.certs){formCerts=[...w.certs];document.querySelectorAll('#cert-checkboxes input[type=checkbox]').forEach(cb=>{cb.checked=w.certs.includes(cb.value);});}
@@ -3326,7 +3427,7 @@ function saveEdit(id){
 function clearForm(){
   ['f-name','f-app','f-reg','f-year','f-buy','f-cur','f-ap','f-notes','f-parker','f-suckling','f-decanter','f-vinous','f-bettane','f-jancis','f-ws','f-bh'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
   document.getElementById('f-qty').value='1';document.getElementById('f-type').value='Rouge';const fco=document.getElementById('f-cont');if(fco)fco.value='75cl';clearCritics();
-  populateCaveSelect('');const fcl=document.getElementById('f-clayette');if(fcl)fcl.value='';
+  populateCaveSelect('');populateClayetteSelect('','');
   formPhotoData=null;
   const inner=document.getElementById('form-photo-inner');
   if(inner)inner.innerHTML='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#b89098" stroke-width="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span style="font-size:12px;color:var(--ink4)">Cliquez pour ajouter une photo</span>';
