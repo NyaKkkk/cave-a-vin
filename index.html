@@ -121,19 +121,36 @@ body.private-mode .delta{filter:blur(7px);color:var(--ink4)!important;background
 .vtbtn:hover{color:var(--ink4)}
 .vtbtn.active{color:var(--ink3)}
 /* LIST MODE */
-.wlist.list-mode{grid-template-columns:1fr;gap:2px;grid-auto-rows:auto}
-.wlist.list-mode .wcard{flex-direction:row;align-items:stretch;border-radius:var(--r)}
-.wlist.list-mode .wcmain{flex:1;grid-template-columns:minmax(0,1fr);min-height:0}
-.wlist.list-mode .wimg-zone,.wlist.list-mode .wright{display:none}
-.wlist.list-mode .wbody{flex-direction:row;flex-wrap:nowrap;align-items:center;padding:9px 14px;gap:10px;border-left:none;overflow:hidden}
-.wlist.list-mode .wname{font-size:13px;width:180px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:0}
-.wlist.list-mode .wyear{width:40px;flex-shrink:0;font-size:12px}
-.wlist.list-mode .wmeta{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.wlist.list-mode .wtags{flex-shrink:0}
-.wlist.list-mode .wprices{flex-shrink:0;margin-left:auto}
-.wlist.list-mode .wnotes,.wlist.list-mode .wine-location{display:none}
-.wlist.list-mode .wfooter{border-top:none;border-left:1px solid var(--ink5);padding:0 10px;flex-direction:column;justify-content:center;align-items:center;flex-shrink:0;gap:4px}
+/* LIST MODE — redesign complet */
+.wlist.list-mode{grid-template-columns:1fr;gap:3px;grid-auto-rows:auto}
+.wlist.list-mode .wcard{flex-direction:row;align-items:stretch;border-radius:var(--r);border-top-width:1px;border-top-color:var(--ink5);border-left:4px solid var(--wtype-clr,var(--ink5))}
+.wlist.list-mode .wcard:hover{border-top-color:var(--ink4);border-left-color:var(--wtype-clr,var(--ink4))}
+.wlist.list-mode .wcmain{flex:1;display:flex;flex-direction:row;align-items:stretch;min-width:0}
+/* Image compacte : bouteille + certifs */
+.wlist.list-mode .wimg-zone{width:54px;flex-shrink:0;flex-direction:column;align-items:center;justify-content:center;padding:8px 4px;gap:5px;background:rgba(255,255,255,.025)}
+.wlist.list-mode .wscores-col{display:none}
+.wlist.list-mode .wbottle-col{width:40px;min-height:unset;height:auto;padding:0;display:flex;align-items:center;justify-content:center}
+.wlist.list-mode .wbottle-col img{width:34px;height:62px;object-fit:contain}
+.wlist.list-mode .wimg-placeholder{min-height:62px;width:40px;padding:4px;border-radius:4px}
+.wlist.list-mode .wcerts-col{flex-direction:row;flex-wrap:wrap;width:auto;align-self:center;justify-content:center;gap:2px;margin:0;padding:0;max-width:44px}
+.wlist.list-mode .cert-badge{width:17px;height:17px;border-radius:3px}
+/* Corps principal */
+.wbody-top{display:contents}
+.wlist.list-mode .wbody{flex-direction:column;align-items:flex-start;justify-content:center;padding:10px 14px;gap:3px;border-left:1px solid var(--ink5);overflow:hidden;flex:1;flex-wrap:nowrap}
+.wlist.list-mode .wbody-top{display:flex;flex-direction:row;align-items:center;gap:8px;width:100%;min-width:0;overflow:hidden;flex-shrink:0}
+.wlist.list-mode .wname{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex-shrink:1;min-width:80px;margin-bottom:0;display:block;-webkit-line-clamp:unset;-webkit-box-orient:unset}
+.wlist.list-mode .wyear{font-size:12px;flex-shrink:0;color:var(--ink3)}
+.wlist.list-mode .wtags{flex-shrink:0;flex-wrap:nowrap;margin-left:auto}
+.wlist.list-mode .wmeta{flex-wrap:nowrap;overflow:hidden;width:100%;flex-shrink:0}
+.wlist.list-mode .wprices{flex-direction:row;gap:8px;align-items:center;flex-wrap:nowrap;flex-shrink:0}
+.wlist.list-mode .wnotes{display:-webkit-box;-webkit-line-clamp:1;font-size:11px;width:100%;overflow:hidden;color:var(--ink4)}
+.wlist.list-mode .wine-location{display:flex;font-size:10px}
+/* Footer vertical : qté + actions */
+.wlist.list-mode .wright{display:none}
+.wlist.list-mode .wfooter{border-top:none;border-left:1px solid var(--ink5);padding:0 12px;flex-direction:column;justify-content:center;align-items:center;flex-shrink:0;gap:6px}
 .wlist.list-mode .wfooter .footer-actions{flex-direction:column;gap:3px}
+.wlist.list-mode .editbtn{height:30px;font-size:10px;padding:0 8px}
+.wlist.list-mode .qval{font-size:15px}
 @media(max-width:560px){.header-stats{display:none}.btn-privacy{display:none}}
 
 /* NAV */
@@ -3568,10 +3585,12 @@ function renderWines(){
       <div class="wcmain">
         ${imgHTML}
         <div class="wbody">
-          <div class="wname">${esc(w.name)}</div>
-          <div class="wyear">${w.year?esc(w.year):'NV'}</div>
+          <div class="wbody-top">
+            <div class="wname">${esc(w.name)}</div>
+            <div class="wyear">${w.year?esc(w.year):'NV'}</div>
+            <div class="wtags"><span class="tpill" style="background:${pb};color:${pt}">${esc(shortType)}</span>${w.ap?`<div class="apbadge">⏳ ${esc(w.ap)}</div>`:''}</div>
+          </div>
           <div class="wmeta">${w.country?`<span class="wmeta-country">${esc(w.country)}</span><span class="wmeta-dot"></span>`:''} ${w.reg?`<span class="wmeta-reg">${esc(w.reg)}</span>`:''}${w.reg&&w.app?`<span class="wmeta-dot"></span>`:''}${w.app?`<span class="wmeta-txt">${esc(w.app)}</span>`:''}${w.cont?`<span class="wmeta-dot"></span><span class="wmeta-txt">${esc(w.cont)}</span>`:''}</div>
-          <div class="wtags"><span class="tpill" style="background:${pb};color:${pt}">${esc(shortType)}</span>${w.ap?`<div class="apbadge">⏳ ${esc(w.ap)}</div>`:''}</div>
           ${pH}
           ${w.notes?`<div class="wnotes">${esc(w.notes)}</div>`:''}
           ${w.caveId?`<div class="wine-location"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>${esc((caves.find(c=>c.id===w.caveId)||{name:'?'}).name)}${w.clayette?` · Clayette ${esc(w.clayette)}`:''}</div>`:''}
@@ -3715,10 +3734,12 @@ function renderWishes(){
       <div class="wcmain">
         ${imgHTML}
         <div class="wbody">
-          <div class="wname" style="${w.done?'text-decoration:line-through':''}">${esc(w.name)}</div>
-          ${w.year?`<div class="wyear">${esc(w.year)}</div>`:''}
+          <div class="wbody-top">
+            <div class="wname" style="${w.done?'text-decoration:line-through':''}">${esc(w.name)}</div>
+            ${w.year?`<div class="wyear">${esc(w.year)}</div>`:''}
+            <div class="wtags"><span class="tpill" style="background:${pb};color:${pt}">${esc(shortType)}</span></div>
+          </div>
           <div class="wmeta">${w.country?`<span class="wmeta-country">${esc(w.country)}</span><span class="wmeta-dot"></span>`:''} ${w.reg?`<span class="wmeta-reg">${esc(w.reg)}</span>`:''}${w.reg&&w.app?`<span class="wmeta-dot"></span>`:''}${w.app?`<span class="wmeta-txt">${esc(w.app)}</span>`:''}</div>
-          <div class="wtags"><span class="tpill" style="background:${pb};color:${pt}">${esc(shortType)}</span></div>
           ${w.note?`<div class="wnotes">${esc(w.note)}</div>`:''}
         </div>
         <div class="wright"></div>
