@@ -122,29 +122,29 @@ body.private-mode .delta{filter:blur(7px);color:var(--ink4)!important;background
 .vtbtn.active{color:var(--ink3)}
 /* LIST MODE */
 /* LIST MODE — redesign complet */
-.wlist.list-mode{grid-template-columns:1fr;gap:3px;grid-auto-rows:auto}
-.wlist.list-mode .wcard{flex-direction:row;align-items:stretch;border-radius:var(--r);border-top-width:1px;border-top-color:var(--ink5);border-left:4px solid var(--wtype-clr,var(--ink5))}
-.wlist.list-mode .wcard:hover{border-top-color:var(--ink4);border-left-color:var(--wtype-clr,var(--ink4))}
+.wlist.list-mode{grid-template-columns:1fr;gap:2px;grid-auto-rows:auto}
+.wlist.list-mode .wcard{flex-direction:row;align-items:stretch;border-radius:var(--r)}
 .wlist.list-mode .wcmain{flex:1;display:flex;flex-direction:row;align-items:stretch;min-width:0}
 /* Image compacte : bouteille + certifs */
-.wlist.list-mode .wimg-zone{width:54px;flex-shrink:0;flex-direction:column;align-items:center;justify-content:center;padding:8px 4px;gap:5px;background:rgba(255,255,255,.025)}
+.wlist.list-mode .wimg-zone{width:54px;flex-shrink:0;flex-direction:column;align-items:center;justify-content:center;padding:6px 4px;gap:4px;background:rgba(255,255,255,.025)}
 .wlist.list-mode .wscores-col{display:none}
 .wlist.list-mode .wbottle-col{width:40px;min-height:unset;height:auto;padding:0;display:flex;align-items:center;justify-content:center}
-.wlist.list-mode .wbottle-col img{width:34px;height:62px;object-fit:contain}
-.wlist.list-mode .wimg-placeholder{min-height:62px;width:40px;padding:4px;border-radius:4px}
+.wlist.list-mode .wbottle-col img{width:32px;height:56px;object-fit:contain}
+.wlist.list-mode .wimg-placeholder{min-height:56px;width:40px;padding:4px;border-radius:4px}
 .wlist.list-mode .wcerts-col{flex-direction:row;flex-wrap:wrap;width:auto;align-self:center;justify-content:center;gap:2px;margin:0;padding:0;max-width:44px}
-.wlist.list-mode .cert-badge{width:17px;height:17px;border-radius:3px}
-/* Corps principal */
+.wlist.list-mode .cert-badge{width:16px;height:16px;border-radius:3px}
+/* Corps : grille info (1fr) + prix (auto) */
 .wbody-top{display:contents}
-.wlist.list-mode .wbody{flex-direction:column;align-items:flex-start;justify-content:center;padding:10px 14px;gap:3px;border-left:1px solid var(--ink5);overflow:hidden;flex:1;flex-wrap:nowrap}
-.wlist.list-mode .wbody-top{display:flex;flex-direction:row;align-items:center;gap:8px;width:100%;min-width:0;overflow:hidden;flex-shrink:0}
+.wlist.list-mode .wbody{display:grid;grid-template-columns:1fr auto;grid-template-rows:auto auto auto auto;align-items:center;column-gap:24px;row-gap:2px;padding:7px 16px;border-left:1px solid var(--ink5);overflow:hidden;flex:1}
+.wlist.list-mode .wbody-top{grid-column:1;grid-row:1;display:flex;flex-direction:row;align-items:center;gap:8px;min-width:0;overflow:hidden}
+.wlist.list-mode .wmeta{grid-column:1;grid-row:2;flex-wrap:nowrap;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;display:block}
+.wlist.list-mode .wnotes{grid-column:1;grid-row:3;display:block;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink4)}
+.wlist.list-mode .wine-location{grid-column:1;grid-row:4;display:flex;font-size:10px}
+.wlist.list-mode .wprices{grid-column:2;grid-row:1/5;align-self:center;flex-direction:column;gap:3px;align-items:flex-end;flex-wrap:nowrap;flex-shrink:0;border-left:1px solid var(--ink5);padding-left:20px;min-width:110px}
+.wlist.list-mode .wprices .wprice-item{flex-direction:row;gap:6px;align-items:baseline}
 .wlist.list-mode .wname{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex-shrink:1;min-width:80px;margin-bottom:0;display:block;-webkit-line-clamp:unset;-webkit-box-orient:unset}
 .wlist.list-mode .wyear{font-size:12px;flex-shrink:0;color:var(--ink3)}
-.wlist.list-mode .wtags{flex-shrink:0;flex-wrap:nowrap;margin-left:auto}
-.wlist.list-mode .wmeta{flex-wrap:nowrap;overflow:hidden;width:100%;flex-shrink:0}
-.wlist.list-mode .wprices{flex-direction:row;gap:8px;align-items:center;flex-wrap:nowrap;flex-shrink:0}
-.wlist.list-mode .wnotes{display:-webkit-box;-webkit-line-clamp:1;font-size:11px;width:100%;overflow:hidden;color:var(--ink4)}
-.wlist.list-mode .wine-location{display:flex;font-size:10px}
+.wlist.list-mode .wtags{flex-shrink:0;flex-wrap:nowrap}
 /* Footer vertical : qté + actions */
 .wlist.list-mode .wright{display:none}
 .wlist.list-mode .wfooter{border-top:none;border-left:1px solid var(--ink5);padding:0 12px;flex-direction:column;justify-content:center;align-items:center;flex-shrink:0;gap:6px}
