@@ -71,7 +71,7 @@ window.addEventListener('DOMContentLoaded', function() {
 }
 html,body{width:100%;min-height:100vh}
 body{font-family:var(--font-body);background:var(--bg);color:var(--ink);font-size:14px}
-.app{width:100%;margin:0 auto;padding:0}
+.app{width:100%;margin:0 auto;padding:0;display:flex;flex-direction:column;min-height:100vh}
 
 /* HEADER */
 .header{background:var(--chrome-bg);padding:0 clamp(16px,4vw,36px);display:flex;align-items:center;justify-content:space-between;height:var(--header-h);gap:16px;position:sticky;top:0;z-index:var(--z-header)}
@@ -143,7 +143,7 @@ body.private-mode .delta{filter:blur(7px);color:var(--ink4)!important;background
 .ntab:hover{color:var(--ink2)}.ntab.active{color:var(--ruby);border-bottom-color:var(--ruby)}
 button.ntab{background:none;border-width:0 0 2px;border-style:solid;border-color:transparent;font-family:var(--font-body)}
 
-.content{padding:clamp(14px,3vw,26px) clamp(16px,4vw,36px)}
+.content{padding:clamp(14px,3vw,26px) clamp(16px,4vw,36px);flex:1}
 
 /* TOOLBAR */
 .toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;position:sticky;top:var(--sticky-top);z-index:var(--z-sticky);background:var(--bg);padding-top:10px;padding-bottom:10px;margin-left:calc(-1 * clamp(16px,4vw,36px));margin-right:calc(-1 * clamp(16px,4vw,36px));padding-left:clamp(16px,4vw,36px);padding-right:clamp(16px,4vw,36px)}
@@ -781,11 +781,27 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--ruby);outline-offse
 .footer-link:hover{color:var(--ruby)}
 .footer-divider{width:1px;height:11px;background:var(--ink5);flex-shrink:0}
 .footer-copy{font-size:10px;color:var(--ink5);white-space:nowrap;font-family:var(--font-body)}
+.footer-social{display:flex;gap:6px;align-items:center}
+.footer-social-link{width:30px;height:30px;border-radius:50%;border:1px solid var(--ink5);background:none;display:flex;align-items:center;justify-content:center;color:var(--ink4);text-decoration:none;transition:border-color .15s,color .15s,background .15s;flex-shrink:0}
+.footer-social-link:hover{border-color:var(--ruby);color:var(--ruby);background:rgba(168,40,60,.06)}
+.footer-social-link svg{width:14px;height:14px;fill:currentColor}
 @media(max-width:560px){
   .footer-inner{flex-direction:column;align-items:flex-start;gap:14px}
   .footer-divider{display:none}
   .footer-links{gap:14px}
 }
+/* COOKIE BANNER */
+#cookie-banner{position:fixed;bottom:0;left:0;right:0;z-index:9990;background:var(--surface);border-top:1px solid var(--ink5);padding:16px clamp(16px,4vw,36px);display:flex;align-items:center;gap:16px;flex-wrap:wrap;box-shadow:0 -4px 24px rgba(28,10,13,.12);transform:translateY(100%);transition:transform .3s cubic-bezier(.4,0,.2,1)}
+#cookie-banner.visible{transform:translateY(0)}
+.cookie-banner-text{flex:1;min-width:200px;font-size:12px;color:var(--ink3);font-family:var(--font-body);line-height:1.6}
+.cookie-banner-text strong{color:var(--ink);font-weight:600}
+.cookie-banner-text a{color:var(--ruby);text-decoration:none}
+.cookie-banner-text a:hover{text-decoration:underline}
+.cookie-banner-actions{display:flex;gap:8px;flex-shrink:0;flex-wrap:wrap}
+.cookie-btn-accept{height:36px;padding:0 16px;background:var(--ruby);color:#fff;border:none;border-radius:var(--r);font-family:var(--font-body);font-size:12px;font-weight:600;cursor:pointer;transition:background .15s;white-space:nowrap}
+.cookie-btn-accept:hover{background:#8a1a2a}
+.cookie-btn-refuse{height:36px;padding:0 14px;background:none;color:var(--ink4);border:1.5px solid var(--ink5);border-radius:var(--r);font-family:var(--font-body);font-size:12px;font-weight:600;cursor:pointer;transition:border-color .15s,color .15s;white-space:nowrap}
+.cookie-btn-refuse:hover{border-color:var(--ink4);color:var(--ink3)}
 
 </style>
 </head>
@@ -1197,11 +1213,27 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--ruby);outline-offse
       <span class="footer-divider" aria-hidden="true"></span>
       <a href="#" class="footer-link">Confidentialité</a>
       <span class="footer-divider" aria-hidden="true"></span>
+      <a href="#" class="footer-link" id="footer-cookie-link" onclick="openCookieSettings();return false;">Cookies</a>
+      <span class="footer-divider" aria-hidden="true"></span>
       <a href="#" class="footer-link">Mentions légales</a>
       <span class="footer-divider" aria-hidden="true"></span>
       <a href="#" class="footer-link">Tarifs</a>
       <span class="footer-divider" aria-hidden="true"></span>
       <a href="mailto:contact@cave-a-vin.fr" class="footer-link">Contact</a>
+    </nav>
+    <nav class="footer-social" aria-label="Réseaux sociaux">
+      <a href="#" class="footer-social-link" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 1.366.062 2.633.334 3.608 1.31.975.975 1.247 2.242 1.309 3.608.058 1.265.069 1.645.069 4.849s-.011 3.584-.069 4.849c-.062 1.366-.334 2.633-1.309 3.608-.975.975-2.242 1.247-3.608 1.309-1.266.058-1.646.069-4.85.069s-3.584-.011-4.849-.069c-1.366-.062-2.633-.334-3.608-1.309-.975-.975-1.247-2.242-1.309-3.608C2.175 15.584 2.163 15.204 2.163 12s.012-3.584.07-4.849c.062-1.366.334-2.633 1.309-3.608.975-.975 2.242-1.248 3.608-1.31C8.416 2.175 8.796 2.163 12 2.163zm0-2.163C8.741 0 8.333.014 7.053.072 5.197.157 3.355.673 1.924 2.104.493 3.535-.023 5.377.072 7.232.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.095 1.855.611 3.697 2.042 5.128 1.431 1.431 3.273 1.947 5.128 2.042C8.333 23.986 8.741 24 12 24s3.668-.014 4.948-.072c1.855-.095 3.697-.611 5.128-2.042 1.431-1.431 1.947-3.273 2.042-5.128C23.986 15.668 24 15.259 24 12s-.014-3.667-.072-4.947c-.095-1.855-.611-3.697-2.042-5.128C20.455.493 18.613-.023 16.758.072 15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zm0 10.162a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>
+      </a>
+      <a href="#" class="footer-social-link" aria-label="Facebook" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.41c0-3.025 1.792-4.697 4.533-4.697 1.312 0 2.686.236 2.686.236v2.97h-1.513c-1.491 0-1.956.93-1.956 1.886v2.267h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/></svg>
+      </a>
+      <a href="#" class="footer-social-link" aria-label="X (Twitter)" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.748l7.73-8.835L1.254 2.25H8.08l4.259 5.631 5.905-5.631zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+      </a>
+      <a href="#" class="footer-social-link" aria-label="YouTube" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+      </a>
     </nav>
     <div class="footer-copy">© 2025 Cave à Vin — Tous droits réservés</div>
   </div>
@@ -4586,5 +4618,40 @@ function removeToast(t){
 </div>
 
 <div id="toast-wrap" aria-live="polite" aria-atomic="true" role="status"></div>
+
+<!-- COOKIE BANNER -->
+<div id="cookie-banner" role="dialog" aria-label="Gestion des cookies" aria-live="polite">
+  <p class="cookie-banner-text">
+    <strong>Nous utilisons des cookies</strong> pour faire fonctionner l'application (authentification, préférences) et mesurer l'audience de façon anonyme.
+    <a href="#" onclick="openCookieSettings();return false;">En savoir plus</a>
+  </p>
+  <div class="cookie-banner-actions">
+    <button class="cookie-btn-refuse" onclick="setCookieConsent('refused')">Tout refuser</button>
+    <button class="cookie-btn-accept" onclick="setCookieConsent('accepted')">Tout accepter</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  const COOKIE_KEY = 'cave_cookie_consent';
+  function showBanner(){
+    const b = document.getElementById('cookie-banner');
+    if(!b) return;
+    requestAnimationFrame(()=>{ b.classList.add('visible'); });
+  }
+  window.setCookieConsent = function(choice){
+    localStorage.setItem(COOKIE_KEY, choice);
+    const b = document.getElementById('cookie-banner');
+    if(b){ b.classList.remove('visible'); }
+  };
+  window.openCookieSettings = function(){
+    const b = document.getElementById('cookie-banner');
+    if(b){ b.classList.add('visible'); b.scrollIntoView({behavior:'smooth',block:'end'}); }
+  };
+  if(!localStorage.getItem(COOKIE_KEY)){
+    window.addEventListener('DOMContentLoaded', function(){ setTimeout(showBanner, 800); });
+  }
+})();
+</script>
 </body>
 </html>
