@@ -125,26 +125,29 @@ body.private-mode .delta{filter:blur(7px);color:var(--ink4)!important;background
 .wlist.list-mode{grid-template-columns:1fr;gap:2px;grid-auto-rows:auto}
 .wlist.list-mode .wcard{flex-direction:row;align-items:stretch;border-radius:var(--r)}
 .wlist.list-mode .wcmain{flex:1;display:flex;flex-direction:row;align-items:stretch;min-width:0}
-/* Image compacte : bouteille + certifs */
-.wlist.list-mode .wimg-zone{width:54px;flex-shrink:0;flex-direction:column;align-items:center;justify-content:center;padding:6px 4px;gap:4px;background:rgba(255,255,255,.025)}
+/* Image : plus grande */
+.wlist.list-mode .wimg-zone{width:76px;flex-shrink:0;flex-direction:column;align-items:center;justify-content:center;padding:8px 6px;gap:5px;background:rgba(255,255,255,.025)}
 .wlist.list-mode .wscores-col{display:none}
-.wlist.list-mode .wbottle-col{width:40px;min-height:unset;height:auto;padding:0;display:flex;align-items:center;justify-content:center}
-.wlist.list-mode .wbottle-col img{width:32px;height:56px;object-fit:contain}
-.wlist.list-mode .wimg-placeholder{min-height:56px;width:40px;padding:4px;border-radius:4px}
-.wlist.list-mode .wcerts-col{flex-direction:row;flex-wrap:wrap;width:auto;align-self:center;justify-content:center;gap:2px;margin:0;padding:0;max-width:44px}
-.wlist.list-mode .cert-badge{width:16px;height:16px;border-radius:3px}
-/* Corps : grille info (1fr) + prix (auto) */
+.wlist.list-mode .wbottle-col{width:56px;min-height:unset;height:auto;padding:0;display:flex;align-items:center;justify-content:center}
+.wlist.list-mode .wbottle-col img{width:48px;height:82px;object-fit:contain}
+.wlist.list-mode .wimg-placeholder{min-height:82px;width:56px;padding:6px;border-radius:4px}
+.wlist.list-mode .wcerts-col{flex-direction:row;flex-wrap:wrap;width:auto;align-self:center;justify-content:center;gap:3px;margin:0;padding:0;max-width:56px}
+.wlist.list-mode .cert-badge{width:18px;height:18px;border-radius:3px}
+/* Corps : grille 3 colonnes [nom+pill | région+notes | prix] */
 .wbody-top{display:contents}
-.wlist.list-mode .wbody{display:grid;grid-template-columns:1fr auto;grid-template-rows:auto auto auto auto;align-items:center;column-gap:24px;row-gap:2px;padding:7px 16px;border-left:1px solid var(--ink5);overflow:hidden;flex:1}
-.wlist.list-mode .wbody-top{grid-column:1;grid-row:1;display:flex;flex-direction:row;align-items:center;gap:8px;min-width:0;overflow:hidden}
-.wlist.list-mode .wmeta{grid-column:1;grid-row:2;flex-wrap:nowrap;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;display:block}
-.wlist.list-mode .wnotes{grid-column:1;grid-row:3;display:block;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink4)}
-.wlist.list-mode .wine-location{grid-column:1;grid-row:4;display:flex;font-size:10px}
-.wlist.list-mode .wprices{grid-column:2;grid-row:1/5;align-self:center;flex-direction:column;gap:3px;align-items:flex-end;flex-wrap:nowrap;flex-shrink:0;border-left:1px solid var(--ink5);padding-left:20px;min-width:110px}
-.wlist.list-mode .wprices .wprice-item{flex-direction:row;gap:6px;align-items:baseline}
-.wlist.list-mode .wname{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex-shrink:1;min-width:80px;margin-bottom:0;display:block;-webkit-line-clamp:unset;-webkit-box-orient:unset}
-.wlist.list-mode .wyear{font-size:12px;flex-shrink:0;color:var(--ink3)}
+.wlist.list-mode .wbody{display:grid;grid-template-columns:minmax(180px,280px) 1fr auto;align-items:center;border-left:1px solid var(--ink5);overflow:hidden;flex:1;padding:0}
+/* Col 1 — nom, millésime, pill (flex-column avec wrap pour year+pill sur 2e ligne) */
+.wlist.list-mode .wbody-top{grid-column:1;grid-row:1;display:flex;flex-direction:row;flex-wrap:wrap;align-items:center;gap:4px 8px;padding:10px 16px;align-self:stretch;border-right:1px solid var(--ink5);align-content:center}
+.wlist.list-mode .wname{width:100%;font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:0;display:block;-webkit-line-clamp:unset;-webkit-box-orient:unset}
+.wlist.list-mode .wyear{font-size:12px;color:var(--ink3);flex-shrink:0}
 .wlist.list-mode .wtags{flex-shrink:0;flex-wrap:nowrap}
+/* Col 2 — région, notes, localisation (occupe tout l'espace central) */
+.wlist.list-mode .wmeta{grid-column:2;grid-row:1;display:flex;flex-wrap:nowrap;overflow:hidden;align-items:center;padding:5px 18px 2px}
+.wlist.list-mode .wnotes{grid-column:2;grid-row:2;display:block;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink4);padding:0 18px 2px}
+.wlist.list-mode .wine-location{grid-column:2;grid-row:3;display:flex;font-size:10px;padding:0 18px 5px}
+/* Col 3 — prix alignés à droite */
+.wlist.list-mode .wprices{grid-column:3;grid-row:1;align-self:center;display:flex;flex-direction:column;gap:3px;align-items:flex-end;padding:10px 18px;border-left:1px solid var(--ink5);min-width:130px;flex-shrink:0;flex-wrap:nowrap}
+.wlist.list-mode .wprices .wprice-item{flex-direction:row;gap:6px;align-items:baseline}
 /* Footer vertical : qté + actions */
 .wlist.list-mode .wright{display:none}
 .wlist.list-mode .wfooter{border-top:none;border-left:1px solid var(--ink5);padding:0 12px;flex-direction:column;justify-content:center;align-items:center;flex-shrink:0;gap:6px}
