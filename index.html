@@ -2710,9 +2710,11 @@ let _dragScrollRaf=null;
 function _dragAutoScroll(e){
   const zone=80,speed=12;
   const y=e.clientY,h=window.innerHeight;
+  const toolbar=document.querySelector('#tab-cave .toolbar');
+  const topBoundary=toolbar?toolbar.getBoundingClientRect().bottom:120;
   cancelAnimationFrame(_dragScrollRaf);
-  if(y<zone){
-    const intensity=(zone-y)/zone;
+  if(y<topBoundary+zone&&y>topBoundary){
+    const intensity=(topBoundary+zone-y)/zone;
     _dragScrollRaf=requestAnimationFrame(function scroll(){window.scrollBy(0,-speed*intensity);_dragScrollRaf=requestAnimationFrame(scroll);});
   } else if(y>h-zone){
     const intensity=(y-(h-zone))/zone;
