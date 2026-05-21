@@ -1447,6 +1447,7 @@ async function doLogout(){
             try{
               await db.enableNetwork().catch(()=>{});
               await Promise.all([loadFromFirebase(), loadUserProfile(user.uid), loadDegVentes()]);
+              showTab(localStorage.getItem('activeTab')||'cave');
               break;
             }catch(e){
               if(i===3){ console.error('Chargement données échoué:', e); showToast('Impossible de charger les données. Vérifiez votre connexion.','error'); }
@@ -1513,7 +1514,6 @@ async function loadFromFirebase(){
   caves  = cSnap.docs.map(d=>({id:d.id, ...d.data()}));
   activeTypes = [];
   populateFilterDropdowns(); updateStats(); renderWishes();
-  showTab(localStorage.getItem('activeTab')||'cave');
 }
 
 // ── CRUD ──
