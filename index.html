@@ -4036,7 +4036,7 @@ function renderWishes(){
     const imgHTML=w.img_url
       ?`<div class="wimg-zone"><div class="wscores-col"></div><div class="wbottle-col"><img src="${w.img_url}" alt="${esc(w.name)}" loading="lazy"></div><div class="wcerts-col"></div></div>`
       :`<div class="wimg-zone"><div class="wscores-col"></div><div class="wbottle-col"><div class="wimg-placeholder"><div class="wimg-placeholder-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div></div></div><div class="wcerts-col"></div></div>`;
-    const targetsHTML=(w.targetPrice||w.targetQty)?`<div class="wprices" style="margin-top:8px">${w.targetPrice?`<div class="wprice-item"><div class="wprice-lbl">Prix cible</div><div class="wprice-val">${Number(w.targetPrice).toFixed(2)} €</div></div>`:''} ${w.targetQty?`<div class="wprice-item"><div class="wprice-lbl">Quantité</div><div class="wprice-val">${w.targetQty} × ${w.cont||'75cl'}</div></div>`:''}</div>`:'';
+    const targetsHTML=(w.targetPrice||w.targetQty)?`<div class="wprices" style="margin-top:8px;gap:20px">${w.targetPrice?`<div class="wprice-item"><div class="wprice-lbl">Prix cible</div><div class="wprice-val">${Number(w.targetPrice).toFixed(2)} €</div></div>`:''} ${w.targetQty?`<div class="wprice-item"><div class="wprice-lbl">Quantité</div><div class="wprice-val">${w.targetQty} × ${w.cont||'75cl'}</div></div>`:''}</div>`:'';
     return`<div class="wcard" style="--wtype-clr:${barC}${w.done?';opacity:.5':''}">
       <div style="display:flex;align-items:stretch;flex:1">
         ${imgHTML}
