@@ -1437,10 +1437,9 @@ async function doLogout(){
       db.settings({ experimentalAutoDetectLongPolling: true, merge: true });
 
       auth.onAuthStateChanged(async(user)=>{
-        document.getElementById('loading-screen').style.display='none';
         if(user){
           currentUser = user;
-          // Restaurer le bon onglet visuellement avant d'afficher l'app (évite le flash)
+          // Préparer le bon onglet derrière le loading screen
           const _t=localStorage.getItem('activeTab')||'cave';
           ['cave','caves','stats','degustation','ventes','wish'].forEach((n,i)=>{
             const btn=document.querySelectorAll('.ntab')[i];
@@ -1448,22 +1447,26 @@ async function doLogout(){
             const panel=document.getElementById('tab-'+n);
             if(panel)panel.style.display=n===_t?'':'none';
           });
-          _showScreen('app');
+          document.querySelector('.app').style.display='';
+          document.getElementById('user-info').style.display='flex';
           for(let i=0; i<4; i++){
             try{
               await db.enableNetwork().catch(()=>{});
               await Promise.all([loadFromFirebase(), loadUserProfile(user.uid), loadDegVentes()]);
               _dataLoading = false;
-              showTab(localStorage.getItem('activeTab')||'cave');
+              showTab(_t);
               break;
             }catch(e){
               if(i===3){ console.error('Chargement données échoué:', e); showToast('Impossible de charger les données. Vérifiez votre connexion.','error'); }
               else await new Promise(r=>setTimeout(r, 1000*(i+1)));
             }
           }
+          // Cacher le loading screen une fois les données prêtes
+          document.getElementById('loading-screen').style.display='none';
         } else {
           currentUser = null;
           wines=[]; wishes=[];
+          document.getElementById('loading-screen').style.display='none';
           _showScreen('auth');
         }
       });
