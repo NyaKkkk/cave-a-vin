@@ -171,6 +171,12 @@ body.private-mode .delta{filter:blur(7px);color:var(--ink4)!important;background
 .nav::-webkit-scrollbar{display:none}
 .ntab{padding:13px 18px;font-size:11px;font-weight:600;color:var(--ink4);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap;letter-spacing:.5px;text-transform:uppercase}
 .ntab:hover{color:var(--ink2)}.ntab.active{color:var(--ruby);border-bottom-color:var(--ruby)}
+[role="tabpanel"]:focus{outline:none}
+.tab-loading-dots{display:flex;align-items:center;justify-content:center;padding:64px 0;gap:7px;grid-column:1/-1}
+.tab-loading-dots span{width:7px;height:7px;border-radius:50%;background:var(--ink4);display:inline-block;animation:ldot .8s ease-in-out infinite}
+.tab-loading-dots span:nth-child(2){animation-delay:.15s}
+.tab-loading-dots span:nth-child(3){animation-delay:.3s}
+@keyframes ldot{0%,80%,100%{transform:scale(.55);opacity:.3}40%{transform:scale(1);opacity:.8}}
 button.ntab{background:none;border-width:0 0 2px;border-style:solid;border-color:transparent;font-family:var(--font-body)}
 
 .content{padding:clamp(14px,3vw,26px) clamp(16px,4vw,36px);flex:1}
@@ -1447,6 +1453,7 @@ async function doLogout(){
             try{
               await db.enableNetwork().catch(()=>{});
               await Promise.all([loadFromFirebase(), loadUserProfile(user.uid), loadDegVentes()]);
+              _dataLoading = false;
               showTab(localStorage.getItem('activeTab')||'cave');
               break;
             }catch(e){
@@ -1586,6 +1593,7 @@ function save(){ /* données gérées par Firebase */ }
 // ── DONNÉES DÉGUSTATIONS & VENTES ──
 let degustations = [];
 let ventes = [];
+let _dataLoading = true;
 
 async function loadDegVentes(){
   if(!db||!currentUser) return;
@@ -1854,6 +1862,11 @@ function renderDegustations(){
   const empty = document.getElementById('deg-empty');
   const count = document.getElementById('deg-count');
   if(!list) return;
+  if(_dataLoading){
+    list.innerHTML='<div class="tab-loading-dots"><span></span><span></span><span></span></div>';
+    empty.style.display='none'; count.textContent='';
+    return;
+  }
   if(!degustations.length){
     list.innerHTML=''; empty.style.display=''; count.textContent='';
     return;
@@ -2073,6 +2086,11 @@ function renderVentes(){
   const empty = document.getElementById('ventes-empty');
   const stats = document.getElementById('ventes-stats');
   if(!list) return;
+  if(_dataLoading){
+    list.innerHTML='<div class="tab-loading-dots"><span></span><span></span><span></span></div>';
+    empty.style.display='none'; stats.innerHTML='';
+    return;
+  }
   if(!ventes.length){
     list.innerHTML=''; empty.style.display=''; stats.innerHTML='';
     return;
@@ -2596,6 +2614,7 @@ function closePanel(id){
 // ── CAVES ──
 function renderCaves(){
   const el=document.getElementById('caves-list');
+  if(_dataLoading){el.innerHTML='<div class="tab-loading-dots"><span></span><span></span><span></span></div>';return;}
   if(!caves.length){
     el.innerHTML='<div style="grid-column:1/-1;display:flex;flex-direction:column;align-items:center;padding:80px 20px;color:var(--ink4);text-align:center"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" style="opacity:.3;margin-bottom:14px"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg><div style="font-size:15px;font-weight:600;color:var(--ink3);margin-bottom:6px">Aucune cave enregistrée</div><div style="font-size:13px">Ajoutez votre première cave avec le bouton ci-dessus</div></div>';
     return;
@@ -3787,6 +3806,7 @@ function renderWines(){
   caveWinesList=list;
   const el=document.getElementById('wlist');
   if(!list.length){
+    if(_dataLoading){el.innerHTML='<div class="tab-loading-dots"><span></span><span></span><span></span></div>';return;}
     const isFiltered=wines.length>0;
     el.innerHTML=isFiltered
       ?'<div style="grid-column:1/-1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 20px;color:var(--ink4);text-align:center;min-height:300px"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" style="opacity:.3;margin-bottom:14px"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg><div style="font-size:15px;font-weight:600;color:var(--ink3);margin-bottom:6px">Aucun vin ne correspond à ces filtres</div><div style="font-size:13px;max-width:320px">Modifiez ou supprimez les filtres actifs pour voir votre collection.</div></div>'
@@ -3994,6 +4014,7 @@ function renderStats(){
 
 function renderWishes(){
   const el=document.getElementById('wishlist');
+  if(_dataLoading){el.innerHTML='<div class="tab-loading-dots"><span></span><span></span><span></span></div>';return;}
   document.getElementById('wcnt').textContent=`${wishes.length} vin${wishes.length>1?'s':''} souhaité${wishes.length>1?'s':''}`;
   if(!wishes.length){
     el.innerHTML='<div style="grid-column:1/-1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 20px;color:var(--ink4);text-align:center"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" style="opacity:.3;margin-bottom:14px"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg><div style="font-size:15px;font-weight:600;color:var(--ink3);margin-bottom:8px">Votre liste de souhaits est vide</div><div style="font-size:13px;max-width:320px;line-height:1.6">Notez les vins que vous souhaitez acquérir, que vous ayez vu en dégustation ou lu dans une revue.</div></div>';
