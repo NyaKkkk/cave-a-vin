@@ -424,6 +424,10 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
 .wlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:10px;grid-auto-rows:1fr}
 @media(max-width:700px){.wlist{grid-template-columns:1fr;grid-auto-rows:auto}}
 .wcard{background:var(--surface);border:1px solid var(--ink5);border-top:3px solid var(--wtype-clr,var(--ink5));border-radius:var(--r2);overflow:hidden;transition:box-shadow .2s,border-color .2s;display:flex;flex-direction:column}
+.wish-img-col{width:80px;flex-shrink:0;background:#fff;display:flex;align-items:center;justify-content:center;border-right:1px solid var(--ink5)}
+.wish-img-col img{width:100%;height:100%;object-fit:contain;padding:8px;box-sizing:border-box}
+.wish-targets{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
+.wish-target-badge{font-size:10px;font-weight:600;color:var(--ink4);background:var(--ink6);border:1px solid var(--ink5);border-radius:5px;padding:2px 7px}
 .wcard:hover{border-color:var(--ink4);border-top-color:var(--wtype-clr,var(--ink4));box-shadow:0 4px 16px rgba(28,10,13,.07)}
 .wcmain{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:stretch;flex:1}
 .wimg-zone{display:flex;flex-shrink:0;background:#fff;gap:1px}
@@ -1561,7 +1565,8 @@ async function saveWishToDb(wish){
     const data = {
       name:wish.name||'', note:wish.note||'', done:wish.done||false,
       app:wish.app||'', reg:wish.reg||'', country:wish.country||'',
-      year:wish.year||null, type:wish.type||'Rouge', img_url:wish.img_url||null
+      year:wish.year||null, type:wish.type||'Rouge', img_url:wish.img_url||null,
+      targetPrice:wish.targetPrice||null, targetQty:wish.targetQty||null, cont:wish.cont||'75cl'
     };
     if(wish.id && !wish.id.startsWith('tmp-')){
       await ref.doc(wish.id).set(data, {merge:true});
@@ -4028,14 +4033,14 @@ function renderWishes(){
     const pb=typeColors[w.type]||'#eee';
     const pt=w.type&&['Rouge','Pétillant'].includes(w.type)?'#fff':'#333';
     const shortType=(w.type||'Rouge').length>22?(w.type||'Rouge').split('/')[0].trim():(w.type||'Rouge');
-    // Image
     const imgHTML=w.img_url
-      ?`<div class="wimg-zone"><div class="wscores-col"></div><div class="wbottle-col"><img src="${w.img_url}" alt="${esc(w.name)}" loading="lazy"></div><div class="wcerts-col"></div></div>`
-      :`<div class="wimg-zone"><div class="wscores-col"></div><div class="wbottle-col"><div class="wimg-placeholder"><div class="wimg-placeholder-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div></div></div><div class="wcerts-col"></div></div>`;
+      ?`<div class="wish-img-col"><img src="${w.img_url}" alt="${esc(w.name)}" loading="lazy"></div>`
+      :`<div class="wish-img-col"><svg width="22" height="38" viewBox="0 0 10 18" fill="none" stroke="${barC}" stroke-width="1.5" stroke-linecap="round" opacity=".4"><path d="M3 17V9L1 5V2.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5V5L7 9v8"/><path d="M1 7h8"/></svg></div>`;
+    const targetsHTML=(w.targetPrice||w.targetQty)?`<div class="wish-targets">${w.targetPrice?`<span class="wish-target-badge">Prix cible : ${w.targetPrice}€</span>`:''} ${w.targetQty?`<span class="wish-target-badge">${w.targetQty} × ${w.cont||'75cl'}</span>`:''}</div>`:'';
     return`<div class="wcard" style="--wtype-clr:${barC}${w.done?';opacity:.5':''}">
-      <div class="wcmain">
+      <div style="display:flex;align-items:stretch;flex:1">
         ${imgHTML}
-        <div class="wbody">
+        <div class="wbody" style="flex:1">
           <div class="wbody-top">
             <div class="wname" style="${w.done?'text-decoration:line-through':''}">${esc(w.name)}</div>
             ${w.year?`<div class="wyear">${esc(w.year)}</div>`:''}
@@ -4043,8 +4048,8 @@ function renderWishes(){
           </div>
           <div class="wmeta">${w.country?`<span class="wmeta-country">${esc(w.country)}</span><span class="wmeta-dot"></span>`:''} ${w.reg?`<span class="wmeta-reg">${esc(w.reg)}</span>`:''}${w.reg&&w.app?`<span class="wmeta-dot"></span>`:''}${w.app?`<span class="wmeta-txt">${esc(w.app)}</span>`:''}</div>
           ${w.note?`<div class="wnotes">${esc(w.note)}</div>`:''}
+          ${targetsHTML}
         </div>
-        <div class="wright"></div>
       </div>
       <div class="wfooter">
         <div></div>
@@ -4092,6 +4097,9 @@ function editWish(id){
   const wnv=document.getElementById('wf-nv');if(wnv){wnv.checked=!w.year;document.getElementById('wf-year').disabled=!w.year;}
   setV('wf-note', w.note||'');
   if(w.type){const sel=document.getElementById('wf-type');if(sel)sel.value=w.type;}
+  setV('wf-target-price', w.targetPrice||'');
+  setV('wf-target-qty', w.targetQty||'');
+  const contSel=document.getElementById('wf-cont');if(contSel)contSel.value=w.cont||'75cl';
   // Changer le bouton pour "Enregistrer"
   const btn=document.getElementById('wish-manual-modal').querySelector('.profile-save-btn');
   if(btn){btn.textContent='Enregistrer les modifications';btn.onclick=()=>saveWishEdit(id);}
@@ -4107,6 +4115,9 @@ function saveWishEdit(id){
   w.year=document.getElementById('wf-year')?.value||null;
   w.type=document.getElementById('wf-type')?.value||'Rouge';
   w.note=document.getElementById('wf-note')?.value.trim()||'';
+  w.targetPrice=parseFloat(document.getElementById('wf-target-price')?.value)||null;
+  w.targetQty=parseInt(document.getElementById('wf-target-qty')?.value)||null;
+  w.cont=document.getElementById('wf-cont')?.value||'75cl';
   if(db&&currentUser) saveWishToDb(w);
   closeWishManualModal();
   renderWishes();
@@ -4171,7 +4182,8 @@ function closeAddWishModal(){ document.getElementById('wish-choice-modal').class
 function openWishMode(mode){
   closeAddWishModal();
   if(mode==='manual'){
-    ['wf-name','wf-app','wf-reg','wf-country','wf-year','wf-note'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+    ['wf-name','wf-app','wf-reg','wf-country','wf-year','wf-note','wf-target-price','wf-target-qty'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+    const wfc=document.getElementById('wf-cont');if(wfc)wfc.value='75cl';;
     document.getElementById('wish-manual-modal').classList.add('open');
     return;
   }
@@ -4287,7 +4299,10 @@ function saveWishManual(){
   const type=document.getElementById('wf-type')?.value||'Rouge';
   const note=document.getElementById('wf-note')?.value.trim()||'';
   const img_url=wishFormPhotoData||null;
-  const wish={id:'tmp-'+Date.now(),name,app,reg,country,year,type,note,img_url,done:false};
+  const targetPrice=parseFloat(document.getElementById('wf-target-price')?.value)||null;
+  const targetQty=parseInt(document.getElementById('wf-target-qty')?.value)||null;
+  const cont=document.getElementById('wf-cont')?.value||'75cl';
+  const wish={id:'tmp-'+Date.now(),name,app,reg,country,year,type,note,img_url,done:false,targetPrice,targetQty,cont};
   wishes.unshift(wish);
   if(db&&currentUser) saveWishToDb(wish);
   wishFormPhotoData=null;
@@ -4673,6 +4688,15 @@ function removeToast(t){
         <div class="fg"><label>Région</label><input type="text" id="wf-reg" placeholder="Bordeaux"></div>
         <div class="fg"><label>Pays</label><input type="text" id="wf-country" placeholder="France" list="country-list"></div>
         <div class="fg"><label style="display:flex;justify-content:space-between;align-items:center">Millésime<label class="nv-toggle"><input type="checkbox" id="wf-nv" onchange="toggleNV('wf-year','wf-nv')"><span>NV</span></label></label><input type="number" id="wf-year" placeholder="2019" min="1900" max="2030"></div>
+      </div>
+    </div>
+    <div class="fsec"><div class="fsec-label">Objectif d'achat</div>
+      <div class="fr fr3">
+        <div class="fg"><label>Prix cible (€/btl)</label><input type="number" id="wf-target-price" placeholder="0" min="0" step="0.5"></div>
+        <div class="fg"><label>Quantité cible</label><input type="number" id="wf-target-qty" placeholder="1" min="1"></div>
+        <div class="fg"><label>Format</label>
+          <select id="wf-cont"><option value="75cl" selected>75cl</option><option value="37.5cl">37.5cl</option><option value="150cl">Magnum (150cl)</option><option value="300cl">Double Magnum (300cl)</option></select>
+        </div>
       </div>
     </div>
     <div class="fsec"><div class="fsec-label">Note personnelle</div>
