@@ -704,7 +704,8 @@ button.auth-tab{background:none;border-width:0 0 2px;border-style:solid;border-c
 
 /* ── CARTES DÉGUSTATION ── */
 .deg-card{background:var(--surface);border:1px solid var(--ink5);border-radius:var(--r2);padding:16px 28px;display:flex;gap:18px;align-items:center;margin-bottom:4px}
-.deg-card-body{width:220px;flex-shrink:0}
+.deg-card-body{flex-shrink:0}
+.vc-info{flex-shrink:0}
 .deg-card-name{font-family:var(--font-display);font-size:16px;font-weight:600;color:var(--ink);margin-bottom:3px}
 .deg-card-meta{font-size:11px;color:var(--ink4);margin-bottom:8px}
 .deg-card-note{display:inline-flex;align-items:center;gap:6px;background:var(--ink6);border-radius:6px;padding:4px 10px;margin-bottom:8px}
@@ -1878,6 +1879,7 @@ function renderDegustations(){
       </div>
     </div>`;
     }).join('');
+  equalizeCardColumns('#deg-list','.deg-card-body');
 }
 
 // ── HELPERS VENTES ──
@@ -2085,7 +2087,7 @@ function renderVentes(){
     return `<div class="vente-card">
       ${wImgV?`<div style="width:50px;flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-right:2px"><img src="${wImgV}" style="max-width:50px;max-height:82px;width:auto;height:auto;object-fit:contain;border-radius:4px"></div>`:``}
       <div style="display:flex;gap:0;align-items:stretch">
-        <div style="width:260px;flex-shrink:0">
+        <div class="vc-info">
           <div class="vente-card-name">${esc(v.wineName)}${v.wineYear?' '+esc(v.wineYear):''}</div>
           <div class="vente-card-meta">${esc(v.wineApp)} · ${esc(dateStr)} · ${Number(v.qty)||0} bouteille${v.qty>1?'s':''}</div>
           <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:6px">
@@ -2109,6 +2111,7 @@ function renderVentes(){
       </div>
     </div>`;
     }).join('');
+  equalizeCardColumns('#ventes-list','.vc-info');
 }
 
 // ── ANNONCE VENTE ──
@@ -2479,6 +2482,7 @@ let advFilters={countries:[],regions:[],certs:[],caves:[],yearMin:'',yearMax:'',
 let chartM=null,chartR=null,waiResult=null,wishPhotoB64=null,aiResult=null,currentPhotoB64=null;
 
 function esc(s){const d=document.createElement('div');d.appendChild(document.createTextNode(s==null?'':String(s)));return d.innerHTML}
+function equalizeCardColumns(listSel,colSel){const cols=[...document.querySelectorAll(listSel+' '+colSel)];if(!cols.length)return;cols.forEach(el=>{el.style.width='';});const max=Math.max(...cols.map(el=>el.offsetWidth));cols.forEach(el=>{el.style.width=max+'px';});}
 
 let wines=[];
 let caveWinesList=[];
