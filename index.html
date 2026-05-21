@@ -1858,7 +1858,7 @@ function renderDegustations(){
     const wineImg = wineRef?.img_url || d.img_url || null;
     return `<div class="deg-card">
       ${wineImg?`<div style="width:52px;flex-shrink:0;display:flex;align-items:center;justify-content:center"><img src="${wineImg}" style="max-width:52px;max-height:88px;width:auto;height:auto;object-fit:contain;border-radius:4px"></div>`:`<div style="font-size:24px;flex-shrink:0;text-align:center;width:52px">🍷</div>`}
-      <div style="flex-shrink:0;text-align:center;min-width:52px;border-left:1px solid var(--ink5);border-right:1px solid var(--ink5);padding:0 12px;margin:0 4px;cursor:pointer" onclick="editDegNote('${d.id}',this)" title="Cliquer pour modifier la note">
+      <div class="deg-note-col" style="flex-shrink:0;text-align:center;min-width:52px;border-left:1px solid var(--ink5);border-right:1px solid var(--ink5);padding:0 12px;margin:0 4px;cursor:pointer" onclick="editDegNote('${d.id}',this)" title="Cliquer pour modifier la note">
         ${d.note>0?`<div style="font-family:var(--font-display);font-size:34px;font-weight:700;color:var(--ruby);line-height:1">${d.note}</div><div style="font-size:10px;color:var(--ink4);margin-top:2px">/${d.noteMax||100}</div>`:`<div style="font-size:20px;color:var(--ink5)">+ note</div>`}
       </div>
       <div style="display:flex;gap:0;align-items:stretch;flex:1;min-width:0">
@@ -1879,6 +1879,7 @@ function renderDegustations(){
       </div>
     </div>`;
     }).join('');
+  equalizeCardColumns('#deg-list','.deg-note-col');
   equalizeCardColumns('#deg-list','.deg-card-body');
 }
 
