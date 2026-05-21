@@ -703,12 +703,8 @@ button.auth-tab{background:none;border-width:0 0 2px;border-style:solid;border-c
 .wine-sell:hover{border-color:var(--clr-warn)!important;color:var(--clr-warn)!important}
 
 /* ── CARTES DÉGUSTATION ── */
-.deg-card{background:var(--surface);border:1px solid var(--ink5);border-radius:var(--r2);display:grid;grid-template-columns:68px 80px 1fr 210px 52px;align-items:stretch;margin-bottom:4px;overflow:hidden}
-.deg-col-img{display:flex;align-items:center;justify-content:center;padding:14px 8px}
-.deg-col-note{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:14px 16px;border-left:1px solid var(--ink5);border-right:1px solid var(--ink5);cursor:pointer;text-align:center}
-.deg-col-info{padding:14px 16px}
-.deg-col-comment{display:flex;align-items:center;padding:14px 16px;border-left:1px solid var(--ink5);border-right:1px solid var(--ink5);cursor:pointer}
-.deg-col-actions{display:flex;align-items:center;justify-content:center;padding:14px 10px}
+.deg-card{background:var(--surface);border:1px solid var(--ink5);border-radius:var(--r2);padding:16px 28px;display:flex;gap:18px;align-items:center;margin-bottom:4px}
+.deg-card-body{width:220px;flex-shrink:0}
 .deg-card-name{font-family:var(--font-display);font-size:16px;font-weight:600;color:var(--ink);margin-bottom:3px}
 .deg-card-meta{font-size:11px;color:var(--ink4);margin-bottom:8px}
 .deg-card-note{display:inline-flex;align-items:center;gap:6px;background:var(--ink6);border-radius:6px;padding:4px 10px;margin-bottom:8px}
@@ -723,14 +719,11 @@ button.auth-tab{background:none;border-width:0 0 2px;border-style:solid;border-c
 .deg-star:hover{transform:scale(1.2)}
 
 /* ── CARTES VENTES ── */
-.vente-card{background:var(--surface);border:1px solid var(--ink5);border-radius:var(--r2);display:grid;grid-template-columns:68px 1fr 220px 130px;align-items:stretch;margin-bottom:4px;overflow:hidden}
-.vc-col-img{display:flex;align-items:center;justify-content:center;padding:14px 8px}
-.vc-col-info{padding:14px 20px;border-left:1px solid var(--ink5);border-right:1px solid var(--ink5)}
-.vc-col-notes{display:flex;align-items:center;padding:14px 16px;border-right:1px solid var(--ink5);cursor:pointer}
+.vente-card{background:var(--surface);border:1px solid var(--ink5);border-radius:var(--r2);padding:16px 28px;display:grid;grid-template-columns:auto auto 1fr;gap:20px;align-items:center;margin-bottom:4px}
 .vente-card-name{font-family:var(--font-display);font-size:19px;font-weight:600;color:var(--ink)}
 .vente-card-meta{font-size:12px;color:var(--ink4);margin-top:3px}
 .vente-card-platform{display:inline-block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;background:var(--ink6);color:var(--ink3);padding:2px 8px;border-radius:10px;margin-top:6px}
-.vente-card-pnl{text-align:right;padding:14px 20px}
+.vente-card-pnl{text-align:right}
 .vente-card-price{font-family:var(--font-display);font-size:26px;font-weight:700;color:var(--ink)}
 .vente-card-pnl-val{font-size:13px;font-weight:600;margin-top:2px}
 .vente-pnl-pos{color:var(--clr-pos)}
@@ -757,15 +750,9 @@ button.auth-tab{background:none;border-width:0 0 2px;border-style:solid;border-c
   .wbody{padding:8px 10px}
   .wname{font-size:14px}
   /* Cartes ventes */
-  .vente-card{grid-template-columns:52px 1fr}
-  .vc-col-notes,.vc-col-info{grid-column:2}
-  .vente-card-pnl{grid-column:2;text-align:left;padding:0 20px 14px}
+  .vente-card{grid-template-columns:1fr;gap:6px;padding:14px 16px}
+  .vente-card-pnl{text-align:left}
   .vente-card-price{font-size:20px}
-  .deg-card{grid-template-columns:52px 1fr;grid-template-rows:auto auto}
-  .deg-col-note{grid-column:1;border:none;border-bottom:1px solid var(--ink5);padding:10px 8px}
-  .deg-col-info{grid-column:2}
-  .deg-col-comment{grid-column:1/-1;border-left:none;border-right:none;border-top:1px solid var(--ink5);border-bottom:1px solid var(--ink5)}
-  .deg-col-actions{grid-column:2;justify-content:flex-end;padding:8px 12px}
   /* Auth */
   .auth-box{padding:24px 16px}
   .auth-logo-title{font-size:26px;letter-spacing:4px}
@@ -1869,22 +1856,25 @@ function renderDegustations(){
     const wineRef = wines.find(w=>w.id===d.wineId);
     const wineImg = wineRef?.img_url || d.img_url || null;
     return `<div class="deg-card">
-      <div class="deg-col-img">
-        ${wineImg?`<img src="${wineImg}" style="max-width:52px;max-height:88px;width:auto;height:auto;object-fit:contain;border-radius:4px">`:`<span style="font-size:24px">🍷</span>`}
+      ${wineImg?`<div style="width:52px;flex-shrink:0;display:flex;align-items:center;justify-content:center"><img src="${wineImg}" style="max-width:52px;max-height:88px;width:auto;height:auto;object-fit:contain;border-radius:4px"></div>`:`<div style="font-size:24px;flex-shrink:0;text-align:center;width:52px">🍷</div>`}
+      <div style="flex-shrink:0;text-align:center;min-width:52px;border-left:1px solid var(--ink5);border-right:1px solid var(--ink5);padding:0 12px;margin:0 4px;cursor:pointer" onclick="editDegNote('${d.id}',this)" title="Cliquer pour modifier la note">
+        ${d.note>0?`<div style="font-family:var(--font-display);font-size:34px;font-weight:700;color:var(--ruby);line-height:1">${d.note}</div><div style="font-size:10px;color:var(--ink4);margin-top:2px">/${d.noteMax||100}</div>`:`<div style="font-size:20px;color:var(--ink5)">+ note</div>`}
       </div>
-      <div class="deg-col-note" onclick="editDegNote('${d.id}',this)" title="Cliquer pour modifier la note">
-        ${d.note>0?`<div style="font-family:var(--font-display);font-size:34px;font-weight:700;color:var(--ruby);line-height:1">${d.note}</div><div style="font-size:10px;color:var(--ink4);margin-top:2px">/${d.noteMax||100}</div>`:`<div style="font-size:18px;color:var(--ink5)">+ note</div>`}
-      </div>
-      <div class="deg-col-info">
-        <div class="deg-card-name">${esc(d.wineName)}${d.wineYear?' '+esc(d.wineYear):''}</div>
-        <div class="deg-card-meta">${esc(d.wineApp)}${d.wineApp&&d.wineType?' · ':''}${esc(d.wineType)} · <span onclick="editDegOccasion('${d.id}',this)" style="cursor:pointer;text-decoration:underline dotted;text-underline-offset:2px" title="Cliquer pour modifier">${esc(occLabels[d.occasion]||d.occasion||'—')}</span></div>
-        <div style="font-size:10px;color:var(--ink5);margin-top:8px">${esc(dateStr)} · ${Number(d.qty)||0} bouteille${d.qty>1?'s':''}</div>
-      </div>
-      <div class="deg-col-comment" onclick="editDegComment('${d.id}',this)" title="Cliquer pour modifier">
-        <span style="font-size:13px;color:${d.comment?'var(--ink3)':'var(--ink5)'};font-style:italic;line-height:1.5">${d.comment?esc(d.comment):'+ Commentaire…'}</span>
-      </div>
-      <div class="deg-col-actions">
-        <button type="button" onclick="deleteDegustation('${d.id}')" title="Supprimer" aria-label="Supprimer" class="delbtn" style="width:28px;height:28px;padding:0"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg></button>
+      <div style="display:flex;gap:0;align-items:stretch;flex:1;min-width:0">
+        <div class="deg-card-body">
+          <div class="deg-card-name">${esc(d.wineName)}${d.wineYear?' '+esc(d.wineYear):''}</div>
+          <div class="deg-card-meta">${esc(d.wineApp)}${d.wineApp&&d.wineType?' · ':''}${esc(d.wineType)} · <span onclick="editDegOccasion('${d.id}',this)" style="cursor:pointer;text-decoration:underline dotted;text-underline-offset:2px" title="Cliquer pour modifier">${esc(occLabels[d.occasion]||d.occasion||'—')}</span></div>
+          <div style="font-size:10px;color:var(--ink5);margin-top:8px">${esc(dateStr)} · ${Number(d.qty)||0} bouteille${d.qty>1?'s':''}</div>
+        </div>
+        <div style="width:1px;background:var(--ink5);margin:0 14px;flex-shrink:0"></div>
+        <div style="width:200px;flex-shrink:0;cursor:pointer;display:flex;align-items:center" onclick="editDegComment('${d.id}',this)" title="Cliquer pour modifier">
+          <span style="font-size:13px;color:${d.comment?'var(--ink3)':'var(--ink5)'};font-style:italic;line-height:1.5">${d.comment?esc(d.comment):'+ Commentaire…'}</span>
+        </div>
+        <div style="flex:1"></div>
+        <div style="width:1px;background:var(--ink5);margin:0 14px;flex-shrink:0"></div>
+        <div style="flex-shrink:0;display:flex;align-items:center">
+          <button type="button" onclick="deleteDegustation('${d.id}')" title="Supprimer" aria-label="Supprimer" class="delbtn" style="width:28px;height:28px;padding:0"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg></button>
+        </div>
       </div>
     </div>`;
     }).join('');
@@ -2093,23 +2083,24 @@ function renderVentes(){
     const wRefV = wines.find(w=>w.id===v.wineId);
     const wImgV = wRefV?.img_url || v.img_url || null;
     return `<div class="vente-card">
-      <div class="vc-col-img">
-        ${wImgV?`<img src="${wImgV}" style="max-width:50px;max-height:82px;width:auto;height:auto;object-fit:contain;border-radius:4px">`:``}
-      </div>
-      <div class="vc-col-info">
-        <div class="vente-card-name">${esc(v.wineName)}${v.wineYear?' '+esc(v.wineYear):''}</div>
-        <div class="vente-card-meta">${esc(v.wineApp)} · ${esc(dateStr)} · ${Number(v.qty)||0} bouteille${v.qty>1?'s':''}</div>
-        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:6px">
-          <div class="vente-status vente-status-${v.status||'a_vendre'}" onclick="updateVenteStatus('${v.id}')" style="cursor:pointer;user-select:none" title="Cliquer pour changer">${esc(statusLabel(v.status))}</div>
-          <span onclick="editVentePlatform('${v.id}')" class="vente-card-platform" style="cursor:pointer" title="Cliquer pour modifier">${esc(v.platform)} ✎</span>
+      ${wImgV?`<div style="width:50px;flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-right:2px"><img src="${wImgV}" style="max-width:50px;max-height:82px;width:auto;height:auto;object-fit:contain;border-radius:4px"></div>`:``}
+      <div style="display:flex;gap:0;align-items:stretch">
+        <div style="width:260px;flex-shrink:0">
+          <div class="vente-card-name">${esc(v.wineName)}${v.wineYear?' '+esc(v.wineYear):''}</div>
+          <div class="vente-card-meta">${esc(v.wineApp)} · ${esc(dateStr)} · ${Number(v.qty)||0} bouteille${v.qty>1?'s':''}</div>
+          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:6px">
+            <div class="vente-status vente-status-${v.status||'a_vendre'}" onclick="updateVenteStatus('${v.id}')" style="cursor:pointer;user-select:none" title="Cliquer pour changer">${esc(statusLabel(v.status))}</div>
+            <span onclick="editVentePlatform('${v.id}')" class="vente-card-platform" style="cursor:pointer" title="Cliquer pour modifier">${esc(v.platform)} ✎</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;margin-top:8px;flex-wrap:wrap">
+            <button type="button" onclick="undoVente('${v.id}')" title="Remettre en cave" style="display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border:1px solid var(--ink5);border-radius:6px;background:none;cursor:pointer;color:var(--ink4);font-family:var(--font-body);font-size:11px">↩ Cave</button>
+            <button type="button" onclick="deleteVente('${v.id}')" title="Supprimer de l'historique" style="display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border:1px solid var(--ink5);border-radius:6px;background:none;cursor:pointer;color:var(--ink4);font-family:var(--font-body);font-size:11px"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg> Supprimer</button>
+          </div>
         </div>
-        <div style="display:flex;align-items:center;gap:6px;margin-top:8px;flex-wrap:wrap">
-          <button type="button" onclick="undoVente('${v.id}')" title="Remettre en cave" style="display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border:1px solid var(--ink5);border-radius:6px;background:none;cursor:pointer;color:var(--ink4);font-family:var(--font-body);font-size:11px">↩ Cave</button>
-          <button type="button" onclick="deleteVente('${v.id}')" title="Supprimer de l'historique" style="display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border:1px solid var(--ink5);border-radius:6px;background:none;cursor:pointer;color:var(--ink4);font-family:var(--font-body);font-size:11px"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg> Supprimer</button>
+        <div style="width:1px;background:var(--ink5);margin:0 14px;flex-shrink:0"></div>
+        <div style="width:220px;flex-shrink:0;cursor:pointer;display:flex;align-items:center" onclick="editVenteNotes('${v.id}',this)" title="Cliquer pour modifier">
+          <span style="font-size:13px;color:${v.notes?'var(--ink3)':'var(--ink5)'};font-style:italic;line-height:1.5">${v.notes?esc(v.notes):'+ Note…'}</span>
         </div>
-      </div>
-      <div class="vc-col-notes" onclick="editVenteNotes('${v.id}',this)" title="Cliquer pour modifier">
-        <span style="font-size:13px;color:${v.notes?'var(--ink3)':'var(--ink5)'};font-style:italic;line-height:1.5">${v.notes?esc(v.notes):'+ Note…'}</span>
       </div>
       <div class="vente-card-pnl">
         <div class="vente-card-price">${Number(v.price)||0}€<span style="font-size:13px;color:var(--ink4)">/btl</span></div>
