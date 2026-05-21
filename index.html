@@ -1056,7 +1056,7 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--ruby);outline-offse
 
 <nav class="nav" aria-label="Navigation principale" role="tablist">
   <button class="ntab active" role="tab" id="ntab-cave" aria-selected="true" aria-controls="tab-cave" onclick="showTab('cave')">Mes vins</button>
-  <button class="ntab" role="tab" id="ntab-caves" aria-selected="false" aria-controls="tab-caves" onclick="showTab('caves')">Gérer mes caves</button>
+  <button class="ntab" role="tab" id="ntab-caves" aria-selected="false" aria-controls="tab-caves" onclick="showTab('caves')">Mes caves</button>
   <button class="ntab" role="tab" id="ntab-stats" aria-selected="false" aria-controls="tab-stats" onclick="showTab('stats')">Statistiques</button>
   <button class="ntab" role="tab" id="ntab-degustation" aria-selected="false" aria-controls="tab-degustation" onclick="showTab('degustation')">Dégustations</button>
   <button class="ntab" role="tab" id="ntab-ventes" aria-selected="false" aria-controls="tab-ventes" onclick="showTab('ventes')">Ventes</button>
@@ -2598,8 +2598,7 @@ function renderCaves(){
         </div>
         ${cap>0?`<div><div class="cave-gauge-track"><div class="cave-gauge-fill" style="transform:scaleX(${(pct/100).toFixed(3)});background:${fillColor}"></div></div><div class="cave-gauge-label"><span>${pct}% occupé</span><span>${cap-occupied} places libres</span></div></div>`:''}
         <div class="cave-card-actions">
-          <button class="cave-btn cave-btn-view" onclick="openCaveDetail('${cave.id}')"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 22h8M12 11v11"/><path d="M5 2h14l-3 9a5 5 0 0 1-8 0Z"/></svg> Voir les vins</button>
-          <button class="cave-btn cave-btn-edit" onclick="editCave('${cave.id}')"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+          <button class="cave-btn cave-btn-edit" onclick="editCave('${cave.id}')" style="flex:1"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Modifier</button>
           <button class="cave-btn cave-btn-del" onclick="deleteCave('${cave.id}')"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button>
         </div>
       </div>
