@@ -3850,7 +3850,8 @@ function renderCaveView(){
     let sectionsHTML='';
     knownKeys.forEach(k=>{
       const ws=groups[k]||[];
-      const qty=ws.reduce((s,w)=>s+(w.qty||0),0);
+      if(s&&ws.length===0)return;
+      const qty=ws.reduce((a,w)=>a+(w.qty||0),0);
       sectionsHTML+=`<div class="clayette-group" ondragover="caveDragOver(event)" ondragleave="caveDragLeave(event)" ondrop="caveDrop(event,'${caveId}','${k}')"><div class="clayette-heading"><div class="clayette-heading-name"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="4" rx="1"/><rect x="2" y="10" width="20" height="4" rx="1"/><rect x="2" y="17" width="20" height="4" rx="1"/></svg>Clayette ${k}</div><div class="clayette-heading-count">${ws.length===0?'vide':`${ws.length} référence${ws.length>1?'s':''} · ${qty} bouteille${qty>1?'s':''}`}</div></div>${ws.length===0?'<div class="clayette-empty">Aucun vin sur cette clayette</div>':ws.map(w=>_caveWineRowHTML(w)).join('')}</div>`;
     });
     Object.keys(groups).filter(k=>!knownKeys.includes(k)).forEach(k=>{
@@ -3866,6 +3867,7 @@ function renderCaveView(){
   let html='';
   caves.forEach(cave=>{
     const wineList=wines.filter(w=>w.caveId===cave.id&&(!s||(w.name+w.reg+(w.app||'')).toLowerCase().includes(s)));
+    if(s&&wineList.length===0)return;
     const occupied=wines.filter(w=>w.caveId===cave.id).reduce((s,w)=>s+(w.qty||0),0);
     const cap=cave.capacity||0;
     const pct=cap>0?Math.min(100,Math.round(occupied/cap*100)):0;
