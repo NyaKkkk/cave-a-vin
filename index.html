@@ -1794,8 +1794,8 @@ async function saveSell(){
     createdAt: new Date().toISOString()
   };
 
-  // Décrémenter la quantité (seulement si vin en cave)
-  if(w){
+  // Décrémenter la quantité seulement si la vente est finalisée
+  if(w && vente.status === 'vendu'){
     w.qty -= qty;
     if(w.qty <= 0){
       wines = wines.filter(x=>x.id!==w.id);
@@ -1867,8 +1867,23 @@ function statusLabel(s){
 async function updateVenteStatus(id){
   const v = ventes.find(x=>x.id===id);
   if(!v) return;
+  const prevStatus = v.status||'a_vendre';
   const cycle = {a_vendre:'en_cours', en_cours:'vendu', vendu:'a_vendre'};
-  v.status = cycle[v.status||'a_vendre'];
+  v.status = cycle[prevStatus];
+  // Ajuster la quantité en cave selon le changement de statut
+  const w = wines.find(x=>x.id===v.wineId);
+  if(v.status === 'vendu' && prevStatus !== 'vendu'){
+    // Passage à Vendu : retirer de la cave
+    if(w){
+      w.qty -= (v.qty||1);
+      if(w.qty <= 0){ wines=wines.filter(x=>x.id!==v.wineId); if(db)deleteWineFromDb(v.wineId); }
+      else if(db) saveWineToDb(w);
+      renderWines(); updateStats();
+    }
+  } else if(prevStatus === 'vendu' && v.status !== 'vendu'){
+    // Annulation d'une vente : remettre la quantité en cave
+    if(w){ w.qty += (v.qty||1); if(db)saveWineToDb(w); renderWines(); updateStats(); }
+  }
   renderVentes();
   if(db&&currentUser&&id&&!id.startsWith('tmp-')){
     await db.collection('users').doc(currentUser.uid).collection('ventes').doc(id).update({status:v.status});
