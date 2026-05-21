@@ -1566,7 +1566,11 @@ async function saveWishToDb(wish){
       name:wish.name||'', note:wish.note||'', done:wish.done||false,
       app:wish.app||'', reg:wish.reg||'', country:wish.country||'',
       year:wish.year||null, type:wish.type||'Rouge', img_url:wish.img_url||null,
-      targetPrice:wish.targetPrice||null, targetQty:wish.targetQty||null, cont:wish.cont||'75cl'
+      targetPrice:wish.targetPrice||null, targetQty:wish.targetQty||null, cont:wish.cont||'75cl',
+      certs:wish.certs||[],
+      parker:wish.parker||null, suckling:wish.suckling||null, decanter:wish.decanter||null,
+      vinous:wish.vinous||null, bettane:wish.bettane||null, jancis:wish.jancis||null,
+      ws:wish.ws||null, bh:wish.bh||null, rvf:wish.rvf||null, anson:wish.anson||null, gilbert:wish.gilbert||null
     };
     if(wish.id && !wish.id.startsWith('tmp-')){
       await ref.doc(wish.id).set(data, {merge:true});
@@ -4033,9 +4037,11 @@ function renderWishes(){
     const pb=typeColors[w.type]||'#eee';
     const pt=w.type&&['Rouge','Pétillant'].includes(w.type)?'#fff':'#333';
     const shortType=(w.type||'Rouge').length>22?(w.type||'Rouge').split('/')[0].trim():(w.type||'Rouge');
+    const _wscores=buildScores(w);
+    const _wcerts=buildCertBadges(w.certs||[]);
     const imgHTML=w.img_url
-      ?`<div class="wimg-zone"><div class="wscores-col"></div><div class="wbottle-col"><img src="${w.img_url}" alt="${esc(w.name)}" loading="lazy"></div><div class="wcerts-col"></div></div>`
-      :`<div class="wimg-zone"><div class="wscores-col"></div><div class="wbottle-col"><div class="wimg-placeholder"><div class="wimg-placeholder-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div></div></div><div class="wcerts-col"></div></div>`;
+      ?`<div class="wimg-zone"><div class="wscores-col">${_wscores}</div><div class="wbottle-col"><img src="${w.img_url}" alt="${esc(w.name)}" loading="lazy"></div><div class="wcerts-col">${_wcerts}</div></div>`
+      :`<div class="wimg-zone"><div class="wscores-col">${_wscores}</div><div class="wbottle-col"><div class="wimg-placeholder"><div class="wimg-placeholder-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div></div></div><div class="wcerts-col">${_wcerts}</div></div>`;
     const targetsHTML=(w.targetPrice||w.targetQty)?`<div class="wprices" style="margin-top:8px;gap:20px">${w.targetPrice?`<div class="wprice-item"><div class="wprice-lbl">Prix cible</div><div class="wprice-val">${Number(w.targetPrice).toFixed(2)} €</div></div>`:''} ${w.targetQty?`<div class="wprice-item"><div class="wprice-lbl">Quantité</div><div class="wprice-val">${w.targetQty} × ${w.cont||'75cl'}</div></div>`:''}</div>`:'';
     return`<div class="wcard" style="--wtype-clr:${barC}${w.done?';opacity:.5':''}">
       <div style="display:flex;align-items:stretch;flex:1">
@@ -4100,6 +4106,11 @@ function editWish(id){
   setV('wf-target-price', w.targetPrice||'');
   setV('wf-target-qty', w.targetQty||'');
   const contSel=document.getElementById('wf-cont');if(contSel)contSel.value=w.cont||'75cl';
+  // Certifications
+  wishFormCerts=w.certs?[...w.certs]:[];
+  document.querySelectorAll('#wf-cert-checkboxes input[type=checkbox]').forEach(cb=>{cb.checked=wishFormCerts.includes(cb.value);});
+  // Scores
+  CRITICS.forEach(c=>{const el=document.getElementById('wf-'+c.k);if(el)el.value=w[c.k]!=null?w[c.k]:'';});
   // Changer le bouton pour "Enregistrer"
   const btn=document.getElementById('wish-manual-modal').querySelector('.profile-save-btn');
   if(btn){btn.textContent='Enregistrer les modifications';btn.onclick=()=>saveWishEdit(id);}
@@ -4118,6 +4129,9 @@ function saveWishEdit(id){
   w.targetPrice=parseFloat(document.getElementById('wf-target-price')?.value)||null;
   w.targetQty=parseInt(document.getElementById('wf-target-qty')?.value)||null;
   w.cont=document.getElementById('wf-cont')?.value||'75cl';
+  w.certs=[...wishFormCerts];
+  const scores=_collectWishScores();
+  CRITICS.forEach(c=>{w[c.k]=scores[c.k];});
   if(db&&currentUser) saveWishToDb(w);
   closeWishManualModal();
   renderWishes();
@@ -4129,6 +4143,12 @@ function saveWishEdit(id){
 
 
 let wishFormPhotoData = null;
+let wishFormCerts = [];
+
+function toggleWishCert(cb){
+  if(cb.checked){if(!wishFormCerts.includes(cb.value))wishFormCerts.push(cb.value);}
+  else{wishFormCerts=wishFormCerts.filter(c=>c!==cb.value);}
+}
 
 function handleWishFormPhoto(inp){
   const f=inp.files[0];if(!f)return;
@@ -4183,7 +4203,10 @@ function openWishMode(mode){
   closeAddWishModal();
   if(mode==='manual'){
     ['wf-name','wf-app','wf-reg','wf-country','wf-year','wf-note','wf-target-price','wf-target-qty'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
-    const wfc=document.getElementById('wf-cont');if(wfc)wfc.value='75cl';;
+    const wfc=document.getElementById('wf-cont');if(wfc)wfc.value='75cl';
+    wishFormCerts=[];
+    document.querySelectorAll('#wf-cert-checkboxes input[type=checkbox]').forEach(cb=>cb.checked=false);
+    CRITICS.forEach(c=>{const el=document.getElementById('wf-'+c.k);if(el)el.value='';});
     document.getElementById('wish-manual-modal').classList.add('open');
     return;
   }
@@ -4199,9 +4222,12 @@ function closeWishAIModal(){ document.getElementById('wish-ai-modal').classList.
 function closeWishManualModal(){
   document.getElementById('wish-manual-modal').classList.remove('open');
   wishFormPhotoData=null;
+  wishFormCerts=[];
   const inner=document.getElementById('wish-photo-inner');
   if(inner) inner.innerHTML=`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span style="font-size:12px;color:var(--ink4)">Cliquer pour ajouter une photo</span>`;
   const wnv=document.getElementById('wf-nv');if(wnv){wnv.checked=false;document.getElementById('wf-year').disabled=false;}
+  document.querySelectorAll('#wf-cert-checkboxes input[type=checkbox]').forEach(cb=>cb.checked=false);
+  CRITICS.forEach(c=>{const el=document.getElementById('wf-'+c.k);if(el)el.value='';});
 }
 
 function resetWishAI(){
@@ -4290,6 +4316,12 @@ function confirmWishAI(){
   closeWishAIModal();
 }
 
+function _collectWishScores(){
+  const s={};
+  CRITICS.forEach(c=>{const el=document.getElementById('wf-'+c.k);if(el&&el.value!=='')s[c.k]=parseFloat(el.value);else s[c.k]=null;});
+  return s;
+}
+
 function saveWishManual(){
   const name=document.getElementById('wf-name')?.value.trim();if(!name)return;
   const app=document.getElementById('wf-app')?.value.trim()||'';
@@ -4302,10 +4334,13 @@ function saveWishManual(){
   const targetPrice=parseFloat(document.getElementById('wf-target-price')?.value)||null;
   const targetQty=parseInt(document.getElementById('wf-target-qty')?.value)||null;
   const cont=document.getElementById('wf-cont')?.value||'75cl';
-  const wish={id:'tmp-'+Date.now(),name,app,reg,country,year,type,note,img_url,done:false,targetPrice,targetQty,cont};
+  const scores=_collectWishScores();
+  const certs=[...wishFormCerts];
+  const wish={id:'tmp-'+Date.now(),name,app,reg,country,year,type,note,img_url,done:false,targetPrice,targetQty,cont,certs,...scores};
   wishes.unshift(wish);
   if(db&&currentUser) saveWishToDb(wish);
   wishFormPhotoData=null;
+  wishFormCerts=[];
   closeWishManualModal();
   renderWishes();
 }
@@ -4697,6 +4732,34 @@ function removeToast(t){
         <div class="fg"><label>Format</label>
           <select id="wf-cont"><option value="">—</option><option value="18.7cl">18.7 cl (Piccolo)</option><option value="37.5cl">37.5 cl (Demi)</option><option value="50cl">50 cl</option><option value="75cl" selected>75 cl (Standard)</option><option value="1L">1 L</option><option value="1.5L">1.5 L (Magnum)</option><option value="3L">3 L (Double Magnum)</option><option value="4.5L">4.5 L (Jéroboam)</option><option value="6L">6 L (Impériale)</option><option value="9L">9 L (Salmanazar)</option><option value="12L">12 L (Balthazar)</option><option value="15L">15 L (Nabuchodonosor)</option></select>
         </div>
+      </div>
+    </div>
+    <div class="fsec"><div class="fsec-label">Notes critiques</div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px" id="wf-critics-grid">
+        <div class="critic-active-chip"><label>RP /100</label><input type="number" id="wf-parker" placeholder="—" min="0" max="100" step="1"></div>
+        <div class="critic-active-chip"><label>JS /100</label><input type="number" id="wf-suckling" placeholder="—" min="0" max="100" step="1"></div>
+        <div class="critic-active-chip"><label>D /20</label><input type="number" id="wf-decanter" placeholder="—" min="0" max="20" step="0.5"></div>
+        <div class="critic-active-chip"><label>V /100</label><input type="number" id="wf-vinous" placeholder="—" min="0" max="100" step="1"></div>
+        <div class="critic-active-chip"><label>B /20</label><input type="number" id="wf-bettane" placeholder="—" min="0" max="20" step="0.5"></div>
+        <div class="critic-active-chip"><label>JR /20</label><input type="number" id="wf-jancis" placeholder="—" min="0" max="20" step="0.5"></div>
+        <div class="critic-active-chip"><label>WS /100</label><input type="number" id="wf-ws" placeholder="—" min="0" max="100" step="1"></div>
+        <div class="critic-active-chip"><label>BH /100</label><input type="number" id="wf-bh" placeholder="—" min="0" max="100" step="1"></div>
+        <div class="critic-active-chip"><label>RVF /20</label><input type="number" id="wf-rvf" placeholder="—" min="0" max="20" step="0.5"></div>
+        <div class="critic-active-chip"><label>JA /100</label><input type="number" id="wf-anson" placeholder="—" min="0" max="100" step="1"></div>
+        <div class="critic-active-chip"><label>G&amp;G /20</label><input type="number" id="wf-gilbert" placeholder="—" min="0" max="20" step="0.5"></div>
+      </div>
+    </div>
+    <div class="fsec"><div class="fsec-label">Viticulture &amp; certifications</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:6px 0" id="wf-cert-checkboxes">
+        <label style="display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--ink3);cursor:pointer"><input type="checkbox" value="bio" onchange="toggleWishCert(this)"> AB / Ecocert</label>
+        <label style="display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--ink3);cursor:pointer"><input type="checkbox" value="demeter" onchange="toggleWishCert(this)"> Demeter</label>
+        <label style="display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--ink3);cursor:pointer"><input type="checkbox" value="biody" onchange="toggleWishCert(this)"> Biodyvin</label>
+        <label style="display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--ink3);cursor:pointer"><input type="checkbox" value="hve" onchange="toggleWishCert(this)"> HVE</label>
+        <label style="display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--ink3);cursor:pointer"><input type="checkbox" value="nature" onchange="toggleWishCert(this)"> Vin Méthode Nature</label>
+        <label style="display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--ink3);cursor:pointer"><input type="checkbox" value="raisonné" onchange="toggleWishCert(this)"> Agriculture raisonnée</label>
+        <label style="display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--ink3);cursor:pointer"><input type="checkbox" value="vegan" onchange="toggleWishCert(this)"> Vegan</label>
+        <label style="display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--ink3);cursor:pointer"><input type="checkbox" value="terra" onchange="toggleWishCert(this)"> Terra Vitis</label>
+        <label style="display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--ink3);cursor:pointer"><input type="checkbox" value="lutte" onchange="toggleWishCert(this)"> Lutte intégrée</label>
       </div>
     </div>
     <div class="fsec"><div class="fsec-label">Note personnelle</div>
