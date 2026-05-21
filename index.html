@@ -287,6 +287,16 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
 .cave-wine-row[draggable="true"]{cursor:grab}
 .cave-wine-row[draggable="true"]:active{cursor:grabbing}
 .cave-wine-row.dragging{opacity:.25;background:var(--ink6);outline:2px dashed var(--ink4);outline-offset:-2px;border-radius:4px}
+.cave-wine-action{flex-shrink:0;width:28px;height:28px;display:flex;align-items:center;justify-content:center;border:1px solid var(--ink5);border-radius:6px;background:none;cursor:pointer;color:var(--ink4);transition:all .15s}
+.cave-wine-action:hover{border-color:var(--ink3);color:var(--ink)}
+/* DRAWER DÉTAIL VIN */
+#wine-detail-backdrop{display:none;position:fixed;inset:0;background:rgba(28,10,13,.3);z-index:var(--z-modal)}
+#wine-detail-backdrop.open{display:block}
+#wine-detail-modal{position:fixed;top:0;right:0;width:100%;max-width:420px;height:100vh;background:var(--surface);border-left:1.5px solid var(--ink5);z-index:var(--z-dialog);overflow-y:auto;transform:translateX(100%);transition:transform .26s cubic-bezier(.4,0,.2,1);box-shadow:-8px 0 40px rgba(28,10,13,.18)}
+#wine-detail-modal.open{transform:translateX(0)}
+.wdm-close{position:absolute;top:14px;right:14px;width:28px;height:28px;border-radius:50%;border:1px solid var(--ink5);background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--ink4);font-size:13px;transition:all .2s;flex-shrink:0}
+.wdm-close:hover{background:var(--ink6);color:var(--ink)}
+.wdm-section-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--ink4);margin-bottom:7px}
 #cave-form-backdrop{display:none;position:fixed;inset:0;background:rgba(28,10,13,.45);z-index:var(--z-modal-bg)}
 #cave-form-backdrop.open{display:block}
 #cave-form-modal{display:none;position:fixed;top:clamp(70px,9vw,90px);left:50%;transform:translateX(-50%);z-index:var(--z-modal);max-width:520px;width:calc(100% - 40px);max-height:calc(100vh - clamp(70px,9vw,90px) - 20px);overflow-y:auto;background:var(--surface);border:1.5px solid var(--ink5);border-radius:var(--r2);padding:22px;box-shadow:0 8px 40px rgba(28,10,13,.25)}
@@ -2615,6 +2625,61 @@ function openCaveForm(id){
   document.getElementById('cave-form-backdrop').classList.add('open');
   document.getElementById('cave-form-modal').classList.add('open');
 }
+function openWineDetailModal(id){
+  const w=wines.find(x=>x.id===id);if(!w)return;
+  const cave=caves.find(c=>c.id===w.caveId);
+  const pb=tc(w.type,'pill'),pt_=tc(w.type,'pt');
+  const bv=w.buy||0,cv=w.cur||w.buy||0,delta=cv-bv,dt=Math.round(delta*w.qty),pct=bv>0?Math.round(delta/bv*100):0;
+  const sign=delta>0?'+':'';
+  const pC=delta>0?'var(--clr-pos)':delta<0?'var(--ruby)':'var(--ink3)';
+  const TYPE_CLR={Rouge:'#8b1a2a','Blanc sec':'#c5a84a','Blanc moelleux':'#d4a820','Blanc liquoreux':'#d4a820','Rosé':'#e87070','Pétillant':'#7ab8d0','Macération':'#c08060'};
+  const bClr=TYPE_CLR[w.type]||'#8b1a2a';
+  const imgHTML=w.img_url
+    ?`<img style="width:56px;height:96px;object-fit:contain;flex-shrink:0;border-radius:4px" src="${w.img_url}" alt="">`
+    :`<div style="width:56px;height:96px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:var(--ink6);border-radius:6px"><svg width="14" height="24" viewBox="0 0 10 18" fill="none" stroke="${bClr}" stroke-width="1.5" stroke-linecap="round"><path d="M3 17V9L1 5V2.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5V5L7 9v8"/><path d="M1 7h8"/></svg></div>`;
+  const scoresHTML=buildScores(w);
+  const certsHTML=buildCertBadges(w.certs||[]);
+  let pricesHTML='';
+  if(bv>0)pricesHTML+=`<div style="display:flex;justify-content:space-between;font-size:13px;padding:4px 0;border-bottom:1px solid var(--ink6)"><span style="color:var(--ink4)">Prix achat</span><span style="font-weight:600">${bv.toFixed(2)} €</span></div>`;
+  if(cv>0&&cv!==bv)pricesHTML+=`<div style="display:flex;justify-content:space-between;font-size:13px;padding:4px 0;border-bottom:1px solid var(--ink6)"><span style="color:var(--ink4)">Prix actuel</span><span style="font-weight:600;color:${pC}">${cv.toFixed(2)} €</span></div>`;
+  if(bv>0&&cv>0&&cv!==bv)pricesHTML+=`<div style="display:flex;justify-content:space-between;font-size:13px;padding:4px 0"><span style="color:var(--ink4)">Plus-value</span><span style="font-weight:600;color:${pC}">${sign}${dt} € (${sign}${pct}%)</span></div>`;
+  document.getElementById('wdm-content').innerHTML=`
+    <button class="wdm-close" onclick="closeWineDetailModal()">✕</button>
+    <div style="display:flex;gap:14px;align-items:flex-start;padding:22px 50px 16px 20px;border-bottom:1px solid var(--ink6)">
+      ${imgHTML}
+      <div style="flex:1;min-width:0">
+        <div style="font-family:var(--font-display);font-size:20px;font-weight:600;color:var(--ink);line-height:1.2">${esc(w.name)}</div>
+        <div style="font-size:13px;color:var(--ink4);margin-top:3px">${w.year||'NV'}</div>
+        <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:5px">
+          <span class="tpill" style="background:${pb};color:${pt_}">${esc(w.type)}</span>
+          ${w.cont?`<span style="font-size:11px;color:var(--ink4);background:var(--ink6);padding:2px 8px;border-radius:10px">${esc(w.cont)}</span>`:''}
+          ${w.ap?`<span style="font-size:11px;color:var(--clr-warn);background:var(--clr-warn-bg);padding:2px 8px;border-radius:10px">⏳ ${esc(w.ap)}</span>`:''}
+        </div>
+        ${[w.country,w.reg,w.app].filter(Boolean).length?`<div style="font-size:12px;color:var(--ink3);margin-top:7px">${[w.country,w.reg,w.app].filter(Boolean).map(s=>esc(s)).join(' · ')}</div>`:''}
+      </div>
+    </div>
+    <div style="padding:16px 20px;display:flex;flex-direction:column;gap:18px">
+      <div style="display:flex;gap:28px">
+        <div><div class="wdm-section-label">Quantité</div><div style="font-family:var(--font-display);font-size:26px;font-weight:600;color:var(--ink)">${w.qty}</div></div>
+        ${cave?`<div><div class="wdm-section-label">Emplacement</div><div style="font-size:13px;color:var(--ink)">${esc(cave.name)}${w.clayette?`<div style="font-size:11px;color:var(--ink4);margin-top:2px">Clayette ${esc(w.clayette)}</div>`:''}</div></div>`:''}
+      </div>
+      ${pricesHTML?`<div><div class="wdm-section-label">Prix</div>${pricesHTML}</div>`:''}
+      ${scoresHTML?`<div><div class="wdm-section-label">Notes critiques</div><div style="display:flex;flex-wrap:wrap;gap:5px">${scoresHTML}</div></div>`:''}
+      ${certsHTML?`<div><div class="wdm-section-label">Certifications</div><div style="display:flex;flex-wrap:wrap;gap:5px">${certsHTML}</div></div>`:''}
+      ${w.notes?`<div><div class="wdm-section-label">Notes personnelles</div><div style="font-size:13px;color:var(--ink3);line-height:1.6">${esc(w.notes)}</div></div>`:''}
+    </div>
+    <div style="padding:14px 20px 24px;border-top:1px solid var(--ink6);display:flex;gap:8px;flex-wrap:wrap;position:sticky;bottom:0;background:var(--surface)">
+      <button class="editbtn" onclick="editWine('${w.id}');closeWineDetailModal()"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Modifier</button>
+      <button class="editbtn wine-drink" onclick="openDrinkModal('${w.id}');closeWineDetailModal()"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 22h8M12 11v11M5 2h14l-3 9a5 5 0 0 1-8 0Z"/></svg> Boire</button>
+      <button class="editbtn wine-sell" onclick="openSellModal('${w.id}');closeWineDetailModal()"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 1 0 0 7h5a3.5 3.5 0 1 1 0 7H6"/></svg> Vendre</button>
+    </div>`;
+  document.getElementById('wine-detail-backdrop').classList.add('open');
+  document.getElementById('wine-detail-modal').classList.add('open');
+}
+function closeWineDetailModal(){
+  document.getElementById('wine-detail-backdrop').classList.remove('open');
+  document.getElementById('wine-detail-modal').classList.remove('open');
+}
 function closeCaveForm(){
   document.getElementById('cave-form-backdrop').classList.remove('open');
   document.getElementById('cave-form-modal').classList.remove('open');
@@ -2707,6 +2772,7 @@ function closeCaveDetail(){
   document.getElementById('cave-detail').classList.remove('visible');
 }
 let _dragScrollRaf=null;
+let _wasDragging=false;
 function _dragAutoScroll(e){
   const zone=80,speed=12;
   const y=e.clientY,h=window.innerHeight;
@@ -2726,6 +2792,7 @@ document.addEventListener('dragend',()=>cancelAnimationFrame(_dragScrollRaf));
 document.addEventListener('drop',()=>cancelAnimationFrame(_dragScrollRaf));
 
 function caveDragStart(e,wineId){
+  _wasDragging=true;
   e.dataTransfer.setData('text/plain',wineId);
   e.dataTransfer.effectAllowed='move';
   const w=wines.find(x=>x.id===wineId);
@@ -2741,6 +2808,7 @@ function caveDragStart(e,wineId){
 }
 function caveDragEnd(e){
   e.currentTarget.classList.remove('dragging');
+  setTimeout(()=>{_wasDragging=false;},50);
 }
 function caveDragOver(e){
   e.preventDefault();
@@ -2807,7 +2875,7 @@ function _caveWineRowHTML(w){
   const clr=TYPE_CLR[w.type]||'#8b1a2a';
   const imgHTML=w.img_url?`<img class="cave-wine-thumb" src="${w.img_url}" alt="">`:
     `<div class="cave-wine-thumb-placeholder"><svg width="10" height="18" viewBox="0 0 10 18" fill="none" stroke="${clr}" stroke-width="1.5" stroke-linecap="round"><path d="M3 17V9L1 5V2.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5V5L7 9v8"/><path d="M1 7h8"/></svg></div>`;
-  return`<div class="cave-wine-row" draggable="true" ondragstart="caveDragStart(event,'${w.id}')" ondragend="caveDragEnd(event)">${imgHTML}<div class="cave-wine-info"><div class="cave-wine-name">${esc(w.name)}${w.year?` <span style="font-weight:400;color:var(--ink4)">${w.year}</span>`:''}</div><div class="cave-wine-sub">${w.type?esc(w.type):''}${w.reg?` · ${esc(w.reg)}`:''}</div></div><div class="cave-wine-qty">×${w.qty||1}</div><button class="cave-wine-edit" onclick="editWine('${w.id}')" title="Modifier"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></div>`;
+  return`<div class="cave-wine-row" draggable="true" ondragstart="caveDragStart(event,'${w.id}')" ondragend="caveDragEnd(event)" onclick="if(!_wasDragging)openWineDetailModal('${w.id}')" style="cursor:pointer">${imgHTML}<div class="cave-wine-info"><div class="cave-wine-name">${esc(w.name)}${w.year?` <span style="font-weight:400;color:var(--ink4)">${w.year}</span>`:''}</div><div class="cave-wine-sub">${w.type?esc(w.type):''}${w.reg?` · ${esc(w.reg)}`:''}</div></div><div class="cave-wine-qty">×${w.qty||1}</div><button class="cave-wine-action" onclick="openDrinkModal('${w.id}');event.stopPropagation()" title="Boire"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 22h8M12 11v11M5 2h14l-3 9a5 5 0 0 1-8 0Z"/></svg></button><button class="cave-wine-action" onclick="openSellModal('${w.id}');event.stopPropagation()" title="Vendre"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 1 0 0 7h5a3.5 3.5 0 1 1 0 7H6"/></svg></button><button class="cave-wine-edit" onclick="editWine('${w.id}');event.stopPropagation()" title="Modifier"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></div>`;
 }
 
 function setSidebarTypeEl(el){setSidebarType(el,el.dataset.type);}
@@ -4811,6 +4879,9 @@ function removeToast(t){
     <button onclick="closeCaveForm()" style="height:40px;padding:0 18px;background:var(--surface);border:1.5px solid var(--ink5);border-radius:var(--r);font-family:var(--font-body);font-size:13px;color:var(--ink3);cursor:pointer">Annuler</button>
   </div>
 </div>
+<div id="wine-detail-backdrop" onclick="closeWineDetailModal()"></div>
+<div id="wine-detail-modal"><div id="wdm-content"></div></div>
+
 <div class="panel" id="add-form">
     <div class="panel-title">Nouvelle bouteille <span class="badge-ia" id="ai-badge-form" style="display:none">⚡ Pré-rempli IA</span></div>
     <div class="fsec"><div class="fsec-label">Photo de la bouteille</div>
