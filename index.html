@@ -275,6 +275,15 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
 .cave-wine-edit:hover{border-color:var(--ink3);color:var(--ink)}
 .clayette-group.drag-over{background:rgba(138,26,42,.08);outline:2px dashed var(--ruby);outline-offset:-3px}
 .clayette-group.drag-over .clayette-heading{background:rgba(138,26,42,.12);color:var(--ruby)}
+/* VUE CAVE (mode 3e bouton) */
+.wlist.cave-mode{display:flex;flex-direction:column;gap:20px}
+.cave-section{border:1.5px solid var(--ink5);border-radius:var(--r2);overflow:hidden}
+.cave-section-header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;background:var(--ink6);border-bottom:1px solid var(--ink5)}
+.cave-section-name{font-family:var(--font-display);font-size:17px;font-weight:600;color:var(--ink)}
+.cave-section-meta{font-size:11px;color:var(--ink4)}
+.cave-section-actions{display:flex;gap:6px;flex-shrink:0}
+.cave-section-gauge{padding:8px 14px 10px;border-bottom:1px solid var(--ink6);background:var(--surface)}
+.cave-section-empty{padding:24px 16px;text-align:center;font-size:12px;color:var(--ink4);font-style:italic}
 .cave-wine-row[draggable="true"]{cursor:grab}
 .cave-wine-row[draggable="true"]:active{cursor:grabbing}
 .cave-wine-row.dragging{opacity:.25;background:var(--ink6);outline:2px dashed var(--ink4);outline-offset:-2px;border-radius:4px}
@@ -1047,7 +1056,7 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--ruby);outline-offse
 
 <nav class="nav" aria-label="Navigation principale" role="tablist">
   <button class="ntab active" role="tab" id="ntab-cave" aria-selected="true" aria-controls="tab-cave" onclick="showTab('cave')">Mes vins</button>
-  <button class="ntab" role="tab" id="ntab-caves" aria-selected="false" aria-controls="tab-caves" onclick="showTab('caves')">Cave</button>
+  <button class="ntab" role="tab" id="ntab-caves" aria-selected="false" aria-controls="tab-caves" onclick="showTab('caves')">Gérer mes caves</button>
   <button class="ntab" role="tab" id="ntab-stats" aria-selected="false" aria-controls="tab-stats" onclick="showTab('stats')">Statistiques</button>
   <button class="ntab" role="tab" id="ntab-degustation" aria-selected="false" aria-controls="tab-degustation" onclick="showTab('degustation')">Dégustations</button>
   <button class="ntab" role="tab" id="ntab-ventes" aria-selected="false" aria-controls="tab-ventes" onclick="showTab('ventes')">Ventes</button>
@@ -1067,6 +1076,9 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--ruby);outline-offse
       </button>
       <button class="vtbtn" id="vt-list" onclick="setView('list')" aria-label="Vue liste" title="Vue liste">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+      </button>
+      <button class="vtbtn" id="vt-cave" onclick="setView('cave')" aria-label="Vue cave" title="Vue par cave">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="3" width="20" height="4" rx="1"/><rect x="2" y="10" width="20" height="4" rx="1"/><rect x="2" y="17" width="20" height="4" rx="1"/></svg>
       </button>
     </div>
     <div class="search-wrap">
@@ -2475,7 +2487,8 @@ window.addEventListener('load',()=>{
   const k='';
   if(k)document.getElementById('api-key-input').value=k;
   if(localStorage.getItem('privateMode')==='1')document.body.classList.add('private-mode');
-  if(localStorage.getItem('wineView')==='list')setView('list');
+  const sv=localStorage.getItem('wineView');
+  if(sv==='list'||sv==='cave')setView(sv);
 });
 
 function togglePrivacy(){
@@ -2497,10 +2510,16 @@ function openIdealWine(){
   window.open('https://www.idealwine.com/fr/recherche-vins-en-vente.jsp?q='+q,'_blank');
 }
 function setView(v){
+  const prev=localStorage.getItem('wineView')||'grid';
   document.getElementById('wlist').classList.toggle('list-mode',v==='list');
+  document.getElementById('wlist').classList.toggle('cave-mode',v==='cave');
   document.getElementById('vt-grid').classList.toggle('active',v==='grid');
   document.getElementById('vt-list').classList.toggle('active',v==='list');
+  document.getElementById('vt-cave').classList.toggle('active',v==='cave');
+  const sortEl=document.getElementById('fsort');
+  if(sortEl)sortEl.style.display=v==='cave'?'none':'';
   localStorage.setItem('wineView',v);
+  if(v==='cave'||prev==='cave')renderWines();
 }
 
 function showTab(t){
@@ -2727,11 +2746,13 @@ function caveDrop(e,caveId,clavetteKey){
   const wineId=e.dataTransfer.getData('text/plain');
   const w=wines.find(x=>x.id===wineId);
   if(!w)return;
-  if(w.clayette===clavetteKey&&w.caveId===caveId)return;
+  const newCaveId=caveId||null;
+  if(w.clayette===clavetteKey&&w.caveId===newCaveId)return;
   w.clayette=clavetteKey;
-  w.caveId=caveId;
+  w.caveId=newCaveId;
   if(db)saveWineToDb(w);
-  renderCaveDetail(caveId);
+  if(_currentCaveDetailId)renderCaveDetail(_currentCaveDetailId);
+  else renderWines();
 }
 
 function renderCaveDetail(caveId){
@@ -3625,6 +3646,7 @@ function buildScores(w){
 }
 
 function renderWines(){
+  if(localStorage.getItem('wineView')==='cave'){renderCaveView();return;}
   const s=document.getElementById('sinp').value.toLowerCase();
   const so=document.getElementById('fsort').value;
   let list=wines.filter(w=>{
@@ -3730,6 +3752,55 @@ function renderWines(){
     if(list.length<total)countEl.textContent=list.length+' vin'+(list.length>1?'s':'')+' affiché'+(list.length>1?'s':'')+' sur '+total;
     else countEl.textContent='';
   }
+}
+
+function renderCaveView(){
+  const el=document.getElementById('wlist');
+  const s=document.getElementById('sinp').value.toLowerCase();
+  const TYPE_CLR={Rouge:'#8b1a2a',Blanc:'#c5a84a','Blanc sec':'#c5a84a','Blanc moelleux':'#d4a820','Blanc liquoreux':'#d4a820','Rosé':'#e87070','Pétillant':'#7ab8d0','Macération':'#c08060'};
+  function buildSection(cave,wineList){
+    const n=cave&&cave.clayettes?parseInt(cave.clayettes):0;
+    const groups={};const unassigned=[];
+    wineList.forEach(w=>{
+      if(w.clayette){if(!groups[w.clayette])groups[w.clayette]=[];groups[w.clayette].push(w);}
+      else unassigned.push(w);
+    });
+    const knownKeys=n>0?Array.from({length:n},(_,i)=>String(i+1)):Object.keys(groups).sort();
+    const caveId=cave?cave.id:'';
+    let sectionsHTML='';
+    knownKeys.forEach(k=>{
+      const ws=groups[k]||[];
+      const qty=ws.reduce((s,w)=>s+(w.qty||0),0);
+      sectionsHTML+=`<div class="clayette-group" ondragover="caveDragOver(event)" ondragleave="caveDragLeave(event)" ondrop="caveDrop(event,'${caveId}','${k}')"><div class="clayette-heading"><div class="clayette-heading-name"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="4" rx="1"/><rect x="2" y="10" width="20" height="4" rx="1"/><rect x="2" y="17" width="20" height="4" rx="1"/></svg>Clayette ${k}</div><div class="clayette-heading-count">${ws.length===0?'vide':`${ws.length} référence${ws.length>1?'s':''} · ${qty} bouteille${qty>1?'s':''}`}</div></div>${ws.length===0?'<div class="clayette-empty">Aucun vin sur cette clayette</div>':ws.map(w=>_caveWineRowHTML(w)).join('')}</div>`;
+    });
+    Object.keys(groups).filter(k=>!knownKeys.includes(k)).forEach(k=>{
+      const ws=groups[k];const qty=ws.reduce((s,w)=>s+(w.qty||0),0);
+      sectionsHTML+=`<div class="clayette-group" ondragover="caveDragOver(event)" ondragleave="caveDragLeave(event)" ondrop="caveDrop(event,'${caveId}','${k}')"><div class="clayette-heading"><div class="clayette-heading-name">${esc(k)}</div><div class="clayette-heading-count">${ws.length} référence${ws.length>1?'s':''} · ${qty} bouteille${qty>1?'s':''}</div></div>${ws.map(w=>_caveWineRowHTML(w)).join('')}</div>`;
+    });
+    if(unassigned.length){
+      const qty=unassigned.reduce((s,w)=>s+(w.qty||0),0);
+      sectionsHTML+=`<div class="clayette-group" ondragover="caveDragOver(event)" ondragleave="caveDragLeave(event)" ondrop="caveDrop(event,'${caveId}','')"><div class="clayette-heading"><div class="clayette-heading-name" style="color:var(--ink4)">Non assigné</div><div class="clayette-heading-count">${unassigned.length} référence${unassigned.length>1?'s':''} · ${qty} bouteille${qty>1?'s':''}</div></div>${unassigned.map(w=>_caveWineRowHTML(w)).join('')}</div>`;
+    }
+    return sectionsHTML||`<div class="cave-section-empty">Aucun vin dans cette cave${s?' pour cette recherche':''}</div>`;
+  }
+  let html='';
+  caves.forEach(cave=>{
+    const wineList=wines.filter(w=>w.caveId===cave.id&&(!s||(w.name+w.reg+(w.app||'')).toLowerCase().includes(s)));
+    const occupied=wines.filter(w=>w.caveId===cave.id).reduce((s,w)=>s+(w.qty||0),0);
+    const cap=cave.capacity||0;
+    const pct=cap>0?Math.min(100,Math.round(occupied/cap*100)):0;
+    const fillColor=pct<70?'#4a9a4a':pct<90?'#c07820':'#8b1a2a';
+    const gaugeHTML=cap>0?`<div class="cave-section-gauge"><div class="cave-gauge-track"><div class="cave-gauge-fill" style="transform:scaleX(${(pct/100).toFixed(3)});background:${fillColor}"></div></div><div class="cave-gauge-label"><span>${occupied} / ${cap} bouteilles · ${pct}% occupé</span><span>${cap-occupied} place${(cap-occupied)!==1?'s':''} libre${(cap-occupied)!==1?'s':''}</span></div></div>`:'';
+    html+=`<div class="cave-section"><div class="cave-section-header"><div><div class="cave-section-name">${esc(cave.name)}</div><div class="cave-section-meta">${cave.clayettes?`${cave.clayettes} clayette${parseInt(cave.clayettes)>1?'s':''}`:''}</div></div><div class="cave-section-actions"><button class="cave-btn cave-btn-edit" onclick="editCave('${cave.id}')"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Modifier</button></div></div>${gaugeHTML}${buildSection(cave,wineList)}</div>`;
+  });
+  const noCaveWines=wines.filter(w=>!w.caveId&&(!s||(w.name+w.reg+(w.app||'')).toLowerCase().includes(s)));
+  if(noCaveWines.length){
+    html+=`<div class="cave-section"><div class="cave-section-header"><div class="cave-section-name" style="color:var(--ink4)">Sans cave</div></div>${buildSection(null,noCaveWines)}</div>`;
+  }
+  if(!html){
+    html=wines.length?'<div style="padding:48px 20px;text-align:center;color:var(--ink4);font-size:13px">Aucun vin ne correspond à cette recherche</div>':'<div class="empty" style="min-height:300px"><svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M8 22h8M12 11v11"/><path d="M5 2h14l-3 9a5 5 0 0 1-8 0Z"/></svg><div class="empty-title">Votre cave est vide</div><div class="empty-sub">Commencez par ajouter votre première bouteille.</div><button class="empty-cta" onclick="openAddChoiceModal()">Ajouter un vin</button></div>';
+  }
+  el.innerHTML=html;
 }
 
 function updateStats(){
