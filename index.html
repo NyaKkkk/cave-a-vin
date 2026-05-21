@@ -1190,7 +1190,7 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--ruby);outline-offse
     </div>
   </div>
   <div id="deg-list" style="display:flex;flex-direction:column;gap:10px"></div>
-  <div id="deg-empty" style="width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 20px;color:var(--ink4);text-align:center">
+  <div id="deg-empty" style="width:100%;display:none;flex-direction:column;align-items:center;justify-content:center;padding:80px 20px;color:var(--ink4);text-align:center">
     <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" style="opacity:.3;margin-bottom:14px"><path d="M8 22h8M12 11v11M5 2h14l-3 9a5 5 0 0 1-8 0Z"/></svg>
     <div style="font-size:15px;font-weight:600;color:var(--ink3);margin-bottom:6px">Aucune dégustation</div>
     <div style="font-size:13px;text-align:center">Cliquez sur <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:middle"><path d="M8 22h8M12 11v11M5 2h14l-3 9a5 5 0 0 1-8 0Z"/></svg> Boire sur une carte de vin, ou utilisez le bouton <strong>+ Ajouter une dégustation</strong> pour noter un vin dégusté en dehors de votre cave.</div>
@@ -1209,7 +1209,7 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--ruby);outline-offse
     <div id="ventes-stats" style="display:flex;gap:16px;margin-top:8px"></div>
   </div>
   <div id="ventes-list" style="display:flex;flex-direction:column;gap:10px"></div>
-  <div id="ventes-empty" style="width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 20px;color:var(--ink4);text-align:center">
+  <div id="ventes-empty" style="width:100%;display:none;flex-direction:column;align-items:center;justify-content:center;padding:80px 20px;color:var(--ink4);text-align:center">
     <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" style="opacity:.3;margin-bottom:14px"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 1 0 0 7h5a3.5 3.5 0 1 1 0 7H6"/></svg>
     <div style="font-size:15px;font-weight:600;color:var(--ink3);margin-bottom:6px">Aucune vente</div>
     <div style="font-size:13px;text-align:center">Cliquez sur <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:middle"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 1 0 0 7h5a3.5 3.5 0 1 1 0 7H6"/></svg> Vendre sur une carte de vin</div>
@@ -1437,9 +1437,9 @@ async function doLogout(){
       db.settings({ experimentalAutoDetectLongPolling: true, merge: true });
 
       auth.onAuthStateChanged(async(user)=>{
+        document.getElementById('loading-screen').style.display='none';
         if(user){
           currentUser = user;
-          // Préparer le bon onglet derrière le loading screen
           const _t=localStorage.getItem('activeTab')||'cave';
           ['cave','caves','stats','degustation','ventes','wish'].forEach((n,i)=>{
             const btn=document.querySelectorAll('.ntab')[i];
@@ -1447,8 +1447,10 @@ async function doLogout(){
             const panel=document.getElementById('tab-'+n);
             if(panel)panel.style.display=n===_t?'':'none';
           });
-          document.querySelector('.app').style.display='';
-          document.getElementById('user-info').style.display='flex';
+          _showScreen('app');
+          // Spinners dans toutes les zones de contenu pendant le chargement
+          const _spin='<div class="tab-loading-dots"><span></span><span></span><span></span></div>';
+          ['wlist','caves-list','deg-list','ventes-list','wishlist'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=_spin;});
           for(let i=0; i<4; i++){
             try{
               await db.enableNetwork().catch(()=>{});
@@ -1461,12 +1463,9 @@ async function doLogout(){
               else await new Promise(r=>setTimeout(r, 1000*(i+1)));
             }
           }
-          // Cacher le loading screen une fois les données prêtes
-          document.getElementById('loading-screen').style.display='none';
         } else {
           currentUser = null;
           wines=[]; wishes=[];
-          document.getElementById('loading-screen').style.display='none';
           _showScreen('auth');
         }
       });
@@ -1871,7 +1870,7 @@ function renderDegustations(){
     return;
   }
   if(!degustations.length){
-    list.innerHTML=''; empty.style.display=''; count.textContent='';
+    list.innerHTML=''; empty.style.display='flex'; count.textContent='';
     return;
   }
   empty.style.display='none';
@@ -2095,7 +2094,7 @@ function renderVentes(){
     return;
   }
   if(!ventes.length){
-    list.innerHTML=''; empty.style.display=''; stats.innerHTML='';
+    list.innerHTML=''; empty.style.display='flex'; stats.innerHTML='';
     return;
   }
   empty.style.display='none';
