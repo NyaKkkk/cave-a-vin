@@ -273,9 +273,11 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
 .cave-wine-qty{flex-shrink:0;font-size:12px;font-weight:600;color:var(--ink3);background:var(--ink6);border-radius:20px;padding:2px 9px;white-space:nowrap}
 .cave-wine-edit{flex-shrink:0;width:28px;height:28px;display:flex;align-items:center;justify-content:center;border:1px solid var(--ink5);border-radius:6px;background:none;cursor:pointer;color:var(--ink4);transition:all .15s}
 .cave-wine-edit:hover{border-color:var(--ink3);color:var(--ink)}
-.clayette-group.drag-over{background:rgba(138,26,42,.06);outline:2px dashed var(--ruby);outline-offset:-2px}
+.clayette-group.drag-over{background:rgba(138,26,42,.08);outline:2px dashed var(--ruby);outline-offset:-3px}
+.clayette-group.drag-over .clayette-heading{background:rgba(138,26,42,.12);color:var(--ruby)}
 .cave-wine-row[draggable="true"]{cursor:grab}
-.cave-wine-row.dragging{opacity:.35}
+.cave-wine-row[draggable="true"]:active{cursor:grabbing}
+.cave-wine-row.dragging{opacity:.25;background:var(--ink6);outline:2px dashed var(--ink4);outline-offset:-2px;border-radius:4px}
 #cave-form-backdrop{display:none;position:fixed;inset:0;background:rgba(28,10,13,.45);z-index:var(--z-modal-bg)}
 #cave-form-backdrop.open{display:block}
 #cave-form-modal{display:none;position:fixed;top:clamp(70px,9vw,90px);left:50%;transform:translateX(-50%);z-index:var(--z-modal);max-width:520px;width:calc(100% - 40px);max-height:calc(100vh - clamp(70px,9vw,90px) - 20px);overflow-y:auto;background:var(--surface);border:1.5px solid var(--ink5);border-radius:var(--r2);padding:22px;box-shadow:0 8px 40px rgba(28,10,13,.25)}
@@ -2680,6 +2682,15 @@ function closeCaveDetail(){
 function caveDragStart(e,wineId){
   e.dataTransfer.setData('text/plain',wineId);
   e.dataTransfer.effectAllowed='move';
+  const w=wines.find(x=>x.id===wineId);
+  if(w){
+    const ghost=document.createElement('div');
+    ghost.style.cssText='position:fixed;top:-999px;left:-999px;background:var(--surface);border:1.5px solid var(--ruby);border-radius:8px;padding:8px 14px;font-family:var(--font-body);font-size:13px;font-weight:600;color:var(--ink);white-space:nowrap;box-shadow:0 4px 16px rgba(138,26,42,.25);display:flex;align-items:center;gap:8px;pointer-events:none';
+    ghost.innerHTML=`<svg width="10" height="18" viewBox="0 0 10 18" fill="none" stroke="${w.type==='Blanc sec'||w.type==='Blanc moelleux'||w.type==='Blanc liquoreux'?'#c5a84a':w.type==='Rosé'?'#e87070':'#8b1a2a'}" stroke-width="1.5" stroke-linecap="round"><path d="M3 17V9L1 5V2.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5V5L7 9v8"/><path d="M1 7h8"/></svg>${esc(w.name)}${w.year?` <span style="font-weight:400;color:var(--ink4);font-size:11px">${w.year}</span>`:''}`;
+    document.body.appendChild(ghost);
+    e.dataTransfer.setDragImage(ghost,ghost.offsetWidth/2,24);
+    setTimeout(()=>ghost.remove(),0);
+  }
   e.currentTarget.classList.add('dragging');
 }
 function caveDragEnd(e){
