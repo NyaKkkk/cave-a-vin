@@ -273,6 +273,9 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
 .cave-wine-qty{flex-shrink:0;font-size:12px;font-weight:600;color:var(--ink3);background:var(--ink6);border-radius:20px;padding:2px 9px;white-space:nowrap}
 .cave-wine-edit{flex-shrink:0;width:28px;height:28px;display:flex;align-items:center;justify-content:center;border:1px solid var(--ink5);border-radius:6px;background:none;cursor:pointer;color:var(--ink4);transition:all .15s}
 .cave-wine-edit:hover{border-color:var(--ink3);color:var(--ink)}
+.clayette-group.drag-over{background:rgba(138,26,42,.06);outline:2px dashed var(--ruby);outline-offset:-2px}
+.cave-wine-row[draggable="true"]{cursor:grab}
+.cave-wine-row.dragging{opacity:.35}
 #cave-form-backdrop{display:none;position:fixed;inset:0;background:rgba(28,10,13,.45);z-index:var(--z-modal-bg)}
 #cave-form-backdrop.open{display:block}
 #cave-form-modal{display:none;position:fixed;top:clamp(70px,9vw,90px);left:50%;transform:translateX(-50%);z-index:var(--z-modal);max-width:520px;width:calc(100% - 40px);max-height:calc(100vh - clamp(70px,9vw,90px) - 20px);overflow-y:auto;background:var(--surface);border:1.5px solid var(--ink5);border-radius:var(--r2);padding:22px;box-shadow:0 8px 40px rgba(28,10,13,.25)}
@@ -1101,70 +1104,6 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--ruby);outline-offse
     <button class="btn-add" onclick="openAddModal()">+ Ajouter un vin</button>
   </div>
 
-
-  <div class="panel" id="add-form">
-    <div class="panel-title">Nouvelle bouteille <span class="badge-ia" id="ai-badge-form" style="display:none">⚡ Pré-rempli IA</span></div>
-    <div class="fsec"><div class="fsec-label">Photo de la bouteille</div>
-      <div class="photo-upload-zone" id="form-photo-zone" onclick="document.getElementById('f-photo').click()">
-        <input type="file" id="f-photo" accept="image/*" style="display:none" onchange="handleFormPhoto(this)">
-        <div class="photo-upload-inner" id="form-photo-inner">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#b89098" stroke-width="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-          <span style="font-size:12px;color:var(--ink4)">Cliquez pour ajouter une photo</span>
-        </div>
-      </div>
-    </div>
-    <div class="fsec"><div class="fsec-label">Identité</div>
-      <div class="fr fr2"><div class="fg" id="fg-name"><label for="f-name">Nom *</label><input type="text" id="f-name" placeholder="Château Margaux"></div><div class="fg" id="fg-app"><label for="f-app">Appellation</label><input type="text" id="f-app" placeholder="Margaux AOC"></div></div>
-      <div class="fr fr4"><div class="fg" id="fg-type"><label for="f-type">Type *</label><select id="f-type"><option>Rouge</option><option>Blanc sec</option><option>Blanc moelleux</option><option>Blanc liquoreux</option><option>Rosé</option><option>Pétillant</option><option>Macération</option><option>Muté / Fortifié</option><option>Doux naturel</option><option>Oxydatif</option><option>Passerillé</option><option>Autre</option></select></div><div class="fg" id="fg-reg"><label for="f-reg">Région</label><input type="text" id="f-reg" placeholder="Bordeaux"></div><div class="fg"><label for="f-country">Pays</label><input type="text" id="f-country" placeholder="France, Italie..." list="country-list"><datalist id="country-list"><option value="France"><option value="Italie"><option value="Espagne"><option value="Portugal"><option value="Allemagne"><option value="Autriche"><option value="USA"><option value="Argentine"><option value="Chili"><option value="Australie"><option value="Afrique du Sud"><option value="Nouvelle-Zélande"><option value="Hongrie"><option value="Grèce"><option value="Liban"></datalist></div><div class="fg" id="fg-year"><label for="f-year" style="display:flex;justify-content:space-between;align-items:center">Millésime<label class="nv-toggle"><input type="checkbox" id="f-nv" onchange="toggleNV('f-year','f-nv')"><span>NV</span></label></label><input type="number" id="f-year" placeholder="2019" min="1900" max="2030"></div></div>
-    </div>
-    <div class="fsec"><div class="fsec-label">Stock & prix</div>
-      <div class="fr fr4"><div class="fg"><label for="f-qty">Quantité</label><input type="number" id="f-qty" value="1" min="0"></div><div class="fg"><label for="f-cont">Contenance</label><select id="f-cont"><option value="">—</option><option value="18.7cl">18.7 cl (Piccolo)</option><option value="37.5cl">37.5 cl (Demi)</option><option value="50cl">50 cl</option><option value="75cl" selected>75 cl (Standard)</option><option value="1L">1 L</option><option value="1.5L">1.5 L (Magnum)</option><option value="3L">3 L (Double Magnum)</option><option value="4.5L">4.5 L (Jéroboam)</option><option value="6L">6 L (Impériale)</option><option value="9L">9 L (Salmanazar)</option><option value="12L">12 L (Balthazar)</option><option value="15L">15 L (Nabuchodonosor)</option></select></div><div class="fg"><label for="f-buy">Prix achat (€)</label><input type="number" id="f-buy" placeholder="0" min="0" step="0.5"></div><div class="fg"><label for="f-cur" style="display:flex;justify-content:space-between;align-items:center">Prix actuel (€)<button type="button" class="idealwine-btn" onclick="openIdealWine()" title="Rechercher la cote sur IdealWine">↗ IdealWine</button></label><input type="number" id="f-cur" placeholder="0" min="0" step="0.5"></div><div class="fg" id="fg-ap"><label for="f-ap">Apogée</label><input type="text" id="f-ap" placeholder="2026 – 2038"></div></div>
-    </div>
-    <div class="fsec"><div class="fsec-label">Notes critiques <span style="font-size:10px;color:var(--ink4);font-weight:400">(ajoutez les critiques que vous souhaitez)</span></div>
-      <!-- Critiques prédéfinis -->
-      <div id="critics-predefined" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px">
-        <span class="critic-tag" onclick="addCritic('parker','RP',100)" title="Robert Parker">RP</span>
-        <span class="critic-tag" onclick="addCritic('suckling','JS',100)" title="James Suckling">JS</span>
-        <span class="critic-tag" onclick="addCritic('decanter','D',20)" title="Decanter">D</span>
-        <span class="critic-tag" onclick="addCritic('vinous','V',100)" title="Vinous">V</span>
-        <span class="critic-tag" onclick="addCritic('bettane','B',20)" title="Bettane & Desseauve">B</span>
-        <span class="critic-tag" onclick="addCritic('jancis','JR',20)" title="Jancis Robinson">JR</span>
-        <span class="critic-tag" onclick="addCritic('ws','WS',100)" title="Wine Spectator">WS</span>
-        <span class="critic-tag" onclick="addCritic('bh','BH',100)" title="Burghound">BH</span>
-        <span class="critic-tag" onclick="addCritic('rvf','RVF',20)" title="Revue du Vin de France">RVF</span>
-        <span class="critic-tag" onclick="addCritic('anson','JA',100)" title="Jane Anson">JA</span>
-        <span class="critic-tag" onclick="addCritic('gilbert','G',20)" title="Gilbert & Gaillard">G&G</span>
-        <span class="critic-tag critic-tag-custom" onclick="addCustomCritic()">+ Autre</span>
-      </div>
-      <!-- Champs critiques actifs -->
-      <div id="critics-active" style="display:flex;flex-wrap:wrap;gap:8px"></div>
-      <!-- Champs cachés pour compatibilité -->
-      <input type="hidden" id="f-parker"><input type="hidden" id="f-suckling"><input type="hidden" id="f-decanter">
-      <input type="hidden" id="f-vinous"><input type="hidden" id="f-bettane"><input type="hidden" id="f-jancis">
-      <input type="hidden" id="f-ws"><input type="hidden" id="f-bh">
-    </div>
-    <div class="fsec"><div class="fsec-label">Viticulture & certifications</div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:6px 0" id="cert-checkboxes">
-        <label style="display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--ink3);cursor:pointer"><input type="checkbox" value="bio" onchange="toggleCert(this)"> AB / Ecocert</label>
-        <label style="display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--ink3);cursor:pointer"><input type="checkbox" value="demeter" onchange="toggleCert(this)"> Demeter</label>
-        <label style="display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--ink3);cursor:pointer"><input type="checkbox" value="biody" onchange="toggleCert(this)"> Biodyvin</label>
-        <label style="display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--ink3);cursor:pointer"><input type="checkbox" value="hve" onchange="toggleCert(this)"> HVE</label>
-        <label style="display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--ink3);cursor:pointer"><input type="checkbox" value="nature" onchange="toggleCert(this)"> Vin Méthode Nature</label>
-        <label style="display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--ink3);cursor:pointer"><input type="checkbox" value="raisonné" onchange="toggleCert(this)"> Agriculture raisonnée</label>
-        <label style="display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--ink3);cursor:pointer"><input type="checkbox" value="vegan" onchange="toggleCert(this)"> Vegan</label>
-        <label style="display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--ink3);cursor:pointer"><input type="checkbox" value="terra" onchange="toggleCert(this)"> Terra Vitis</label>
-        <label style="display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--ink3);cursor:pointer"><input type="checkbox" value="lutte" onchange="toggleCert(this)"> Lutte intégrée</label>
-      </div>
-    </div>
-    <div class="fsec"><div class="fsec-label">Emplacement</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-        <div class="fg"><label for="f-cave">Cave</label><select id="f-cave" onchange="populateClayetteSelect(this.value,'')" style="width:100%;height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:var(--font-body);outline:none;color:var(--ink);background:var(--surface)"><option value="">— Aucune —</option></select></div>
-        <div class="fg"><label for="f-clayette">Clayette</label><select id="f-clayette" disabled style="width:100%;height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:var(--font-body);outline:none;color:var(--ink);background:var(--surface);appearance:none;-webkit-appearance:none;background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23b89098' stroke-width='1.5' stroke-linecap='round' fill='none'/%3E%3C/svg%3E&quot;);background-repeat:no-repeat;background-position:right 9px center"><option value="">— Choisir une cave d'abord —</option></select></div>
-      </div>
-    </div>
-    <div class="fsec"><div class="fsec-label"><label for="f-notes">Notes personnelles</label></div><div class="fg"><textarea id="f-notes" placeholder="Arômes, bouche, finale…"></textarea></div></div>
-    <div class="factions"><button class="bsub" onclick="addWine()">Ajouter à la cave</button><button class="bcan" onclick="closePanel('add-form')">Annuler</button></div>
-  </div>
 
   <div class="wlist" id="wlist"></div>
 </div>
@@ -2507,6 +2446,7 @@ let wines=[];
 let caveWinesList=[];
 let caves=[];
 let _caveFormId=null;
+let _currentCaveDetailId=null;
 let cavePhotoData=null;
 let wishes=[];
 let imgs={};
@@ -2725,6 +2665,7 @@ function populateClayetteSelect(caveId,selectedVal){
 
 function openCaveDetail(caveId){
   if(!caves.find(c=>c.id===caveId))return;
+  _currentCaveDetailId=caveId;
   document.getElementById('caves-overview').style.display='none';
   const det=document.getElementById('cave-detail');
   det.classList.add('visible');
@@ -2732,8 +2673,39 @@ function openCaveDetail(caveId){
 }
 
 function closeCaveDetail(){
+  _currentCaveDetailId=null;
   document.getElementById('caves-overview').style.display='';
   document.getElementById('cave-detail').classList.remove('visible');
+}
+function caveDragStart(e,wineId){
+  e.dataTransfer.setData('text/plain',wineId);
+  e.dataTransfer.effectAllowed='move';
+  e.currentTarget.classList.add('dragging');
+}
+function caveDragEnd(e){
+  e.currentTarget.classList.remove('dragging');
+}
+function caveDragOver(e){
+  e.preventDefault();
+  e.dataTransfer.dropEffect='move';
+  e.currentTarget.classList.add('drag-over');
+}
+function caveDragLeave(e){
+  if(!e.currentTarget.contains(e.relatedTarget)){
+    e.currentTarget.classList.remove('drag-over');
+  }
+}
+function caveDrop(e,caveId,clavetteKey){
+  e.preventDefault();
+  e.currentTarget.classList.remove('drag-over');
+  const wineId=e.dataTransfer.getData('text/plain');
+  const w=wines.find(x=>x.id===wineId);
+  if(!w)return;
+  if(w.clayette===clavetteKey&&w.caveId===caveId)return;
+  w.clayette=clavetteKey;
+  w.caveId=caveId;
+  if(db)saveWineToDb(w);
+  renderCaveDetail(caveId);
 }
 
 function renderCaveDetail(caveId){
@@ -2756,15 +2728,15 @@ function renderCaveDetail(caveId){
   knownKeys.forEach(k=>{
     const ws=groups[k]||[];
     const qty=ws.reduce((s,w)=>s+(w.qty||0),0);
-    sectionsHTML+=`<div class="clayette-group"><div class="clayette-heading"><div class="clayette-heading-name"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="4" rx="1"/><rect x="2" y="10" width="20" height="4" rx="1"/><rect x="2" y="17" width="20" height="4" rx="1"/></svg>Clayette ${k}</div><div class="clayette-heading-count">${ws.length===0?'vide':`${ws.length} référence${ws.length>1?'s':''} · ${qty} bouteille${qty>1?'s':''}`}</div></div>${ws.length===0?'<div class="clayette-empty">Aucun vin sur cette clayette</div>':ws.map(w=>_caveWineRowHTML(w)).join('')}</div>`;
+    sectionsHTML+=`<div class="clayette-group" ondragover="caveDragOver(event)" ondragleave="caveDragLeave(event)" ondrop="caveDrop(event,'${caveId}','${k}')"><div class="clayette-heading"><div class="clayette-heading-name"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="4" rx="1"/><rect x="2" y="10" width="20" height="4" rx="1"/><rect x="2" y="17" width="20" height="4" rx="1"/></svg>Clayette ${k}</div><div class="clayette-heading-count">${ws.length===0?'vide':`${ws.length} référence${ws.length>1?'s':''} · ${qty} bouteille${qty>1?'s':''}`}</div></div>${ws.length===0?'<div class="clayette-empty">Aucun vin sur cette clayette</div>':ws.map(w=>_caveWineRowHTML(w)).join('')}</div>`;
   });
   Object.keys(groups).filter(k=>!knownKeys.includes(k)).forEach(k=>{
     const ws=groups[k];const qty=ws.reduce((s,w)=>s+(w.qty||0),0);
-    sectionsHTML+=`<div class="clayette-group"><div class="clayette-heading"><div class="clayette-heading-name">${esc(k)}</div><div class="clayette-heading-count">${ws.length} référence${ws.length>1?'s':''} · ${qty} bouteille${qty>1?'s':''}</div></div>${ws.map(w=>_caveWineRowHTML(w)).join('')}</div>`;
+    sectionsHTML+=`<div class="clayette-group" ondragover="caveDragOver(event)" ondragleave="caveDragLeave(event)" ondrop="caveDrop(event,'${caveId}','${k}')"><div class="clayette-heading"><div class="clayette-heading-name">${esc(k)}</div><div class="clayette-heading-count">${ws.length} référence${ws.length>1?'s':''} · ${qty} bouteille${qty>1?'s':''}</div></div>${ws.map(w=>_caveWineRowHTML(w)).join('')}</div>`;
   });
   if(unassigned.length){
     const qty=unassigned.reduce((s,w)=>s+(w.qty||0),0);
-    sectionsHTML+=`<div class="clayette-group"><div class="clayette-heading"><div class="clayette-heading-name" style="color:var(--ink4)">Non assigné</div><div class="clayette-heading-count">${unassigned.length} référence${unassigned.length>1?'s':''} · ${qty} bouteille${qty>1?'s':''}</div></div>${unassigned.map(w=>_caveWineRowHTML(w)).join('')}</div>`;
+    sectionsHTML+=`<div class="clayette-group" ondragover="caveDragOver(event)" ondragleave="caveDragLeave(event)" ondrop="caveDrop(event,'${caveId}','')"><div class="clayette-heading"><div class="clayette-heading-name" style="color:var(--ink4)">Non assigné</div><div class="clayette-heading-count">${unassigned.length} référence${unassigned.length>1?'s':''} · ${qty} bouteille${qty>1?'s':''}</div></div>${unassigned.map(w=>_caveWineRowHTML(w)).join('')}</div>`;
   }
   if(!sectionsHTML)sectionsHTML=`<div style="padding:48px 20px;text-align:center;color:var(--ink4)"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" style="opacity:.3;margin-bottom:10px;display:block;margin-left:auto;margin-right:auto"><path d="M8 22h8M12 11v11"/><path d="M5 2h14l-3 9a5 5 0 0 1-8 0Z"/></svg><div style="font-size:14px;font-weight:600;color:var(--ink3);margin-bottom:4px">Cave vide</div><div style="font-size:12px">Assignez des vins à cette cave depuis la fiche d'un vin</div></div>`;
   const gaugeHTML=cap>0?`<div style="margin-bottom:20px"><div class="cave-gauge-track"><div class="cave-gauge-fill" style="transform:scaleX(${(pct/100).toFixed(3)});background:${fillColor}"></div></div><div class="cave-gauge-label"><span>${occupied} / ${cap} bouteilles · ${pct}% occupé</span><span>${cap-occupied} place${(cap-occupied)!==1?'s':''} libre${(cap-occupied)!==1?'s':''}</span></div></div>`:'';
@@ -2776,7 +2748,7 @@ function _caveWineRowHTML(w){
   const clr=TYPE_CLR[w.type]||'#8b1a2a';
   const imgHTML=w.img_url?`<img class="cave-wine-thumb" src="${w.img_url}" alt="">`:
     `<div class="cave-wine-thumb-placeholder"><svg width="10" height="18" viewBox="0 0 10 18" fill="none" stroke="${clr}" stroke-width="1.5" stroke-linecap="round"><path d="M3 17V9L1 5V2.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5V5L7 9v8"/><path d="M1 7h8"/></svg></div>`;
-  return`<div class="cave-wine-row">${imgHTML}<div class="cave-wine-info"><div class="cave-wine-name">${esc(w.name)}${w.year?` <span style="font-weight:400;color:var(--ink4)">${w.year}</span>`:''}</div><div class="cave-wine-sub">${w.type?esc(w.type):''}${w.reg?` · ${esc(w.reg)}`:''}</div></div><div class="cave-wine-qty">×${w.qty||1}</div><button class="cave-wine-edit" onclick="editWine('${w.id}')" title="Modifier"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></div>`;
+  return`<div class="cave-wine-row" draggable="true" ondragstart="caveDragStart(event,'${w.id}')" ondragend="caveDragEnd(event)">${imgHTML}<div class="cave-wine-info"><div class="cave-wine-name">${esc(w.name)}${w.year?` <span style="font-weight:400;color:var(--ink4)">${w.year}</span>`:''}</div><div class="cave-wine-sub">${w.type?esc(w.type):''}${w.reg?` · ${esc(w.reg)}`:''}</div></div><div class="cave-wine-qty">×${w.qty||1}</div><button class="cave-wine-edit" onclick="editWine('${w.id}')" title="Modifier"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></div>`;
 }
 
 function setSidebarTypeEl(el){setSidebarType(el,el.dataset.type);}
@@ -4730,6 +4702,69 @@ function removeToast(t){
     <button onclick="closeCaveForm()" style="height:40px;padding:0 18px;background:var(--surface);border:1.5px solid var(--ink5);border-radius:var(--r);font-family:var(--font-body);font-size:13px;color:var(--ink3);cursor:pointer">Annuler</button>
   </div>
 </div>
+<div class="panel" id="add-form">
+    <div class="panel-title">Nouvelle bouteille <span class="badge-ia" id="ai-badge-form" style="display:none">⚡ Pré-rempli IA</span></div>
+    <div class="fsec"><div class="fsec-label">Photo de la bouteille</div>
+      <div class="photo-upload-zone" id="form-photo-zone" onclick="document.getElementById('f-photo').click()">
+        <input type="file" id="f-photo" accept="image/*" style="display:none" onchange="handleFormPhoto(this)">
+        <div class="photo-upload-inner" id="form-photo-inner">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#b89098" stroke-width="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+          <span style="font-size:12px;color:var(--ink4)">Cliquez pour ajouter une photo</span>
+        </div>
+      </div>
+    </div>
+    <div class="fsec"><div class="fsec-label">Identité</div>
+      <div class="fr fr2"><div class="fg" id="fg-name"><label for="f-name">Nom *</label><input type="text" id="f-name" placeholder="Château Margaux"></div><div class="fg" id="fg-app"><label for="f-app">Appellation</label><input type="text" id="f-app" placeholder="Margaux AOC"></div></div>
+      <div class="fr fr4"><div class="fg" id="fg-type"><label for="f-type">Type *</label><select id="f-type"><option>Rouge</option><option>Blanc sec</option><option>Blanc moelleux</option><option>Blanc liquoreux</option><option>Rosé</option><option>Pétillant</option><option>Macération</option><option>Muté / Fortifié</option><option>Doux naturel</option><option>Oxydatif</option><option>Passerillé</option><option>Autre</option></select></div><div class="fg" id="fg-reg"><label for="f-reg">Région</label><input type="text" id="f-reg" placeholder="Bordeaux"></div><div class="fg"><label for="f-country">Pays</label><input type="text" id="f-country" placeholder="France, Italie..." list="country-list"><datalist id="country-list"><option value="France"><option value="Italie"><option value="Espagne"><option value="Portugal"><option value="Allemagne"><option value="Autriche"><option value="USA"><option value="Argentine"><option value="Chili"><option value="Australie"><option value="Afrique du Sud"><option value="Nouvelle-Zélande"><option value="Hongrie"><option value="Grèce"><option value="Liban"></datalist></div><div class="fg" id="fg-year"><label for="f-year" style="display:flex;justify-content:space-between;align-items:center">Millésime<label class="nv-toggle"><input type="checkbox" id="f-nv" onchange="toggleNV('f-year','f-nv')"><span>NV</span></label></label><input type="number" id="f-year" placeholder="2019" min="1900" max="2030"></div></div>
+    </div>
+    <div class="fsec"><div class="fsec-label">Stock & prix</div>
+      <div class="fr fr4"><div class="fg"><label for="f-qty">Quantité</label><input type="number" id="f-qty" value="1" min="0"></div><div class="fg"><label for="f-cont">Contenance</label><select id="f-cont"><option value="">—</option><option value="18.7cl">18.7 cl (Piccolo)</option><option value="37.5cl">37.5 cl (Demi)</option><option value="50cl">50 cl</option><option value="75cl" selected>75 cl (Standard)</option><option value="1L">1 L</option><option value="1.5L">1.5 L (Magnum)</option><option value="3L">3 L (Double Magnum)</option><option value="4.5L">4.5 L (Jéroboam)</option><option value="6L">6 L (Impériale)</option><option value="9L">9 L (Salmanazar)</option><option value="12L">12 L (Balthazar)</option><option value="15L">15 L (Nabuchodonosor)</option></select></div><div class="fg"><label for="f-buy">Prix achat (€)</label><input type="number" id="f-buy" placeholder="0" min="0" step="0.5"></div><div class="fg"><label for="f-cur" style="display:flex;justify-content:space-between;align-items:center">Prix actuel (€)<button type="button" class="idealwine-btn" onclick="openIdealWine()" title="Rechercher la cote sur IdealWine">↗ IdealWine</button></label><input type="number" id="f-cur" placeholder="0" min="0" step="0.5"></div><div class="fg" id="fg-ap"><label for="f-ap">Apogée</label><input type="text" id="f-ap" placeholder="2026 – 2038"></div></div>
+    </div>
+    <div class="fsec"><div class="fsec-label">Notes critiques <span style="font-size:10px;color:var(--ink4);font-weight:400">(ajoutez les critiques que vous souhaitez)</span></div>
+      <!-- Critiques prédéfinis -->
+      <div id="critics-predefined" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px">
+        <span class="critic-tag" onclick="addCritic('parker','RP',100)" title="Robert Parker">RP</span>
+        <span class="critic-tag" onclick="addCritic('suckling','JS',100)" title="James Suckling">JS</span>
+        <span class="critic-tag" onclick="addCritic('decanter','D',20)" title="Decanter">D</span>
+        <span class="critic-tag" onclick="addCritic('vinous','V',100)" title="Vinous">V</span>
+        <span class="critic-tag" onclick="addCritic('bettane','B',20)" title="Bettane & Desseauve">B</span>
+        <span class="critic-tag" onclick="addCritic('jancis','JR',20)" title="Jancis Robinson">JR</span>
+        <span class="critic-tag" onclick="addCritic('ws','WS',100)" title="Wine Spectator">WS</span>
+        <span class="critic-tag" onclick="addCritic('bh','BH',100)" title="Burghound">BH</span>
+        <span class="critic-tag" onclick="addCritic('rvf','RVF',20)" title="Revue du Vin de France">RVF</span>
+        <span class="critic-tag" onclick="addCritic('anson','JA',100)" title="Jane Anson">JA</span>
+        <span class="critic-tag" onclick="addCritic('gilbert','G',20)" title="Gilbert & Gaillard">G&G</span>
+        <span class="critic-tag critic-tag-custom" onclick="addCustomCritic()">+ Autre</span>
+      </div>
+      <!-- Champs critiques actifs -->
+      <div id="critics-active" style="display:flex;flex-wrap:wrap;gap:8px"></div>
+      <!-- Champs cachés pour compatibilité -->
+      <input type="hidden" id="f-parker"><input type="hidden" id="f-suckling"><input type="hidden" id="f-decanter">
+      <input type="hidden" id="f-vinous"><input type="hidden" id="f-bettane"><input type="hidden" id="f-jancis">
+      <input type="hidden" id="f-ws"><input type="hidden" id="f-bh">
+    </div>
+    <div class="fsec"><div class="fsec-label">Viticulture & certifications</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:6px 0" id="cert-checkboxes">
+        <label style="display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--ink3);cursor:pointer"><input type="checkbox" value="bio" onchange="toggleCert(this)"> AB / Ecocert</label>
+        <label style="display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--ink3);cursor:pointer"><input type="checkbox" value="demeter" onchange="toggleCert(this)"> Demeter</label>
+        <label style="display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--ink3);cursor:pointer"><input type="checkbox" value="biody" onchange="toggleCert(this)"> Biodyvin</label>
+        <label style="display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--ink3);cursor:pointer"><input type="checkbox" value="hve" onchange="toggleCert(this)"> HVE</label>
+        <label style="display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--ink3);cursor:pointer"><input type="checkbox" value="nature" onchange="toggleCert(this)"> Vin Méthode Nature</label>
+        <label style="display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--ink3);cursor:pointer"><input type="checkbox" value="raisonné" onchange="toggleCert(this)"> Agriculture raisonnée</label>
+        <label style="display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--ink3);cursor:pointer"><input type="checkbox" value="vegan" onchange="toggleCert(this)"> Vegan</label>
+        <label style="display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--ink3);cursor:pointer"><input type="checkbox" value="terra" onchange="toggleCert(this)"> Terra Vitis</label>
+        <label style="display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--ink3);cursor:pointer"><input type="checkbox" value="lutte" onchange="toggleCert(this)"> Lutte intégrée</label>
+      </div>
+    </div>
+    <div class="fsec"><div class="fsec-label">Emplacement</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="fg"><label for="f-cave">Cave</label><select id="f-cave" onchange="populateClayetteSelect(this.value,'')" style="width:100%;height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:var(--font-body);outline:none;color:var(--ink);background:var(--surface)"><option value="">— Aucune —</option></select></div>
+        <div class="fg"><label for="f-clayette">Clayette</label><select id="f-clayette" disabled style="width:100%;height:38px;padding:0 10px;border:1.5px solid var(--ink5);border-radius:var(--r);font-size:13px;font-family:var(--font-body);outline:none;color:var(--ink);background:var(--surface);appearance:none;-webkit-appearance:none;background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23b89098' stroke-width='1.5' stroke-linecap='round' fill='none'/%3E%3C/svg%3E&quot;);background-repeat:no-repeat;background-position:right 9px center"><option value="">— Choisir une cave d'abord —</option></select></div>
+      </div>
+    </div>
+    <div class="fsec"><div class="fsec-label"><label for="f-notes">Notes personnelles</label></div><div class="fg"><textarea id="f-notes" placeholder="Arômes, bouche, finale…"></textarea></div></div>
+    <div class="factions"><button class="bsub" onclick="addWine()">Ajouter à la cave</button><button class="bcan" onclick="closePanel('add-form')">Annuler</button></div>
+  </div>
 <div id="edit-backdrop" onclick="closePanel('add-form')"></div>
 
 <!-- MODAL ANNONCE -->
