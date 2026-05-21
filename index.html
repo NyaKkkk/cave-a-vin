@@ -1505,6 +1505,8 @@ async function loadFromFirebase(){
   caves  = cSnap.docs.map(d=>({id:d.id, ...d.data()}));
   activeTypes = [];
   populateFilterDropdowns(); renderWines(); updateStats(); renderWishes();
+  const savedTab=localStorage.getItem('activeTab');
+  if(savedTab&&savedTab!=='cave')showTab(savedTab);
 }
 
 // ── CRUD ──
@@ -2543,6 +2545,7 @@ function showTab(t){
   });
   const activePanel=document.getElementById('tab-'+t);
   if(activePanel)activePanel.focus();
+  localStorage.setItem('activeTab',t);
   if(t==='stats')renderStats();
   if(t==='wish')renderWishes();
   if(t==='degustation')renderDegustations();
