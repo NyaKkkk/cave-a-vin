@@ -1570,7 +1570,8 @@ async function saveWishToDb(wish){
       certs:wish.certs||[],
       parker:wish.parker||null, suckling:wish.suckling||null, decanter:wish.decanter||null,
       vinous:wish.vinous||null, bettane:wish.bettane||null, jancis:wish.jancis||null,
-      ws:wish.ws||null, bh:wish.bh||null, rvf:wish.rvf||null, anson:wish.anson||null, gilbert:wish.gilbert||null
+      ws:wish.ws||null, bh:wish.bh||null, rvf:wish.rvf||null, anson:wish.anson||null, gilbert:wish.gilbert||null,
+      customCritics:wish.customCritics||null
     };
     if(wish.id && !wish.id.startsWith('tmp-')){
       await ref.doc(wish.id).set(data, {merge:true});
@@ -4110,7 +4111,7 @@ function editWish(id){
   wishFormCerts=w.certs?[...w.certs]:[];
   document.querySelectorAll('#wf-cert-checkboxes input[type=checkbox]').forEach(cb=>{cb.checked=wishFormCerts.includes(cb.value);});
   // Scores
-  CRITICS.forEach(c=>{const el=document.getElementById('wf-'+c.k);if(el)el.value=w[c.k]!=null?w[c.k]:'';});
+  loadWishCriticsFromWish(w);
   // Changer le bouton pour "Enregistrer"
   const btn=document.getElementById('wish-manual-modal').querySelector('.profile-save-btn');
   if(btn){btn.textContent='Enregistrer les modifications';btn.onclick=()=>saveWishEdit(id);}
@@ -4130,8 +4131,9 @@ function saveWishEdit(id){
   w.targetQty=parseInt(document.getElementById('wf-target-qty')?.value)||null;
   w.cont=document.getElementById('wf-cont')?.value||'75cl';
   w.certs=[...wishFormCerts];
-  const scores=_collectWishScores();
-  CRITICS.forEach(c=>{w[c.k]=scores[c.k];});
+  const {customCritics,...scores}=_collectWishScores();
+  Object.assign(w,scores);
+  if(customCritics)w.customCritics=customCritics;else delete w.customCritics;
   if(db&&currentUser) saveWishToDb(w);
   closeWishManualModal();
   renderWishes();
@@ -4144,10 +4146,97 @@ function saveWishEdit(id){
 
 let wishFormPhotoData = null;
 let wishFormCerts = [];
+let wishActiveCritics = {};
 
 function toggleWishCert(cb){
   if(cb.checked){if(!wishFormCerts.includes(cb.value))wishFormCerts.push(cb.value);}
   else{wishFormCerts=wishFormCerts.filter(c=>c!==cb.value);}
+}
+
+function addWishCritic(key,label,max){
+  if(wishActiveCritics[key])return;
+  wishActiveCritics[key]={label,max,value:null};
+  renderWishActiveCritics();
+}
+
+function removeWishCritic(key){
+  delete wishActiveCritics[key];
+  renderWishActiveCritics();
+}
+
+function renderWishActiveCritics(){
+  const container=document.getElementById('wf-critics-active');
+  if(!container)return;
+  Object.keys(wishActiveCritics).forEach(key=>{
+    const el=document.getElementById('wfc-'+key);
+    if(el&&el.value)wishActiveCritics[key].value=parseFloat(el.value)||null;
+  });
+  container.innerHTML=Object.entries(wishActiveCritics).map(([key,c])=>`
+    <div class="critic-active-chip">
+      <label>${c.label} /${c.max}</label>
+      <input type="number" id="wfc-${key}" placeholder="—" min="0" max="${c.max}" step="${c.max===20?0.5:1}" value="${c.value!=null?c.value:''}">
+      <button type="button" class="critic-remove" onclick="removeWishCritic('${key}')">✕</button>
+    </div>
+  `).join('');
+}
+
+function getWishCriticValues(){
+  const vals={};
+  Object.keys(wishActiveCritics).forEach(key=>{
+    const el=document.getElementById('wfc-'+key);
+    vals[key]=el&&el.value?parseFloat(el.value):null;
+  });
+  return vals;
+}
+
+function clearWishCritics(){
+  wishActiveCritics={};
+  const container=document.getElementById('wf-critics-active');
+  if(container)container.innerHTML='';
+  const cf=document.getElementById('wf-custom-critic-form');
+  if(cf)cf.remove();
+}
+
+function loadWishCriticsFromWish(w){
+  wishActiveCritics={};
+  CRITICS.forEach(c=>{if(w[c.k]!=null){wishActiveCritics[c.k]={label:c.l,max:['decanter','bettane','jancis','rvf','gilbert'].includes(c.k)?20:100,value:w[c.k]};}});
+  if(w.customCritics){
+    Object.entries(w.customCritics).forEach(([k,v])=>{wishActiveCritics[k]={label:v.label,max:v.max,value:v.value,custom:true};});
+  }
+  renderWishActiveCritics();
+}
+
+function addCustomWishCritic(){
+  const container=document.getElementById('wf-custom-critic-form');
+  if(container){container.style.display=container.style.display==='none'?'flex':'none';return;}
+  const form=document.createElement('div');
+  form.id='wf-custom-critic-form';
+  form.style.cssText='display:flex;align-items:center;gap:8px;background:var(--ink6);border:1.5px solid var(--ink5);border-radius:var(--r);padding:8px 10px;margin-top:8px;flex-wrap:wrap';
+  form.innerHTML=`
+    <div style="display:flex;flex-direction:column;gap:3px">
+      <label style="font-size:10px;font-weight:600;color:var(--ink4);text-transform:uppercase;letter-spacing:.5px">Critique</label>
+      <input id="wf-custom-critic-name" type="text" placeholder="RVF, Tim Atkin..." style="width:130px;height:30px;padding:0 8px;border:1.5px solid var(--ink5);border-radius:6px;font-size:12px;font-family:var(--font-body);outline:none">
+    </div>
+    <div style="display:flex;flex-direction:column;gap:3px">
+      <label style="font-size:10px;font-weight:600;color:var(--ink4);text-transform:uppercase;letter-spacing:.5px">Noté sur</label>
+      <select id="wf-custom-critic-max" style="width:80px;height:30px;padding:0 6px;border:1.5px solid var(--ink5);border-radius:6px;font-size:12px;font-family:var(--font-body);outline:none">
+        <option value="100">100</option><option value="20">20</option><option value="10">10</option><option value="5">5</option>
+      </select>
+    </div>
+    <button type="button" onclick="confirmCustomWishCritic()" style="height:30px;padding:0 12px;background:var(--ruby);color:#fff;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font-body);margin-top:14px">Ajouter</button>
+    <button type="button" onclick="document.getElementById('wf-custom-critic-form').remove()" style="height:30px;padding:0 10px;background:none;border:1.5px solid var(--ink5);border-radius:6px;font-size:12px;color:var(--ink4);cursor:pointer;font-family:var(--font-body);margin-top:14px">Annuler</button>
+  `;
+  document.getElementById('wf-critics-active').after(form);
+}
+
+function confirmCustomWishCritic(){
+  const name=document.getElementById('wf-custom-critic-name').value.trim();
+  if(!name)return;
+  const max=parseInt(document.getElementById('wf-custom-critic-max').value)||100;
+  const key='custom_'+name.toLowerCase().replace(/[^a-z0-9]/g,'_')+'_'+Date.now();
+  wishActiveCritics[key]={label:name,max,value:null,custom:true};
+  document.getElementById('wf-custom-critic-form').remove();
+  renderWishActiveCritics();
 }
 
 function handleWishFormPhoto(inp){
@@ -4206,7 +4295,7 @@ function openWishMode(mode){
     const wfc=document.getElementById('wf-cont');if(wfc)wfc.value='75cl';
     wishFormCerts=[];
     document.querySelectorAll('#wf-cert-checkboxes input[type=checkbox]').forEach(cb=>cb.checked=false);
-    CRITICS.forEach(c=>{const el=document.getElementById('wf-'+c.k);if(el)el.value='';});
+    clearWishCritics();
     document.getElementById('wish-manual-modal').classList.add('open');
     return;
   }
@@ -4227,7 +4316,7 @@ function closeWishManualModal(){
   if(inner) inner.innerHTML=`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span style="font-size:12px;color:var(--ink4)">Cliquer pour ajouter une photo</span>`;
   const wnv=document.getElementById('wf-nv');if(wnv){wnv.checked=false;document.getElementById('wf-year').disabled=false;}
   document.querySelectorAll('#wf-cert-checkboxes input[type=checkbox]').forEach(cb=>cb.checked=false);
-  CRITICS.forEach(c=>{const el=document.getElementById('wf-'+c.k);if(el)el.value='';});
+  clearWishCritics();
 }
 
 function resetWishAI(){
@@ -4317,9 +4406,12 @@ function confirmWishAI(){
 }
 
 function _collectWishScores(){
-  const s={};
-  CRITICS.forEach(c=>{const el=document.getElementById('wf-'+c.k);if(el&&el.value!=='')s[c.k]=parseFloat(el.value);else s[c.k]=null;});
-  return s;
+  const vals=getWishCriticValues();
+  const scores={};
+  CRITICS.forEach(c=>{scores[c.k]=vals[c.k]||null;});
+  const customCritics={};
+  Object.entries(wishActiveCritics).filter(([k,v])=>v.custom).forEach(([k,v])=>{customCritics[k]={label:v.label,max:v.max,value:vals[k]};});
+  return{...scores,customCritics:Object.keys(customCritics).length?customCritics:undefined};
 }
 
 function saveWishManual(){
@@ -4334,9 +4426,10 @@ function saveWishManual(){
   const targetPrice=parseFloat(document.getElementById('wf-target-price')?.value)||null;
   const targetQty=parseInt(document.getElementById('wf-target-qty')?.value)||null;
   const cont=document.getElementById('wf-cont')?.value||'75cl';
-  const scores=_collectWishScores();
+  const {customCritics,...scores}=_collectWishScores();
   const certs=[...wishFormCerts];
   const wish={id:'tmp-'+Date.now(),name,app,reg,country,year,type,note,img_url,done:false,targetPrice,targetQty,cont,certs,...scores};
+  if(customCritics)wish.customCritics=customCritics;
   wishes.unshift(wish);
   if(db&&currentUser) saveWishToDb(wish);
   wishFormPhotoData=null;
@@ -4734,20 +4827,22 @@ function removeToast(t){
         </div>
       </div>
     </div>
-    <div class="fsec"><div class="fsec-label">Notes critiques</div>
-      <div style="display:flex;flex-wrap:wrap;gap:8px" id="wf-critics-grid">
-        <div class="critic-active-chip"><label>RP /100</label><input type="number" id="wf-parker" placeholder="—" min="0" max="100" step="1"></div>
-        <div class="critic-active-chip"><label>JS /100</label><input type="number" id="wf-suckling" placeholder="—" min="0" max="100" step="1"></div>
-        <div class="critic-active-chip"><label>D /20</label><input type="number" id="wf-decanter" placeholder="—" min="0" max="20" step="0.5"></div>
-        <div class="critic-active-chip"><label>V /100</label><input type="number" id="wf-vinous" placeholder="—" min="0" max="100" step="1"></div>
-        <div class="critic-active-chip"><label>B /20</label><input type="number" id="wf-bettane" placeholder="—" min="0" max="20" step="0.5"></div>
-        <div class="critic-active-chip"><label>JR /20</label><input type="number" id="wf-jancis" placeholder="—" min="0" max="20" step="0.5"></div>
-        <div class="critic-active-chip"><label>WS /100</label><input type="number" id="wf-ws" placeholder="—" min="0" max="100" step="1"></div>
-        <div class="critic-active-chip"><label>BH /100</label><input type="number" id="wf-bh" placeholder="—" min="0" max="100" step="1"></div>
-        <div class="critic-active-chip"><label>RVF /20</label><input type="number" id="wf-rvf" placeholder="—" min="0" max="20" step="0.5"></div>
-        <div class="critic-active-chip"><label>JA /100</label><input type="number" id="wf-anson" placeholder="—" min="0" max="100" step="1"></div>
-        <div class="critic-active-chip"><label>G&amp;G /20</label><input type="number" id="wf-gilbert" placeholder="—" min="0" max="20" step="0.5"></div>
+    <div class="fsec"><div class="fsec-label">Notes critiques <span style="font-size:10px;color:var(--ink4);font-weight:400">(ajoutez les critiques que vous souhaitez)</span></div>
+      <div id="wf-critics-predefined" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px">
+        <span class="critic-tag" onclick="addWishCritic('parker','RP',100)" title="Robert Parker">RP</span>
+        <span class="critic-tag" onclick="addWishCritic('suckling','JS',100)" title="James Suckling">JS</span>
+        <span class="critic-tag" onclick="addWishCritic('decanter','D',20)" title="Decanter">D</span>
+        <span class="critic-tag" onclick="addWishCritic('vinous','V',100)" title="Vinous">V</span>
+        <span class="critic-tag" onclick="addWishCritic('bettane','B',20)" title="Bettane &amp; Desseauve">B</span>
+        <span class="critic-tag" onclick="addWishCritic('jancis','JR',20)" title="Jancis Robinson">JR</span>
+        <span class="critic-tag" onclick="addWishCritic('ws','WS',100)" title="Wine Spectator">WS</span>
+        <span class="critic-tag" onclick="addWishCritic('bh','BH',100)" title="Burghound">BH</span>
+        <span class="critic-tag" onclick="addWishCritic('rvf','RVF',20)" title="Revue du Vin de France">RVF</span>
+        <span class="critic-tag" onclick="addWishCritic('anson','JA',100)" title="Jane Anson">JA</span>
+        <span class="critic-tag" onclick="addWishCritic('gilbert','G&amp;G',20)" title="Gilbert &amp; Gaillard">G&amp;G</span>
+        <span class="critic-tag critic-tag-custom" onclick="addCustomWishCritic()">+ Autre</span>
       </div>
+      <div id="wf-critics-active" style="display:flex;flex-wrap:wrap;gap:8px"></div>
     </div>
     <div class="fsec"><div class="fsec-label">Viticulture &amp; certifications</div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:6px 0" id="wf-cert-checkboxes">
