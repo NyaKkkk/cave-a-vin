@@ -1434,6 +1434,14 @@ async function doLogout(){
         document.getElementById('loading-screen').style.display='none';
         if(user){
           currentUser = user;
+          // Restaurer le bon onglet visuellement avant d'afficher l'app (évite le flash)
+          const _t=localStorage.getItem('activeTab')||'cave';
+          ['cave','caves','stats','degustation','ventes','wish'].forEach((n,i)=>{
+            const btn=document.querySelectorAll('.ntab')[i];
+            if(btn){btn.classList.toggle('active',n===_t);btn.setAttribute('aria-selected',n===_t?'true':'false');}
+            const panel=document.getElementById('tab-'+n);
+            if(panel)panel.style.display=n===_t?'':'none';
+          });
           _showScreen('app');
           for(let i=0; i<4; i++){
             try{
@@ -1504,9 +1512,8 @@ async function loadFromFirebase(){
   wishes = whSnap.docs.map(d=>({id:d.id, ...d.data()}));
   caves  = cSnap.docs.map(d=>({id:d.id, ...d.data()}));
   activeTypes = [];
-  populateFilterDropdowns(); renderWines(); updateStats(); renderWishes();
-  const savedTab=localStorage.getItem('activeTab');
-  if(savedTab&&savedTab!=='cave')showTab(savedTab);
+  populateFilterDropdowns(); updateStats(); renderWishes();
+  showTab(localStorage.getItem('activeTab')||'cave');
 }
 
 // ── CRUD ──
