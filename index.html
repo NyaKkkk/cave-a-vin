@@ -104,7 +104,7 @@ body.private-mode .btn-privacy .eye-off{display:block}
 body.private-mode #hs-val,
 body.private-mode #hs-pnl{filter:blur(7px);color:rgba(255,255,255,.35)!important;display:inline-block;min-width:52px;max-width:52px;overflow:hidden;white-space:nowrap;user-select:none;transition:filter .2s,color .2s}
 body.private-mode .wprice-val,
-body.private-mode .pnl-kpi-val,
+body.private-mode .pnl-kpi-val-money,
 body.private-mode .vente-card-price,
 body.private-mode .vente-card-pnl-val{filter:blur(7px);color:var(--ink4)!important;display:inline-block;min-width:64px;max-width:64px;overflow:hidden;white-space:nowrap;user-select:none;transition:filter .2s,color .2s}
 body.private-mode .delta{filter:blur(7px);color:var(--ink4)!important;background:var(--ink5)!important;display:inline-flex;min-width:48px;max-width:48px;overflow:hidden;white-space:nowrap;user-select:none;transition:filter .2s,color .2s,background .2s}
@@ -512,9 +512,6 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
 .empty-cta:hover{background:var(--ruby2)}
 
 /* STATS */
-.stats-toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
-.stats-chip{height:30px;padding:0 12px;border:1.5px solid var(--ink5);border-radius:var(--r3);background:var(--surface);font-family:var(--font-body);font-size:11px;font-weight:500;color:var(--ink3);cursor:pointer;transition:all .2s;white-space:nowrap;display:inline-flex;align-items:center;justify-content:center}
-.stats-chip:hover{border-color:var(--ink4)}.stats-chip.active{background:var(--ink);border-color:var(--ink);color:#fff}
 .sgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
 .scard{background:var(--surface);border:1px solid var(--ink5);border-radius:var(--r2);padding:clamp(14px,3vw,20px)}
 .scard h4{font-size:11px;font-weight:600;color:var(--ink4);text-transform:uppercase;letter-spacing:.6px;margin-bottom:14px}
@@ -526,12 +523,11 @@ body.edit-mode #add-form.visible{position:fixed;top:clamp(70px,9vw,90px);left:50
 .tdrow{display:flex;align-items:center;gap:8px;margin-bottom:8px}
 .tdot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 .chart-wrap{position:relative;height:160px;margin-top:4px}
-.pnl-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
-@media(max-width:480px){.pnl-summary{grid-template-columns:1fr}}
+.pnl-summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-bottom:14px}
+@media(max-width:480px){.pnl-summary{grid-template-columns:1fr 1fr}}
 .pnl-kpi{background:var(--ink6);border-radius:var(--r);padding:10px 12px}
 .pnl-kpi-val{font-family:var(--font-display);font-size:20px;font-weight:600;color:var(--ink);line-height:1}
 .pnl-kpi-lbl{font-size:11px;color:var(--ink4);text-transform:uppercase;letter-spacing:.4px;margin-top:3px}
-.pkv-pos{color:var(--clr-pos)}.pkv-neg{color:var(--ruby)}.pkv-neu{color:var(--gold)}
 
 /* WISHLIST */
 .wish-shdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px}
@@ -1152,19 +1148,11 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--ruby);outline-offse
 
 <!-- STATS -->
 <div id="tab-stats" role="tabpanel" aria-labelledby="ntab-stats" tabindex="0" style="display:none">
-  <div class="stats-toolbar">
-    <div class="stats-chip active" onclick="setStatFilter(this,'all')">Toute la cave</div>
-    <div class="stats-chip" onclick="setStatFilter(this,'Rouge')">Rouge</div>
-    <div class="stats-chip" onclick="setStatFilter(this,'Blanc sec')">Blanc sec</div>
-    <div class="stats-chip" onclick="setStatFilter(this,'Blanc moelleux')">Moelleux</div>
-    <div class="stats-chip" onclick="setStatFilter(this,'Blanc liquoreux')">Liquoreux</div>
-    <div class="stats-chip" onclick="setStatFilter(this,'Rosé')">Rosé</div>
-    <div class="stats-chip" onclick="setStatFilter(this,'Pétillant')">Pétillant</div>
-    <div class="stats-chip" onclick="setStatFilter(this,'Macération')">Macération</div>
+  <div class="tab-header">
+    <h2 class="tab-title">Statistiques</h2>
   </div>
   <div class="pnl-summary" id="pnl-summary"></div>
   <div class="sgrid">
-    <div class="scard"><h4>Plus-value par région</h4><div id="st-reg-pnl"></div></div>
     <div class="scard">
   <h4>Répartition par type</h4>
   <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
@@ -1175,9 +1163,19 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--ruby);outline-offse
     <div id="st-type" style="display:flex;flex-direction:column;gap:5px"></div>
   </div>
 </div>
-    <div class="scard" style="grid-column:1/-1"><h4>Plus-value par millésime</h4><div class="chart-wrap"><canvas id="chart-millesime"></canvas></div></div>
-    <div class="scard"><h4>Valeur achat vs actuelle par région</h4><div class="chart-wrap"><canvas id="chart-region"></canvas></div></div>
-    <div class="scard"><h4>Top bouteilles par plus-value</h4><div id="st-top"></div></div>
+    <div class="scard">
+  <h4>Répartition par région</h4>
+  <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+    <div style="position:relative;flex-shrink:0">
+      <canvas id="chart-region-pie" width="180" height="180" style="display:block;cursor:pointer" onmousemove="pieHoverReg(event)" onmouseleave="pieUnhoverReg()"></canvas>
+      <div id="pie-tooltip-reg" style="display:none;position:absolute;background:rgba(28,10,13,.88);color:#fff;font-size:11px;font-family:var(--font-body);padding:5px 9px;border-radius:6px;pointer-events:none;z-index:10;white-space:nowrap"></div>
+    </div>
+    <div id="st-region" style="display:flex;flex-direction:column;gap:5px"></div>
+  </div>
+</div>
+    <div class="scard" style="grid-column:1/-1"><h4>Bouteilles par millésime</h4><div class="chart-wrap"><canvas id="chart-millesime"></canvas></div></div>
+    <div class="scard"><h4>Répartition par format</h4><div id="st-format"></div></div>
+    <div class="scard"><h4>À boire en priorité</h4><div id="st-priority"></div></div>
   </div>
 </div>
 
@@ -1207,8 +1205,8 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--ruby);outline-offse
         Générer annonce
       </button>
     </div>
-    <div id="ventes-stats" style="display:flex;gap:16px;margin-top:8px"></div>
   </div>
+  <div id="ventes-stats" style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px"></div>
   <div id="ventes-list" style="display:flex;flex-direction:column;gap:10px"></div>
   <div id="ventes-empty" style="width:100%;display:none;flex-direction:column;align-items:center;justify-content:center;padding:80px 20px;color:var(--ink4);text-align:center">
     <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" style="opacity:.3;margin-bottom:14px"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 1 0 0 7h5a3.5 3.5 0 1 1 0 7H6"/></svg>
@@ -2107,14 +2105,20 @@ function renderVentes(){
   empty.style.display='none';
 
   // KPIs
-  const totalRev = ventes.reduce((a,v)=>a+v.price*v.qty,0);
-  const totalPnl = ventes.reduce((a,v)=>a+v.pnl,0);
-  const totalBtl = ventes.reduce((a,v)=>a+v.qty,0);
+  const vendues = ventes.filter(v=>(v.status||'a_vendre')==='vendu');
+  const enAttente = ventes.filter(v=>(v.status||'a_vendre')!=='vendu');
+  const soldBtl = vendues.reduce((a,v)=>a+v.qty,0);
+  const pendingBtl = enAttente.reduce((a,v)=>a+v.qty,0);
+  const totalRev = vendues.reduce((a,v)=>a+v.price*v.qty,0);
+  const totalPnl = vendues.reduce((a,v)=>a+v.pnl,0);
+  const avgPrice = soldBtl>0?totalRev/soldBtl:0;
   stats.innerHTML = [
-    ['Bouteilles vendues', totalBtl],
-    ['Revenus totaux', Math.round(totalRev)+'€'],
-    ['Plus-value', (totalPnl>=0?'+':'')+Math.round(totalPnl)+'€', totalPnl>=0?'var(--clr-pos)':'var(--ruby)']
-  ].map(([l,v,c])=>`<div style="background:var(--surface);border:1px solid var(--ink5);border-radius:8px;padding:10px 16px;text-align:center"><div style="font-size:10px;color:var(--ink4);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">${l}</div><div style="font-family:var(--font-display);font-size:20px;font-weight:700;color:${c||'var(--ink)'}">${v}</div></div>`).join('');
+    ['Bouteilles vendues', soldBtl],
+    ['En attente de vente', pendingBtl],
+    ['Revenus encaissés', Math.round(totalRev)+'€'],
+    ['Prix moyen / bouteille', soldBtl>0?Math.round(avgPrice)+'€':'—'],
+    ['Plus-value réalisée', soldBtl>0?(totalPnl>=0?'+':'')+Math.round(totalPnl)+'€':'—', totalPnl>=0?'var(--clr-pos)':'var(--ruby)']
+  ].map(([l,v,c])=>`<div style="background:var(--surface);border:1px solid var(--ink5);border-radius:8px;padding:10px 16px;text-align:center;flex:1;min-width:120px"><div style="font-size:10px;color:var(--ink4);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">${l}</div><div style="font-family:var(--font-display);font-size:20px;font-weight:700;color:${c||'var(--ink)'}">${v}</div></div>`).join('');
 
   list.innerHTML = ventes.map(v=>{
     const pnl = v.pnl||0;
@@ -2514,9 +2518,9 @@ function clearCritics(){
   if(container)container.innerHTML='';
 }
 const VALID_TYPES=Object.keys(TC);
-let activeTypes=[],statFilter='all';
+let activeTypes=[];
 let advFilters={countries:[],regions:[],certs:[],caves:[],yearMin:'',yearMax:'',priceMin:'',priceMax:'',qtyMin:'',includeNV:true};
-let chartM=null,chartR=null,waiResult=null,wishPhotoB64=null,aiResult=null,currentPhotoB64=null;
+let chartM=null,waiResult=null,wishPhotoB64=null,aiResult=null,currentPhotoB64=null;
 
 function esc(s){const d=document.createElement('div');d.appendChild(document.createTextNode(s==null?'':String(s)));return d.innerHTML}
 function equalizeCardColumns(listSel,colSel){const cols=[...document.querySelectorAll(listSel+' '+colSel)];if(!cols.length)return;cols.forEach(el=>{el.style.width='';});const max=Math.max(...cols.map(el=>el.offsetWidth));cols.forEach(el=>{el.style.width=max+'px';});}
@@ -3118,11 +3122,6 @@ function resetFilters(){
   initRangeSliders();updateFilterBadge();renderWines();
 }
 
-function setStatFilter(el,f){
-  statFilter=f;
-  document.querySelectorAll('.stats-chip').forEach(c=>c.classList.remove('active'));
-  el.classList.add('active');renderStats();
-}
 function setMode(m,prefix){
   const p=prefix;
   document.getElementById(p?'wmode-text':'mode-text').classList.toggle('active',m==='text');
@@ -3944,81 +3943,123 @@ function updateStats(){
   pe.className='hstat-val '+(pnl>0?'pnl-pos':pnl<0?'pnl-neg':'pnl-neu');
 }
 
-function drawPie(hoverIdx){
-  const c=document.getElementById('chart-type');
-  if(!c||!window._pieData) return;
+function drawPieGeneric(canvasId,data,tot,hoverIdx){
+  const c=document.getElementById(canvasId);
+  if(!c||!data||!tot) return;
   const dpr=window.devicePixelRatio||1, S=180;
   c.width=S*dpr; c.height=S*dpr; c.style.width=S+'px'; c.style.height=S+'px';
   const ctx=c.getContext('2d');
   ctx.scale(dpr,dpr); ctx.clearRect(0,0,S,S);
   const cx=S/2,cy=S/2,r=S/2-2;
   let a=-Math.PI/2;
-  window._pieData.forEach(({color,c:qty},i)=>{
-    const slice=(qty/window._pieTot)*2*Math.PI;
+  data.forEach(({color,c:qty},i)=>{
+    const slice=(qty/tot)*2*Math.PI;
     ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,a,a+slice);ctx.closePath();
     ctx.fillStyle=color;ctx.fill();
     ctx.strokeStyle='#fff';ctx.lineWidth=hoverIdx===i?2:0.5;ctx.stroke();
     a+=slice;
   });
 }
-function pieHover(e){
-  const cv=document.getElementById('chart-type');
-  if(!cv||!window._pieData) return;
+function pieHoverGeneric(e,canvasId,data,tot,tooltipId,drawFn){
+  const cv=document.getElementById(canvasId);
+  if(!cv||!data||!tot) return;
   const rect=cv.getBoundingClientRect(), S=180;
   const x=(e.clientX-rect.left)*(S/rect.width)-S/2;
   const y=(e.clientY-rect.top)*(S/rect.height)-S/2;
-  if(Math.sqrt(x*x+y*y)>S/2){pieUnhover();return;}
+  if(Math.sqrt(x*x+y*y)>S/2){drawFn(null);const t=document.getElementById(tooltipId);if(t)t.style.display='none';return;}
   let norm=Math.atan2(y,x)+Math.PI/2; if(norm<0)norm+=2*Math.PI;
   let cumul=0,idx=null;
-  window._pieData.forEach(({c},i)=>{const s=(c/window._pieTot)*2*Math.PI;if(idx===null&&norm>=cumul&&norm<cumul+s)idx=i;cumul+=s;});
-  drawPie(idx);
-  const tip=document.getElementById('pie-tooltip');
+  data.forEach(({c},i)=>{const s=(c/tot)*2*Math.PI;if(idx===null&&norm>=cumul&&norm<cumul+s)idx=i;cumul+=s;});
+  drawFn(idx);
+  const tip=document.getElementById(tooltipId);
   if(tip&&idx!==null){
-    const d=window._pieData[idx];
-    tip.textContent=d.t+' : '+d.c+' btl ('+Math.round(d.c/window._pieTot*100)+'%)';
+    const d=data[idx];
+    tip.textContent=d.t+' : '+d.c+' btl ('+Math.round(d.c/tot*100)+'%)';
     tip.style.display='block';
     tip.style.left=(e.clientX-rect.left+12)+'px';
     tip.style.top=(e.clientY-rect.top-36)+'px';
   } else if(tip) tip.style.display='none';
 }
+function drawPie(hoverIdx){drawPieGeneric('chart-type',window._pieData,window._pieTot,hoverIdx);}
+function pieHover(e){pieHoverGeneric(e,'chart-type',window._pieData,window._pieTot,'pie-tooltip',drawPie);}
 function pieUnhover(){drawPie(null);const t=document.getElementById('pie-tooltip');if(t)t.style.display='none';}
 
-function filteredWines(){return statFilter==='all'?wines:wines.filter(w=>w.type===statFilter)}
+function drawPieReg(hoverIdx){drawPieGeneric('chart-region-pie',window._pieDataReg,window._pieTotReg,hoverIdx);}
+function pieHoverReg(e){pieHoverGeneric(e,'chart-region-pie',window._pieDataReg,window._pieTotReg,'pie-tooltip-reg',drawPieReg);}
+function pieUnhoverReg(){drawPieReg(null);const t=document.getElementById('pie-tooltip-reg');if(t)t.style.display='none';}
+
+function parseApogee(ap){
+  if(!ap) return null;
+  const nums=(String(ap).match(/\d{4}/g)||[]).map(Number);
+  if(!nums.length) return null;
+  return {from:Math.min(...nums),to:Math.max(...nums)};
+}
+
+const CONT_LABELS={'18.7cl':'Piccolo','37.5cl':'Demi','50cl':'50 cl','75cl':'Standard','1L':'1 L','1.5L':'Magnum','3L':'Double Magnum','4.5L':'Jéroboam','6L':'Impériale','9L':'Salmanazar','12L':'Balthazar','15L':'Nabuchodonosor'};
+const REGION_PALETTE=['#8b1a2a','#2a5a8b','#c47030','#2a7a3a','#7a3a8b','#5a7830','#b8860b','#4a7c9e','#a0522d','#6b4226','#2f4858','#8e6c88'];
 
 function renderStats(){
-  const fw=filteredWines();
-  const vb=Math.round(fw.reduce((a,w)=>a+w.qty*w.buy,0));
+  const fw=wines;
+  const nowYear=new Date().getFullYear();
+
+  // Aperçu global de la cave
+  const totQty=fw.reduce((a,w)=>a+w.qty,0);
+  const totRef=fw.length;
   const vc=Math.round(fw.reduce((a,w)=>a+w.qty*(w.cur||w.buy),0));
-  const pnl=vc-vb;const pct=vb>0?Math.round(pnl/vb*100):0;
+  const withYear=fw.filter(w=>w.year);
+  const qtyWithYear=withYear.reduce((a,w)=>a+w.qty,0);
+  const avgYear=qtyWithYear>0?Math.round(withYear.reduce((a,w)=>a+w.year*w.qty,0)/qtyWithYear):null;
+  const avgAge=avgYear!=null?nowYear-avgYear:null;
+  const apogeeWines=fw.map(w=>({w,p:parseApogee(w.ap)})).filter(x=>x.p);
+  const qtyWithApogee=apogeeWines.reduce((a,{w})=>a+w.qty,0);
+  const qtyReady=apogeeWines.filter(({p})=>nowYear>=p.from&&nowYear<=p.to).reduce((a,{w})=>a+w.qty,0);
+  const readyPct=qtyWithApogee>0?Math.round(qtyReady/qtyWithApogee*100):null;
   document.getElementById('pnl-summary').innerHTML=`
-    <div class="pnl-kpi"><div class="pnl-kpi-val">${vb}€</div><div class="pnl-kpi-lbl">Valeur achat</div></div>
-    <div class="pnl-kpi"><div class="pnl-kpi-val">${vc}€</div><div class="pnl-kpi-lbl">Valeur actuelle</div></div>
-    <div class="pnl-kpi"><div class="pnl-kpi-val ${pnl>0?'pkv-pos':pnl<0?'pkv-neg':'pkv-neu'}">${pnl>0?'+':''}${pnl}€ (${pnl>0?'+':''}${pct}%)</div><div class="pnl-kpi-lbl">Plus-value totale</div></div>`;
-  const byR={};fw.forEach(w=>{if(!w.reg)return;if(!byR[w.reg])byR[w.reg]={buy:0,cur:0};byR[w.reg].buy+=w.qty*w.buy;byR[w.reg].cur+=w.qty*(w.cur||w.buy);});
-  const rE=Object.entries(byR).map(([r,d])=>({r,pnl:Math.round(d.cur-d.buy),pct:d.buy>0?Math.round((d.cur-d.buy)/d.buy*100):0})).sort((a,b)=>b.pnl-a.pnl);
-  const maxP=Math.max(...rE.map(x=>Math.abs(x.pnl)),1);
-  document.getElementById('st-reg-pnl').innerHTML=rE.map(({r,pnl,pct})=>`<div class="rbar"><span class="rname">${esc(r)}</span><div class="btrack"><div class="bfill" style="width:${Math.round(Math.abs(pnl)/maxP*100)}%;background:${pnl>=0?'var(--clr-pos)':'var(--ruby)'}"></div></div><span class="bcnt" style="color:${pnl>=0?'var(--clr-pos)':'var(--ruby)'}">${pnl>=0?'+':''}${pnl}€</span></div>`).join('')||'<span style="font-size:12px;color:var(--ink4)">—</span>';
+    <div class="pnl-kpi"><div class="pnl-kpi-val">${totQty}</div><div class="pnl-kpi-lbl">Bouteilles</div></div>
+    <div class="pnl-kpi"><div class="pnl-kpi-val">${totRef}</div><div class="pnl-kpi-lbl">Références</div></div>
+    <div class="pnl-kpi"><div class="pnl-kpi-val pnl-kpi-val-money">${vc}€</div><div class="pnl-kpi-lbl">Valeur de la cave</div></div>
+    <div class="pnl-kpi"><div class="pnl-kpi-val">${avgAge!=null?avgAge+' ans':'—'}</div><div class="pnl-kpi-lbl">Âge moyen</div></div>
+    <div class="pnl-kpi"><div class="pnl-kpi-val">${readyPct!=null?readyPct+'%':'—'}</div><div class="pnl-kpi-lbl">Prêtes à boire</div></div>`;
+
+  // Répartition par type (camembert)
   const byT={};fw.forEach(w=>{byT[w.type]=(byT[w.type]||0)+w.qty;});
   const totT=Math.max(Object.values(byT).reduce((a,b)=>a+b,0),1);
-  // Camembert
   const typeEntries=Object.entries(byT).sort((a,b)=>b[1]-a[1]);
   const PIE_COLORS={'Rouge':'#6b1520','Blanc sec':'#c4a030','Blanc moelleux':'#d4b040','Blanc liquoreux':'#e0c050','Rosé':'#e8a0a8','Pétillant':'#4a7c9e','Macération':'#c47830','Muté / Fortifié':'#7a4020','Doux naturel':'#c4902a','Oxydatif':'#b8962a','Passerillé':'#b07818','Autre':'#888'};
-  const getPieColor=(t,i)=>PIE_COLORS[t]||['#8b1a2a','#2a5a8b','#c47030','#2a7a3a','#7a3a8b','#5a7830'][i%6];
+  const getPieColor=(t,i)=>PIE_COLORS[t]||REGION_PALETTE[i%REGION_PALETTE.length];
   window._pieData=typeEntries.map(([t,c],i)=>({t,c,color:getPieColor(t,i)}));
   window._pieTot=totT;
   drawPie(null);
   document.getElementById('st-type').innerHTML=window._pieData.map(({t,c,color})=>
     `<div style="display:flex;align-items:center;gap:6px"><div style="width:10px;height:10px;border-radius:2px;background:${color};flex-shrink:0"></div><span style="font-size:11px;color:var(--ink3)">${esc(t)} <span style="color:var(--ink4)">${c} (${Math.round(c/totT*100)}%)</span></span></div>`
   ).join('');
-  const top5=[...fw].map(w=>({...w,pnl:(w.cur-w.buy)*w.qty})).sort((a,b)=>b.pnl-a.pnl).slice(0,5);
-  document.getElementById('st-top').innerHTML=top5.map(w=>`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="font-size:12px;color:var(--ink3);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:60%">${esc(w.name)}</span><span style="font-size:12px;font-weight:600;color:${w.pnl>=0?'var(--clr-pos)':'var(--ruby)'}">${w.pnl>=0?'+':''}${Math.round(w.pnl)} €</span></div>`).join('')||'—';
-  const byY={};fw.filter(w=>w.year).forEach(w=>{if(!byY[w.year])byY[w.year]={buy:0,cur:0};byY[w.year].buy+=w.qty*w.buy;byY[w.year].cur+=w.qty*(w.cur||w.buy);});
-  const years=Object.keys(byY).sort();const pnlY=years.map(y=>Math.round(byY[y].cur-byY[y].buy));
+
+  // Répartition par région (camembert)
+  const byR={};fw.forEach(w=>{const r=w.reg||'Non renseignée';byR[r]=(byR[r]||0)+w.qty;});
+  const totR=Math.max(Object.values(byR).reduce((a,b)=>a+b,0),1);
+  const regEntries=Object.entries(byR).sort((a,b)=>b[1]-a[1]);
+  window._pieDataReg=regEntries.map(([r,c],i)=>({t:r,c,color:REGION_PALETTE[i%REGION_PALETTE.length]}));
+  window._pieTotReg=totR;
+  drawPieReg(null);
+  document.getElementById('st-region').innerHTML=window._pieDataReg.map(({t,c,color})=>
+    `<div style="display:flex;align-items:center;gap:6px"><div style="width:10px;height:10px;border-radius:2px;background:${color};flex-shrink:0"></div><span style="font-size:11px;color:var(--ink3)">${esc(t)} <span style="color:var(--ink4)">${c} (${Math.round(c/totR*100)}%)</span></span></div>`
+  ).join('');
+
+  // Bouteilles par millésime (structure de la cave, pas de plus-value)
+  const byY={};fw.filter(w=>w.year).forEach(w=>{byY[w.year]=(byY[w.year]||0)+w.qty;});
+  const years=Object.keys(byY).sort();const qtyY=years.map(y=>byY[y]);
   if(chartM)chartM.destroy();
-  chartM=new Chart(document.getElementById('chart-millesime').getContext('2d'),{type:'bar',data:{labels:years,datasets:[{label:'Plus-value (€)',data:pnlY,backgroundColor:pnlY.map(v=>v>=0?'rgba(42,122,42,.75)':'rgba(139,26,42,.75)'),borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:10}}},y:{grid:{color:'rgba(0,0,0,.04)'},ticks:{font:{size:10},callback:v=>v+'€'}}}}});
-  const rKeys=Object.keys(byR);
-  if(chartR)chartR.destroy();
-  chartR=new Chart(document.getElementById('chart-region').getContext('2d'),{type:'bar',data:{labels:rKeys,datasets:[{label:'Achat',data:rKeys.map(r=>Math.round(byR[r].buy)),backgroundColor:'rgba(139,26,42,.35)',borderRadius:4},{label:'Actuel',data:rKeys.map(r=>Math.round(byR[r].cur)),backgroundColor:'rgba(42,122,42,.6)',borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:10},boxWidth:10}}},scales:{x:{grid:{display:false},ticks:{font:{size:10}}},y:{grid:{color:'rgba(0,0,0,.04)'},ticks:{font:{size:10},callback:v=>v+'€'}}}}});
+  chartM=new Chart(document.getElementById('chart-millesime').getContext('2d'),{type:'bar',data:{labels:years,datasets:[{label:'Bouteilles',data:qtyY,backgroundColor:'rgba(139,26,42,.55)',borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:10}}},y:{grid:{color:'rgba(0,0,0,.04)'},ticks:{font:{size:10},precision:0}}}}});
+
+  // Répartition par format
+  const byF={};fw.forEach(w=>{const f=w.cont||'75cl';byF[f]=(byF[f]||0)+w.qty;});
+  const fE=Object.entries(byF).sort((a,b)=>b[1]-a[1]);
+  const maxF=Math.max(...fE.map(x=>x[1]),1);
+  document.getElementById('st-format').innerHTML=fE.map(([f,c])=>`<div class="rbar"><span class="rname">${esc(CONT_LABELS[f]||f)}</span><div class="btrack"><div class="bfill" style="width:${Math.round(c/maxF*100)}%;background:var(--ruby)"></div></div><span class="bcnt">${c}</span></div>`).join('')||'<span style="font-size:12px;color:var(--ink4)">—</span>';
+
+  // À boire en priorité (fenêtre d'apogée la plus proche/dépassée)
+  const priority=apogeeWines.map(({w,p})=>({w,delta:p.to-nowYear})).sort((a,b)=>a.delta-b.delta).slice(0,5);
+  document.getElementById('st-priority').innerHTML=priority.length?priority.map(({w,delta})=>`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="font-size:12px;color:var(--ink3);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:60%">${esc(w.name)}${w.year?' '+w.year:''}</span><span style="font-size:11px;font-weight:600;color:${delta<0?'var(--ruby)':'var(--ink4)'}">${delta<0?'Apogée dépassée':delta===0?'Cette année':'Dans '+delta+' an'+(delta>1?'s':'')}</span></div>`).join('') : '<span style="font-size:12px;color:var(--ink4)">Renseignez l\'apogée de vos vins pour voir cette liste</span>';
 }
 
 function renderWishes(){
