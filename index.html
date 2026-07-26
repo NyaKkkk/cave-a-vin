@@ -596,6 +596,17 @@ button.auth-tab{background:none;border-width:0 0 2px;border-style:solid;border-c
 .modal-title{font-family:var(--font-display);font-size:22px;font-weight:600;color:var(--ink);margin-bottom:24px}
 .modal-close{position:absolute;top:16px;right:16px;width:28px;height:28px;border-radius:50%;border:1px solid var(--ink5);background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--ink4);font-size:16px;transition:all .2s}
 .modal-close:hover{background:var(--ink6);color:var(--ink)}
+.legal-content{font-size:13px;line-height:1.7;color:var(--ink3)}
+.legal-content h4{font-family:var(--font-body);font-size:13px;font-weight:600;color:var(--ink);text-transform:uppercase;letter-spacing:.4px;margin:22px 0 8px}
+.legal-content h4:first-child{margin-top:0}
+.legal-content p{margin-bottom:10px}
+.legal-content ul{margin:0 0 10px;padding-left:20px}
+.legal-content li{margin-bottom:4px}
+.legal-content strong{color:var(--ink);font-weight:600}
+.legal-content .legal-meta{font-size:11px;color:var(--ink4);margin-bottom:18px;font-style:italic}
+.legal-content .legal-placeholder{color:var(--ruby);font-weight:600}
+.legal-content .legal-action{margin-top:16px;padding:0 16px;height:36px;background:none;border:1.5px solid var(--ink5);border-radius:var(--r);font-family:var(--font-body);font-size:12px;font-weight:600;color:var(--ink3);cursor:pointer}
+.legal-content .legal-action:hover{border-color:var(--ink4);color:var(--ink)}
 .modal-avatar{display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:24px}
 .modal-avatar-preview{width:80px;height:80px;border-radius:50%;border:3px solid var(--ink5);overflow:hidden;display:flex;align-items:center;justify-content:center;background:var(--ink6);cursor:pointer;transition:all .2s}
 .modal-avatar-preview:hover{border-color:var(--gold2)}
@@ -1233,17 +1244,13 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--ruby);outline-offse
       <span class="footer-brand-tag">Sommelier numérique</span>
     </div>
     <nav class="footer-links" aria-label="Liens légaux et contact">
-      <a href="#" class="footer-link">CGU</a>
+      <a href="#" class="footer-link" onclick="openLegalModal('cgu');return false;">CGU</a>
       <span class="footer-divider" aria-hidden="true"></span>
-      <a href="#" class="footer-link">CGV</a>
+      <a href="#" class="footer-link" onclick="openLegalModal('confidentialite');return false;">Confidentialité</a>
       <span class="footer-divider" aria-hidden="true"></span>
-      <a href="#" class="footer-link">Confidentialité</a>
+      <a href="#" class="footer-link" id="footer-cookie-link" onclick="openLegalModal('cookies');return false;">Cookies</a>
       <span class="footer-divider" aria-hidden="true"></span>
-      <a href="#" class="footer-link" id="footer-cookie-link" onclick="openCookieSettings();return false;">Cookies</a>
-      <span class="footer-divider" aria-hidden="true"></span>
-      <a href="#" class="footer-link">Mentions légales</a>
-      <span class="footer-divider" aria-hidden="true"></span>
-      <a href="#" class="footer-link">Tarifs</a>
+      <a href="#" class="footer-link" onclick="openLegalModal('mentions');return false;">Mentions légales</a>
       <span class="footer-divider" aria-hidden="true"></span>
       <a href="mailto:contact@cave-a-vin.fr" class="footer-link">Contact</a>
     </nav>
@@ -2191,6 +2198,130 @@ function copyAnnonce(){
     btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Copié !';
     setTimeout(()=>{btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copier';},2000);
   });
+}
+
+// ── PAGES LÉGALES ──
+const LEGAL_DOCS = {
+  cgu: {
+    title: "Conditions Générales d'Utilisation",
+    html: `
+<h4>1. Objet</h4>
+<p>Les présentes Conditions Générales d'Utilisation (CGU) régissent l'accès et l'utilisation du service <strong>Cave à Vin</strong>, une application permettant de gérer une collection personnelle de vins : suivi du stock, valorisation indicative, notes de dégustation, suivi des ventes, liste de souhaits et statistiques.</p>
+<h4>2. Acceptation</h4>
+<p>La création d'un compte et l'utilisation du service impliquent l'acceptation pleine et entière des présentes CGU. Si vous n'acceptez pas ces conditions, vous ne devez pas utiliser le service.</p>
+<h4>3. Accès au service et compte utilisateur</h4>
+<p>L'accès au service nécessite la création d'un compte (adresse email et mot de passe, gérés via Firebase Authentication). Vous êtes responsable de la confidentialité de vos identifiants et de toute activité effectuée depuis votre compte. Le service est réservé aux personnes majeures au regard de la législation applicable à la consommation d'alcool dans leur pays de résidence.</p>
+<h4>4. Vos données et votre contenu</h4>
+<p>Vous restez seul responsable de l'exactitude des informations que vous saisissez (noms de vins, prix, quantités, photos, notes de dégustation, etc.). L'éditeur n'effectue aucune vérification de ces informations et ne saurait être tenu responsable d'une erreur de saisie ou d'appréciation.</p>
+<h4>5. Fonction d'analyse par intelligence artificielle</h4>
+<p>Le service propose une fonction facultative d'analyse automatique (reconnaissance d'étiquette à partir d'une photo, ou d'une description texte) qui s'appuie sur un modèle d'intelligence artificielle générative. Les informations proposées par cette fonction sont fournies à titre indicatif et doivent être vérifiées par vos soins avant d'être enregistrées dans votre cave.</p>
+<h4>6. Cotes et valorisation</h4>
+<p>Les montants affichés (prix d'achat, valeur actuelle, plus ou moins-value) sont calculés à partir des informations que vous renseignez vous-même. Ils sont fournis à titre purement indicatif : ils ne constituent en aucun cas un conseil en investissement, une expertise ou une garantie de valeur de revente. Les liens vers des plateformes tierces (par exemple IdealWine) ouvrent des sites indépendants qui n'engagent pas la responsabilité de l'éditeur.</p>
+<h4>7. Consommation responsable</h4>
+<p>Cave à Vin est un outil de gestion de collection, pas un service de vente d'alcool. L'abus d'alcool est dangereux pour la santé, à consommer avec modération.</p>
+<h4>8. Propriété intellectuelle</h4>
+<p>La structure du site, son design, ses textes et sa marque sont protégés par le droit de la propriété intellectuelle. Toute reproduction non autorisée est interdite. Les données que vous saisissez vous appartiennent.</p>
+<h4>9. Disponibilité du service</h4>
+<p>L'éditeur s'efforce d'assurer un accès continu au service, sans garantie de disponibilité permanente. Des interruptions liées à la maintenance ou à des causes indépendantes de sa volonté (panne d'un prestataire technique tiers, notamment Firebase/Google) peuvent survenir.</p>
+<h4>10. Résiliation</h4>
+<p>Vous pouvez cesser d'utiliser le service et demander la suppression de votre compte et de vos données à tout moment, en nous contactant à l'adresse ci-dessous. L'éditeur se réserve le droit de suspendre un compte en cas d'usage abusif ou contraire aux présentes CGU.</p>
+<h4>11. Modification des CGU</h4>
+<p>Les présentes CGU peuvent être modifiées à tout moment afin de refléter l'évolution du service. La version en vigueur est celle publiée sur cette page.</p>
+<h4>12. Droit applicable</h4>
+<p>Les présentes CGU sont soumises au droit français. Tout litige relève, à défaut de résolution amiable, des tribunaux compétents.</p>
+<h4>13. Contact</h4>
+<p>Pour toute question relative aux présentes CGU : <a href="mailto:contact@cave-a-vin.fr">contact@cave-a-vin.fr</a></p>`
+  },
+  confidentialite: {
+    title: 'Politique de confidentialité',
+    html: `
+<h4>1. Responsable du traitement</h4>
+<p>Le responsable du traitement des données à caractère personnel collectées via Cave à Vin est <span class="legal-placeholder">[nom / raison sociale à compléter]</span>, <span class="legal-placeholder">[adresse à compléter]</span>. Contact : <a href="mailto:contact@cave-a-vin.fr">contact@cave-a-vin.fr</a></p>
+<h4>2. Données collectées</h4>
+<ul>
+<li><strong>Compte :</strong> adresse email et mot de passe (le mot de passe n'est jamais stocké en clair, il est géré par Firebase Authentication).</li>
+<li><strong>Contenu de votre cave :</strong> les vins, quantités, prix, photos, notes, ventes, dégustations et souhaits que vous saisissez.</li>
+<li><strong>Préférences d'affichage :</strong> thème clair/sombre, onglet actif, mode d'affichage, mode privé, choix de cookies — conservées localement sur votre appareil, jamais transmises à un tiers.</li>
+</ul>
+<h4>3. Origine des données</h4>
+<p>Ces données sont soit saisies directement par vous, soit générées par la fonction d'analyse par intelligence artificielle à partir d'une photo ou d'un texte que vous fournissez volontairement.</p>
+<h4>4. Finalités et bases légales</h4>
+<p>Vos données sont traitées pour permettre le fonctionnement de votre compte et de votre cave (exécution du contrat) et pour assurer la sécurité du service, par exemple la protection contre les robots via Firebase App Check (intérêt légitime).</p>
+<h4>5. Destinataires des données</h4>
+<p>Vos données sont hébergées et traitées par les prestataires techniques suivants, qui agissent en tant que sous-traitants :</p>
+<ul>
+<li><strong>Firebase Authentication et Cloud Firestore</strong> (Google) : gestion des comptes et base de données de votre cave.</li>
+<li><strong>Firebase Storage</strong> (Google) : hébergement des photos de bouteilles que vous ajoutez.</li>
+<li><strong>Firebase AI Logic</strong> (Google, modèle Gemini) : analyse des photos d'étiquettes et des descriptions texte lorsque vous utilisez la fonction d'analyse par IA.</li>
+<li><strong>Firebase App Check</strong> (Google) : protection anti-abus du service.</li>
+<li><strong>Google Fonts</strong> : chargement des polices d'écriture du site.</li>
+</ul>
+<p>Aucune donnée n'est vendue ni utilisée à des fins publicitaires. Le service n'utilise aujourd'hui aucun outil de mesure d'audience ni de traceur publicitaire tiers.</p>
+<h4>6. Transferts hors Union européenne</h4>
+<p>Certains de ces prestataires (Google) peuvent traiter des données en dehors de l'Union européenne. Ces transferts sont encadrés par les garanties prévues par le prestataire, notamment les clauses contractuelles types de la Commission européenne.</p>
+<h4>7. Durée de conservation</h4>
+<p>Vos données sont conservées tant que votre compte est actif. Vous pouvez demander la suppression de votre compte et de l'ensemble des données associées à tout moment.</p>
+<h4>8. Sécurité</h4>
+<p>L'accès au service est sécurisé (connexion chiffrée HTTPS, authentification gérée par Firebase). Aucun système n'étant infaillible, nous vous invitons à utiliser un mot de passe robuste et propre à ce service.</p>
+<h4>9. Vos droits</h4>
+<p>Conformément au Règlement Général sur la Protection des Données (RGPD), vous disposez d'un droit d'accès, de rectification, d'effacement, de limitation, d'opposition et de portabilité de vos données. Vous pouvez exercer ces droits en écrivant à <a href="mailto:contact@cave-a-vin.fr">contact@cave-a-vin.fr</a>. Vous disposez également du droit d'introduire une réclamation auprès de la CNIL (www.cnil.fr).</p>
+<h4>10. Cookies et traceurs</h4>
+<p>Le détail des cookies et traceurs utilisés est disponible dans notre <a href="#" onclick="openLegalModal('cookies');return false;">politique de cookies</a>.</p>
+<h4>11. Liens externes</h4>
+<p>Le service peut proposer un lien vers des sites tiers (par exemple IdealWine pour consulter des cotes de vin). Ce lien ouvre un nouvel onglet vers un site indépendant ; aucune donnée personnelle n'est transmise à ce site par Cave à Vin.</p>
+<h4>12. Modification de la politique</h4>
+<p>Cette politique peut être mise à jour pour refléter l'évolution du service ou de la réglementation.</p>`
+  },
+  cookies: {
+    title: 'Politique de cookies',
+    html: `
+<h4>1. Qu'est-ce qu'un cookie ?</h4>
+<p>Un cookie (ou traceur) est un petit fichier déposé sur votre appareil lors de votre navigation. Cave à Vin utilise principalement le <strong>stockage local de votre navigateur</strong> plutôt que des cookies traditionnels, mais le principe et les enjeux de confidentialité sont les mêmes.</p>
+<h4>2. Les traceurs utilisés aujourd'hui</h4>
+<ul>
+<li><strong>Authentification</strong> (Firebase Authentication) : nécessaire pour vous garder connecté à votre compte.</li>
+<li><strong>Préférences d'affichage</strong> (thème clair/sombre, dernier onglet consulté, mode d'affichage de la cave, mode privé) : stockées localement sur votre appareil, jamais transmises à un serveur tiers.</li>
+<li><strong>Votre choix concernant les cookies</strong> : mémorisé pour ne pas vous redemander votre consentement à chaque visite.</li>
+<li><strong>Protection anti-abus</strong> (Firebase App Check / reCAPTCHA) : permet de vérifier que le service est utilisé par un humain et non par un robot.</li>
+</ul>
+<p>Ces éléments sont strictement nécessaires au fonctionnement du service ; ils ne sont pas soumis à consentement au sens de la réglementation.</p>
+<h4>3. Ce que nous n'utilisons pas</h4>
+<p>Cave à Vin n'utilise, à ce jour, <strong>aucun cookie publicitaire ni aucun outil de mesure d'audience tiers</strong> (type Google Analytics). Aucune donnée de navigation n'est revendue ou partagée à des fins commerciales.</p>
+<h4>4. Gérer vos préférences</h4>
+<p>Vous pouvez modifier votre choix concernant les cookies à tout moment.</p>
+<button type="button" class="legal-action" onclick="closeLegalModal();openCookieSettings();">Modifier mes préférences de cookies</button>
+<h4>5. Contact</h4>
+<p>Pour toute question : <a href="mailto:contact@cave-a-vin.fr">contact@cave-a-vin.fr</a></p>`
+  },
+  mentions: {
+    title: 'Mentions légales',
+    html: `
+<h4>1. Éditeur du site</h4>
+<p>Le site et l'application Cave à Vin sont édités par : <span class="legal-placeholder">[nom / raison sociale à compléter]</span><br>Adresse : <span class="legal-placeholder">[adresse à compléter]</span><br>Contact : <a href="mailto:contact@cave-a-vin.fr">contact@cave-a-vin.fr</a></p>
+<h4>2. Directeur de la publication</h4>
+<p><span class="legal-placeholder">[nom à compléter]</span></p>
+<h4>3. Hébergement</h4>
+<p><strong>Hébergement du site :</strong> GitHub, Inc. — 88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, États-Unis (GitHub Pages).</p>
+<p><strong>Hébergement des données</strong> (authentification, base de données, stockage des photos, intelligence artificielle) : Firebase, service de Google Ireland Limited — Gordon House, Barrow Street, Dublin 4, Irlande / Google LLC — 1600 Amphitheatre Parkway, Mountain View, CA 94043, États-Unis.</p>
+<h4>4. Propriété intellectuelle</h4>
+<p>L'ensemble des éléments du site (structure, textes, design, code) est protégé par le droit de la propriété intellectuelle. Toute reproduction non autorisée est interdite.</p>
+<h4>5. Liens hypertextes</h4>
+<p>Le site peut contenir des liens vers des sites tiers (par exemple IdealWine). L'éditeur n'exerce aucun contrôle sur ces sites et décline toute responsabilité quant à leur contenu.</p>
+<h4>6. Crédits</h4>
+<p>Polices : Cormorant Garamond et DM Sans (Google Fonts). Bibliothèque graphique : Chart.js.</p>
+<h4>7. Contact</h4>
+<p><a href="mailto:contact@cave-a-vin.fr">contact@cave-a-vin.fr</a></p>`
+  }
+};
+function openLegalModal(key){
+  const doc = LEGAL_DOCS[key];
+  if(!doc) return;
+  document.getElementById('legal-modal-title').textContent = doc.title;
+  document.getElementById('legal-modal-body').innerHTML = doc.html;
+  document.getElementById('legal-modal').classList.add('open');
+}
+function closeLegalModal(){
+  document.getElementById('legal-modal').classList.remove('open');
 }
 
 // ── PROFIL UTILISATEUR ──
@@ -5229,13 +5360,22 @@ function removeToast(t){
   </div>
 </div>
 
+<!-- LEGAL -->
+<div class="modal-overlay" id="legal-modal" onclick="if(event.target===this)closeLegalModal()">
+  <div class="modal-box" style="max-width:680px">
+    <button class="modal-close" onclick="closeLegalModal()">✕</button>
+    <div class="modal-title" id="legal-modal-title"></div>
+    <div class="legal-content" id="legal-modal-body"></div>
+  </div>
+</div>
+
 <div id="toast-wrap" aria-live="polite" aria-atomic="true" role="status"></div>
 
 <!-- COOKIE BANNER -->
 <div id="cookie-banner" role="dialog" aria-label="Gestion des cookies" aria-live="polite">
   <p class="cookie-banner-text">
-    <strong>Nous utilisons des cookies</strong> pour faire fonctionner l'application (authentification, préférences) et mesurer l'audience de façon anonyme.
-    <a href="#" onclick="openCookieSettings();return false;">En savoir plus</a>
+    <strong>Nous utilisons des cookies</strong> pour faire fonctionner l'application (authentification, préférences). Aucun cookie publicitaire ni de mesure d'audience n'est utilisé.
+    <a href="#" onclick="openLegalModal('cookies');return false;">En savoir plus</a>
   </p>
   <div class="cookie-banner-actions">
     <button class="cookie-btn-refuse" onclick="setCookieConsent('refused')">Tout refuser</button>
