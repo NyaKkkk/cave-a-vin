@@ -70,6 +70,11 @@ window.addEventListener('DOMContentLoaded', function() {
   --clr-info:#80a8f0;--clr-info-bg:rgba(26,90,184,.15);--clr-info-border:rgba(26,90,184,.3);
 }
 html,body{width:100%;min-height:100vh}
+html{scrollbar-width:thin;scrollbar-color:var(--ink5) var(--bg)}
+html::-webkit-scrollbar{width:11px}
+html::-webkit-scrollbar-track{background:var(--bg)}
+html::-webkit-scrollbar-thumb{background:var(--ink5);border-radius:20px;border:3px solid var(--bg)}
+html::-webkit-scrollbar-thumb:hover{background:var(--ink4-dec)}
 body{font-family:var(--font-body);background:var(--bg);color:var(--ink);font-size:14px}
 .app{width:100%;margin:0 auto;padding:0;display:flex;flex-direction:column;min-height:100vh}
 
@@ -607,6 +612,15 @@ button.auth-tab{background:none;border-width:0 0 2px;border-style:solid;border-c
 .legal-content .legal-placeholder{color:var(--ruby);font-weight:600}
 .legal-content .legal-action{margin-top:16px;padding:0 16px;height:36px;background:none;border:1.5px solid var(--ink5);border-radius:var(--r);font-family:var(--font-body);font-size:12px;font-weight:600;color:var(--ink3);cursor:pointer}
 .legal-content .legal-action:hover{border-color:var(--ink4);color:var(--ink)}
+.pricing-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px}
+@media(max-width:480px){.pricing-grid{grid-template-columns:1fr}}
+.pricing-card{border:1.5px solid var(--ink5);border-radius:var(--r2);padding:20px 16px;text-align:center;display:flex;flex-direction:column;gap:10px}
+.pricing-card-highlight{border-color:var(--ruby)}
+.pricing-period{font-family:var(--font-display);font-size:20px;font-weight:600;color:var(--ink)}
+.pricing-note{font-size:12px;color:var(--ink4)}
+.pricing-cta{height:40px;border:none;border-radius:var(--r);background:var(--ruby);color:#fff;font-family:var(--font-body);font-size:13px;font-weight:600;cursor:pointer;transition:background .15s}
+.pricing-cta:hover{background:var(--ruby2)}
+.pricing-cta:disabled{opacity:.6;cursor:default}
 .modal-avatar{display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:24px}
 .modal-avatar-preview{width:80px;height:80px;border-radius:50%;border:3px solid var(--ink5);overflow:hidden;display:flex;align-items:center;justify-content:center;background:var(--ink6);cursor:pointer;transition:all .2s}
 .modal-avatar-preview:hover{border-color:var(--gold2)}
@@ -1071,6 +1085,10 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--ruby);outline-offse
         <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
         Mon profil
       </button>
+      <button type="button" class="user-dropdown-item" id="dd-plan-btn" onclick="handlePlanMenuClick();return false;">
+        <svg viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 1 0 0 7h5a3.5 3.5 0 1 1 0 7H6"/></svg>
+        <span id="dd-plan-label">Passer Premium</span>
+      </button>
       <div class="user-dropdown-sep"></div>
       <button type="button" class="user-dropdown-item danger" onclick="doLogout();return false;">
         <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16,17 21,12 16,7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
@@ -1288,6 +1306,7 @@ const firebaseConfig = {
 let db = null;
 let auth = null;
 let currentUser = null;
+let functionsClient = null;
 
 // ── AUTH SLIDESHOW ──
 let _authSlideIdx = 0, _authSlideTimer = null;
@@ -1416,7 +1435,8 @@ async function doLogout(){
     'https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js',
     'https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js',
     'https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js',
-    'https://www.gstatic.com/firebasejs/9.23.0/firebase-app-check-compat.js'
+    'https://www.gstatic.com/firebasejs/9.23.0/firebase-app-check-compat.js',
+    'https://www.gstatic.com/firebasejs/9.23.0/firebase-functions-compat.js'
   ];
 
   let loaded = 0;
@@ -1441,6 +1461,7 @@ async function doLogout(){
       auth = firebase.auth();
       db   = firebase.firestore();
       db.settings({ experimentalAutoDetectLongPolling: true, merge: true });
+      functionsClient = firebase.app().functions('europe-west1');
 
       auth.onAuthStateChanged(async(user)=>{
         document.getElementById('loading-screen').style.display='none';
@@ -1463,6 +1484,14 @@ async function doLogout(){
               await Promise.all([loadFromFirebase(), loadUserProfile(user.uid), loadDegVentes()]);
               _dataLoading = false;
               showTab(_t);
+              const _checkout = new URLSearchParams(location.search).get('checkout');
+              if(_checkout){
+                history.replaceState(null,'',location.pathname);
+                if(_checkout==='success'){
+                  showToast('Paiement reçu, activation en cours…', 'info');
+                  setTimeout(()=>{ loadUserProfile(user.uid); }, 2500);
+                }
+              }
               break;
             }catch(e){
               if(i===3){ console.error('Chargement données échoué:', e); showToast('Impossible de charger les données. Vérifiez votre connexion.','error'); }
@@ -1502,11 +1531,8 @@ async function doLogout(){
     });
   }
 
-  // Charger les 4 scripts en séquence (app-check en dernier)
-  loadScript(scripts[0])
-    .then(()=>loadScript(scripts[1]))
-    .then(()=>loadScript(scripts[2]))
-    .then(()=>loadScript(scripts[3]))
+  // Charger les scripts en séquence
+  scripts.reduce((p,url)=>p.then(()=>loadScript(url)), Promise.resolve())
     .then(onAllLoaded)
     .catch(e=>{
       console.error('Impossible de charger Firebase:', e);
@@ -2324,6 +2350,49 @@ function closeLegalModal(){
   document.getElementById('legal-modal').classList.remove('open');
 }
 
+// ── TARIFS / ABONNEMENT ──
+function openPricingModal(){
+  const err = document.getElementById('pricing-error');
+  if(err){ err.style.display='none'; err.textContent=''; }
+  const btnM = document.getElementById('pricing-btn-month');
+  const btnY = document.getElementById('pricing-btn-year');
+  if(btnM){ btnM.disabled=false; btnM.textContent='Choisir le mensuel'; }
+  if(btnY){ btnY.disabled=false; btnY.textContent="Choisir l'annuel"; }
+  document.getElementById('pricing-modal').classList.add('open');
+}
+function closePricingModal(){
+  document.getElementById('pricing-modal').classList.remove('open');
+}
+async function choosePlan(interval){
+  if(!currentUser || !functionsClient) return;
+  const btn = document.getElementById(interval==='year'?'pricing-btn-year':'pricing-btn-month');
+  const err = document.getElementById('pricing-error');
+  if(err){ err.style.display='none'; err.textContent=''; }
+  if(btn){ btn.disabled=true; btn.textContent='Redirection…'; }
+  try{
+    const callable = functionsClient.httpsCallable('createCheckoutSession');
+    const result = await callable({interval});
+    if(result.data && result.data.url){ window.location.href = result.data.url; return; }
+    throw new Error('URL de paiement manquante');
+  }catch(e){
+    console.error('choosePlan error:', e);
+    if(err){ err.textContent="Impossible d'ouvrir le paiement pour le moment. Réessayez plus tard."; err.style.display='block'; }
+    if(btn){ btn.disabled=false; btn.textContent = interval==='year'?"Choisir l'annuel":'Choisir le mensuel'; }
+  }
+}
+async function openPortalSession(){
+  if(!currentUser || !functionsClient) return;
+  try{
+    const callable = functionsClient.httpsCallable('createPortalSession');
+    const result = await callable({});
+    if(result.data && result.data.url){ window.location.href = result.data.url; return; }
+    throw new Error('URL du portail manquante');
+  }catch(e){
+    console.error('openPortalSession error:', e);
+    showToast("Impossible d'ouvrir la gestion de l'abonnement.", 'error');
+  }
+}
+
 // ── PROFIL UTILISATEUR ──
 let userProfile = {};
 
@@ -2353,6 +2422,13 @@ function updateUserMenu(){
   document.getElementById('dd-email').textContent = p.email||currentUser?.email||'';
   const ddCave = document.getElementById('dd-cave');
   ddCave.textContent = p.cave ? `🍷 ${p.cave}` : '';
+
+  const planLabel = document.getElementById('dd-plan-label');
+  if(planLabel) planLabel.textContent = p.plan==='premium' ? 'Gérer mon abonnement' : 'Passer Premium';
+}
+function handlePlanMenuClick(){
+  if(userProfile && userProfile.plan==='premium') openPortalSession();
+  else openPricingModal();
 }
 
 function toggleUserMenu(){
@@ -3270,42 +3346,16 @@ function handlePhotoSelect(inp,prefix){
   };r.readAsDataURL(f);
 }
 
-const AI_PROMPT=`Tu es un expert sommelier encyclopédiste. À partir du vin fourni, retourne UNIQUEMENT un objet JSON valide (sans markdown, sans explication) :
-{"name":"...","appellation":"...","type":"Rouge|Blanc sec|Blanc moelleux|Blanc liquoreux|Rosé|Pétillant|Macération|Muté / Fortifié|Doux naturel|Oxydatif|Passerillé|Autre","region":"...","country":"...","year":2015,"apogee":"2025-2035","notes_degustation":"5-8 mots-clés ex: minéral, fruits noirs, tannins soyeux","certs":["bio"],"critics":{"parker":{"score":96,"max":100}}}
-
-RÈGLES STRICTES :
-- Ne JAMAIS inventer de notes critiques. Omets si pas certain à 100%. Si aucune certitude : "critics":{}
-- Critiques : parker(100), suckling(100), decanter(20), vinous(100), bettane(20), jancis(20), ws(100), bh(100), rvf(20), anson(100), gilbert(20), tim_atkin(100), falstaff(100)
-- certs : certifications du domaine parmi : "bio"(AB EU), "demeter", "biody"(Biodyvin), "hve"(HVE), "nature"(Méthode Nature), "vegan", "terra"(Terra Vitis). [] si inconnu.
-- Champs inconnus : null`;
-
-// ── FIREBASE AI LOGIC — Gemini 3.0 Flash ──
-let _geminiModel = null;
-
-async function initGemini(){
-  if(_geminiModel) return _geminiModel;
-  try{
-    const { initializeApp, getApp } = await import('https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js');
-    const { getAI, getGenerativeModel, GoogleAIBackend } = await import('https://www.gstatic.com/firebasejs/11.8.1/firebase-ai.js');
-    let app;
-    try{ app = getApp(); }catch(e){ app = initializeApp(firebaseConfig); }
-    const ai = getAI(app, { backend: new GoogleAIBackend() });
-    _geminiModel = getGenerativeModel(ai, {
-      model: 'gemini-3-flash-preview',
-      systemInstruction: AI_PROMPT
-    });
-    console.log('Gemini 3 initialisé ✓');
-    return _geminiModel;
-  }catch(e){
-    console.error('initGemini error:', e);
+// ── IA (Gemini) — appelée côté serveur via la Cloud Function generateWineInfo ──
+// Le prompt et l'appel au modèle vivent désormais uniquement dans functions/index.js :
+// la fonction vérifie l'abonnement Premium avant d'interroger Gemini, ce qu'un simple
+// contrôle côté client ne pourrait pas garantir (contournable depuis la console navigateur).
+async function callAI(content){
+  if(!userProfile || userProfile.plan !== 'premium'){
+    openPricingModal();
     return null;
   }
-}
-
-async function callAI(content){
   try{
-    const model = await initGemini();
-    if(!model){ console.error('Gemini non disponible'); return null; }
     let parts = [];
     if(typeof content === 'string'){
       parts = [content];
@@ -3315,10 +3365,13 @@ async function callAI(content){
         else if(c.type==='image') parts.push({inlineData:{mimeType:c.source.media_type,data:c.source.data}});
       });
     }
-    const result = await model.generateContent(parts);
-    return result.response.text();
+    const callable = functionsClient.httpsCallable('generateWineInfo');
+    const result = await callable({parts});
+    return result.data.text;
   }catch(e){
     console.error('callAI error:', e);
+    if(e.code==='functions/permission-denied'){ openPricingModal(); return null; }
+    showToast('Erreur IA, réessayez.', 'error');
     return null;
   }
 }
@@ -3349,6 +3402,7 @@ let aiCurrentMode='text';
 
 function openAIModal(mode){
   closeAddModal();
+  if(!userProfile || userProfile.plan !== 'premium'){ openPricingModal(); return; }
   aiCurrentMode=mode;
   aiResult=null; aiPhotoB64=null;
   resetAIModal();
@@ -4472,6 +4526,7 @@ function openWishMode(mode){
     return;
   }
   // Mode IA
+  if(!userProfile || userProfile.plan !== 'premium'){ openPricingModal(); return; }
   wishAIResult=null; wishAIPhotoB64=null;
   resetWishAI();
   document.getElementById('wish-ai-mode-text').style.display=mode==='text'?'':'none';
@@ -5366,6 +5421,30 @@ function removeToast(t){
     <button class="modal-close" onclick="closeLegalModal()">✕</button>
     <div class="modal-title" id="legal-modal-title"></div>
     <div class="legal-content" id="legal-modal-body"></div>
+  </div>
+</div>
+
+<!-- PRICING -->
+<div class="modal-overlay" id="pricing-modal" onclick="if(event.target===this)closePricingModal()">
+  <div class="modal-box" style="max-width:620px">
+    <button class="modal-close" onclick="closePricingModal()">✕</button>
+    <div class="modal-title">Passer Premium</div>
+    <div class="legal-content" style="margin-bottom:18px">
+      <p>Débloquez l'analyse par intelligence artificielle : reconnaissance d'étiquette à partir d'une photo ou d'un nom de cuvée, pour remplir votre cave et votre liste de souhaits en un instant.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <div class="pricing-period">Mensuel</div>
+        <div class="pricing-note">Facturé chaque mois, résiliable à tout moment</div>
+        <button type="button" class="pricing-cta" id="pricing-btn-month" onclick="choosePlan('month')">Choisir le mensuel</button>
+      </div>
+      <div class="pricing-card pricing-card-highlight">
+        <div class="pricing-period">Annuel</div>
+        <div class="pricing-note">Facturé une fois par an</div>
+        <button type="button" class="pricing-cta" id="pricing-btn-year" onclick="choosePlan('year')">Choisir l'annuel</button>
+      </div>
+    </div>
+    <div id="pricing-error" style="display:none;font-size:12px;color:var(--ruby);margin-top:14px;text-align:center"></div>
   </div>
 </div>
 
