@@ -63,3 +63,16 @@ Suivi des modifications notables apportées au site.
   - Bouton retour matériel Android : ferme la modale ouverte (ou le panneau de filtres) au lieu de fermer l'application.
 - Icône et écran de démarrage de l'app générés à partir du logo existant (fond bordeaux nuit, bouteille dans une arche de cave) — un placeholder rapide, remplaçable plus tard.
 - **Reste à faire côté humain** : installer Android Studio (aucun SDK Android sur cette machine), puis `npm install` + `npx cap sync android` + `npx cap open android` pour compiler et tester réellement l'app. Publication sur le Play Store hors de ce chantier (compte développeur à créer séparément).
+
+## 2026-07-27 (3)
+
+### Refonte graphique mobile-native
+L'empaquetage Capacitor rendait l'app installable, mais l'interface restait une simple transposition responsive du desktop (barre d'onglets étirée, header dense, modales centrées trop petites). Refonte pensée pour un usage au pouce, via des media queries CSS — profite donc aussi bien à l'app Android qu'à toute visite du site depuis un téléphone.
+
+- **Navigation** : barre de navigation fixe en bas d'écran sous 760px (Mes vins, Mes caves, Dégustations, Souhaits en accès direct + bouton **Plus** ouvrant une feuille pour Statistiques et Ventes). La barre d'onglets du haut est masquée sur mobile ; le bouton retour matériel Android ferme la feuille "Plus" comme les autres modales.
+- **Nettoyage** : suppression d'un système de navigation en tiroir (sidebar + burger) entièrement codé en CSS mais jamais branché au HTML — un reliquat d'une itération de design antérieure.
+- **En-tête** : les 4 indicateurs (Bouteilles / Références / Valeur / +/- value) étaient auparavant intégralement masqués sous 560px, sans alternative. Remplacés par une version compacte (Bouteilles · Valeur). Le bouton mode privé, lui aussi masqué sans remplacement, est désormais accessible depuis le menu du profil sur mobile.
+- **Barre d'outils (Mes vins)** : recherche en pleine largeur sur sa propre ligne, puis vue/tri/filtres/export sur une seconde ligne (filtres et export en icônes avec info-bulle accessible), et bouton "+ Ajouter un vin" mis en avant sur toute la largeur plutôt qu'un bouton flottant.
+- **Modales** : les fenêtres (profil, ajout de vin/cave, dégustation, vente, IA, tarifs, mentions légales…) s'ouvrent désormais depuis le bas de l'écran en plein largeur sur mobile, plus confortables à manipuler au pouce qu'une fenêtre centrée réduite. La fiche détail d'un vin (déjà un tiroir plein écran) et le formulaire d'ajout en pleine page n'étaient pas concernés.
+- **Cartes vin et filtres** : zone de clic du bouton "Modifier" agrandie pour le tactile (même mécanisme invisible déjà utilisé pour les boutons quantité/suppression). Le panneau de filtres passe en plein écran sur les téléphones étroits plutôt que de rester figé à 320px.
+- **Zones tactiles** : extension de la zone de clic invisible (déjà en place sur certains boutons) aux boutons vue grille/cave, thème, mode privé, avatar, badge Premium, fermeture du panneau de filtres, éléments du menu d'export et fermeture des modales.
