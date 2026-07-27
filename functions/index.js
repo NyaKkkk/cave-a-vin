@@ -86,6 +86,35 @@ exports.createPortalSession = onCall({region: REGION, secrets: [STRIPE_SECRET_KE
   return {url: session.url};
 });
 
+// ── Tarifs affichés côté client : source unique de vérité = Stripe ──
+function formatEUR(cents){
+  return (cents / 100).toLocaleString('fr-FR', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' €';
+}
+
+exports.getPricing = onCall({region: REGION, secrets: [STRIPE_SECRET_KEY]}, async (request) => {
+  if(!request.auth) throw new HttpsError('unauthenticated', 'Connexion requise.');
+
+  const stripe = getStripe();
+  const [priceMonth, priceYear] = await Promise.all([
+    stripe.prices.retrieve(STRIPE_PRICE_MONTHLY.value()),
+    stripe.prices.retrieve(STRIPE_PRICE_ANNUAL.value()),
+  ]);
+
+  const monthAmount = priceMonth.unit_amount;
+  const yearAmount = priceYear.unit_amount;
+  const yearlyIfPaidMonthly = monthAmount * 12;
+  const savingsAmount = Math.max(0, yearlyIfPaidMonthly - yearAmount);
+  const savingsPercent = yearlyIfPaidMonthly > 0 ? Math.round((savingsAmount / yearlyIfPaidMonthly) * 100) : 0;
+
+  return {
+    month: {amount: monthAmount, currency: priceMonth.currency, formatted: formatEUR(monthAmount)},
+    year: {amount: yearAmount, currency: priceYear.currency, formatted: formatEUR(yearAmount)},
+    monthlyEquivalent: formatEUR(Math.round(yearAmount / 12)),
+    savingsAmount: formatEUR(savingsAmount),
+    savingsPercent,
+  };
+});
+
 // ── Webhook Stripe : source de vérité pour le champ `plan` ──
 async function resolveUidFromCustomer(customerId){
   const mapSnap = await db.collection('stripeCustomers').doc(customerId).get();

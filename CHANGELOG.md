@@ -39,3 +39,9 @@ Suivi des modifications notables apportées au site.
 - Règles de sécurité Firestore : les champs `plan`, `stripeCustomerId`, `stripeSubscriptionId`, `planRenewsAt` ne sont modifiables que par les Cloud Functions, jamais par le client.
 - **Reste à faire côté humain avant mise en service** : compte Stripe (produit + prix mensuel/annuel), passage du projet Firebase au plan Blaze, déploiement des fonctions, configuration du webhook Stripe. Voir le plan détaillé pour l'ordre exact des étapes.
 - Bug corrigé au passage : le chargement des scripts Firebase était une chaîne codée en dur sur 4 scripts ; l'ajout d'un 5e script (Cloud Functions) le laissait silencieusement de côté. Chargement généralisé en boucle pour éviter que ça se reproduise.
+- Compte Stripe et abonnement configurés et déployés (secrets, prix mensuel/annuel, webhook signé, règles Firestore). Testé de bout en bout.
+
+### Abonnement Premium — refonte de la modale de vente
+- La modale « Passer Premium » affiche désormais les vrais prix (récupérés en direct depuis Stripe via une nouvelle fonction `getPricing`, jamais codés en dur) : prix mensuel, prix annuel, équivalent mensuel de l'offre annuelle, et un badge d'économie calculé automatiquement (`Économisez X%`).
+- Ajout d'une liste de bénéfices concrets de l'IA (reconnaissance d'étiquette, remplissage automatique des champs) au-dessus des offres, pour clarifier la valeur avant le prix.
+- Carte annuelle mise en avant visuellement (bordure accentuée, badge d'économie), bouton mensuel en style secondaire pour orienter vers l'offre la plus avantageuse.

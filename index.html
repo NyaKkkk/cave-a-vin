@@ -612,15 +612,23 @@ button.auth-tab{background:none;border-width:0 0 2px;border-style:solid;border-c
 .legal-content .legal-placeholder{color:var(--ruby);font-weight:600}
 .legal-content .legal-action{margin-top:16px;padding:0 16px;height:36px;background:none;border:1.5px solid var(--ink5);border-radius:var(--r);font-family:var(--font-body);font-size:12px;font-weight:600;color:var(--ink3);cursor:pointer}
 .legal-content .legal-action:hover{border-color:var(--ink4);color:var(--ink)}
+.pricing-features{list-style:none;margin:0 0 20px;padding:0;display:flex;flex-direction:column;gap:9px}
+.pricing-features li{display:flex;align-items:flex-start;gap:9px;font-size:13px;color:var(--ink3);line-height:1.5}
+.pricing-features svg{flex-shrink:0;margin-top:2px;color:var(--ruby)}
 .pricing-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px}
 @media(max-width:480px){.pricing-grid{grid-template-columns:1fr}}
-.pricing-card{border:1.5px solid var(--ink5);border-radius:var(--r2);padding:20px 16px;text-align:center;display:flex;flex-direction:column;gap:10px}
-.pricing-card-highlight{border-color:var(--ruby)}
-.pricing-period{font-family:var(--font-display);font-size:20px;font-weight:600;color:var(--ink)}
-.pricing-note{font-size:12px;color:var(--ink4)}
-.pricing-cta{height:40px;border:none;border-radius:var(--r);background:var(--ruby);color:#fff;font-family:var(--font-body);font-size:13px;font-weight:600;cursor:pointer;transition:background .15s}
+.pricing-card{position:relative;border:1.5px solid var(--ink5);border-radius:var(--r2);padding:22px 16px 20px;text-align:center;display:flex;flex-direction:column;gap:4px}
+.pricing-card-highlight{border-color:var(--ruby);border-width:2px;padding-top:20px}
+.pricing-badge{position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:var(--ruby);color:#fff;font-size:10px;font-weight:600;letter-spacing:.3px;padding:3px 12px;border-radius:var(--r3);white-space:nowrap}
+.pricing-label{font-size:11px;font-weight:600;color:var(--ink4);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.pricing-amount{font-family:var(--font-display);font-size:34px;font-weight:600;color:var(--ink);line-height:1}
+.pricing-amount .pricing-per{font-family:var(--font-body);font-size:13px;font-weight:400;color:var(--ink4);margin-left:2px}
+.pricing-note{font-size:11.5px;color:var(--ink4);min-height:15px;margin-bottom:8px}
+.pricing-cta{height:40px;border:none;border-radius:var(--r);background:var(--ruby);color:#fff;font-family:var(--font-body);font-size:13px;font-weight:600;cursor:pointer;transition:background .15s;margin-top:auto}
 .pricing-cta:hover{background:var(--ruby2)}
 .pricing-cta:disabled{opacity:.6;cursor:default}
+.pricing-card:not(.pricing-card-highlight) .pricing-cta{background:var(--surface);border:1.5px solid var(--ink5);color:var(--ink3)}
+.pricing-card:not(.pricing-card-highlight) .pricing-cta:hover{border-color:var(--ink4);color:var(--ink);background:var(--surface)}
 .modal-avatar{display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:24px}
 .modal-avatar-preview{width:80px;height:80px;border-radius:50%;border:3px solid var(--ink5);overflow:hidden;display:flex;align-items:center;justify-content:center;background:var(--ink6);cursor:pointer;transition:all .2s}
 .modal-avatar-preview:hover{border-color:var(--gold2)}
@@ -2351,14 +2359,42 @@ function closeLegalModal(){
 }
 
 // ── TARIFS / ABONNEMENT ──
-function openPricingModal(){
+let _pricingCache = null;
+async function openPricingModal(){
   const err = document.getElementById('pricing-error');
   if(err){ err.style.display='none'; err.textContent=''; }
   const btnM = document.getElementById('pricing-btn-month');
   const btnY = document.getElementById('pricing-btn-year');
   if(btnM){ btnM.disabled=false; btnM.textContent='Choisir le mensuel'; }
   if(btnY){ btnY.disabled=false; btnY.textContent="Choisir l'annuel"; }
+  document.getElementById('pricing-amount-month').textContent = '…';
+  document.getElementById('pricing-amount-year').textContent = '…';
+  document.getElementById('pricing-monthly-equiv').innerHTML = '&nbsp;';
+  document.getElementById('pricing-savings-badge').style.display = 'none';
   document.getElementById('pricing-modal').classList.add('open');
+
+  if(_pricingCache){ renderPricingInfo(_pricingCache); return; }
+  if(!functionsClient) return;
+  try{
+    const result = await functionsClient.httpsCallable('getPricing')({});
+    _pricingCache = result.data;
+    renderPricingInfo(_pricingCache);
+  }catch(e){
+    console.error('getPricing error:', e);
+    document.getElementById('pricing-amount-month').textContent = '—';
+    document.getElementById('pricing-amount-year').textContent = '—';
+  }
+}
+function renderPricingInfo(data){
+  if(!data) return;
+  document.getElementById('pricing-amount-month').textContent = data.month.formatted;
+  document.getElementById('pricing-amount-year').textContent = data.year.formatted;
+  document.getElementById('pricing-monthly-equiv').textContent = `soit ${data.monthlyEquivalent} / mois`;
+  const badge = document.getElementById('pricing-savings-badge');
+  if(data.savingsPercent > 0){
+    badge.textContent = `Économisez ${data.savingsPercent}%`;
+    badge.style.display = 'block';
+  }
 }
 function closePricingModal(){
   document.getElementById('pricing-modal').classList.remove('open');
@@ -5426,21 +5462,26 @@ function removeToast(t){
 
 <!-- PRICING -->
 <div class="modal-overlay" id="pricing-modal" onclick="if(event.target===this)closePricingModal()">
-  <div class="modal-box" style="max-width:620px">
+  <div class="modal-box" style="max-width:640px">
     <button class="modal-close" onclick="closePricingModal()">✕</button>
     <div class="modal-title">Passer Premium</div>
-    <div class="legal-content" style="margin-bottom:18px">
-      <p>Débloquez l'analyse par intelligence artificielle : reconnaissance d'étiquette à partir d'une photo ou d'un nom de cuvée, pour remplir votre cave et votre liste de souhaits en un instant.</p>
-    </div>
+    <ul class="pricing-features">
+      <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Photographiez une étiquette, tout se remplit tout seul</li>
+      <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Appellation, région, millésime, apogée reconnus automatiquement</li>
+      <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Fonctionne aussi pour votre liste de souhaits</li>
+    </ul>
     <div class="pricing-grid">
       <div class="pricing-card">
-        <div class="pricing-period">Mensuel</div>
-        <div class="pricing-note">Facturé chaque mois, résiliable à tout moment</div>
+        <div class="pricing-label">Mensuel</div>
+        <div class="pricing-amount"><span id="pricing-amount-month">…</span><span class="pricing-per">/ mois</span></div>
+        <div class="pricing-note">Résiliable à tout moment</div>
         <button type="button" class="pricing-cta" id="pricing-btn-month" onclick="choosePlan('month')">Choisir le mensuel</button>
       </div>
       <div class="pricing-card pricing-card-highlight">
-        <div class="pricing-period">Annuel</div>
-        <div class="pricing-note">Facturé une fois par an</div>
+        <div class="pricing-badge" id="pricing-savings-badge" style="display:none"></div>
+        <div class="pricing-label">Annuel</div>
+        <div class="pricing-amount"><span id="pricing-amount-year">…</span><span class="pricing-per">/ an</span></div>
+        <div class="pricing-note" id="pricing-monthly-equiv">&nbsp;</div>
         <button type="button" class="pricing-cta" id="pricing-btn-year" onclick="choosePlan('year')">Choisir l'annuel</button>
       </div>
     </div>
