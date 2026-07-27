@@ -45,3 +45,7 @@ Suivi des modifications notables apportées au site.
 - La modale « Passer Premium » affiche désormais les vrais prix (récupérés en direct depuis Stripe via une nouvelle fonction `getPricing`, jamais codés en dur) : prix mensuel, prix annuel, équivalent mensuel de l'offre annuelle, et un badge d'économie calculé automatiquement (`Économisez X%`).
 - Ajout d'une liste de bénéfices concrets de l'IA (reconnaissance d'étiquette, remplissage automatique des champs) au-dessus des offres, pour clarifier la valeur avant le prix.
 - Carte annuelle mise en avant visuellement (bordure accentuée, badge d'économie), bouton mensuel en style secondaire pour orienter vers l'offre la plus avantageuse.
+
+### Abonnement Premium — visibilité dans le site
+- Le seul rappel de l'offre Premium était un lien texte caché dans le menu du profil. Ajout d'un badge permanent dans l'en-tête (« ★ Passer Premium » en doré pour les utilisateurs gratuits, « ★ Premium » discret pour les abonnés), visible sur toutes les pages, qui ouvre directement la modale tarifs ou le portail d'abonnement selon le statut.
+- Ajout d'une pastille « Premium » directement sur les options "Photo de l'étiquette" et "Nom de la cuvée" dans les écrans d'ajout (vin et souhait), pour rendre la fonctionnalité visible là où elle sert, plutôt que découverte seulement au clic. Masquée automatiquement pour les abonnés.

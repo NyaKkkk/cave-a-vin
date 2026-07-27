@@ -576,6 +576,12 @@ button.auth-tab{background:none;border-width:0 0 2px;border-style:solid;border-c
 .auth-err{font-size:12px;color:var(--ruby);margin-top:10px;text-align:center;min-height:18px}
 .auth-msg{font-size:12px;color:var(--clr-pos);margin-top:10px;text-align:center;min-height:18px}
 /* USER MENU */
+.btn-premium-badge{display:inline-flex;align-items:center;gap:5px;height:32px;padding:0 13px;border-radius:var(--r3);background:rgba(232,208,112,.12);border:1px solid rgba(232,208,112,.4);color:var(--gold3);font-family:var(--font-body);font-size:11px;font-weight:600;letter-spacing:.2px;cursor:pointer;transition:background .18s,border-color .18s;white-space:nowrap;flex-shrink:0}
+.btn-premium-badge:hover{background:rgba(232,208,112,.22);border-color:rgba(232,208,112,.65)}
+.btn-premium-badge.is-premium{background:transparent;border-color:rgba(255,255,255,.14);color:var(--chrome-muted)}
+.btn-premium-badge.is-premium:hover{border-color:rgba(232,208,112,.5);color:var(--gold3)}
+.btn-premium-badge svg{flex-shrink:0}
+@media(max-width:760px){.btn-premium-badge span{display:none}.btn-premium-badge{width:32px;padding:0;justify-content:center}}
 .user-menu-wrap{position:relative}
 .user-avatar-btn{width:36px;height:36px;border-radius:50%;border:2px solid rgba(201,168,76,.4);background:rgba(201,168,76,.15);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;overflow:hidden}
 .user-avatar-btn:hover{border-color:var(--gold2);background:rgba(201,168,76,.25)}
@@ -699,8 +705,9 @@ button.auth-tab{background:none;border-width:0 0 2px;border-style:solid;border-c
 .add-choice-btn:hover{border-color:var(--ruby);background:#fff8f8;transform:translateX(3px)}
 .add-choice-btn-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
 .add-choice-btn-text{display:flex;flex-direction:column;gap:2px}
-.add-choice-btn-label{font-size:14px;font-weight:600;color:var(--ink);font-family:var(--font-body)}
+.add-choice-btn-label{font-size:14px;font-weight:600;color:var(--ink);font-family:var(--font-body);display:inline-flex;align-items:center;gap:7px}
 .add-choice-btn-hint{font-size:11px;color:var(--ink4)}
+.ai-premium-pill{display:inline-block;padding:1px 7px;border-radius:var(--r3);background:var(--gold4);border:1px solid var(--gold2);color:var(--gold);font-size:9px;font-weight:700;letter-spacing:.3px;text-transform:uppercase}
 /* ── MODAL IA ── */
 .ai-modal{position:fixed;inset:0;background:rgba(28,10,13,.6);z-index:var(--z-ai);display:none;align-items:center;justify-content:center;backdrop-filter:blur(3px)}
 .ai-modal.open{display:flex}
@@ -1078,6 +1085,10 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--ruby);outline-offse
     <button class="btn-privacy" id="btn-privacy" onclick="togglePrivacy()" title="Mode privé">
       <svg class="eye-on" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
       <svg class="eye-off" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+    </button>
+    <button type="button" class="btn-premium-badge" id="btn-premium-badge" onclick="handlePlanMenuClick()" style="display:none">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1.5l2.6 6.9 7.4.6-5.6 4.8 1.8 7.2L12 17.1l-6.2 3.9 1.8-7.2L2 8l7.4-.6z"/></svg>
+      <span id="premium-badge-label">Passer Premium</span>
     </button>
   <div class="user-menu-wrap" id="user-info" style="display:none">
     <button type="button" class="user-avatar-btn" id="user-avatar-btn" onclick="toggleUserMenu()" aria-expanded="false" aria-controls="user-dropdown" aria-label="Menu utilisateur">
@@ -2461,6 +2472,17 @@ function updateUserMenu(){
 
   const planLabel = document.getElementById('dd-plan-label');
   if(planLabel) planLabel.textContent = p.plan==='premium' ? 'Gérer mon abonnement' : 'Passer Premium';
+
+  // Badge Premium dans le header + pastilles sur les options IA (choix vin / souhait)
+  const isPremium = p.plan==='premium';
+  const badge = document.getElementById('btn-premium-badge');
+  if(badge){
+    badge.style.display = '';
+    badge.classList.toggle('is-premium', isPremium);
+    badge.title = isPremium ? 'Gérer mon abonnement' : 'Débloquer la reconnaissance par IA';
+    document.getElementById('premium-badge-label').textContent = isPremium ? 'Premium' : 'Passer Premium';
+  }
+  document.querySelectorAll('[data-premium-pill]').forEach(el=>{ el.style.display = isPremium ? 'none' : ''; });
 }
 function handlePlanMenuClick(){
   if(userProfile && userProfile.plan==='premium') openPortalSession();
@@ -4800,14 +4822,14 @@ function removeToast(t){
       <button type="button" class="add-choice-btn" onclick="openAIModal('photo')">
         <div class="add-choice-btn-icon" style="background:#fff8f0">📷</div>
         <div class="add-choice-btn-text">
-          <span class="add-choice-btn-label">Photo de l'étiquette</span>
+          <span class="add-choice-btn-label">Photo de l'étiquette <span class="ai-premium-pill" data-premium-pill>Premium</span></span>
           <span class="add-choice-btn-hint">L'IA analyse et pré-remplit le formulaire</span>
         </div>
       </button>
       <button type="button" class="add-choice-btn" onclick="openAIModal('text')">
         <div class="add-choice-btn-icon" style="background:#f8f0ff">🔍</div>
         <div class="add-choice-btn-text">
-          <span class="add-choice-btn-label">Nom de la cuvée</span>
+          <span class="add-choice-btn-label">Nom de la cuvée <span class="ai-premium-pill" data-premium-pill>Premium</span></span>
           <span class="add-choice-btn-hint">L'IA recherche les informations du vin</span>
         </div>
       </button>
@@ -5002,14 +5024,14 @@ function removeToast(t){
       <button type="button" class="add-choice-btn" onclick="openWishMode('photo')">
         <div class="add-choice-btn-icon" style="background:#fff8f0">📷</div>
         <div class="add-choice-btn-text">
-          <span class="add-choice-btn-label">Photo de l'étiquette</span>
+          <span class="add-choice-btn-label">Photo de l'étiquette <span class="ai-premium-pill" data-premium-pill>Premium</span></span>
           <span class="add-choice-btn-hint">L'IA analyse et pré-remplit</span>
         </div>
       </button>
       <button type="button" class="add-choice-btn" onclick="openWishMode('text')">
         <div class="add-choice-btn-icon" style="background:#f8f0ff">🔍</div>
         <div class="add-choice-btn-text">
-          <span class="add-choice-btn-label">Nom de la cuvée</span>
+          <span class="add-choice-btn-label">Nom de la cuvée <span class="ai-premium-pill" data-premium-pill>Premium</span></span>
           <span class="add-choice-btn-hint">L'IA recherche les informations</span>
         </div>
       </button>
