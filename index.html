@@ -955,10 +955,10 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--ruby);outline-offse
     <!-- GAUCHE : diaporama -->
     <div class="auth-left">
       <!-- Slide background illustrations (ordre : cave, tonneau, cave particulier, vignoble) -->
-      <img class="auth-bg-img active" src="u8377829582_dessin_noir_et_blanc_dune_grande_cave__vin_souter_0f107ff0-7915-4272-ab17-f054e3fcbf01_2.svg" alt="">
-      <img class="auth-bg-img" src="u8377829582_fill_the_image_with_the_tonneau_--ar_11_--v_7_27ffba7d-eb2e-4605-ad04-502ad6f4d769_1.svg" alt="">
-      <img class="auth-bg-img" src="u8377829582_httpss.mj.runFnT1zUruwXY_je_veux_un_dessin_noir_e_74e1e656-ea64-4484-83be-c3edd1b2eeaf_1 (1).svg" alt="">
-      <img class="auth-bg-img" src="u8377829582_dessin_noir_et_blanc_dun_vignoble_bourguignon_--v_09c20008-6683-443b-a152-ddb97552f0aa_1.svg" alt="">
+      <img class="auth-bg-img active" src="assets/auth-bg/auth-bg-2.webp" alt="">
+      <img class="auth-bg-img" src="assets/auth-bg/auth-bg-3.webp" alt="">
+      <img class="auth-bg-img" src="assets/auth-bg/auth-bg-4.webp" alt="">
+      <img class="auth-bg-img" src="assets/auth-bg/auth-bg-1.webp" alt="">
       <div class="auth-brand">CAVE</div>
       <div class="auth-brand-sub">à vin · Sommelier numérique</div>
       <div class="auth-slides-wrap">
@@ -1486,6 +1486,21 @@ async function doLogout(){
       db.settings({ experimentalAutoDetectLongPolling: true, merge: true });
       functionsClient = firebase.app().functions('europe-west1');
 
+      if(isNativeApp()){
+        Capacitor.Plugins.App.addListener('appUrlOpen', (data)=>{
+          try{
+            const u = new URL(data.url);
+            if(u.protocol==='caveavin:') handleCheckoutReturn(u.searchParams.get('checkout'));
+          }catch(e){ console.error('appUrlOpen parse error:', e); }
+        });
+        Capacitor.Plugins.App.addListener('backButton', ()=>{
+          const hit=_backStack.find(e=>e.test());
+          if(hit){ hit.close(); return; }
+          if((localStorage.getItem('activeTab')||'cave')!=='cave'){ showTab('cave'); return; }
+          Capacitor.Plugins.App.exitApp();
+        });
+      }
+
       auth.onAuthStateChanged(async(user)=>{
         document.getElementById('loading-screen').style.display='none';
         if(user){
@@ -1510,10 +1525,7 @@ async function doLogout(){
               const _checkout = new URLSearchParams(location.search).get('checkout');
               if(_checkout){
                 history.replaceState(null,'',location.pathname);
-                if(_checkout==='success'){
-                  showToast('Paiement reçu, activation en cours…', 'info');
-                  setTimeout(()=>{ loadUserProfile(user.uid); }, 2500);
-                }
+                handleCheckoutReturn(_checkout);
               }
               break;
             }catch(e){
@@ -2422,8 +2434,9 @@ async function choosePlan(interval){
   if(btn){ btn.disabled=true; btn.textContent='Redirection…'; }
   try{
     const callable = functionsClient.httpsCallable('createCheckoutSession');
-    const result = await callable({interval});
-    if(result.data && result.data.url){ window.location.href = result.data.url; return; }
+    const payload = isNativeApp() ? {interval, returnUrl:'caveavin://checkout'} : {interval};
+    const result = await callable(payload);
+    if(result.data && result.data.url){ openExternalUrl(result.data.url); return; }
     throw new Error('URL de paiement manquante');
   }catch(e){
     console.error('choosePlan error:', e);
@@ -2435,8 +2448,9 @@ async function openPortalSession(){
   if(!currentUser || !functionsClient) return;
   try{
     const callable = functionsClient.httpsCallable('createPortalSession');
-    const result = await callable({});
-    if(result.data && result.data.url){ window.location.href = result.data.url; return; }
+    const payload = isNativeApp() ? {returnUrl:'caveavin://checkout'} : {};
+    const result = await callable(payload);
+    if(result.data && result.data.url){ openExternalUrl(result.data.url); return; }
     throw new Error('URL du portail manquante');
   }catch(e){
     console.error('openPortalSession error:', e);
@@ -2799,6 +2813,41 @@ let advFilters={countries:[],regions:[],certs:[],caves:[],yearMin:'',yearMax:'',
 let chartM=null,waiResult=null,wishPhotoB64=null,aiResult=null,currentPhotoB64=null;
 
 function esc(s){const d=document.createElement('div');d.appendChild(document.createTextNode(s==null?'':String(s)));return d.innerHTML}
+function isNativeApp(){ return !!(window.Capacitor && Capacitor.isNativePlatform()); }
+function openExternalUrl(url){
+  if(isNativeApp()){ Capacitor.Plugins.Browser.open({url}); }
+  else{ window.location.href = url; }
+}
+function handleCheckoutReturn(status){
+  if(status!=='success') return;
+  showToast('Paiement reçu, activation en cours…', 'info');
+  if(currentUser) setTimeout(()=>{ loadUserProfile(currentUser.uid); }, 2500);
+}
+
+// Registre du bouton retour Android (app native uniquement) : du plus imbriqué au moins
+// imbriqué, on ferme via les vraies fonctions close...() existantes (pas une manipulation
+// générique de classe CSS) pour ne pas sauter les resets d'état internes à chaque modale.
+const _backStack=[
+  {test:()=>document.getElementById('photo-crop-modal')?.classList.contains('open'), close:closeCropModal},
+  {test:()=>document.getElementById('confirm-del-modal')?.classList.contains('open'), close:closeConfirmDel},
+  {test:()=>document.getElementById('drink-modal')?.classList.contains('open'), close:closeDrinkModal},
+  {test:()=>document.getElementById('sell-modal')?.classList.contains('open'), close:closeSellModal},
+  {test:()=>document.getElementById('cave-form-backdrop')?.classList.contains('open'), close:closeCaveForm},
+  {test:()=>document.getElementById('wine-detail-backdrop')?.classList.contains('open'), close:closeWineDetailModal},
+  {test:()=>document.getElementById('edit-backdrop')?.classList.contains('open'), close:()=>closePanel('add-form')},
+  {test:()=>document.getElementById('ai-modal')?.classList.contains('open'), close:closeAIModal},
+  {test:()=>document.getElementById('wish-ai-modal')?.classList.contains('open'), close:closeWishAIModal},
+  {test:()=>document.getElementById('wish-manual-modal')?.classList.contains('open'), close:closeWishManualModal},
+  {test:()=>document.getElementById('wish-to-cave-modal')?.classList.contains('open'), close:closeWishToCave},
+  {test:()=>document.getElementById('pricing-modal')?.classList.contains('open'), close:closePricingModal},
+  {test:()=>document.getElementById('profile-modal')?.classList.contains('open'), close:closeProfile},
+  {test:()=>document.getElementById('legal-modal')?.classList.contains('open'), close:closeLegalModal},
+  {test:()=>document.getElementById('annonce-modal')?.classList.contains('open'), close:closeAnnonceModal},
+  {test:()=>document.getElementById('add-choice-modal')?.classList.contains('open'), close:closeAddModal},
+  {test:()=>document.getElementById('wish-choice-modal')?.classList.contains('open'), close:closeAddWishModal},
+  {test:()=>document.getElementById('user-dropdown')?.classList.contains('open'), close:toggleUserMenu},
+  {test:()=>document.getElementById('filter-sidebar')?.classList.contains('open'), close:toggleFilterPanel},
+];
 function equalizeCardColumns(listSel,colSel){const cols=[...document.querySelectorAll(listSel+' '+colSel)];if(!cols.length)return;cols.forEach(el=>{el.style.width='';});const max=Math.max(...cols.map(el=>el.offsetWidth));cols.forEach(el=>{el.style.width=max+'px';});}
 
 let wines=[];
@@ -2836,7 +2885,9 @@ function openIdealWine(){
   if(!name)return;
   const year=document.getElementById('f-year')?.value||document.getElementById('wf-year')?.value||'';
   const q=encodeURIComponent(name+(year?' '+year:''));
-  window.open('https://www.idealwine.com/fr/recherche-vins-en-vente.jsp?q='+q,'_blank');
+  const url='https://www.idealwine.com/fr/recherche-vins-en-vente.jsp?q='+q;
+  if(isNativeApp()){ Capacitor.Plugins.Browser.open({url}); }
+  else{ window.open(url,'_blank'); }
 }
 function setView(v){
   const prev=localStorage.getItem('wineView')||'grid';
@@ -3495,17 +3546,29 @@ function resetAIModal(){
   const btn=document.getElementById('ai-analyze-photo-btn');if(btn)btn.style.display='none';
 }
 
+function applyAIPhoto(dataUrl){
+  aiPhotoB64=dataUrl.split(',')[1];
+  const pp=document.getElementById('ai-photo-preview');
+  pp.src=dataUrl; pp.style.display='block';
+  document.getElementById('ai-photo-drop').style.display='none';
+  document.getElementById('ai-analyze-photo-btn').style.display='inline-block';
+}
 function handleAIPhoto(inp){
   const f=inp.files[0];if(!f)return;
   const r=new FileReader();
-  r.onload=e=>{
-    aiPhotoB64=e.target.result.split(',')[1];
-    const pp=document.getElementById('ai-photo-preview');
-    pp.src=e.target.result; pp.style.display='block';
-    document.getElementById('ai-photo-drop').style.display='none';
-    document.getElementById('ai-analyze-photo-btn').style.display='inline-block';
-  };
+  r.onload=e=>applyAIPhoto(e.target.result);
   r.readAsDataURL(f);
+}
+async function triggerAIPhotoPick(){
+  if(isNativeApp()){
+    const {Camera, CameraResultType, CameraSource} = Capacitor.Plugins;
+    try{
+      const photo = await Camera.getPhoto({quality:85, resultType:CameraResultType.Base64, source:CameraSource.Prompt});
+      applyAIPhoto('data:image/jpeg;base64,'+photo.base64String);
+    }catch(e){ /* annulé par l'utilisateur */ }
+  } else {
+    document.getElementById('ai-photo-file').click();
+  }
 }
 
 async function analyzeText(){
@@ -3998,8 +4061,16 @@ function exportPDF(){
 <div class="footer">Généré par Cave à vin — ${date}</div>
 <script>window.onload=function(){window.print();}<\/script>
 </body></html>`;
-  const w=window.open('','_blank','width=1000,height=750');
-  if(w){w.document.write(html);w.document.close();}
+  if(isNativeApp()){
+    const {Filesystem, Directory, Encoding, Share} = Capacitor.Plugins;
+    const fname='export-cave-a-vin-'+new Date().toISOString().slice(0,10)+'.html';
+    Filesystem.writeFile({path:fname, data:html, directory:Directory.Cache, encoding:Encoding.UTF8})
+      .then(res=>Share.share({url:res.uri, title:'Export cave à vin'}))
+      .catch(e=>{ console.error('export natif:', e); showToast('Export impossible.', 'error'); });
+  } else {
+    const w=window.open('','_blank','width=1000,height=750');
+    if(w){w.document.write(html);w.document.close();}
+  }
 }
 
 function togWish(id){const w=wishes.find(x=>x.id===id);if(w){w.done=!w.done;renderWishes();if(db)saveWishToDb(w);}}
@@ -4627,17 +4698,29 @@ function resetWishAI(){
   const btn=document.getElementById('wish-ai-analyze-photo-btn');if(btn)btn.style.display='none';
 }
 
+function applyWishAIPhoto(dataUrl){
+  wishAIPhotoB64=dataUrl.split(',')[1];
+  const pp=document.getElementById('wish-ai-photo-preview');
+  pp.src=dataUrl; pp.style.display='block';
+  document.getElementById('wish-ai-photo-drop').style.display='none';
+  document.getElementById('wish-ai-analyze-photo-btn').style.display='inline-block';
+}
 function handleWishAIPhoto(inp){
   const f=inp.files[0];if(!f)return;
   const r=new FileReader();
-  r.onload=e=>{
-    wishAIPhotoB64=e.target.result.split(',')[1];
-    const pp=document.getElementById('wish-ai-photo-preview');
-    pp.src=e.target.result; pp.style.display='block';
-    document.getElementById('wish-ai-photo-drop').style.display='none';
-    document.getElementById('wish-ai-analyze-photo-btn').style.display='inline-block';
-  };
+  r.onload=e=>applyWishAIPhoto(e.target.result);
   r.readAsDataURL(f);
+}
+async function triggerWishAIPhotoPick(){
+  if(isNativeApp()){
+    const {Camera, CameraResultType, CameraSource} = Capacitor.Plugins;
+    try{
+      const photo = await Camera.getPhoto({quality:85, resultType:CameraResultType.Base64, source:CameraSource.Prompt});
+      applyWishAIPhoto('data:image/jpeg;base64,'+photo.base64String);
+    }catch(e){ /* annulé par l'utilisateur */ }
+  } else {
+    document.getElementById('wish-ai-photo-file').click();
+  }
 }
 
 async function analyzeWishText(){
@@ -4873,7 +4956,7 @@ function removeToast(t){
     <!-- Mode photo -->
     <div id="ai-mode-photo" style="display:none">
       <img id="ai-photo-preview" class="ai-photo-preview">
-      <div class="ai-photo-drop" id="ai-photo-drop" onclick="document.getElementById('ai-photo-file').click()">
+      <div class="ai-photo-drop" id="ai-photo-drop" onclick="triggerAIPhotoPick()">
         <input type="file" id="ai-photo-file" accept="image/*" style="display:none" onchange="handleAIPhoto(this)">
         <div style="font-size:32px;margin-bottom:8px">📷</div>
         <div style="font-size:13px;font-weight:600;color:var(--ink3);margin-bottom:4px">Cliquez pour choisir une photo</div>
@@ -5071,7 +5154,7 @@ function removeToast(t){
     </div>
     <div id="wish-ai-mode-photo" style="display:none">
       <img id="wish-ai-photo-preview" class="ai-photo-preview">
-      <div class="ai-photo-drop" id="wish-ai-photo-drop" onclick="document.getElementById('wish-ai-photo-file').click()">
+      <div class="ai-photo-drop" id="wish-ai-photo-drop" onclick="triggerWishAIPhotoPick()">
         <input type="file" id="wish-ai-photo-file" accept="image/*" style="display:none" onchange="handleWishAIPhoto(this)">
         <div style="font-size:32px;margin-bottom:8px">📷</div>
         <div style="font-size:13px;font-weight:600;color:var(--ink3);margin-bottom:4px">Cliquez pour choisir une photo</div>

@@ -13,3 +13,19 @@ functions/.env
 functions/.env.*
 !functions/.env.example
 .runtimeconfig.json
+
+# Capacitor / Android
+www/
+android/app/build/
+android/build/
+android/.gradle/
+android/local.properties
+android/app/release/
+android/*.keystore
+android/*.jks
+android/key.properties
+android/captures/
+android/.idea/
+android/app/src/main/assets/public/
+android/app/src/main/assets/capacitor.config.json
+android/app/src/main/res/xml/config.xml

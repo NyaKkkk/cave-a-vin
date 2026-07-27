@@ -1,0 +1,41 @@
+{
+  "name": "cave-a-vin",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build:www": "node scripts/build-www.mjs",
+    "cap:sync": "npm run build:www && npx cap sync android",
+    "cap:open": "npm run cap:sync && npx cap open android"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NyaKkkk/cave-a-vin.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/NyaKkkk/cave-a-vin/issues"
+  },
+  "homepage": "https://github.com/NyaKkkk/cave-a-vin#readme",
+  "dependencies": {
+    "@capacitor/android": "^7.0.0",
+    "@capacitor/app": "^7.0.0",
+    "@capacitor/browser": "^7.0.0",
+    "@capacitor/camera": "^7.0.0",
+    "@capacitor/core": "^7.0.0",
+    "@capacitor/filesystem": "^7.0.0",
+    "@capacitor/share": "^7.0.0",
+    "@capacitor/splash-screen": "^7.0.0",
+    "@capacitor/status-bar": "^7.0.0"
+  },
+  "devDependencies": {
+    "@capacitor/assets": "^3.0.0",
+    "@capacitor/cli": "^7.0.0",
+    "@playwright/test": "^1.60.0",
+    "@types/node": "^25.7.0",
+    "sharp": "^0.35.3"
+  }
+}

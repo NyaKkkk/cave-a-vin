@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Cave à Vin</string>
+    <string name="title_activity_main">Cave à Vin</string>
+    <string name="package_name">com.caveavin.app</string>
+    <string name="custom_url_scheme">com.caveavin.app</string>
+</resources>

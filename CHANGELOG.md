@@ -50,3 +50,16 @@ Suivi des modifications notables apportées au site.
 - Le seul rappel de l'offre Premium était un lien texte caché dans le menu du profil. Ajout d'un badge permanent dans l'en-tête (« ★ Passer Premium » en doré pour les utilisateurs gratuits, « ★ Premium » discret pour les abonnés), visible sur toutes les pages, qui ouvre directement la modale tarifs ou le portail d'abonnement selon le statut.
 - Ajout d'une pastille « Premium » directement sur les options "Photo de l'étiquette" et "Nom de la cuvée" dans les écrans d'ajout (vin et souhait), pour rendre la fonctionnalité visible là où elle sert, plutôt que découverte seulement au clic. Masquée automatiquement pour les abonnés.
 - Retrait du lien "Passer Premium" du menu déroulant (redondant avec le badge de l'en-tête). À la place, ajout d'une section **Abonnement** dans la modale "Mon profil" : statut actuel (Version gratuite / Premium) et bouton pour changer d'offre ou gérer l'abonnement.
+
+## 2026-07-27 (2)
+
+### Application Android (Capacitor)
+- Mise en place de l'infrastructure pour empaqueter le site en vraie application Android installable : `capacitor.config.json`, projet natif `android/` (généré via Capacitor), scripts `scripts/build-www.mjs` (copie le site vers `www/`, le dossier embarqué dans l'app) et `scripts/compress-images.mjs`.
+- Les 4 images de fond de l'écran de connexion (13,5 Mo au total en SVG) sont converties en WebP compressé (~2,3 Mo au total, -83%), pour un chargement plus rapide sur le web et une app plus légère. Fichiers SVG sources devenus inutiles supprimés du dépôt, avec `bottle_svg.svg` qui n'était déjà plus utilisé.
+- Comportements adaptés spécifiquement pour l'app native (le site web n'est pas affecté, tout est détecté au runtime) :
+  - Lien IdealWine et paiement Stripe : ouverture dans le navigateur système plutôt que dans la WebView de l'app (pour Stripe, une navigation dans la WebView casserait la session de connexion — retour géré par un lien `caveavin://checkout` dédié).
+  - Export de la cave : le popup d'impression du web ne fonctionnant pas dans une app Android, l'export natif passe par le sélecteur de partage Android (impression via Chrome, enregistrement, etc.).
+  - Scan d'étiquette par IA : ouverture de l'appareil photo natif au lieu du simple sélecteur de fichier, pour une expérience plus fiable.
+  - Bouton retour matériel Android : ferme la modale ouverte (ou le panneau de filtres) au lieu de fermer l'application.
+- Icône et écran de démarrage de l'app générés à partir du logo existant (fond bordeaux nuit, bouteille dans une arche de cave) — un placeholder rapide, remplaçable plus tard.
+- **Reste à faire côté humain** : installer Android Studio (aucun SDK Android sur cette machine), puis `npm install` + `npx cap sync android` + `npx cap open android` pour compiler et tester réellement l'app. Publication sur le Play Store hors de ce chantier (compte développeur à créer séparément).

@@ -23,6 +23,14 @@ function getStripe(){
   return new Stripe(STRIPE_SECRET_KEY.value(), {apiVersion: '2024-06-20'});
 }
 
+// N'accepte que le schéma personnalisé de l'app Android ; toute autre valeur retombe sur
+// l'URL publique par défaut (évite qu'un client malveillant impose une URL de retour arbitraire).
+function resolveReturnBase(requestData){
+  const returnUrl = requestData && requestData.returnUrl;
+  if(typeof returnUrl === 'string' && returnUrl.startsWith('caveavin://')) return returnUrl;
+  return APP_URL.value();
+}
+
 async function ensureStripeCustomer(stripe, uid, email){
   const userRef = db.collection('users').doc(uid);
   const userSnap = await userRef.get();
@@ -53,6 +61,7 @@ exports.createCheckoutSession = onCall({region: REGION, secrets: [STRIPE_SECRET_
 
   const stripe = getStripe();
   const customerId = await ensureStripeCustomer(stripe, uid, request.auth.token.email);
+  const returnBase = resolveReturnBase(request.data);
 
   const session = await stripe.checkout.sessions.create({
     mode: 'subscription',
@@ -60,8 +69,8 @@ exports.createCheckoutSession = onCall({region: REGION, secrets: [STRIPE_SECRET_
     client_reference_id: uid,
     line_items: [{price: priceId, quantity: 1}],
     subscription_data: {metadata: {firebaseUID: uid}},
-    success_url: `${APP_URL.value()}?checkout=success`,
-    cancel_url: `${APP_URL.value()}?checkout=cancel`,
+    success_url: `${returnBase}?checkout=success`,
+    cancel_url: `${returnBase}?checkout=cancel`,
   });
 
   return {url: session.url};
@@ -80,7 +89,7 @@ exports.createPortalSession = onCall({region: REGION, secrets: [STRIPE_SECRET_KE
   const stripe = getStripe();
   const session = await stripe.billingPortal.sessions.create({
     customer: customerId,
-    return_url: APP_URL.value(),
+    return_url: resolveReturnBase(request.data),
   });
 
   return {url: session.url};
